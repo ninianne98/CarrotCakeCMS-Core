@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+
+/*
+* CarrotCake CMS (MVC Core)
+* http://www.carrotware.com/
+*
+* Copyright 2015, 2023, Samantha Copeland
+* Dual licensed under the MIT or GPL Version 3 licenses.
+*
+* Date: June 2023
+*/
+
+namespace Carrotware.Web.UI.Components {
+
+	public class PagedData<T> : PagedDataBase {
+
+		public PagedData()
+			: base() {
+		}
+
+		public void InitOrderByDescending(Expression<Func<T, Object>> field) {
+			InitOrderBy(field, false);
+		}
+
+		public void InitOrderBy(Expression<Func<T, Object>> field) {
+			InitOrderBy(field, true);
+		}
+
+		public void InitOrderBy(Expression<Func<T, Object>> field, bool ascending) {
+			MemberExpression memberExpression = field.Body as MemberExpression ??
+												((UnaryExpression)field.Body).Operand as MemberExpression;
+
+			string columnName = memberExpression.Member.Name;
+
+			if (ascending) {
+				this.OrderBy = String.Format("{0}  ASC", columnName);
+			} else {
+				this.OrderBy = String.Format("{0}  DESC", columnName);
+			}
+		}
+
+		public void SetData(List<T> data) {
+			this.DataSource = data;
+		}
+
+		public List<T> DataSource { get; set; }
+
+		public override bool HasData {
+			get {
+				return this.DataSource != null && this.DataSource.Any();
+			}
+		}
+	}
+}

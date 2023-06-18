@@ -1,0 +1,28 @@
+﻿@model PagedDataTable
+
+@{
+	ViewBag.Title = "Products";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "sortTable" })) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebDataTable(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead thead" }, null);
+	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix ui-widget-content ui-corner-all" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
+
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid.AutoGenerateColumns = true;
+	//grid.AutoSort = false;
+
+	@grid.OutputHtmlBody()
+
+	<nav>
+		@{
+			@grid.OutputFooter()
+		}
+	</nav>
+
+}

@@ -1,0 +1,48 @@
+﻿@model PagedData<Supplier>
+
+@{
+	ViewBag.Title = "Suppliers";
+}
+
+<h2>@ViewBag.SiteID</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "sortTable" })) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<Supplier>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead thead" }, null);
+	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
+
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<Supplier> {
+			HeaderText = "ID",
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("ViewSupplier", "Admin", new { @id = @item.SupplierId, @area=ViewBag.WidgetAssemblyName }, "~/assets/admin/images/pencil.png", @item.SupplierId.ToString(), null, null) </text>
+		})
+		.AddColumn(new CarrotGridTemplateColumn<Supplier> {
+			HeaderText = "Company",
+			FormatTemplate = @<text> @grid.FormFieldFor(m => m.CompanyName, GridFormFieldType.TextBox, new { maxlength = "64", @class = "form-control" }) </text>
+		})
+		.AddColumn(new CarrotGridTemplateColumn<Supplier> {
+			HeaderText = "Contact",
+			FormatTemplate = @<text> @grid.FormFieldFor(m => m.ContactName, GridFormFieldType.TextBox, new { maxlength = "64", @class = "form-control" }) </text>
+		})
+
+		.AddColumn(x => x.CompanyName, new CarrotGridColumn { HeaderText = "Company Name", Sortable = true })
+		.AddColumn(x => x.ContactName, new CarrotGridColumn { HeaderText = "Contact Name", Sortable = true })
+		.AddColumn(x => x.Address, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.City, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.Country, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.Phone, new CarrotGridColumn { Sortable = true });
+
+		@grid.OutputHtmlBody()
+
+		<nav>
+			@{
+				@grid.OutputFooter()
+			}
+		</nav>
+
+}

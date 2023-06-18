@@ -1,0 +1,134 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<OutputPath>bin\</OutputPath>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Carrotware</Authors>
+		<Company>Carrotware</Company>
+		<Copyright>2015</Copyright>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<Version>6.1.0.0</Version>
+		<VersionPrefix>6.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="App_Data\" />
+		<Folder Include="wwwroot\assets\admin\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="wwwroot\assets\chosen.css" />
+		<None Include="wwwroot\assets\jquery.ui.timepicker.css" />
+		<None Include="wwwroot\Content\bootstrap-theme.css" />
+		<None Include="wwwroot\Content\bootstrap-theme.css.map" />
+		<None Include="wwwroot\Content\bootstrap-theme.min.css" />
+		<None Include="wwwroot\Content\bootstrap-theme.min.css.map" />
+		<None Include="wwwroot\Content\bootstrap.css" />
+		<None Include="wwwroot\Content\bootstrap.css.map" />
+		<None Include="wwwroot\Content\bootstrap.min.css" />
+		<None Include="wwwroot\Content\bootstrap.min.css.map" />
+		<None Include="wwwroot\Content\Site.css" />
+		<None Include="wwwroot\Content\themes\base\accordion.css" />
+		<None Include="wwwroot\Content\themes\base\all.css" />
+		<None Include="wwwroot\Content\themes\base\autocomplete.css" />
+		<None Include="wwwroot\Content\themes\base\base.css" />
+		<None Include="wwwroot\Content\themes\base\button.css" />
+		<None Include="wwwroot\Content\themes\base\core.css" />
+		<None Include="wwwroot\Content\themes\base\datepicker.css" />
+		<None Include="wwwroot\Content\themes\base\dialog.css" />
+		<None Include="wwwroot\Content\themes\base\draggable.css" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-icons_222222_256x240.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-icons_454545_256x240.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-icons_888888_256x240.png" />
+		<None Include="wwwroot\Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+		<None Include="wwwroot\Content\themes\base\menu.css" />
+		<None Include="wwwroot\Content\themes\base\progressbar.css" />
+		<None Include="wwwroot\Content\themes\base\resizable.css" />
+		<None Include="wwwroot\Content\themes\base\selectable.css" />
+		<None Include="wwwroot\Content\themes\base\selectmenu.css" />
+		<None Include="wwwroot\Content\themes\base\slider.css" />
+		<None Include="wwwroot\Content\themes\base\sortable.css" />
+		<None Include="wwwroot\Content\themes\base\spinner.css" />
+		<None Include="wwwroot\Content\themes\base\tabs.css" />
+		<None Include="wwwroot\Content\themes\base\theme.css" />
+		<None Include="wwwroot\Content\themes\base\tooltip.css" />
+		<None Include="wwwroot\Content\violet.css" />
+		<None Include="wwwroot\Scripts\bootstrap.js" />
+		<None Include="wwwroot\Scripts\bootstrap.min.js" />
+		<None Include="wwwroot\Scripts\chosen.jquery.js" />
+		<None Include="wwwroot\Scripts\Common.js" />
+		<None Include="wwwroot\Scripts\jquery-1.11.3.intellisense.js" />
+		<None Include="wwwroot\Scripts\jquery-1.11.3.js" />
+		<None Include="wwwroot\Scripts\jquery-1.11.3.min.js" />
+		<None Include="wwwroot\Scripts\jquery-1.11.3.min.map" />
+		<None Include="wwwroot\Scripts\jquery-ui-1.11.4.js" />
+		<None Include="wwwroot\Scripts\jquery-ui-1.11.4.min.js" />
+		<None Include="wwwroot\Scripts\jquery.ui.timepicker.js" />
+		<None Include="wwwroot\Scripts\jquery.validate-vsdoc.js" />
+		<None Include="wwwroot\Scripts\jquery.validate.js" />
+		<None Include="wwwroot\Scripts\jquery.validate.min.js" />
+		<None Include="wwwroot\Scripts\jquery.validate.unobtrusive.js" />
+		<None Include="wwwroot\Scripts\jquery.validate.unobtrusive.min.js" />
+		<None Include="wwwroot\Scripts\respond.js" />
+		<None Include="wwwroot\Scripts\respond.matchmedia.addListener.js" />
+		<None Include="wwwroot\Scripts\respond.matchmedia.addListener.min.js" />
+		<None Include="wwwroot\Scripts\respond.min.js" />
+		<None Include="wwwroot\Scripts\_references.js" />
+		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.eot" />
+		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.svg" />
+		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.ttf" />
+		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.woff" />
+		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.woff2" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
+		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="bootstrap" Version="3.4.1" />
+		<PackageReference Include="jQuery" Version="2.2.4" />
+		<PackageReference Include="jQuery.UI.Combined" Version="1.11.4" />
+		<PackageReference Include="jQuery.Validation" Version="1.17.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.16" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.16">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.16" />
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.12" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName)*&quot; &quot;$(SolutionDir)TestUI\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;" />
+	</Target>
+</Project>

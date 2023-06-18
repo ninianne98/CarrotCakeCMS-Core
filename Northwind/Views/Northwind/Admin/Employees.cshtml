@@ -1,0 +1,49 @@
+﻿@model PagedData<Employee>
+
+@{
+	ViewBag.Title = "Employees";
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<Employee>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead thead" }, null);
+	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix ui-widget-content ui-corner-all" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
+
+	grid.ConfigName(Html.NameFor(x => x));
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "sortTable" })) {
+	@Html.AntiForgeryToken()
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<Employee> {
+			HeaderText = "ID",
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("ViewEmployee", "Admin", new { @id = @item.EmployeeId, @area=ViewBag.WidgetAssemblyName }, "~/assets/admin/images/pencil.png", @item.EmployeeId.ToString(), null, null) </text>
+		})
+		.AddColumn(new CarrotGridTemplateColumn<Employee> {
+			HeaderText = "LN",
+			FormatTemplate = @<text> @grid.FormFieldFor(m => m.LastName, GridFormFieldType.TextBox, new { maxlength = "64", @class = "form-control" }) </text>
+		})
+		.AddColumn(new CarrotGridTemplateColumn<Employee> {
+			HeaderText = "FN",
+			FormatTemplate = @<text> @grid.FormFieldFor(m => m.FirstName, GridFormFieldType.TextBox, new { maxlength = "64", @class = "form-control" }) </text>
+		})
+		.AddColumn(new CarrotGridTemplateColumn<Employee> {
+			HeaderText = "Territory",
+			FormatTemplate = @<text>
+				@grid.CheckBoxListFor(m => m.EmployeeTerritories,
+				new MultiSelectList(ViewBag.TerritoryList, "TerritoryId", "TerritoryDescription", item.EmployeeTerritories.Select(x => x.TerritoryId).ToList()),
+				"Selected")
+			</text>
+		})
+		.AddColumn(x => x.LastName, new CarrotGridColumn { HeaderText = "Last Name", Sortable = true })
+		.AddColumn(x => x.FirstName, new CarrotGridColumn { HeaderText = "First Name", Sortable = true })
+		.AddColumn(x => x.Notes, new CarrotGridColumn { Sortable = true });
+
+	@grid.OutputHtmlBody()
+
+	<nav>
+		@{
+			@grid.OutputFooter()
+		}
+	</nav>
+}
