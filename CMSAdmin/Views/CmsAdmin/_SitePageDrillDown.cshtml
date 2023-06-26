@@ -1,0 +1,46 @@
+﻿@model Carrotware.CMS.CoreMVC.UI.Admin.Models.SitePageDrillDownModel
+@{
+	var versionKey = string.Format("cms={0}", SiteData.CurrentDLLVersion);
+}
+<!-- parent page plugin-->
+<!-- begin picker -->
+<script src="/Assets/Admin/Includes/page-drill-down.js?@versionKey" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+	var theDrillPageID = '@Model.CurrentPageID';
+	var theDrillField = '@Model.FieldID';
+
+	function LoadDrillMenu() {
+		InitDrillParms(theDrillPageID, theDrillField);
+		setTimeout("resetDrill();", 750);
+		setTimeout("AjaxLoadDrillMenu();", 1500);
+	}
+
+	$(document).ready(function () {
+		LoadDrillMenu();
+	});
+</script>
+
+@Html.Hidden(Model.FieldName, Model.SelectedPageID)
+
+<div id="nodedrilldown">
+	<div id="menupath" class="pageNodeDrillDown1 ui-widget">
+	</div>
+	<div class="pageNodeDrillDown5 ui-widget">
+		<div id="menuhead" onmouseout="hideMnu()" onmouseover="mouseNode()" class="menuitems pageNodeDrillDown4 ui-button ui-corner-all ui-widget">
+			<div class="pageNodeDrillDown6 ui-widget">
+				&nbsp;Pages
+				<a title="Reset Path" href='javascript:void(0);' onclick='selectDrillItem(this);' data-rootcontent=''>
+					<div class="ui-icon ui-icon-power"></div>
+				</a>
+			</div>
+		</div>
+		<div id="menuitemsouter">
+			<div id="menuitemsinner" class="scroll">
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- end picker -->

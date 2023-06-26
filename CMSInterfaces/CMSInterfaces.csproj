@@ -4,6 +4,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<OutputType>Library</OutputType>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<RootNamespace>Carrotware.CMS.Interface</RootNamespace>
 		<AssemblyName>Carrotware.CMS.Interface</AssemblyName>
@@ -12,12 +13,16 @@
 	<PropertyGroup>
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
-		<Copyright>2015</Copyright>
+		<Copyright>2023</Copyright>
+		<ProductName>Carrot Cake CMS</ProductName>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<Version>6.1.0.0</Version>
-		<AssemblyVersion>6.1.0.0</AssemblyVersion>
-		<FileVersion>6.1.$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</FileVersion>
+		<VersionPrefix>6.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
+
 
 	<ItemGroup>
 		<Reference Update="System.Core">
@@ -37,6 +42,9 @@
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
 </Project>

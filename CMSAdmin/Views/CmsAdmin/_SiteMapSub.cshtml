@@ -1,0 +1,37 @@
+﻿@model SiteMapOrderSub
+
+@foreach (var mo in Model.ChildItems) {
+	var subModel = new SiteMapOrderSub(mo.Root_ContentID, Model.AllSiteMaps);
+
+	<li id="@mo.Root_ContentID" fn="@mo.FileName">
+		<span class="page-info" id="@String.Format("handle-{0}", mo.Root_ContentID)">
+			<span class="handle-expand" id="@String.Format("filename-{0}", mo.Root_ContentID)">
+				&nbsp;
+			</span>
+			<img src="/Assets/Admin/Images/webpage.png" class="imgNoBorder image-handle" title="webpage" alt="webpage" id="@String.Format("img-{0}", mo.Root_ContentID)" />
+			<span class="page-status">
+				<a href="@mo.FileName" target="_blank">
+					@mo.FileName &nbsp;&nbsp;&nbsp;&nbsp; [<b>@mo.NavMenuText</b>]
+				</a> &nbsp;&nbsp;&nbsp;&nbsp;
+
+				@if (!mo.PageActive) {
+					<img alt="status" title="no" class="image-status-icon" src="/Assets/Admin/Images/cancel.png" />
+				} else {
+					<img alt="status" title="yes" class="image-status-icon" src="/Assets/Admin/Images/accept.png" />
+				}
+
+				@if (!mo.ShowInSiteNav) {
+					<img alt="navstatus" title="no" class="image-navstatus-icon" src="/Assets/Admin/Images/lightbulb_off.png" />
+				} else {
+					<img alt="navstatus" title="yes" class="image-navstatus-icon" src="/Assets/Admin/Images/lightbulb.png" />
+				}
+			</span>
+		</span>
+
+		@if (subModel.ChildItems.Any()) {
+			<ol>
+				@Html.Partial("_SiteMapSub", subModel)
+			</ol>
+		}
+	</li>
+}

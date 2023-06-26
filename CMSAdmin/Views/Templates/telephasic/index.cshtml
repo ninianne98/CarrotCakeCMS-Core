@@ -1,0 +1,71 @@
+﻿@inject PagePayload CmsPage
+@{
+	Layout = "_main.cshtml";
+
+	ViewBag.TelephasicBodyStyle = "homepage is-preload";
+}
+
+@section HeroSection {
+	<!-- Hero -->
+	<section id="hero" class="container">
+		<header>
+			<h2>@CmsPage.Heading</h2>
+		</header>
+		<div>
+			@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterTop)
+		</div>
+		<div>
+			@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+		</div>
+		<div>
+			@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterBottom)
+		</div>
+	</section>
+}
+
+<!-- Features 1 -->
+<div class="wrapper">
+	<div class="container">
+		<div class="row">
+			<section class="col-6 col-12-narrower feature">
+				<div>
+					@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phLeftTop)
+				</div>
+				<div>
+					@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextLeft)
+				</div>
+				<div>
+					@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phLeftBottom)
+				</div>
+			</section>
+			<section class="col-6 col-12-narrower feature">
+				<div>
+					@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phRightTop)
+				</div>
+				<div>
+					@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextRight)
+				</div>
+				<div>
+					@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phRightBottom)
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+@if (SecurityData.AdvancedEditMode == true || SiteData.IsPageSampler
+									|| CmsPage.TheWidgets.Where(x => x.IsWidgetActive && x.PlaceholderName == "phWidgetZone02").Any()) {
+	<!-- Promo -->
+	<div id="promo-wrapper">
+		<section id="promo">
+			@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phWidgetZone02)
+		</section>
+	</div>
+}
+
+<!-- Features 2 -->
+<div class="wrapper">
+	<section class="container">
+		@Html.Partial("_features")
+	</section>
+</div>

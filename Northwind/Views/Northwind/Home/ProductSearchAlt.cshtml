@@ -4,7 +4,7 @@
 
 <div id="divResults1" style="border: 5px solid seagreen; padding: 5px;">
 	<h3>Alt 1</h3>
-	@using (Html.CarrotWeb().BeginSimpleAjaxForm(new SimpleAjaxFormOptions() { FormId = "frm1", RefreshId = "divResults1" })) {
+	@using (Html.CarrotWeb().BeginSimpleAjaxForm(new SimpleAjaxFormOptions() { FormId = "frm1", UpdateTargetId = "divResults1" })) {
 
 		<div>
 			@Html.DropDownListFor(m => m.SelectedCat, new SelectList(Model.Options, "CategoryId", "CategoryName", Model.SelectedCat), "[select]")

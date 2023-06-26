@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -38,8 +37,7 @@ namespace Carrotware.CMS.Interface.Controllers {
 					|| ViewData["WidgetAssemblyName"] == null) {
 					Assembly asmbly = this.GetType().Assembly;
 
-					string assemblyName = asmbly.ManifestModule.Name;
-					assemblyName = assemblyName.Substring(0, assemblyName.Length - 4);
+					string assemblyName = asmbly.GetAssemblyName();
 
 					this.AssemblyName = assemblyName;
 

@@ -1,4 +1,5 @@
 ﻿using Carrotware.CMS.Interface;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -14,6 +15,15 @@ using System.Web;
 */
 
 namespace Carrotware.CMS.Security {
+	public enum ManageMessageId {
+		AddPhoneSuccess,
+		ChangePasswordSuccess,
+		SetTwoFactorSuccess,
+		SetPasswordSuccess,
+		RemoveLoginSuccess,
+		RemovePhoneSuccess,
+		Error
+	}
 
 	public enum LogonStatus {
 		NotFound,
@@ -44,6 +54,16 @@ namespace Carrotware.CMS.Security {
 
 		public ManageSecurity(Controller controller) {
 			_controller = controller;
+			_userManager = _controller.HttpContext.RequestServices.GetService<UserManager<IdentityUser>>();
+			_signInManager = _controller.HttpContext.RequestServices.GetService<SignInManager<IdentityUser>>();
+
+			LoadSettings();
+		}
+
+		public ManageSecurity(HttpContext context) {
+			_userManager = context.RequestServices.GetService<UserManager<IdentityUser>>();
+			_signInManager = context.RequestServices.GetService<SignInManager<IdentityUser>>();
+
 			LoadSettings();
 		}
 
@@ -86,23 +106,6 @@ namespace Carrotware.CMS.Security {
 			return status;
 		}
 
-		public string BuildHttpHost() {
-			var request = CarrotHttpHelper.HttpContext.Request;
-
-			string httpHost;
-			try { httpHost = request.Host.Value.Trim(); } catch { httpHost = string.Empty; }
-			string hostName = httpHost.ToLowerInvariant();
-
-			string hostPrefix;
-			try {
-				hostPrefix = request.IsHttps ? "https://" : "http://";
-			} catch { hostPrefix = "http://"; }
-
-			httpHost = string.Format("{0}{1}", hostPrefix, hostName).ToLowerInvariant();
-
-			return httpHost;
-		}
-
 		public async Task<RequestReset> ForgotPassword(string email) {
 			var user = await _userManager.FindByEmailAsync(email);
 			if (user == null) {
@@ -113,7 +116,7 @@ namespace Carrotware.CMS.Security {
 
 			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-			var host = BuildHttpHost();
+			var host = CarrotWebHelper.BuildHttpHost();
 			var baseRoute = _config.AdditionalSettings.ResetPath;
 
 			var uri = $"{host}{baseRoute}?token={HttpUtility.UrlEncode(token)}&email={HttpUtility.UrlEncode(user.Email)}";

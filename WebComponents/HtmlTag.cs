@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Text;
 using System.Web;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -223,12 +222,12 @@ namespace Carrotware.Web.UI.Components {
 			return string.Format("<{0} {1} />", this.Tag, sb.ToString().Trim());
 		}
 
-		public Microsoft.AspNetCore.Html.HtmlString EmitHtmlTag() {
-			return new Microsoft.AspNetCore.Html.HtmlString(RenderTag());
+		public HtmlString EmitHtmlTag() {
+			return new HtmlString(RenderTag());
 		}
 
-		public Microsoft.AspNetCore.Html.HtmlString EmitHtmlSelfClosingTag() {
-			return new Microsoft.AspNetCore.Html.HtmlString(RenderSelfClosingTag());
+		public HtmlString EmitHtmlSelfClosingTag() {
+			return new HtmlString(RenderSelfClosingTag());
 		}
 	}
 }

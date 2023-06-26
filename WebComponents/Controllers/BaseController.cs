@@ -26,15 +26,18 @@ namespace Carrotware.Web.UI.Components.Controllers {
 
 			DateTime dtModified = GetFauxModDate(10);
 			DateTime? dtM = GetModDate(context);
-
 			string strModifed = dtModified.ToUniversalTime().ToString("r");
-			context.Response.Headers.Append("Last-Modified", strModifed);
-			context.Response.Headers.Append("Date", strModifed);
+
+			//context.Response.Headers.Append("Last-Modified", strModifed);
+			//context.Response.Headers.Append("Date", strModifed);
 			context.Response.GetTypedHeaders().CacheControl =
 									new Microsoft.Net.Http.Headers.CacheControlHeaderValue() {
 										Public = true,
 										MaxAge = TimeSpan.FromMinutes(interval)
 									};
+
+			Response.Headers.LastModified = strModifed;
+			Response.Headers.Expires = dtModified.AddMinutes(interval).AddSeconds(-5).ToString("r");
 
 			if (dtM == null || dtM.Value != dtModified) {
 				context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;

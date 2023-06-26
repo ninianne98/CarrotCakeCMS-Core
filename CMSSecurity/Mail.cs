@@ -75,6 +75,7 @@ namespace Carrotware.CMS.Security {
 		public List<string> Emails { get; set; }
 		public string Subject { get; set; }
 		public string Body { get; set; }
+		public bool HtmlBody { get; set; }
 		public List<IFormFile>? Attachments { get; set; }
 
 		private SmtpSettings _mailSettings;
@@ -132,7 +133,12 @@ namespace Carrotware.CMS.Security {
 				}
 			}
 
-			builder.HtmlBody = request.Body;
+			if (request.HtmlBody) {
+				builder.HtmlBody = request.Body;
+			} else {
+				builder.TextBody = request.Body;
+			}
+
 			email.Body = builder.ToMessageBody();
 
 			if (_mailSettings.UseSpecifiedPickupDirectory) {

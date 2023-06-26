@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Html;
+using System;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -22,12 +23,12 @@ namespace Carrotware.Web.UI.Components {
 			return string.Empty;
 		}
 
-		public virtual Microsoft.AspNetCore.Html.HtmlString RenderBody() {
-			return new Microsoft.AspNetCore.Html.HtmlString(GetBody());
+		public virtual IHtmlContent RenderBody() {
+			return new HtmlString(GetBody());
 		}
 
-		public virtual Microsoft.AspNetCore.Html.HtmlString RenderHead() {
-			return new Microsoft.AspNetCore.Html.HtmlString(GetHead());
+		public virtual IHtmlContent RenderHead() {
+			return new HtmlString(GetHead());
 		}
 
 		public override string GetHtml() {

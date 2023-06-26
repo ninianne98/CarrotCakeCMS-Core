@@ -29,7 +29,7 @@ var environment = builder.Environment;
 //var config = builder.Configuration;
 
 var buildCfg = new ConfigurationBuilder()
-			.SetBasePath(environment.ContentRootPath)
+			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 			.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
 var config = buildCfg.Build();
@@ -64,14 +64,14 @@ widget.LoadWidgets(services);
 services.AddTransient<ICarrotSite, SiteTestInfo>();
 services.AddTransient<IControllerActivator, CmsTestActivator>();
 
+CarrotWebHelper.Configure(config, environment, services);
+CarrotHttpHelper.Configure(config, environment, services);
+
 var app = builder.Build();
 
 app.UseResponseCaching();
 
 app.MigrateDatabase();
-
-CarrotWebHelper.Configure(config, environment, services);
-CarrotHttpHelper.Configure(config, environment, services);
 
 // app.UseStatusCodePages();
 
@@ -98,7 +98,7 @@ app.MapControllerRoute(
 	name: "StdRoutes",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
 
-CarrotWebHelper.RoutesSetup(app);
+app.CarrotWebRouteSetup();
 
 app.MapRazorPages();
 

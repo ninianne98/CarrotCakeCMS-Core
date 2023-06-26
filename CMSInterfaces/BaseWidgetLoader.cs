@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
+using Carrotware.Web.UI.Components;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -20,11 +21,12 @@ namespace Carrotware.CMS.Interface {
 	public abstract class BaseWidgetLoader : IWidgetLoader {
 		protected string _areaName = string.Empty;
 
+		public string AreaName { get { return _areaName; } }
+
 		protected void LoadArea() {
 			Assembly assembly = this.GetType().Assembly;
 
-			string assemblyName = assembly.ManifestModule.Name;
-			_areaName = assemblyName.Substring(0, assemblyName.Length - 4);
+			_areaName = assembly.GetAssemblyName();
 		}
 
 		public virtual void LoadWidgets(IServiceCollection services) {
@@ -66,10 +68,10 @@ namespace Carrotware.CMS.Interface {
 
 			string nsp = typeof(BaseWidgetLoader).Namespace;
 
-			if (_areaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
+			if (this.AreaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
 				app.MapControllerRoute(
-								name: _areaName + "_Default",
-								pattern: _areaName + "/{controller=Home}/{action=Index}/{id?}");
+								name: this.AreaName + "_Default",
+								pattern: this.AreaName + "/{controller=Home}/{action=Index}/{id?}");
 			}
 		}
 	}

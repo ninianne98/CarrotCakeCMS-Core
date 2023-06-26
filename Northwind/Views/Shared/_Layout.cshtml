@@ -1,5 +1,4 @@
-﻿@using Northwind.Code
-@{
+﻿@{
 	string areaName = ViewBag.WidgetAssemblyName;
 	string areaAlias = string.Format("{0}_Default", areaName);
 }
@@ -12,7 +11,7 @@
 	<title>@ViewBag.Title - @ViewBag.WidgetAssemblyName</title>
 
 	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.Silver })
-	@*@(new Bootstrap() { SelectedSkin= Bootstrap.BootstrapColorScheme.Violet })*@
+	@*@(new Bootstrap() { SelectedSkin = Bootstrap.BootstrapColorScheme.ClassicPlum })*@
 	@(new Bootstrap() { SelectedSkin = Helper.BootstrapColorScheme })
 
 	<script>
@@ -53,7 +52,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+				@Html.ActionLink(areaName, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
 			</div>
 
 			<div class="navbar-collapse collapse">

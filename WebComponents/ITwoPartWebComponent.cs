@@ -1,5 +1,4 @@
-﻿
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -9,6 +8,8 @@
 * Date: June 2023
 */
 
+using Microsoft.AspNetCore.Html;
+
 namespace Carrotware.Web.UI.Components {
 
 	public interface ITwoPartWebComponent {
@@ -17,8 +18,8 @@ namespace Carrotware.Web.UI.Components {
 
 		string GetHead();
 
-        Microsoft.AspNetCore.Html.HtmlString RenderBody();
+		IHtmlContent RenderBody();
 
-        Microsoft.AspNetCore.Html.HtmlString RenderHead();
+		IHtmlContent RenderHead();
 	}
 }

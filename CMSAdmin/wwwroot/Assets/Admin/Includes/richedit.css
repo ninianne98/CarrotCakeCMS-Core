@@ -1,0 +1,150 @@
+body {
+	font-size: 16px;
+	font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+	color: #111111;
+	background-color: #fefefe;
+}
+
+pre, code {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+h1, h2, h3, h4 {
+	font-weight: bolder;
+}
+
+h1 {
+	font-size: 1.75em;
+}
+
+h2 {
+	font-size: 1.5em;
+}
+
+h3 {
+	font-size: 1.25em;
+}
+
+h4 {
+	font-size: 0.9em;
+}
+
+video, object, .mceItemMedia, .mceItemIframe, .mceItemVideo, .mceItemRealMedia,
+.mceItemWindowsMedia, .mceItemQuickTime, .mceItemFlash, .mceItemShockWave {
+	padding: 2px;
+	margin: 2px;
+	background-color: #ffffdd;
+	border: thin dashed #cc0000;
+}
+
+td, tr, th, p, div, dl, dd, dt, ul, ol, li, span, blockquote {
+	font-size: 16px;
+	font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+}
+
+th {
+	font-weight: bold;
+}
+
+a {
+	color: #000099;
+}
+
+	a:active, a:hover {
+		color: #009900;
+	}
+
+	a:visited {
+		color: #660066;
+	}
+
+blockquote {
+	background-color: #f3f3f3;
+	color: #000000;
+	margin: 0.75em 1.5em;
+	overflow: auto;
+	padding: 0.5em 1em;
+	border-left: 6px solid #666666;
+	border-left-color: #666666;
+}
+
+tt, pre, code, kbd, samp,
+code[class*="language-"], pre[class*="language-"],
+code[class*="language-"] span, pre[class*="language-"] span {
+	font-size: 15px;
+	font-family: "Lucida Console", "Courier New", Courier, Consolas, Monaco, monospace;
+}
+
+/* other */
+
+.aligncenter, div.aligncenter {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.alignleft {
+	float: left;
+}
+
+.alignright {
+	float: right;
+}
+
+ul.two-col, ol.two-col {
+	columns: 2;
+	-webkit-columns: 2;
+	-moz-columns: 2;
+}
+
+ul.three-col, ol.three-col {
+	columns: 3;
+	-webkit-columns: 3;
+	-moz-columns: 3;
+}
+
+ul.four-col, ol.four-col {
+	columns: 4;
+	-webkit-columns: 4;
+	-moz-columns: 4;
+}
+
+@media screen and (max-width: 650px) {
+	body, td, tr, th, p, div, dl, dd, dt, ul, ol, li, span, blockquote {
+		font-size: 14px;
+	}
+
+	tt, pre, code, kbd, samp,
+	code[class*="language-"], pre[class*="language-"],
+	code[class*="language-"] span, pre[class*="language-"] span {
+		font-size: 13px;
+	}
+}
+
+@media screen and (min-width: 900px) {
+	body, td, tr, th, p, div, dl, dd, dt, ul, ol, li, span, blockquote {
+		font-size: 18px;
+	}
+
+	tt, pre, code, kbd, samp,
+	code[class*="language-"], pre[class*="language-"],
+	code[class*="language-"] span, pre[class*="language-"] span {
+		font-size: 17px;
+	}
+}
+
+@media screen and (min-width: 1400px) {
+	body, td, tr, th, p, div, dl, dd, dt, ul, ol, li, span, blockquote {
+		font-size: 20px;
+	}
+
+	tt, pre, code, kbd, samp,
+	code[class*="language-"], pre[class*="language-"],
+	code[class*="language-"] span, pre[class*="language-"] span {
+		font-size: 19px;
+	}
+}

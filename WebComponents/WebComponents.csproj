@@ -4,6 +4,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<OutputType>Library</OutputType>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<RootNamespace>Carrotware.Web.UI.Components</RootNamespace>
 		<AssemblyName>Carrotware.Web.UI.Components</AssemblyName>
@@ -12,12 +13,26 @@
 	<PropertyGroup>
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
-		<Copyright>2015</Copyright>
+		<Copyright>2023</Copyright>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<Version>6.1.0.0</Version>
-		<AssemblyVersion>6.1.0.0</AssemblyVersion>
-		<FileVersion>6.1.$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</FileVersion>
+		<VersionPrefix>6.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
+
+
+	<ItemGroup>
+		<None Remove="Views\Shared\_CarrotWebBlank.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Views\Shared\_CarrotWebBlank.cshtml">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Update="System.Core">
@@ -278,6 +293,7 @@
 		<EmbeddedResource Include="bootstrap\fonts\glyphicons-halflings-regular.ttf" />
 		<EmbeddedResource Include="bootstrap\fonts\glyphicons-halflings-regular.woff" />
 		<EmbeddedResource Include="bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+		<EmbeddedResource Include="bootstrap\fonts\glyphicons-halflings-regular.svg" />
 		<None Update="compilerconfig.json.defaults">
 			<DependentUpon>compilerconfig.json</DependentUpon>
 		</None>
@@ -287,25 +303,22 @@
 		<EmbeddedResource Include="bootstrap\bootstrap.min.css" />
 		<EmbeddedResource Include="bootstrap\bootstrap.min.js" />
 	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="bootstrap\fonts\glyphicons-halflings-regular.svg" />
-	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="6.0.16" />
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.16" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.16" />
 		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 </Project>

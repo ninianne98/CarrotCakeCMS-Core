@@ -22,8 +22,8 @@ namespace Carrotware.CMS.Data {
 
 		public static IConfigurationRoot GetConfig() {
 			return new ConfigurationBuilder()
-						.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-						.AddJsonFile("appsettings.json").Build();
+					.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+					.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true).Build();
 		}
 
 		public static void Configure(string connName, DbContextOptionsBuilder optionsBuilder) {

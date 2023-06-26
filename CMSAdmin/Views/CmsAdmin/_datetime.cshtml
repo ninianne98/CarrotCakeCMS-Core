@@ -1,0 +1,29 @@
+﻿@model Carrotware.CMS.CoreMVC.UI.Admin.Models.SplitDateTime
+
+<script type="text/javascript">
+	function SetCombined(fld) {
+		var d = $("[name='" + fld + "_Date']").val();
+		var t = $("[name='" + fld + "_Time']").val();
+		$("[name='" + fld + "']").val(d + ' ' + t);
+	}
+
+	$(document).ready(function () {
+		$('.dyn-date').each(function () {
+			$(this).on('change select textchange blur keyup', function () {
+				var v = $(this).attr('dtfld');
+				SetCombined(v);
+			});
+		});
+	});
+</script>
+
+@Html.Hidden(Model.FieldName, Model.ValueDateAllString)
+
+<div style="padding: 0; margin: 0; border: 0; clear: both;">
+	<div style="float: left; padding-right: 10px;">
+		@Html.TextBox(Model.DateID, Model.ValueDateString, new { @dtfld = Model.FieldName, maxlength = "12", size = "16", @class = "date-picker dateRegion dyn-date form-control-sm" })
+	</div>
+	<div style="float: left; padding-right: 10px;">
+		@Html.TextBox(Model.TimeID, Model.ValueTimeString, new { @dtfld = Model.FieldName, maxlength = "10", size = "16", @class = "time-picker timeRegion dyn-date form-control-sm" })
+	</div>
+</div>

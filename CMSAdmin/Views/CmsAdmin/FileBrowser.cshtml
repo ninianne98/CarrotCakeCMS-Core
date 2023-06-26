@@ -1,0 +1,453 @@
+﻿@model FileBrowserModel
+<!DOCTYPE html>
+@{
+	ViewBag.Title = "File Browser";
+	Layout = null;
+
+	var versionKey = string.Format("cms={0}", SiteData.CurrentDLLVersion);
+}
+<html>
+<head>
+	<meta charset="utf-8" />
+	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.LightGreen, UseJqueryMigrate = true })
+
+	<link href="/Assets/iCheck/iCheck.css" rel="stylesheet" type="text/css" />
+	<link href="/Assets/Admin/Includes/uploadfile.css?@versionKey" rel="stylesheet" type="text/css" />
+	<link href="/Assets/Admin/Includes/filebrowser.css?@versionKey" rel="stylesheet" type="text/css" />
+
+	<script src="/Assets/iCheck/icheck.min.js?@versionKey" type="text/javascript"></script>
+	<script src="/Assets/Admin/Includes/icheck.init.js?@versionKey" type="text/javascript"></script>
+	<script src="/Assets/Admin/Includes/jquery.form.min.js?@versionKey" type="text/javascript"></script>
+	<script src="/Assets/Admin/Includes/jquery.uploadfile.min.js?@versionKey" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var imgFileExt = ['jpeg', 'jpg', 'png', 'gif', 'bmp', 'webp'];
+		var defaultImage = '/Assets/Admin/images/LargeDoc.png';
+
+		var imgPreviewId = '#imgWrapperMain';
+		var imgRealId = '#imgRealPreview';
+		var imgThumbId = '#imgThmbnailPreview';
+		var imgSizeId = '#imgPreviewCaption';
+		var selFile = '#filePickerFileName';
+		var selFileImgPrev = '#imgThmbnailSelected';
+		var fileZone = '#fileZone';
+
+		$(document).ready(function () {
+			$("input:button, input:submit, input:reset, button").button();
+
+			$(selFile).val('');
+		});
+
+		//=========================
+
+		function SetFile(uri) {
+			var fld = $(selFile);
+
+			fld.val(uri);
+			fld.blur();
+		}
+
+		function cmsUpdateFileName() {
+			$(selFileImgPrev).attr('src', defaultImage);
+
+			var uri = $(selFile).val();
+			var uriExt = uri.substr(uri.lastIndexOf('.') + 1);
+			if ($.inArray(uriExt.toLowerCase(), imgFileExt) > -1) {
+				$(selFileImgPrev).attr('src', uri);
+			}
+		}
+
+		function cmsSetFileName() {
+			var fld = $(selFile);
+
+			window.opener.cmsSetFileName(fld.val());
+		}
+
+		function cmsSetFileNameReturn() {
+			var fld = $(selFile);
+
+			window.parent.cmsSetFileNameReturn(fld.val());
+
+			return false;
+		}
+	</script>
+
+	<script type="text/javascript">
+		var dropResults = '.ajax-file-upload-container';
+		var clrBtnFiles = '#btnClearUploads';
+
+		function clearUploads() {
+			if ($(dropResults).html().length > 10) {
+				$(clrBtnFiles).hide();
+				$(dropResults).html('');
+			}
+			return false;
+		}
+
+		$(document).ready(function () {
+			$(clrBtnFiles).hide();
+
+			$("#fileuploader").on('drop', function (e) {
+				setTimeout(function () {
+					if ($(dropResults).html().length > 10) {
+						$(clrBtnFiles).show();
+					}
+				}, 900);
+
+				return true;
+			});
+
+			$("#fileuploader").uploadFile({
+				url: "@Url.Action(SiteActions.AjaxFileUpload, CmsRouteConstants.CmsController.Admin)",
+				fileName: "@Html.IdFor(m => m.PostedFiles)",
+				dragDrop: true,
+				multiple: true,
+				maxFileCount: -1,
+				maxFileSize: 8 * 1024 * 1024,
+
+				uploadButtonClass: "ajax-file-upload-none",
+				uploadStr: "  ",
+				dragDropStr: "<span>Drag files here to upload <button style='display:none;' id='btnClearUploads' onclick='clearUploads();return false;'>clear uploads</button> </span>",
+				statusBarWidth: 525,
+				dragdropWidth: 525,
+				showPreview: true,
+				previewHeight: "auto",
+				previewWidth: "100px",
+
+				dynamicFormData: function () {
+					var data = {
+						'@Html.NameFor(m => m.QueryPath)': "@Model.QueryPath.Replace(@"\", @"/")",
+						'__RequestVerificationToken': $("[name='__RequestVerificationToken']").val(),
+						'@Html.NameFor(m => m.EscapeSpaces)': $('#@Html.IdFor(m => m.EscapeSpaces)').prop("checked")
+					};
+					return data;
+				},
+
+				returnType: "json",
+				showDone: true
+			});
+		});
+	</script>
+
+	@if (Model.UseTinyMCE) {
+		<text>
+			<script type="text/javascript">
+				function tinySubmit() {
+					var fld = $(selFile);
+					var uri = fld.val();
+
+					var imgReal = $(imgRealId);
+					$(imgReal).attr('src', '');
+					var h = -1;
+					var w = -1;
+					$(imgReal).attr('src', uri);
+
+					var uriExt = uri.substr(uri.lastIndexOf('.') + 1);
+
+					// wait a tiny bit so the image can load
+					setTimeout(function () {
+						if ($.inArray(uriExt.toLowerCase(), imgFileExt) > -1) {
+							h = $(imgReal).height();
+							w = $(imgReal).width();
+						}
+
+						window.parent.cmsFileBrowseSetUri(uri, h, w);
+					}, 500);
+				}
+			</script>
+		</text>
+	}
+
+	<title>@ViewBag.Title</title>
+</head>
+<body>
+
+	<div class="panel_wrapper">
+		<div>
+			<h2 class="head2">
+				Files On Server
+			</h2>
+			@String.Format("Contents of:  {0} ", Model.QueryPath)
+			<br />
+			@if (Model.UpLinkVisible) {
+				<a href="@Model.UpLink">
+					<img src="/Assets/Admin/images/back.png" border="0" alt="back" /><img src="/Assets/Admin/images/folder.png" border="0" alt="folder" />
+				</a>
+			}
+			<br />
+		</div>
+
+		<div class="scroll" id="folderZone">
+			<table style="width: 98%" id="rpFolders">
+				@foreach (var f in Model.Dirs) {
+					<tr>
+						<td style="width: 32px">
+							<img src="/Assets/Admin/images/folder.png" alt="folder" />
+						</td>
+						<td>
+							<a id="lnkContent"
+							   href='@String.Format("./FileBrowser?fldrpath={0}&useTiny={1}&returnvalue={2}&viewmode={3}", HttpUtility.UrlEncode(f.FolderPath), Model.UseTinyMCE, Model.ReturnMode, Model.ViewMode)'>
+								@f.FileName
+							</a>
+						</td>
+						<td>
+							&nbsp;&nbsp;
+						</td>
+						<td style="width: 150px;">
+							@f.FileDate
+						</td>
+					</tr>
+				}
+			</table>
+		</div>
+
+		@using (Html.BeginForm(SiteActions.AjaxFileUpload, CmsRouteConstants.CmsController.Admin, FormMethod.Post, new { enctype = "multipart/form-data" })) {
+			@Html.AntiForgeryToken()
+			<p>
+				@Html.CheckBoxFor(m => m.EscapeSpaces)
+				@Html.LabelFor(m => m.EscapeSpaces)
+				<text> &nbsp;&nbsp;&nbsp;&nbsp; </text>
+				@if (Model.Thumbnails) {
+					<text>  [<a href="@Model.ThumbViewLink" id="lnkThumbView">Refresh</a>] <br /></text>
+				} else {
+					<text>  [<a href="@Model.FileViewLink" id="lnkFileview">Refresh</a>] <br /></text>
+				}
+				<div id="fileuploader">Upload</div>
+				@Html.HiddenFor(m => m.QueryPath)
+			</p>
+		}
+
+		@using (Html.BeginForm("FileBrowserRemove", CmsRouteConstants.CmsController.Admin)) {
+			@Html.AntiForgeryToken()
+
+			@Html.HiddenFor(m => m.QueryPath)
+			@Html.HiddenFor(m => m.ReturnMode)
+			@Html.HiddenFor(m => m.UseTinyMCE)
+			@Html.HiddenFor(m => m.ViewMode)
+
+			<div class="scroll" id="fileZone">
+				@if (Model.Thumbnails) {
+					<div id="rpThumbs">
+						@foreach (var f in Model.Files) {
+							<div class="ui-widget-header ui-corner-all thumbCell" id="imgContainerGroup">
+								<div id="imgContainer" onmouseout="hideImg(this)" onmouseover="showImg(this, 'thumb')">
+									<div id="imgWrapper" style="display: none;">
+										<img id="imgThmbnail" filetype="@Model.FileImageLink(f.MimeType)" alt="" src="@Model.CreateFileSrc(f.FolderPath, f.FileName, f.MimeType)" />
+									</div>
+									<div style="margin: 3px;" id="imgSubContainer">
+										<a id="lnkContent" href='@Model.CreateFileLink(string.Format("{0}{1}", f.FolderPath, f.FileName))'>
+											@Html.CarrotWeb().ImageSizer(string.Format("{0}{1}", f.FolderPath, f.FileName), f.FileName, 50, true, null)
+										</a>
+									</div>
+									<div style="margin: 3px; text-align: center;">
+										@String.Format("{0}", f.FileName)  <br />
+										@String.Format("{0:d}", f.FileDate)
+									</div>
+								</div>
+							</div>
+					}
+					</div>
+				} else {
+					<div id="rpFiles">
+						<table style="width: 98%;">
+							<tr class="headerRow">
+								<th style="width: 20px;">
+								</th>
+								<th style="width: 20px;">
+								</th>
+								<th class="headerRowText">
+									Filename
+								</th>
+								<th style="width: 150px;" class="headerRowText">
+									Date
+								</th>
+								<th>
+								</th>
+								<th style="width: 80px;" class="headerRowText">
+									Size
+								</th>
+							</tr>
+
+							@{
+								int j = 0;
+								foreach (var f in Model.Files) {
+									<tr>
+										<td>
+											@Html.CheckBoxFor(m => Model.Files[j].SelectedItem)
+											@Html.HiddenFor(m => Model.Files[j].FileName)
+										</td>
+										<td>
+											<img src="@String.Format("/Assets/Admin/images/{0}.png", Model.FileImageLink(f.MimeType))" alt="filetype" />
+										</td>
+										<td>
+											<div class="ImgGroup" id="imgContainerGroup">
+												<div id="imgContainer" onmouseout="hideImg(this)" onmouseover="showImg(this, 'file')">
+													<a id="lnkContent" href='@Model.CreateFileLink(String.Format("{0}{1}", f.FolderPath, f.FileName))'>
+														@f.FileName
+													</a>
+												</div>
+												<div id="imgWrapper" style="display: none;">
+													<img id="imgThmbnail" filetype="@Model.FileImageLink(f.MimeType)" alt="" src="@Model.CreateFileSrc(f.FolderPath, f.FileName, f.MimeType)" />
+												</div>
+											</div>
+										</td>
+										<td>
+											@String.Format("{0}", f.FileDate)
+										</td>
+										<td>
+											&nbsp;
+										</td>
+										<td>
+											@String.Format("{0}", f.FileSizeFriendly)
+										</td>
+									</tr>
+									j++;
+								}
+							}
+						</table>
+					</div>
+								}
+			</div>
+
+			<div>
+				@if (!Model.Thumbnails) {
+					<a href="@Model.ThumbViewLink" id="lnkThumbView">View Image Thumbnails</a>
+				} else {
+					<a href="@Model.FileViewLink" id="lnkFileview">View All Files</a>
+				}
+			</div>
+			<div>
+				<div style="float: left;">
+					<div style="float: left;">
+						@if (!Model.Thumbnails) {
+							<p>
+								<br />
+								<input type="submit" name="btnRemove" value="Delete Checked" id="btnRemove" />
+							</p>
+						}
+						<p>
+							<br />
+							Selected File:
+							<input name="filePickerFileName" type="text" size="55" id="filePickerFileName" onchange="cmsUpdateFileName();return false;" onblur="cmsUpdateFileName();return false;" />
+
+							@if (Model.ReturnMode & !Model.UseTinyMCE) {
+								<input type="button" name="btnReturnFile" value="Select File" onclick="return cmsSetFileNameReturn();" id="btnReturnFile" />
+							}
+						</p>
+					</div>
+
+					@if (!Model.UseTinyMCE) {
+						<div style="display: none;float:left;">
+							<input type="button" id="Submit1" name="insert" value="Select" onclick="cmsSetFileName();return false;" />
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="button" id="Button1" name="cancel" value="Cancel" onclick="window.close();" />
+						</div>
+				}
+
+					<div style="clear: both; height:110px">
+						@if (Model.UseTinyMCE) {
+							<br class="clear" />
+							<div class="mceActionPanel fileBrowserButtons">
+								@if (Model.ReturnMode) {
+									<input type="button" id="insert" name="insert" value="Select" onclick="tinySubmit();return false;" />
+								}
+								<input type="button" id="cancel" name="cancel" value="Cancel" onclick="window.parent.cmsFileBrowseClose();" />
+							</div>
+						}
+					</div>
+				</div>
+
+				<div class="ui-widget-header ui-corner-all" style="margin: auto; margin: 5px 0 0 25px; height:160px; width:325px; float:left; display:block; border: 1px solid #666;">
+					<img style="max-height: 99%; max-width: 99%; display: block; margin:2px;  margin-left: auto; margin-right: auto;" id="imgThmbnailSelected" src="/Assets/Admin/images/LargeDoc.png" />
+				</div>
+			</div>
+								}
+	</div>
+
+	<div id="imgWrapperMain" style="display: none;">
+		<div style="padding: 5px; min-height: 10px; min-width: 10px;">
+			<div id="imgPreviewCaption">
+				0x0
+			</div>
+			<img alt="document" id="imgThmbnailPreview" src="/Assets/Admin/images/LargeDoc.png" class="thumbPreview" />
+		</div>
+	</div>
+	<div style="display: block; margin-left: -9999px; margin-top: -9999px; float: left; max-height: 9000px; max-width: 9000px;">
+		<img alt="document" id="imgRealPreview" src="/Assets/Admin/images/LargeDoc.png" />
+	</div>
+
+	<script type="text/javascript">
+		var divImgLayer = $(imgPreviewId);
+		var imgDim = $(imgSizeId);
+		var imgThumb = $(imgThumbId);
+		var imgReal = $(imgRealId);
+
+		function hideImg(obj) {
+			var theNode = $(obj).parent();
+			var grp = $(theNode).attr('id');
+
+			$(divImgLayer).attr('style', 'display:none;');
+			$(divImgLayer).attr('class', '');
+
+			$(imgThumb).attr('src', defaultImage);
+			$(imgThumb).attr('width', 64);
+			$(imgThumb).attr('height', 64);
+			$(imgThumb).removeAttr("width").attr("width");
+			$(imgThumb).removeAttr("height").attr("height");
+
+			$(imgReal).attr('src', defaultImage);
+
+			$(imgDim).html('<br />');
+		}
+
+		function showImg(obj, mode) {
+			var theNode = $(obj).parent();
+			var defaultImage = $(theNode).find('img');
+			var imgtype = $(defaultImage).attr('filetype');
+
+			if (imgtype.indexOf('image') >= 0) {
+
+				var val = $(defaultImage).attr('src');
+				var grp = $(fileZone).attr('id');
+				var pos = $(fileZone).offset();
+
+				$(divImgLayer).attr('style', '');
+
+				if (mode == 'file') {
+					$(divImgLayer).css({ "left": (pos.left + 150) + "px", "top": (pos.top - 25) + "px" }).show();
+				} else {
+					$(divImgLayer).css({ "left": (pos.left + 20) + "px", "top": (pos.top - 200) + "px" }).show();
+				}
+
+				$(divImgLayer).attr('class', 'thumbpreview ui-corner-all');
+
+				$(imgThumb).attr('alt', val);
+				$(imgThumb).attr('title', val);
+				$(imgThumb).attr('src', val);
+
+				$(imgReal).attr('src', val);
+
+				resizeImg();
+
+				setTimeout("resizeImg();", 500);
+				setTimeout("resizeImg();", 1500);
+				setTimeout("resizeImg();", 5000);
+			}
+		}
+
+		function resizeImg() {
+
+			$(imgDim).html($(imgReal).width() + ' x ' + $(imgReal).height());
+
+			if ($(imgThumb).height() > 175) {
+				$(imgThumb).attr('height', 165);
+				setTimeout("resizeImg();", 1500);
+			}
+		}
+	</script>
+
+	<p>
+		<br class="clear" />
+	</p>
+</body>
+</html>

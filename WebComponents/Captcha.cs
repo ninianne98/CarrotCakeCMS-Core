@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -87,14 +85,10 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		private string GetCaptchaImageURI() {
-			if (this.IsWebView) {
-				return string.Format("{0}?ts={1}", UrlPaths.CaptchaPath, DateTime.Now.Ticks) +
-						"&fgcolor=" + CarrotWebHelper.EncodeColor(this.ForeColor) +
-						"&bgcolor=" + CarrotWebHelper.EncodeColor(this.BackColor) +
-						"&ncolor=" + CarrotWebHelper.EncodeColor(this.NoiseColor);
-			} else {
-				return UrlPaths.CaptchaPath + "?t=" + DateTime.Now.Ticks;
-			}
+			return string.Format("{0}?ts={1}", UrlPaths.CaptchaPath, DateTime.Now.Ticks) +
+					"&fgcolor=" + CarrotWebHelper.EncodeColor(this.ForeColor) +
+					"&bgcolor=" + CarrotWebHelper.EncodeColor(this.BackColor) +
+					"&ncolor=" + CarrotWebHelper.EncodeColor(this.NoiseColor);
 		}
 
 		public bool ValidateValue(string testValue) {

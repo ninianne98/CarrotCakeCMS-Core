@@ -1,0 +1,60 @@
+﻿@model Carrotware.CMS.Security.Models.RegisterViewModel
+
+@{
+	ViewBag.Title = "Create First Admin";
+
+	Layout = CarrotLayout.Public;
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	<table style="width: 450px;">
+		<tr>
+			<td style="width: 180px;">
+				<b class="caption">
+					<label for="UserName" id="UserNameLabel">User Name</label>
+				</b>
+			</td>
+			<td style="width: 300px;">
+				@Html.TextBoxFor(m => m.UserName, new { @class = "form-control-md" })
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b class="caption">
+					<label for="Email" id="EmailLabel">E-mail </label>
+				</b>
+			</td>
+			<td>
+				@Html.TextBoxFor(m => m.Email, new { @class = "form-control-md" })
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b class="caption">
+					<label for="Password" id="PasswordLabel">Password </label>
+				</b>
+			</td>
+			<td>
+				@Html.PasswordFor(m => m.Password, new { @class = "form-control-md" })
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b class="caption">
+					<label for="ConfirmPassword" id="ConfirmPasswordLabel">Password (confirm) </label>
+				</b>
+			</td>
+			<td>
+				@Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control-md" })
+			</td>
+		</tr>
+	</table>
+	@Html.Partial("_PublicValidError")
+
+	<p>
+		<input type="submit" name="btnCreate" value="Create User" id="btnCreate" />
+	</p>
+
+}

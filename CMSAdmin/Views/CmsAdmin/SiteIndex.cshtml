@@ -1,0 +1,40 @@
+﻿@model PagedData<SiteData>
+
+@{
+	ViewBag.Title = "Site Index";
+}
+
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<SiteData>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<SiteData> {
+			HasHeadingText = false,
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.SiteDetail, CmsRouteConstants.CmsController.Admin, new { @id = @item.SiteID }, "~/Assets/Admin/Images/application_edit.png", "Edit", null, null) </text>
+		})
+		.AddColumn(x => x.SiteName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.MainURL, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.SiteID, new CarrotGridColumn { Sortable = true })
+		.AddColumn(new CarrotGridTemplateColumn<SiteData> {
+			HasHeadingText = false,
+			FormatTemplate = @<text> @if (item.SiteID == SiteData.CurrentSiteID) {
+				<img src="/Assets/Admin/Images/house.png" alt="Current Site" title="Current Site" />
+			}  </text>
+		})
+		.AddColumn(x => x.BlockIndex, new CarrotGridBooleanImageColumn {
+			ImagePathTrue = "~/Assets/Admin/Images/zoom_out.png",
+			ImagePathFalse = "~/Assets/Admin/Images/magnifier.png",
+			AlternateTextTrue = "Yes",
+			AlternateTextFalse = "No",
+			Sortable = true
+		});
+
+		@grid.RenderToHtmlString()
+}

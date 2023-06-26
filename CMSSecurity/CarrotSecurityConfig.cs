@@ -51,6 +51,7 @@ namespace Carrotware.CMS.Security {
 		public bool UserLockoutEnabledByDefault { get; set; } = true;
 		public string DataProtectionProviderAppName { get; set; } = "CarrotCake CMS";
 		public string LoginPath { get; set; } = "/c3-admin/Login";
+		public string Unauthorized { get; set; } = "/c3-admin/NotAuthorized";
 		public string ResetPath { get; set; } = "/c3-admin/ResetPassword";
 		public int ExpireTimeSpan { get; set; } = 360;
 		public bool SetCookieExpireTimeSpan { get; set; } = true;

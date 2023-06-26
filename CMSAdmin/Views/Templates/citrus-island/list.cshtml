@@ -1,0 +1,92 @@
+﻿@inject PagePayload CmsPage
+
+@{
+	Layout = "_main.cshtml";
+
+	var pager = new PagedDataSummary();
+	pager.ContentType = PagedDataSummary.SummaryContentType.Blog;
+	pager.PageSize = 10;
+	pager.IgnoreSitePath = false;
+	pager.FetchData();
+
+	var dates = CmsPage.GetSiteDates(12);
+	var cats = CmsPage.GetSiteCategories(10, true);
+
+}
+
+@section SideBar {
+	<div id="calendar_wrap">
+		@( new PostCalendar("calendar") )
+	</div>
+
+	@if (dates.Any()) {
+		<h1>Dates</h1>
+		<ul class="sidemenu">
+			@foreach (var itm in dates) {
+				<li><a href="@itm.Uri">@itm.Text</a></li>
+			}
+		</ul>
+	}
+
+	@if (cats.Any()) {
+		<h1>Categories</h1>
+		<ul class="sidemenu">
+			@foreach (var itm in cats) {
+				<li><a href="@itm.Uri">@itm.Text</a></li>
+			}
+		</ul>
+	}
+}
+
+@section PagedDataSection {
+
+	@if (pager != null) {
+
+		foreach (var item in pager.DataSource) {
+			<div>
+				<p>
+					<b class="green" style="font-size: 110%;">
+						<a class="green" href="@item.FileName">@item.NavigationText</a>
+						&nbsp;|&nbsp;
+						@String.Format("{0:d}", item.GoLiveDate)
+					</b>
+					<br />
+					by @{
+			var usr = item.BylineUser;
+					}
+					@usr.FullName_FirstLast
+					<br />
+					@item.PageTextPlainSummary
+				</p>
+
+				<p class="post-footer align-right">
+					<a class="readmore" href="@item.FileName">
+						Read more
+					</a>
+					<span class="comments">
+						@String.Format(" Comments ({0}) ", item.CommentCount)
+					</span><span class="date">
+						@String.Format("{0:MMMM d, yyyy}", item.GoLiveDate)
+					</span>
+				</p>
+			</div>
+
+		}
+
+						<div class="pagerfooterlinks">
+							@foreach (var i in pager.PageNumbers) {
+								using (Html.CarrotWeb().BeginWrappedItem("div", i, pager.PageNumber, new { @class = "pagerlink selectedwrap" }, new { @class = "pagerlink" })) {
+									using (Html.CarrotWeb().BeginWrappedItem("a", i, pager.PageNumber, new { @class = "selected", @href = pager.GetUrl(i) }, new { @href = pager.GetUrl(i) })) {
+										@String.Format(" {0} ", i)
+									}
+								}
+							}
+						</div>
+
+						<div style="clear: both;">
+						</div>
+						<br />
+	}
+}
+
+<br />

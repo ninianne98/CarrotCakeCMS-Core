@@ -1,0 +1,25 @@
+﻿@model PagedData<CMSTemplate>
+
+@{
+	ViewBag.Title = "Site Skin Index";
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<CMSTemplate>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<CMSTemplate> {
+			HasHeadingText = false,
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.SiteSkinEdit, CmsRouteConstants.CmsController.Admin, new { @path = @item.EncodedPath }, "~/assets/admin/images/pencil.png", "Edit", null, null) </text>
+		})
+		.AddColumn(x => x.Caption, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.TemplatePath, new CarrotGridColumn { Sortable = true });
+
+		@grid.RenderToHtmlString()
+}

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Razor.Internal;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -13,6 +16,7 @@ using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
@@ -60,7 +64,20 @@ namespace Carrotware.Web.UI.Components {
 			_webHostEnvironment = environment;
 			_services = services;
 
+			services.AddMvc().AddRazorRuntimeCompilation();
+
+			services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
+				options.FileProviders.Add(new EmbeddedFileProvider(
+					 typeof(CarrotWebHelper).Assembly
+				));
+			});
+
+			services.AddSession(options => {
+				options.Cookie.IsEssential = true;
+			});
+
 			services.AddMemoryCache();
+			services.AddHttpContextAccessor();
 
 			_serviceProvider = services.BuildServiceProvider();
 			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
@@ -72,16 +89,11 @@ namespace Carrotware.Web.UI.Components {
 			} catch (Exception ex) { }
 		}
 
-		public static void RoutesSetup(WebApplication app) {
+		public static void CarrotWebRouteSetup(this WebApplication app) {
 			Assembly asmbly = typeof(CarrotWebHelper).Assembly;
 			string _areaName = string.Empty;
 
-			var _namespaces = asmbly.GetTypes().Select(t => t.Namespace)
-								.Where(x => !string.IsNullOrEmpty(x))
-								.Distinct().ToList();
-
-			string assemblyName = asmbly.ManifestModule.Name;
-			_areaName = assemblyName.Substring(0, assemblyName.Length - 4);
+			app.UseSession();
 
 			string home = nameof(HomeController).Replace("Controller", "");
 
@@ -170,6 +182,100 @@ namespace Carrotware.Web.UI.Components {
 
 		public static HtmlEncoder HtmlEncoder { get; set; } = HtmlEncoder.Default;
 		public static UrlEncoder UrlEncoder { get; set; } = UrlEncoder.Default;
+
+		public static string MapPath(string path) {
+			var p = path.NormalizeFilename();
+			string root = _webHostEnvironment.ContentRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+			//var rootpaths = root.Split(Path.AltDirectorySeparatorChar);
+			//var newPath = path.Split(Path.AltDirectorySeparatorChar);
+			//return string.Join('/', rootpaths.Union(newPath).Where(x => x.Length > 0));
+			return Path.Join(root, p);
+		}
+
+		public static string NormalizeFilename(this string path) {
+			if (path != null) {
+				var p = path.Replace("~/", "/").Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+				path = string.Join(Path.AltDirectorySeparatorChar, p.Split(Path.AltDirectorySeparatorChar).Where(x => x.Length > 0));
+				return path;
+			}
+			return string.Empty;
+		}
+
+		public static string TrimPathSlashes(this string path) {
+			path = path.NormalizeFilename();
+			if (path.StartsWith("/")) {
+				path = path.Substring(1);
+			}
+			if (path.EndsWith("/")) {
+				path = path.Substring(0, path.Length - 1);
+			}
+			return path;
+		}
+
+		public static string FixPathSlashes(this string path) {
+			path = path.NormalizeFilename();
+			if (!path.StartsWith("/")) {
+				path = string.Format("/{0}", path);
+			}
+			if (path.EndsWith("/")) {
+				path = path.Substring(0, path.Length - 1);
+			}
+			return path;
+		}
+
+		public static string HttpReferer {
+			get {
+				//string referer = Request.Headers["Referer"].ToString();
+				var header = Request.GetTypedHeaders();
+				return header.Referer != null ? header.Referer.ToString() : string.Empty;
+			}
+		}
+
+		public static void CacheInsert(string cacheKey, object value, double minutes) {
+			var opt = new MemoryCacheEntryOptions();
+
+			if (minutes < 0.5) {
+				minutes = 0.5;
+			}
+			if (minutes > 90) {
+				minutes = 90;
+			}
+
+			opt.SetPriority(CacheItemPriority.Normal)
+				.SetSlidingExpiration(TimeSpan.FromMinutes(minutes))
+				.SetAbsoluteExpiration(TimeSpan.FromMinutes(minutes * 10))
+				.SetSize(4096);
+
+			_memoryCache.Set(cacheKey, value, opt);
+		}
+
+		public static void CacheRemove(string cacheKey) {
+			_memoryCache.Remove(cacheKey);
+		}
+
+		public static object CacheGet(string cacheKey) {
+			object value;
+			_memoryCache.TryGetValue(cacheKey, out value);
+			return value;
+		}
+
+		public static string BuildHttpHost() {
+			var request = HttpContext.Request;
+
+			string httpHost;
+			try { httpHost = request.Host.Value.Trim(); } catch { httpHost = string.Empty; }
+			string hostName = httpHost.ToLowerInvariant();
+
+			string hostPrefix;
+			try {
+				hostPrefix = request.IsHttps ? "https://" : "http://";
+			} catch { hostPrefix = "http://"; }
+
+			httpHost = string.Format("{0}{1}", hostPrefix, hostName).ToLowerInvariant();
+
+			return httpHost;
+		}
 
 		public static string AssemblyVersion {
 			get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
@@ -271,8 +377,9 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static string GetAssemblyName(this Assembly assembly) {
-			string assemblyName = assembly.ManifestModule.Name;
-			return assemblyName.Substring(0, assemblyName.Length - 4);
+			var assemblyName = assembly.ManifestModule.Name;
+			//return assemblyName.Substring(0, assemblyName.Length - 4);
+			return Path.GetFileNameWithoutExtension(assemblyName);
 		}
 
 		public static string HtmlFormat(StringBuilder input) {
@@ -347,6 +454,13 @@ namespace Carrotware.Web.UI.Components {
 			return string.Empty;
 		}
 
+		public static void SaveAs(this IFormFile file, string path, string name) {
+			string fileName = Path.Combine(WebHostEnvironment.ContentRootPath, path, name);
+			using (Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write)) {
+				file.CopyTo(stream);
+			}
+		}
+
 		public static string RenderToString(this IHtmlContent content) {
 			if (content == null) {
 				return null;
@@ -371,6 +485,14 @@ namespace Carrotware.Web.UI.Components {
 
 		public static string ToKebabCase(this string input) {
 			return string.Concat(input.Select((c, i) => (char.IsUpper(c) && i > 0 ? "-" : string.Empty) + char.ToLower(c)));
+		}
+
+		public static IHtmlContent MetaTag(string name, string content) {
+			var metaTag = new HtmlTag("meta");
+			metaTag.MergeAttribute("name", name);
+			metaTag.MergeAttribute("content", content);
+
+			return new HtmlString(metaTag.RenderSelfClosingTag());
 		}
 
 		public static IDictionary<string, object> ToAttributeDictionary(this object attributes) {
@@ -479,14 +601,9 @@ namespace Carrotware.Web.UI.Components {
 			return GetManifestResourceBytes(typeof(CarrotWebHelp), GetInternalResourceName(resource));
 		}
 
-		internal static string TrimAssemblyName(Assembly assembly) {
-			var asmb = assembly.ManifestModule.Name;
-			return asmb.Substring(0, asmb.Length - 4);
-		}
-
 		internal static string[] FixResourceName(Assembly assembly, string[] res) {
 			if (res.Length > 1) {
-				var asmbName = TrimAssemblyName(assembly);
+				var asmbName = assembly.GetAssemblyName();
 
 				if (!res[0].StartsWith(asmbName)) {
 					res[0] = string.Format("{0}.{1}", asmbName, res[0]);
@@ -662,13 +779,66 @@ namespace Carrotware.Web.UI.Components {
 		}
 	}
 
-	// ================================
+	//=================================
+
+	public class CarrotRazorPage<TModel> : RazorPage<TModel> {
+
+		public CarrotRazorPage() {
+		}
+
+		[RazorInject]
+		public IHtmlHelper<TModel> Html { get; private set; }
+
+		public override Task ExecuteAsync() {
+			throw new NotImplementedException();
+		}
+	}
+
+	//=================================
 
 	public class CarrotWebHelp {
 		private IHtmlHelper _helper;
 
 		public CarrotWebHelp(IHtmlHelper htmlHelper) {
 			_helper = htmlHelper;
+		}
+
+		public IHtmlHelper<T> CarrotHtmlHelper<T>() where T : class, new() {
+			T model = new T();
+
+			// provide a valid partial, but it doesn't matter what, so long as it has no model
+			return CarrotHtmlHelper("_CarrotWebBlank", model);
+		}
+
+		public IHtmlHelper<T> CarrotHtmlHelper<T>(T model) where T : class {
+
+			// provide a valid partial, but it doesn't matter what, so long as it has no model
+			return CarrotHtmlHelper("_CarrotWebBlank", model);
+		}
+
+		public IHtmlHelper<T> CarrotHtmlHelper<T>(string partialViewName) where T : class, new() {
+			T model = new T();
+
+			return CarrotHtmlHelper(partialViewName, model);
+		}
+
+		public IHtmlHelper<T> CarrotHtmlHelper<T>(string partialViewName, T model) where T : class {
+			var razoract = _helper.ViewContext.HttpContext.RequestServices.GetService(typeof(IRazorPageActivator)) as IRazorPageActivator;
+			var razorengine = _helper.ViewContext.HttpContext.RequestServices.GetService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+
+			var page = new CarrotRazorPage<T>();
+
+			var viewEngineResult = razorengine.FindView(_helper.ViewContext, partialViewName, false);
+			var view = viewEngineResult.View;
+
+			var newViewData = new ViewDataDictionary<T>(_helper.ViewData, model);
+			var viewContext = new ViewContext(_helper.ViewContext, view, newViewData, _helper.ViewContext.Writer);
+
+			razoract.Activate(page, viewContext);
+
+			var helper = page.Html;
+
+			return helper;
 		}
 
 		public HtmlString GetRoot() {
@@ -711,6 +881,10 @@ namespace Carrotware.Web.UI.Components {
 			return new HtmlString(CarrotWebHelper.Request.IsHttps.ToString());
 		}
 
+		public HtmlString GetHttpReferer() {
+			return new HtmlString(CarrotWebHelper.HttpReferer);
+		}
+
 		public HtmlString GetAssemblyVersion() {
 			return new HtmlString(CarrotWebHelper.AssemblyVersion);
 		}
@@ -748,12 +922,8 @@ namespace Carrotware.Web.UI.Components {
 			return grid;
 		}
 
-		public IHtmlContent MetaTag(string Name, string Content) {
-			var metaTag = new HtmlTag("meta");
-			metaTag.MergeAttribute("name", Name);
-			metaTag.MergeAttribute("content", Content);
-
-			return new HtmlString(metaTag.RenderSelfClosingTag());
+		public IHtmlContent MetaTag(string name, string content) {
+			return CarrotWebHelper.MetaTag(name, content);
 		}
 
 		public IUrlHelper GetUrlHelper() {

@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<OutputType>Library</OutputType>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<RootNamespace>Carrotware.CMS.Core</RootNamespace>
+		<AssemblyName>Carrotware.CMS.Core</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Carrotware</Authors>
+		<Company>Carrotware</Company>
+		<Copyright>2023</Copyright>
+		<ProductName>Carrot Cake CMS</ProductName>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<Version>6.1.0.0</Version>
+		<VersionPrefix>6.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<Reference Update="System.Core">
+			<RequiredTargetFramework>3.5</RequiredTargetFramework>
+		</Reference>
+		<Reference Update="System.Xml.Linq">
+			<RequiredTargetFramework>3.5</RequiredTargetFramework>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CarrotCMSData\CMSData.csproj" />
+		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
+		<ProjectReference Include="..\CMSSecurity\CMSSecurity.csproj" />
+		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Security\EmailForgotPassMsg.txt" />
+		<EmbeddedResource Include="SiteContent\Default.htm" />
+		<EmbeddedResource Include="SiteContent\ErrorFormat.htm" />
+		<EmbeddedResource Include="SiteContent\FirstPage.txt" />
+		<EmbeddedResource Include="SiteContent\Mock\sample1.png" />
+		<EmbeddedResource Include="SiteContent\Mock\sample2.png" />
+		<EmbeddedResource Include="SiteContent\Mock\sample3.png" />
+		<EmbeddedResource Include="SiteContent\Mock\sample4.png" />
+		<EmbeddedResource Include="SiteContent\Mock\SampleContent1.txt" />
+		<EmbeddedResource Include="SiteContent\Mock\SampleContent2.txt" />
+		<EmbeddedResource Include="SiteContent\Mock\SampleContent3.txt" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
+		<PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Properties\" />
+	</ItemGroup>
+</Project>

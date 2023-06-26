@@ -4,7 +4,7 @@
 
 <div id="divResults">
 	<h2>@ViewBag.SiteID</h2>
-	@using (Html.CarrotWeb().BeginSimpleAjaxForm(new SimpleAjaxFormOptions() { FormId = "frm1", RefreshId = "divResults" }, new { @action = "ProductSearch" }, null)) {
+	@using (Html.CarrotWeb().BeginSimpleAjaxForm(new SimpleAjaxFormOptions() { FormId = "frm1", UpdateTargetId = "divResults" }, new { @action = "ProductSearch" }, null)) {
 		<div>
 			@Html.DropDownListFor(m => m.SelectedCat, new SelectList(Model.Options, "CategoryId", "CategoryName", Model.SelectedCat), "[select]")
 		</div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -30,58 +31,53 @@ namespace Carrotware.CMS.Interface {
 		// this is needed because the version of the controller in services has some key properties as null
 		public RenderWidgetData() {
 			this.Controller = null;
+			_helper = null;
 
-			this.OriginalRouteValues = new RouteValueDictionary();
 			this.RouteValues = new RouteValueDictionary();
 			_routeData = new RouteData(this.RouteValues);
 			_context = CarrotHttpHelper.HttpContext;
 		}
 
-		public RenderWidgetData(Controller controller, Controller sourceController) : this() {
+		public RenderWidgetData(Controller controller) : this() {
 			this.Controller = controller;
-			this.SourceController = sourceController;
+		}
 
-			foreach (var r in sourceController.RouteData.Values) {
-				this.OriginalRouteValues.Add(r.Key, r.Value);
+		public RenderWidgetData(Controller controller, IHtmlHelper helper) : this() {
+			this.Controller = controller;
+			_helper = helper;
+			_context = _helper.ViewContext.HttpContext;
+
+			foreach (var r in helper.ViewContext.RouteData.Values) {
+				this.RouteValues.Add(r.Key, r.Value);
 			}
 		}
 
 		private HttpContext _context;
 		private RouteData _routeData;
+		private IHtmlHelper _helper;
 
 		public Controller Controller { get; set; }
-		public Controller SourceController { get; set; }
 		public RouteData RouteData { get { return _routeData; } }
 		public RouteValueDictionary RouteValues { get; set; }
 
-		public RouteValueDictionary OriginalRouteValues { get; set; }
-
 		public void InitController() {
 			var act = this.GetActionContext();
-			var context = new ActionExecutingContext(act, new List<IFilterMetadata>(), new Dictionary<string, object>(), this.Controller);
+			var context = new ActionExecutingContext(act, new List<IFilterMetadata>(),
+						new Dictionary<string, object>(), this.Controller);
 			this.Controller.OnActionExecuting(context);
-
-			//if (this.Controller.RouteData.Values != null) {
-			//	foreach (var r in this.RouteValues) {
-			//		if (this.Controller.RouteData.Values[r.Key] != null) {
-			//			this.Controller.RouteData.Values[r.Key] = r.Value;
-			//		} else {
-			//			this.Controller.RouteData.Values.Add(r.Key, r.Value);
-			//		}
-			//	}
-			//}
 		}
 
 		public ActionContext GetActionContext() {
-			_routeData = new RouteData(this.RouteValues);
-			return new ActionContext(_context, this.RouteData, new ActionDescriptor());
+			if (_helper == null) {
+				_routeData = new RouteData(this.RouteValues);
+				return new ActionContext(_context, this.RouteData, new ActionDescriptor());
+			} else {
+				return new ActionContext(_helper.ViewContext.HttpContext, _helper.ViewContext.RouteData, new ActionDescriptor());
+			}
 		}
 
 		public ViewContext GetViewContext(TextWriter stream, IView view, object model) {
 			var tmpData = CarrotHttpHelper.HttpContext.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
-			if (tmpData == null) {
-				tmpData = this.SourceController.HttpContext.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
-			}
 
 			var tmp = new TempDataDictionary(_context, tmpData);
 			var actionContext = this.GetActionContext();
@@ -109,7 +105,7 @@ namespace Carrotware.CMS.Interface {
 				if (parts.Length == 2) {
 					Assembly asmb = GetAssembly(typeName);
 					type = GetType(typeName, asmb);
-					string assemblyName = GetAssemblyName(asmb);
+					string assemblyName = asmb.GetAssemblyName();
 
 					if (type.GetInterfaces().Contains(typeof(IWidgetController)) && string.IsNullOrEmpty(areaName)) {
 						areaName = assemblyName;
@@ -157,7 +153,7 @@ namespace Carrotware.CMS.Interface {
 
 			controller.ControllerContext = source.ControllerContext;
 
-			data = new RenderWidgetData(controller, source);
+			data = new RenderWidgetData(controller);
 
 			string controlerName = controller.GetType().Name.ToLowerInvariant().Replace("controller", string.Empty);
 
@@ -255,9 +251,6 @@ namespace Carrotware.CMS.Interface {
 			Controller controller = data.Controller;
 			string stringResult = null;
 			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetService(typeof(IRazorViewEngine)) as IRazorViewEngine;
-			if (engine == null) {
-				engine = data.SourceController.HttpContext.RequestServices.GetService(typeof(IRazorViewEngine)) as IRazorViewEngine;
-			}
 
 			if (string.IsNullOrEmpty(viewName)) {
 				viewName = data.RouteData.Values["action"].ToString();
@@ -281,10 +274,6 @@ namespace Carrotware.CMS.Interface {
 					var task = view.RenderAsync(ctx);
 					stringResult = sw.ToString();
 				}
-
-				//foreach (var r in data.OriginalRouteValues) {
-				//	data.SourceController.RouteData.Values[r.Key] = r.Value;
-				//}
 			}
 
 			return stringResult;
@@ -319,11 +308,6 @@ namespace Carrotware.CMS.Interface {
 			return typeof(RenderWidgetHelper);
 		}
 
-		internal static string GetAssemblyName(Assembly assembly) {
-			string assemblyName = assembly.ManifestModule.Name;
-			return assemblyName.Substring(0, assemblyName.Length - 4);
-		}
-
 		public static HtmlString RenderActionToString(string typeName, Controller source, string actionName, string areaName, object widgetPayload) {
 			Type type = Type.GetType(typeName);
 
@@ -336,7 +320,7 @@ namespace Carrotware.CMS.Interface {
 				if (parts.Length == 2) {
 					Assembly asmb = GetAssembly(typeName);
 					type = GetType(typeName, asmb);
-					string assemblyName = GetAssemblyName(asmb);
+					string assemblyName = asmb.GetAssemblyName();
 
 					if (type.GetInterfaces().Contains(typeof(IWidgetController)) && string.IsNullOrEmpty(areaName)) {
 						areaName = assemblyName;

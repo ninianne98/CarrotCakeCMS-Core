@@ -1,0 +1,43 @@
+﻿@inject PagePayload CmsPage
+
+<div id="contactForm">
+	@{
+		//var cap = new Captcha();
+		var cap = new Captcha2();
+		var cfg = new ContactInfoConfig("_contactform", cap);
+		cfg.NotifyEditors = true;
+		cfg.DirectEmailKeyName = "contact";
+
+		using (var cmtFrm = Html.CarrotCakeHtml().BeginContactForm(new SimpleAjaxFormOptions { UpdateTargetId = "contactForm" })) {
+			var cmt = cmtFrm.GetModelHelper(cfg);
+			if (!cmt.ViewData.Model.IsSaved) {
+				@cmt.ValidationSummary(true, "", new { @class = "text-danger" })
+
+				<label>Name</label>
+				@cmt.TextBoxFor(m => m.CommenterName)
+				@cmt.ValidationMessageFor(m => m.CommenterName, "", new { @class = "text-danger" })
+				<label>Email</label>
+				@cmt.TextBoxFor(m => m.CommenterEmail)
+				@cmt.ValidationMessageFor(m => m.CommenterEmail, "", new { @class = "text-danger" })
+				<label>Your Comments</label>
+				@cmt.ValidationMessageFor(m => m.PostCommentText, "", new { @class = "text-danger" })
+				@cmt.TextAreaFor(m => m.PostCommentText, new { rows = "5", cols = "50" })
+				<br />
+				<div>
+					@cap<br />
+					@cap.Instructions <br />
+					@*@cmt.TextBoxFor(m => m.ValidationValue)*@
+					@cmt.DropDownListFor(m => m.ValidationValue, new SelectList(cap.ImageOptions, "Value", "Value"), "[Select Image Title]")
+					@cmt.ValidationMessageFor(m => m.ValidationValue, "", new { @class = "text-danger" })
+				</div>
+
+				<br />
+				<input class="button" type="submit" />
+				<input class="button" type="reset" value="Clear form" />
+			} else {
+				<p>Thank you for your comment.</p>
+			}
+		}
+
+	}
+</div>

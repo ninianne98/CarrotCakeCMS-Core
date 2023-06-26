@@ -1,0 +1,95 @@
+﻿@model  ContentPageModel
+
+<div class="scroll-container" style="height: 325px; width: 780px;">
+	<div class="scroll-area" style="height: 310px; width: 775px;">
+		<div class="SortableGrid">
+			<div>
+				<h3>
+					HTML Rich Text Widgets
+				</h3>
+				<div>
+					@{
+						var gridRich = Html.CarrotWeb().CarrotWebGrid<Widget>(Model.WidgetListHtml);
+
+						gridRich.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+						gridRich.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+						gridRich.UseDataPage = false;
+						gridRich.ConfigName(Html.NameFor(m => m.WidgetListHtml));
+
+						gridRich
+						.AddColumn(new CarrotGridTemplateColumn<Widget> {
+							HasHeadingText = false,
+							FormatTemplate = @<text>
+								<a href="javascript:void(0)" onclick="@String.Format("ShowWindowNoRefresh('{0}/{1}?widgetid={2}&mode=html')", SiteFilename.ContentEditURL, item.Root_ContentID, item.Root_WidgetID)">
+									<img src="/Assets/Admin/Images/pencil.png" alt="Edit with WYSIWYG" title="Edit with WYSIWYG" />
+								</a>
+							</text>
+						})
+						.AddColumn(new CarrotGridTemplateColumn<Widget> {
+							HasHeadingText = false,
+							FormatTemplate = @<text>
+								<a href="javascript:void(0)" onclick="@String.Format("ShowWindowNoRefresh('{0}/{1}?widgetid={2}&mode=plain')", SiteFilename.ContentEditURL, item.Root_ContentID, item.Root_WidgetID)">
+									<img src="/Assets/Admin/Images/script.png" alt="Edit with Plain Text" title="Edit with Plain Text" />
+								</a>
+							</text>
+						})
+
+						.AddColumn(m => m.EditDate, new CarrotGridColumn())
+						.AddColumn(m => m.PlaceholderName, new CarrotGridColumn())
+						.AddColumn(m => m.IsWidgetActive, new CarrotGridBooleanImageColumn())
+						.AddColumn(new CarrotGridTemplateColumn<Widget> {
+							HasHeadingText = false,
+							FormatTemplate = @<text>
+								<a class="dataPopupTrigger" rel="@item.Root_WidgetID" href="javascript:void(0)">
+									<img src="/Assets/Admin/images/doc.png" alt="text" style="margin:0;" />
+								</a>
+							</text>
+						});
+
+						@gridRich.OutputHtmlBody()
+					}
+				</div>
+			</div>
+			<br />
+			<div>
+				<h3>
+					Plain Text Widgets
+				</h3>
+				<div>
+					@{
+						var gridPlain = Html.CarrotWeb().CarrotWebGrid<Widget>(Model.WidgetListText);
+
+						gridPlain.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+						gridPlain.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+						gridPlain.UseDataPage = false;
+						gridPlain.ConfigName(Html.NameFor(m => m.WidgetListText));
+
+						gridPlain
+						.AddColumn(new CarrotGridTemplateColumn<Widget> {
+							HasHeadingText = false,
+							FormatTemplate = @<text>
+								<a href="javascript:void(0)" onclick="@String.Format("ShowWindowNoRefresh('{0}/{1}?widgetid={2}&mode=plain')", SiteFilename.ContentEditURL, item.Root_ContentID, item.Root_WidgetID)">
+									<img src="/Assets/Admin/Images/script.png" alt="Edit with Plain Text" title="Edit with Plain Text" />
+								</a>
+							</text>
+						})
+
+						.AddColumn(m => m.EditDate, new CarrotGridColumn())
+						.AddColumn(m => m.PlaceholderName, new CarrotGridColumn())
+						.AddColumn(m => m.IsWidgetActive, new CarrotGridBooleanImageColumn())
+						.AddColumn(new CarrotGridTemplateColumn<Widget> {
+							HasHeadingText = false,
+							FormatTemplate = @<text>
+								<a class="dataPopupTrigger" rel="@item.Root_WidgetID" href="javascript:void(0)">
+									<img src="/Assets/Admin/images/doc.png" alt="text" style="margin:0;" />
+								</a>
+							</text>
+						});
+
+						@gridPlain.OutputHtmlBody()
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

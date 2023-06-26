@@ -16,8 +16,8 @@ namespace Carrotware.CMS.Interface {
 		Guid SiteID { get; set; }
 		string? SiteName { get; set; }
 		string? SiteTagline { get; set; }
-		string? MainUrl { get; set; }
-		string? TimeZone { get; set; }
-		Guid? BlogRootContentId { get; set; }
+		string? MainURL { get; set; }
+		string? TimeZoneIdentifier { get; set; }
+		Guid? Blog_Root_ContentID { get; set; }
 	}
 }

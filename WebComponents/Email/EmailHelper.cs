@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Hosting;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Reflection;
-using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -45,7 +40,6 @@ namespace Carrotware.Web.UI.Components {
 
 		public static bool SendMail(IWebHostEnvironment environment, string fromEmail, List<string> emailTo, List<string> emailCC,
 				string subjectLine, string bodyText, bool isHTML, List<string> attachments) {
-			HttpContext context = HttpContextHelper.Current;
 			EMailSettings mailSettings = EMailSettings.GetEMailSettings(environment);
 
 			if (string.IsNullOrEmpty(fromEmail)) {
@@ -80,9 +74,9 @@ namespace Carrotware.Web.UI.Components {
 					foreach (var f in attachments) {
 						Attachment a = new Attachment(f, MediaTypeNames.Application.Octet);
 						ContentDisposition disp = a.ContentDisposition;
-						disp.CreationDate = System.IO.File.GetCreationTime(f);
-						disp.ModificationDate = System.IO.File.GetLastWriteTime(f);
-						disp.ReadDate = System.IO.File.GetLastAccessTime(f);
+						disp.CreationDate = File.GetCreationTime(f);
+						disp.ModificationDate = File.GetLastWriteTime(f);
+						disp.ReadDate = File.GetLastAccessTime(f);
 						message.Attachments.Add(a);
 					}
 				}

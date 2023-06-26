@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+@{
+	Layout = null;
+}
+<html>
+<head>
+	<meta charset="utf-8" />
+	<link href="/Assets/Admin/includes/normalize.css" rel="stylesheet" type="text/css" />
+	<title>
+		@String.Format("{0} - {1}", SiteData.CarrotCakeCMSVersionMM, ViewBag.Title)
+	</title>
+
+	<link href="/Assets/iCheck/iCheck.css" rel="stylesheet" />
+	@(new CmsSkin() { SelectedColor = Helper.SiteSkin, WindowMode = CmsSkin.SkinMode.Logon })
+
+	<script src="/Assets/iCheck/icheck.min.js"></script>
+	<script src="/Assets/Admin/Includes/icheck.init.js"></script>
+
+	<script type="text/javascript">
+
+		$(document).ready(function () {
+			$("input:button, input:submit, input:reset, button").button();
+
+			$('.validationError').each(function () {
+
+				if ($(this).text().length > 2) {
+					$(this).prop('title', $(this).text());
+					$(this).text('**');
+				}
+			});
+		});
+
+		function ShowAbout() {
+			var w = $(window).width() * 0.75;
+			var h = $(window).height() * 0.75;
+
+			var t = '<iframe frameborder="0" style="overflow: hidden; margin: 4px; padding: 0; height: 98%; width: 100%;" src="@SiteFilename.AboutURL"></iframe>';
+
+			cmsAlertModalHeightWidth(t, h, w);
+		}
+
+		function cmsAlertModalClose() {
+			$("#divCMSModal").dialog("close");
+		}
+
+		function cmsAlertModalHeightWidth(request, h, w) {
+			$("#divCMSModalMsg").html('');
+
+			$("#divCMSModalMsg").html(request);
+
+			$("#divCMSModal").dialog({
+				height: h,
+				width: w,
+				modal: true,
+				buttons: {
+					"OK": function () {
+						cmsAlertModalClose();
+					}
+				}
+			});
+		}
+	</script>
+	<meta name="robots" content="noindex,nofollow,noarchive" />
+</head>
+<body>
+	<div class="wrappedcontent box-all">
+		<div style="clear:both;"></div>
+		<div class="wrappedcontent-inner">
+			<div style="height: 20px; width: 18px; float: right; border: 1px solid #ffffff; clear: both;">
+				<a href="~/">
+					<img class="imgNoBorder" src="/Assets/Admin/Images/house_go.png" alt="Homepage" title="Homepage" />
+				</a>
+			</div>
+
+			@RenderBody()
+		</div>
+		<div class="box-buildversion">
+			<p>
+				&nbsp;
+			</p>
+			<p>
+				@SiteData.CarrotCakeCMSVersion
+
+				<a href="javascript:ShowAbout()"><img class="imgNoBorder" src="/Assets/Admin/Images/information.png" alt="information" title="information" /></a>
+			</p>
+			<p>
+				Database Status
+				<a href="@SiteFilename.DatabaseSetupURL"><img class="imgNoBorder" src="/Assets/Admin/Images/database.png" alt="database" title="database" /></a>
+				&nbsp;&nbsp;&nbsp;
+				Login
+				<a href="@SiteFilename.LoginURL"><img class="imgNoBorder" src="/Assets/Admin/Images/user.png" alt="login" title="login" /></a>
+			</p>
+		</div>
+		<div class="box-carrot">
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+
+	@*<div class="wrappedcontent">
+			<div class="box-top-center">
+				<div class="box-top-left">
+				</div>
+				<div class="box-top-right">
+				</div>
+			</div>
+			<div class="box-inner">
+				<div class="box-right">
+					<div class="box-left">
+						<div class="wrappedcontent-inner">
+							<div style="height: 20px; width: 18px; float: right; border: 1px solid #ffffff; clear: both;">
+								<a href="~/">
+									<img class="imgNoBorder" src="/Assets/Admin/Images/house_go.png" alt="Homepage" title="Homepage" />
+								</a>
+							</div>
+
+							@RenderBody()
+						</div>
+						<div class="box-buildversion">
+							<p>
+								&nbsp;
+							</p>
+							<p>
+								@SiteData.CarrotCakeCMSVersion
+
+								<a href="javascript:ShowAbout()"><img class="imgNoBorder" src="/Assets/Admin/Images/information.png" alt="information" title="information" /></a>
+							</p>
+							<p>
+								Database Status
+								<a href="@SiteFilename.DatabaseSetupURL"><img class="imgNoBorder" src="/Assets/Admin/Images/database.png" alt="database" title="database" /></a>
+								&nbsp;&nbsp;&nbsp;
+								Login
+								<a href="@SiteFilename.LoginURL"><img class="imgNoBorder" src="/Assets/Admin/Images/user.png" alt="login" title="login" /></a>
+							</p>
+						</div>
+						<div class="box-carrot">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="clear: both;">
+			</div>
+			<div class="box-bottom-center">
+				<div class="box-bottom-left">
+				</div>
+				<div class="box-bottom-right">
+				</div>
+			</div>
+		</div>*@
+
+	<div style="display: none">
+
+		<div id="divCMSModal" title="@SiteData.CarrotCakeCMSVersion">
+			<div id="divCMSModalMsg" style="overflow: hidden; margin: 0; padding: 3px; height: 96%; width: 99%;">
+				&nbsp;
+			</div>
+		</div>
+	</div>
+
+	<div>
+		@{
+			string partialView = Helper.InsertSpecialView(Helper.ViewLocation.AdminPublicFooter);
+			if (!String.IsNullOrEmpty(partialView)) {
+				@Html.Partial(partialView)
+			}
+		}
+	</div>
+</body>
+</html>

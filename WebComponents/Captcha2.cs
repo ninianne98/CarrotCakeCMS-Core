@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System;
-using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -49,11 +45,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		private string GetCaptchaImageURI() {
-			if (this.IsWebView) {
-				return this.SessionKeyValue.Key;
-			} else {
-				return string.Empty;
-			}
+			return this.SessionKeyValue.Key;
 		}
 
 		public static string SessionKey {
@@ -65,8 +57,8 @@ namespace Carrotware.Web.UI.Components {
 		public KeyValuePair<string, string> SessionKeyValue {
 			get {
 				string imageName = string.Empty;
-				KeyValuePair<string, string> randImg = new KeyValuePair<string, string>("Fake", "Value");
-				if (this.IsWebView && this.ImageOptions.Any()) {
+				var randImg = new KeyValuePair<string, string>("Fake", "Value");
+				if (this.ImageOptions.Any()) {
 					var rand = new Random();
 					randImg = this.ImageOptions.ElementAt(rand.Next(0, this.ImageOptions.Count));
 

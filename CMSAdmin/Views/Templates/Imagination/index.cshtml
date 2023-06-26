@@ -1,0 +1,128 @@
+﻿@inject PagePayload CmsPage
+
+@{
+	Layout = "_main.cshtml";
+
+	ViewBag.BodyCssClass = "homepage";
+
+	var pager1 = new PagedDataSummary();
+	pager1.ContentType = PagedDataSummary.SummaryContentType.Blog;
+	pager1.PageSize = 4;
+	pager1.PageNumber = 1;
+	pager1.PageNumbParm = "nopage#";
+	pager1.IgnoreSitePath = true;
+	pager1.FetchData();
+
+	string cssPagerSel = String.Empty;
+	List<string> pagerStyles = new List<string>();
+	pagerStyles.Add("fa fa-magic");
+	pagerStyles.Add("fa fa-wrench");
+	pagerStyles.Add("fa fa-chain");
+	pagerStyles.Add("fa fa-briefcase");
+	pagerStyles.Add("fa fa-expeditedssl");
+	pagerStyles.Add("fa fa-coffee");
+	pagerStyles.Add("fa fa-rocket");
+	pagerStyles.Add("fa fa-shield");
+	pagerStyles.Add("fa fa-bell-o");
+
+	List<string> pagerStylesOld = new List<string>();
+}
+
+@section Banner {
+	<!-- Banner -->
+	<div id="banner">
+		<div class="container">
+			<section>
+				<span class="fa fa-cubes"></span>
+				<header>
+					<h2>@CmsPage.TheSite.SiteName</h2>
+					<span class="byline"> @CmsPage.TheSite.SiteTagline </span>
+				</header>
+				<a href="~/" class="button medium">More</a>
+			</section>
+		</div>
+	</div>
+	<!-- /Banner -->
+}
+
+@section Extra {
+	<!-- Extra -->
+	<div id="extra">
+		<div class="container">
+			<div class="row">
+				@if (pager1.HasData) {
+					foreach (var itm in pager1.DataSource) {
+						cssPagerSel = pagerStyles.Where(x => !pagerStylesOld.Contains(x)).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+						pagerStylesOld.Add(cssPagerSel) ;
+
+					<section class="3u">
+						<header>
+							<h2>
+								<a href="@itm.FileName">
+									@itm.NavigationText
+								</a>
+							</h2>
+						</header>
+						<span class="@cssPagerSel"></span>
+						<p>
+							@String.Format(" [{0:d}] ", itm.GoLiveDate)
+							@itm.PageTextPlainSummary
+						</p>
+					</section>
+					}
+				} else {
+					<section class="12u">
+						&nbsp;
+					</section>
+				}
+			</div>
+
+			@if (SiteData.CurrentSiteExists && SiteData.CurrentSite.Blog_Root_ContentID.HasValue) {
+				var blgIdx = SiteData.GetPage(SiteData.CurrentSite.Blog_Root_ContentID.Value);
+				if (blgIdx != null) {
+				<a href="@blgIdx.FileName" class="button medium">More</a>
+				}
+			}
+		</div>
+	</div>
+	<!-- /Extra -->
+}
+
+<!-- Main -->
+<div id="main">
+	<div class="container">
+
+		<section>
+			<article>
+				<header>
+					<h2>@CmsPage.Heading</h2>
+					@*<span class="byline">Augue praesent a lacus at urna congue rutrum</span>*@
+				</header>
+
+				<div>
+					@Html.CarrotCakeHtml().RenderWidget("phCenterTop")
+				</div>
+
+				@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+
+				<div>
+					@Html.CarrotCakeHtml().RenderWidget("phCenterBottom")
+				</div>
+			</article>
+		</section>
+
+		<div class="row">
+			<section class="6u right">
+				<a href="#" class="image full"><img src="/Assets/Imagination/images/pics05.jpg" alt=""></a>
+				<p>This is <strong>Imagination</strong>, a responsive HTML5 site template freebie by <a href="https://templated.live">TEMPLATED</a>. Released for free under the <a href="https://templated.live/license">Creative Commons Attribution</a> license, so use it for whatever (personal or commercial) &ndash; just give us credit! Check out more of our stuff at <a href="https://templated.live">our site</a> or follow us on <a href="http://twitter.com/templatedco">Twitter</a>.</p>
+			</section>
+			<section class="6u left">
+				<a href="#" class="image full"><img src="/Assets/Imagination/images/pics06.jpg" alt=""></a>
+				<p>Duis pretium velit ac mauris. Proin eu wisi suscipit nulla suscipit interdum. Pellentesque adipiscing purus ac magna. Pellentesque habitant morbi tristique senectus aenean lectus lorem, imperdiet at, ultrices eget, ornare et, wisi purus ac magna. Pellentesque habitant morbi</p>
+			</section>
+		</div>
+		<div class="divider"></div>
+		<a href="#" class="button medium">View Full Details</a>
+	</div>
+</div>
+<!-- /Main -->

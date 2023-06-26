@@ -16,7 +16,7 @@ namespace Carrotware.CMS.Security {
 
 	public static class SecurityConfig {
 
-		public static void ConfigureAuth(this IServiceCollection services, IConfigurationRoot config) {
+		public static void ConfigureCmsAuth(this IServiceCollection services, IConfigurationRoot config) {
 			var securitySettings = CarrotSecurityConfig.GetConfig(config);
 
 			services.AddDbContext<AppIdentityDbContext>(opt => opt.UseSqlServer(config.GetConnectionString("CarrotwareCMS")));
@@ -30,6 +30,7 @@ namespace Carrotware.CMS.Security {
 
 			bool setCookieExpireTimeSpan = securitySettings.AdditionalSettings.SetCookieExpireTimeSpan;
 			string loginPath = securitySettings.AdditionalSettings.LoginPath;
+			string unauthorized = securitySettings.AdditionalSettings.Unauthorized;
 			double expireTimeSpan = securitySettings.AdditionalSettings.ExpireTimeSpan;
 			double validateInterval = securitySettings.AdditionalSettings.ValidateInterval;
 
@@ -95,12 +96,12 @@ namespace Carrotware.CMS.Security {
 
 			services.ConfigureApplicationCookie(opt => {
 				opt.LoginPath = loginPath;
-				opt.LogoutPath = $"/account/logout";
-				opt.AccessDeniedPath = $"/account/accessdenied";
+				opt.AccessDeniedPath = unauthorized;
 			});
 
 			services.AddTransient<UserManager<IdentityUser>>();
 			services.AddTransient<SignInManager<IdentityUser>>();
 		}
+
 	}
 }

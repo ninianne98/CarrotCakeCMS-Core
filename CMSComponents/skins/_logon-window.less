@@ -1,0 +1,130 @@
+﻿@import "_colors.less";
+
+.publicUI(@themeColor) {
+	@themeDark85: darken(@themeColor, 85%);
+	@themeDark25: darken(@themeColor, 25%);
+	@themeLight15: lighten(@themeColor, 15%);
+	@themeLight25: lighten(@themeColor, 25%);
+	@themeLight40: lighten(@themeColor, 40%);
+	@themeLight50: lighten(@themeColor, 50%);
+
+	body {
+		background-color: @themeColor;
+		font-family: Verdana, Helvetica, Sans-Serif;
+	}
+
+	a {
+		text-decoration: none;
+	}
+
+	a:link {
+		color: #0191D8;
+	}
+
+	a:active {
+		color: #0191D8;
+	}
+
+	a:visited {
+		color: #0191D8;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+	#banner {
+		text-align: center;
+	}
+
+	#banner h1, #banner h2, #banner h3 {
+		font-weight: bolder;
+		color: @themeDark85;
+		font-family: Georgia, Times New Roman, Serif;
+		padding: 3px;
+		margin: 2px;
+		text-align: center;
+	}
+
+	#banner a:link, #banner a:active, #banner a:visited {
+		color: @themeLight50;
+	}
+
+	.wrappedcontent {
+		width: 0px;
+		padding: 0px;
+		min-width: 480px;
+		margin: 0px auto;
+		margin-top: 100px;
+		border-collapse: collapse;
+		border-width: 0px;
+		border-style: solid;
+		border-color: @themeDark25;
+	}
+
+	.wrappedcontent-inner {
+		font-size: 1em;
+		font-family: Verdana, Helvetica, Sans-Serif;
+		background-color: #ffffff;
+		margin: 0px;
+		padding: 0px;
+		margin-right: 30px;
+		margin-left: 30px;
+		overflow: hidden;
+		clear: both;
+	}
+
+	.box-buildversion {
+		font-size: 0.85em;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+		margin-right: 5px;
+		margin-left: 30px;
+		margin-bottom: 10px;
+	}
+
+	.box-carrot {
+		margin: 0px;
+		padding: 0px;
+		float: right;
+		width: 80px;
+		height: 80px;
+		background: transparent url( ../images/carrot_sm.png ) no-repeat right top;
+		margin-right: 30px;
+		margin-left: 5px;
+		margin-bottom: 10px;
+	}
+
+	.box-all {
+		padding: 1.75em 1.3em 1.75em 1.3em;
+		background: #ffffff;
+		border-radius: 25px;
+		border: 15px solid #111111;
+	}
+
+	.box-inner {
+		background-color: #ffffff;
+		margin: 0px;
+		padding: 0px;
+		clear: both;
+	}
+
+	.status-scroll {
+		border: solid 0 transparent;
+		width: 375px !important;
+		height: 160px !important;
+		overflow: auto;
+	}
+
+	@media screen and (min-width: 1610px) {
+		.wrappedcontent {
+			min-width: 575px;
+		}
+
+		.status-scroll {
+			width: 450px !important;
+			height: 175px !important;
+		}
+	}
+}

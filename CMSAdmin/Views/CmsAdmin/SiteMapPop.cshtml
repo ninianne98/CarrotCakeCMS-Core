@@ -1,0 +1,15 @@
+﻿@model IList<SiteMapOrder>
+
+@{
+	ViewBag.Title = "Site Map";
+
+	Layout = CarrotLayout.Popup;
+}
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#btnSaveButtonDiv').css('display', '');
+	});
+</script>
+
+@Html.Partial("_SiteMap", Model)

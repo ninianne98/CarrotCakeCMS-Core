@@ -33,15 +33,15 @@ namespace Carrotware.CMS.Interface {
 
 			this.SiteName = "This is a test site";
 			this.SiteTagline = "This is a tagline string so there is something to see";
-			this.TimeZone = TimeZoneInfo.Local.ToString();
-			this.MainUrl = "http://" + CarrotHttpHelper.HttpContext.Request.Host + "/";
+			this.TimeZoneIdentifier = TimeZoneInfo.Local.ToString();
+			this.MainURL = "http://" + CarrotHttpHelper.HttpContext.Request.Host + "/";
 		}
 
 		public Guid SiteID { get; set; }
 		public string? SiteName { get; set; }
 		public string? SiteTagline { get; set; }
-		public string? TimeZone { get; set; }
-		public string? MainUrl { get; set; }
-		public Guid? BlogRootContentId { get; set; }
+		public string? TimeZoneIdentifier { get; set; }
+		public string? MainURL { get; set; }
+		public Guid? Blog_Root_ContentID { get; set; }
 	}
 }

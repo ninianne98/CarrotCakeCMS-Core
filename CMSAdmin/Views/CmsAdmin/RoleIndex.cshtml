@@ -1,0 +1,31 @@
+﻿@model PagedData<UserRole>
+
+@{
+	ViewBag.Title = "Role Index";
+}
+
+<p>
+	<a href="@SiteFilename.RoleAddEditURL">
+		<img class="imgNoBorder" src="/Assets/Admin/Images/add.png" alt="Add" title="Add" />
+		Add Role
+	</a>
+</p>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<UserRole>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<UserRole> {
+			HasHeadingText = false,
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.RoleAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.RoleId }, "~/assets/admin/images/pencil.png", "Edit", null, null) </text>
+		})
+		.AddColumn(x => x.RoleName, new CarrotGridColumn { Sortable = true });
+
+		@grid.RenderToHtmlString()
+}

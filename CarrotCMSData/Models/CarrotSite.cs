@@ -27,8 +27,6 @@ namespace Carrotware.CMS.Data.Models {
 		public string? BlogDatePath { get; set; }
 		public string? BlogDatePattern { get; set; }
 		public string? TimeZone { get; set; }
-		public bool SendTrackbacks { get; set; }
-		public bool AcceptTrackbacks { get; set; }
 		public string? BlogEditorPath { get; set; }
 
 		public virtual ICollection<CarrotContentCategory> CarrotContentCategories { get; set; }

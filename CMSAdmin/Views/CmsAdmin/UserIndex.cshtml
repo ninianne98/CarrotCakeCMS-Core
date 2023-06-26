@@ -1,0 +1,42 @@
+﻿@model PagedData<ExtendedUserData>
+
+@{
+	ViewBag.Title = "User Index";
+}
+
+<p>
+	<a href="@SiteFilename.UserAddURL">
+		<img class="imgNoBorder" src="/Assets/Admin/Images/add.png" alt="Add" title="Add" />
+		Add User
+	</a>
+</p>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<ExtendedUserData>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<ExtendedUserData> {
+			HasHeadingText = false,
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.UserEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.UserId }, "~/assets/admin/images/pencil.png", "Edit", null, null) </text>
+		})
+		.AddColumn(x => x.UserName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.FirstName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.LastName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.Email, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.LockoutEndDateBlank, new CarrotGridBooleanImageColumn {
+			AlternateTextFalse = "Locked Out",
+			AlternateTextTrue = "Not locked",
+			ImagePathFalse = "~/assets/admin/images/lock.png",
+			ImagePathTrue = "~/assets/admin/images/user.png",
+			Sortable = true
+		})
+		.AddColumn(x => x.LockoutEndDateUtc, new CarrotGridColumn { Sortable = true, CellFormatString = Helper.ShortDateTimeFormatPattern });
+
+		@grid.RenderToHtmlString()
+}

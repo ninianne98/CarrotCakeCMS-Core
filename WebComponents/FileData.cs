@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
 
 /*
-* CarrotCake CMS (MVC Core)
+* CarrotCake CMS (MVC5)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: August 2015
 */
 
 namespace Carrotware.Web.UI.Components {
@@ -60,40 +64,32 @@ namespace Carrotware.Web.UI.Components {
 	//=================================================
 	public class FileDataHelper {
 
-		protected IWebHostEnvironment _environment;
+		public FileDataHelper() { }
 
-		public FileDataHelper(IWebHostEnvironment environment) {
-			_environment = environment;
-			_blockedTypes = _defaultBlockTypes;
-		}
-
-		public FileDataHelper(IWebHostEnvironment environment, string blockedExts) {
-			_environment = environment;
+		public FileDataHelper(string blockedExts) {
 			_blockedTypes = blockedExts;
 		}
 
-		private string _wwwpath = null;
+		private static string _wwwpath = null;
 
-		public string WebRootPath {
+		private static string WWWPath {
 			get {
 				if (_wwwpath == null) {
-					_wwwpath = _environment.WebRootPath;
-					if (!_wwwpath.EndsWith(@"\")) {
-						_wwwpath += @"\";
+					_wwwpath = CarrotWebHelper.WebHostEnvironment.ContentRootPath.NormalizeFilename();
+					if (!_wwwpath.EndsWith(Path.AltDirectorySeparatorChar)) {
+						_wwwpath = _wwwpath + Path.AltDirectorySeparatorChar;
 					}
 				}
 				return _wwwpath;
 			}
 		}
 
-		private string _defaultBlockTypes = "asp;aspx;ascx;asmx;svc;asax;axd;ashx;dll;pdb;exe;cs;vb;cshtml;vbhtml;master;config;xml;user;csproj;vbproj;sln";
-
 		private string _blockedTypes = null;
 
 		public List<string> BlockedTypes {
 			get {
 				if (_blockedTypes == null) {
-					_blockedTypes = _defaultBlockTypes;
+					_blockedTypes = "asp;aspx;ascx;asmx;svc;asax;axd;ashx;dll;pdb;exe;cs;vb;cshtml;vbhtml;master;config;xml;user;csproj;vbproj;sln";
 				}
 				return _blockedTypes.Split(';').ToList();
 			}
@@ -213,34 +209,33 @@ namespace Carrotware.Web.UI.Components {
 			return f;
 		}
 
-		public string MakeFilePathUniform(string sDirPath) {
-			string path = "/";
+		public static string MakeFilePathUniform(string sDirPath) {
+			string _path = "/";
 			if (!string.IsNullOrEmpty(sDirPath)) {
-				path = @"/" + sDirPath;
+				_path = @"/" + sDirPath;
 
-				if (!Directory.Exists(this.WebRootPath + path)) {
-					path = path.Replace(@"\", @"/");
-					path = path.Substring(0, path.Length - 1);
-					path = path.Substring(0, path.LastIndexOf(@"/"));
+				if (!Directory.Exists(WWWPath + _path)) {
+					_path = _path.Replace(@"\", @"/");
+					_path = _path.Substring(0, _path.Length - 1);
+					_path = _path.Substring(0, _path.LastIndexOf(@"/"));
 				}
-				path = path + @"/";
-				path = path.Replace(@"\", @"/").Replace(@"///", @"/").Replace("//", "/").Replace("//", "/");
+				_path = _path + @"/";
+				_path = _path.Replace(@"\", @"/").Replace(@"///", @"/").Replace("//", "/").Replace("//", "/");
 			}
-			return path;
+			return _path;
 		}
 
-		public string MakeFileFolderPath(string sDirPath) {
-			string path = MakeFilePathUniform(sDirPath);
-			string map = Path.Combine(this.WebRootPath, path);
-
-			return map;
+		public static string MakeFileFolderPath(string sDirPath) {
+			string _path = MakeFilePathUniform(sDirPath);
+			string _map = CarrotWebHelper.MapPath(_path);
+			return _map;
 		}
 
-		public string MakeWebFolderPath(string sDirPath) {
+		public static string MakeWebFolderPath(string sDirPath) {
 			string sPathPrefix = "/";
 
 			if (!string.IsNullOrEmpty(sDirPath)) {
-				sPathPrefix = sDirPath.Replace(this.WebRootPath, @"/");
+				sPathPrefix = sDirPath.Replace(WWWPath, @"/");
 			}
 			sPathPrefix = MakeFilePathUniform(sPathPrefix);
 

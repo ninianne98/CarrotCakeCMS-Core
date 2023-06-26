@@ -30,10 +30,6 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public bool IsWebView {
-			get { return (CarrotWebHelper.Current != null); }
-		}
-
 		public virtual string GetHtml() {
 			return string.Empty;
 		}

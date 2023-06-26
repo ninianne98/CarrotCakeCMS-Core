@@ -1,0 +1,262 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+		"ConnectionStrings": {
+			"type": "object",
+			"properties": {
+				"CarrotwareCMS": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"CarrotwareCMS"
+			]
+		},
+		"CarrotCakeCMS": {
+			"type": "object",
+			"properties": {
+				"Config": {
+					"type": "object",
+					"properties": {
+						"SiteID": {
+							"type": "string",
+							"pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+						},
+						"AdminFolderPath": {
+							"type": "string"
+						},
+						"SiteSkin": {
+							"type": "string",
+							"enum": [
+								"Classic",
+								"AmethystOrchid",
+								"BlueIzis",
+								"FrenchBlue",
+								"Mauve",
+								"MosaicBlue",
+								"Plum",
+								"QuetzalGreen",
+								"Rust",
+								"Sandstone",
+								"SugarAlmond"
+							]
+						}
+					},
+					"required": [
+						"SiteID"
+					]
+				},
+				"SiteMapping": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"SiteID": {
+								"type": "string",
+								"pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+							},
+							"DomainName": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"Options": {
+					"type": "object",
+					"properties": {
+						"WriteErrorLog": {
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"WriteErrorLog"
+					]
+				},
+				"OverrideConfigFile": {
+					"type": "object",
+					"properties": {
+						"TemplatePath": {
+							"type": "string"
+						},
+						"SiteMapping": {
+							"type": "string"
+						},
+						"PluginPath": {
+							"type": "string"
+						},
+						"TextContentProcessors": {
+							"type": "string"
+						}
+					}
+				},
+				"PublicSite": {
+					"type": "object",
+					"properties": {
+						"ViewPathHeader": {
+							"type": "string"
+						},
+						"ViewPathFooter": {
+							"type": "string"
+						}
+					}
+				},
+				"AdminFooter": {
+					"type": "object",
+					"properties": {
+						"ViewPathPopup": {
+							"type": "string"
+						},
+						"ViewPathPublic": {
+							"type": "string"
+						},
+						"ViewPathMain": {
+							"type": "string"
+						}
+					}
+				},
+				"FileManager": {
+					"type": "object",
+					"properties": {
+						"BlockedExtensions": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"required": [
+				"Config"
+			]
+		},
+		"SmtpSettings": {
+			"type": "object",
+			"properties": {
+				"FromEmail": {
+					"type": "string"
+				},
+				"SmtpUsername": {
+					"type": "string"
+				},
+				"DisplayName": {
+					"type": "string"
+				},
+				"SmtpPassword": {
+					"type": "string"
+				},
+				"Host": {
+					"type": "string"
+				},
+				"Port": {
+					"type": "integer"
+				},
+				"UseTls": {
+					"type": "boolean"
+				},
+				"UseSpecifiedPickupDirectory": {
+					"type": "boolean"
+				},
+				"PickupDirectoryLocation": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"FromEmail",
+				"SmtpUsername",
+				"SmtpPassword",
+				"Host",
+				"Port",
+				"UseSpecifiedPickupDirectory"
+			]
+		},
+		"Logging": {
+			"type": "object",
+			"properties": {
+				"LogLevel": {
+					"type": "object",
+					"properties": {
+						"Default": {
+							"type": "string"
+						},
+						"Microsoft.AspNetCore": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"CarrotSecurity": {
+			"type": "object",
+			"properties": {
+				"PasswordValidator": {
+					"type": "object",
+					"properties": {
+						"RequireNonAlphanumeric": {
+							"type": "boolean"
+						},
+						"RequireDigit": {
+							"type": "boolean"
+						},
+						"RequiredLength": {
+							"type": "integer"
+						},
+						"RequireUppercase": {
+							"type": "boolean"
+						},
+						"RequireLowercase": {
+							"type": "boolean"
+						}
+					}
+				},
+				"AdditionalSettings": {
+					"type": "object",
+					"properties": {
+						"ExpireTimeSpan": {
+							"type": "integer"
+						},
+						"UserLockoutEnabledByDefault": {
+							"type": "boolean"
+						},
+						"LoginPath": {
+							"type": "string"
+						},
+						"Unauthorized": {
+							"type": "string"
+						},
+						"ResetPath": {
+							"type": "string"
+						},
+						"MaxFailedAccessAttempts": {
+							"type": "integer"
+						},
+						"DefaultLockoutTimeSpan": {
+							"type": "integer"
+						},
+						"TokenLifespan": {
+							"type": "integer"
+						},
+						"ValidateInterval": {
+							"type": "integer"
+						}
+					}
+				},
+				"UserValidator": {
+					"type": "object",
+					"properties": {
+						"RequireUniqueEmail": {
+							"type": "boolean"
+						},
+						"AllowedUserNameCharacters": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"required": [
+		"ConnectionStrings",
+		"CarrotCakeCMS",
+		"CarrotSecurity",
+		"SmtpSettings"
+	]
+}

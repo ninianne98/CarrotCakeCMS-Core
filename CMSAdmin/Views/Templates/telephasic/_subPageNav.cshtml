@@ -1,0 +1,23 @@
+﻿@inject PagePayload CmsPage
+
+@if (CmsPage.ChildNav.Any() || CmsPage.SiblingNav.Any()) {
+	<section class="sidebar">
+		@if (CmsPage.ChildNav.Any()) {
+			<h3>Child Pages</h3>
+			<ul class="sidemenu">
+				@foreach (var itm in CmsPage.ChildNav) {
+					<li><a href="@itm.FileName">@itm.NavigationText</a></li>
+				}
+			</ul>
+		}
+
+		@if (CmsPage.SiblingNav.Any()) {
+			<h3>Sibling Pages</h3>
+			<ul class="sidemenu">
+				@foreach (var itm in CmsPage.SiblingNav) {
+					<li><a href="@itm.FileName">@itm.NavigationText</a></li>
+				}
+			</ul>
+		}
+	</section>
+}

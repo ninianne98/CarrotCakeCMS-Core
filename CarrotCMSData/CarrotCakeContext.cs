@@ -12,13 +12,13 @@
 
 namespace Carrotware.CMS.Data.Models {
 	/*
-	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=CarrotAutoMVC;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o CarrotCMSData/Models --table membership_UserRole
-	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=CarrotAutoMVC;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o CarrotCMSData/Models --table membership_UserRole --table membership_Role --table membership_User
+	dotnet ef dbcontext scaffold "Server=<<connection string>>" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o CarrotCMSData/Models --table membership_UserRole
+	dotnet ef dbcontext scaffold "Server=<<connection string>>" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o CarrotCMSData/Models --table membership_UserRole --table membership_Role --table membership_User
 
-	Scaffold-DbContext 'Server=.\SQL2012EXPRESS;Database=CarrotAutoMVC;Trusted_Connection=True;' Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
-	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=CarrotAutoMVC;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -p CarrotCMSData.csproj -o Models
-	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=CarrotAutoMVC;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o CarrotCMSData/Models
-	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=CarrotAutoMVC;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o Models
+	Scaffold-DbContext 'Server=<<connection string>>' Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+	dotnet ef dbcontext scaffold "Server=<<connection string>>" Microsoft.EntityFrameworkCore.SqlServer -p CarrotCMSData.csproj -o Models
+	dotnet ef dbcontext scaffold "Server=<<connection string>>" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o CarrotCMSData/Models
+	dotnet ef dbcontext scaffold "Server=<<connection string>>" Microsoft.EntityFrameworkCore.SqlServer --context CarrotCakeContext -o Models
 
 	dotnet ef migrations add Initial --context CarrotCakeContext --output-dir Migrations
 	dotnet ef migrations add AddNewAuth --context CarrotCakeContext --output-dir Migrations
@@ -57,13 +57,22 @@ namespace Carrotware.CMS.Data.Models {
 			DataHelper.Configure("CarrotwareCMS", optionsBuilder);
 		}
 
-		public virtual DbSet<AspNetRole> AspNetRoles { get; set; } = null!;
-		public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; } = null!;
-		public virtual DbSet<AspNetUser> AspNetUsers { get; set; } = null!;
-		public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; } = null!;
-		public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; } = null!;
-		public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; } = null!;
+		//=============================================
+		public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
+		public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+
+		public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+
+		public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+
+		public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+
+		public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
+
+		public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+
+		//=============================================
 		public virtual DbSet<CarrotCategoryContentMapping> CarrotCategoryContentMappings { get; set; } = null!;
 		public virtual DbSet<CarrotContent> CarrotContents { get; set; } = null!;
 		public virtual DbSet<CarrotContentCategory> CarrotContentCategories { get; set; } = null!;
@@ -71,7 +80,6 @@ namespace Carrotware.CMS.Data.Models {
 		public virtual DbSet<CarrotContentSnippet> CarrotContentSnippets { get; set; } = null!;
 		public virtual DbSet<CarrotContentTag> CarrotContentTags { get; set; } = null!;
 		public virtual DbSet<CarrotContentType> CarrotContentTypes { get; set; } = null!;
-		public virtual DbSet<CarrotDataInfo> CarrotDataInfo { get; set; } = null!;
 		public virtual DbSet<CarrotRootContent> CarrotRootContents { get; set; } = null!;
 		public virtual DbSet<CarrotRootContentSnippet> CarrotRootContentSnippets { get; set; } = null!;
 		public virtual DbSet<CarrotSerialCache> CarrotSerialCache { get; set; } = null!;
@@ -95,23 +103,28 @@ namespace Carrotware.CMS.Data.Models {
 		public virtual DbSet<vwCarrotUserData> vwCarrotUserData { get; set; } = null!;
 		public virtual DbSet<vwCarrotWidget> vwCarrotWidgets { get; set; } = null!;
 
+		// fake for sproc return
+		public virtual DbSet<CarrotContentTally> CarrotContentTallies { get; set; } = null!;
+
+		//=============================================
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<AspNetRole>(entity => {
 				entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
 					.IsUnique()
 					.HasFilter("([NormalizedName] IS NOT NULL)");
 
+				entity.Property(e => e.Id).HasMaxLength(128);
 				entity.Property(e => e.Name).HasMaxLength(256);
-
 				entity.Property(e => e.NormalizedName).HasMaxLength(256);
 			});
 
 			modelBuilder.Entity<AspNetRoleClaim>(entity => {
 				entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
 
-				entity.HasOne(d => d.Role)
-					.WithMany(p => p.AspNetRoleClaims)
-					.HasForeignKey(d => d.RoleId);
+				entity.Property(e => e.RoleId).HasMaxLength(128);
+
+				entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
 			});
 
 			modelBuilder.Entity<AspNetUser>(entity => {
@@ -121,35 +134,19 @@ namespace Carrotware.CMS.Data.Models {
 					.IsUnique()
 					.HasFilter("([NormalizedUserName] IS NOT NULL)");
 
+				entity.Property(e => e.Id).HasMaxLength(128);
 				entity.Property(e => e.Email).HasMaxLength(256);
-
 				entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-
 				entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-
 				entity.Property(e => e.UserName).HasMaxLength(256);
-
-				entity.HasMany(d => d.AspNetRoles)
-					.WithMany(p => p.Users)
-					.UsingEntity<Dictionary<string, object>>(
-						"AspNetUserRole",
-						l => l.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
-						r => r.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
-						j => {
-							j.HasKey("UserId", "RoleId");
-
-							j.ToTable("AspNetUserRoles");
-
-							j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-						});
 			});
 
 			modelBuilder.Entity<AspNetUserClaim>(entity => {
 				entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
 
-				entity.HasOne(d => d.User)
-					.WithMany(p => p.AspNetUserClaims)
-					.HasForeignKey(d => d.UserId);
+				entity.Property(e => e.UserId).HasMaxLength(128);
+
+				entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
 			});
 
 			modelBuilder.Entity<AspNetUserLogin>(entity => {
@@ -158,25 +155,34 @@ namespace Carrotware.CMS.Data.Models {
 				entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
 
 				entity.Property(e => e.LoginProvider).HasMaxLength(128);
-
 				entity.Property(e => e.ProviderKey).HasMaxLength(128);
+				entity.Property(e => e.UserId).HasMaxLength(128);
 
-				entity.HasOne(d => d.User)
-					.WithMany(p => p.AspNetUserLogins)
-					.HasForeignKey(d => d.UserId);
+				entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+			});
+
+			modelBuilder.Entity<AspNetUserRole>(entity => {
+				entity.HasNoKey();
+
+				entity.HasIndex(e => e.RoleId, "IX_AspNetUserRoles_RoleId");
+
+				entity.Property(e => e.RoleId).HasMaxLength(128);
+				entity.Property(e => e.UserId).HasMaxLength(128);
+
+				entity.HasOne(d => d.Role).WithMany().HasForeignKey(d => d.RoleId);
 			});
 
 			modelBuilder.Entity<AspNetUserToken>(entity => {
 				entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
 
+				entity.Property(e => e.UserId).HasMaxLength(128);
 				entity.Property(e => e.LoginProvider).HasMaxLength(128);
-
 				entity.Property(e => e.Name).HasMaxLength(128);
 
-				entity.HasOne(d => d.User)
-					.WithMany(p => p.AspNetUserTokens)
-					.HasForeignKey(d => d.UserId);
+				entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
 			});
+
+			//=============================================
 
 			modelBuilder.Entity<CarrotCategoryContentMapping>(entity => {
 				entity.HasKey(e => e.CategoryContentMappingId)
@@ -367,21 +373,6 @@ namespace Carrotware.CMS.Data.Models {
 					.HasDefaultValueSql("(newid())");
 
 				entity.Property(e => e.ContentTypeValue).HasMaxLength(256);
-			});
-
-			modelBuilder.Entity<CarrotDataInfo>(entity => {
-				entity.HasKey(e => e.DataInfoId)
-					.IsClustered(false);
-
-				entity.ToTable("carrot_DataInfo");
-
-				entity.Property(e => e.DataInfoId)
-					.HasColumnName("DataInfoID")
-					.HasDefaultValueSql("(newid())");
-
-				entity.Property(e => e.DataKey).HasMaxLength(256);
-
-				entity.Property(e => e.DataValue).HasMaxLength(256);
 			});
 
 			modelBuilder.Entity<CarrotRootContent>(entity => {
@@ -592,7 +583,7 @@ namespace Carrotware.CMS.Data.Models {
 					.HasColumnName("TextWidgetID")
 					.HasDefaultValueSql("(newid())");
 
-				entity.Property(e => e.ProcessHtmltext).HasColumnName("ProcessHTMLText");
+				entity.Property(e => e.ProcessHtmlText).HasColumnName("ProcessHTMLText");
 
 				entity.Property(e => e.SiteId).HasColumnName("SiteID");
 

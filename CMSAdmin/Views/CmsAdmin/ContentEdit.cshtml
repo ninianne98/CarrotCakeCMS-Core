@@ -1,0 +1,48 @@
+﻿@model Carrotware.CMS.CoreMVC.UI.Admin.Models.ContentSingleModel
+
+@{
+	ViewBag.Title = "Edit Content";
+	Layout = CarrotLayout.Popup;
+
+	string editCSS = "rawEditor";
+
+	if (Model.Mode.ToLowerInvariant() == SiteData.HtmlMode) {
+		editCSS = "mceEditor";
+	}
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	<div style="margin-bottom: 25px; width: 850px;  height: 325px; width: 90%; height: 75%;">
+		@Html.TextAreaFor(m => m.PageText, new { rows = "18", cols = "90", @class = @editCSS, style = "height: 300px; width: 825px;" })
+		<br>
+	</div>
+	<div style="margin-top: 25px;">
+		<input name="btnSaveButton" value="Apply" onclick="SubmitPageRich();" id="btnSaveButton" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<br>
+	</div>
+	<div style="display: none;">
+		<input name="btnSave" value="Apply" id="btnSave" type="submit">
+		@Html.HiddenFor(x => x.PageId)
+		@Html.HiddenFor(x => x.WidgetId)
+		@Html.HiddenFor(x => x.Field)
+		@Html.HiddenFor(x => x.Mode)
+	</div>
+
+	<script type="text/javascript">
+		function SubmitPageRich() {
+			var ret = cmsPreSaveTrigger();
+			setTimeout("ClickBtn();", 500);
+		}
+
+		function SubmitPagePlain() {
+			setTimeout("ClickBtn();", 250);
+		}
+
+		function ClickBtn() {
+			$('#btnSave').click();
+		}
+	</script>
+
+}

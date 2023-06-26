@@ -1,0 +1,15 @@
+﻿@inject PagePayload CmsPage
+
+@{
+
+	ViewBag.Title = CmsPage.Titlebar;
+	ViewBag.SiteName = CmsPage.TheSite.SiteName;
+}
+
+<title>@CmsPage.Titlebar</title>
+
+<h2>@CmsPage.Heading</h2>
+
+<div>
+	@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+</div>

@@ -1,0 +1,168 @@
+﻿@inject PagePayload CmsPage
+
+@*
+	Design by TEMPLATED
+	https://templated.live
+	Released for free under the Creative Commons Attribution License
+
+	Name       : Oil Painting
+	Description: A two-column, fixed-width design with dark color scheme.
+	Version    : 1.0
+	Released   : 20120825
+	https://templated.live/oilpainting
+
+	Conversion to CarrotCake CMS MVC Template: Carrotware
+*@
+
+@{
+	Layout = null;
+
+	ViewBag.Title = CmsPage.Titlebar;
+	ViewBag.SiteName = CmsPage.TheSite.SiteName;
+
+	var nav = new TwoLevelNavigation() {
+		FontSize = new SizeUnit("16px"),
+		ForeColor = CarrotWebHelper.DecodeColor("#ffffff"),
+		BackColor = CarrotWebHelper.DecodeColor("#453E37"),
+		SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+		SelBGColor = CarrotWebHelper.DecodeColor("#2E2925"),
+		SubBGColor = CarrotWebHelper.DecodeColor("#DA802A"),
+		SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+		CssSelected = "current_page_item",
+		ElementId = "navigation"
+	};
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	@Html.CarrotCakeHtml().MetaTags()
+	@Html.CarrotCakeHtml().Rss()
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>@CmsPage.Titlebar</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Arvo" rel="stylesheet" type="text/css" />
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Coda:400,800" rel="stylesheet" type="text/css" />
+
+	<link href="/Assets/oilpainting/style.css" rel="stylesheet" type="text/css" media="screen" />
+	@Html.CarrotWeb().RenderTwoPartControlBodyCss(nav)
+	<link href="/Assets/oilpainting/menu.css" rel="stylesheet" type="text/css" media="screen" />
+
+	@Html.CarrotWeb().RenderControlToHtml((new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.GlossyBlack }))
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("input:button, input:submit, input:reset, button").button();
+		});
+
+		$(document).ajaxComplete(function (event, xhr, settings) {
+			$("input:button, input:submit, input:reset, button").button();
+		});
+	</script>
+
+	@Html.CarrotCakeHtml().IncludeHead()
+</head>
+<body>
+	<div id="menu-wrapper">
+		<div id="menu-inner">
+			@Html.CarrotWeb().RenderTwoPartControlBody(nav)
+		</div>
+		<!-- end #menu -->
+	</div>
+	<div id="header-wrapper">
+		<div id="header">
+			<div id="logo">
+				<h1><a href="~/">@ViewBag.SiteName</a></h1>
+				<p>@CmsPage.TheSite.SiteTagline</p>
+			</div>
+		</div>
+	</div>
+	<!-- end #header -->
+	<div id="banner"><img src="/Assets/oilpainting/images/pics01.jpg" width="1000" height="200" alt="" /></div>
+	<div id="wrapper">
+		<div id="page">
+			<div id="page-bgtop">
+				<div id="page-bgbtm">
+					<div id="content">
+
+						<div class="post">
+							<h2 class="title">@CmsPage.Heading</h2>
+							@RenderSection("BlogAuthor", required: false)
+							<div>
+								@Html.CarrotCakeHtml().RenderWidget("phCenterTop")
+							</div>
+							<div>
+								@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+								@RenderBody()
+							</div>
+							<div>
+								@RenderSection("MetaTags", required: false)
+							</div>
+							<div>
+								@Html.CarrotCakeHtml().RenderWidget("phCenterBottom")
+							</div>
+						</div>
+						<div>
+							@RenderSection("PagedDataSection", required: false)
+						</div>
+
+						<div>
+							@Html.Partial("_contactform")
+						</div>
+
+						<div style="clear: both;">&nbsp;</div>
+					</div>
+					<!-- end #content -->
+					<div id="sidebar">
+						<ul>
+							<li>
+								<h2>Search Here:</h2>
+								<div id="search">
+									@{
+										using (var srchFrm = Html.CarrotCakeHtml().BeginSearchForm(new { @class = "search" })) {
+											var srch = srchFrm.GetModelHelper();
+											<p>
+												@srch.TextBoxFor(x => x.query, new { @class = "search-text" })
+												<input type="submit" class="search-submit" value="Search" />
+											</p>
+										}
+									}
+								</div>
+								<div style="clear: both;">&nbsp;</div>
+							</li>
+							<li>
+								<div>
+									@Html.CarrotCakeHtml().RenderWidget("phLeftTop")
+								</div>
+								<div>
+									@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextLeft)
+								</div>
+								<div>
+									@Html.CarrotCakeHtml().RenderWidget("phLeftBottom")
+								</div>
+							</li>
+						</ul>
+
+						@RenderSection("SideBar", required: false)
+					</div>
+					<!-- end #sidebar -->
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+			</div>
+		</div>
+		<!-- end #page -->
+	</div>
+	<div id="footer">
+		<p>
+			@Html.Raw(String.Format("&copy; {0}, {1} ", DateTime.Now.Year, CmsPage.TheSite.SiteName.Trim()))
+			All rights reserved
+			| Design by <a target="_blank" href="https://templated.live">FCT</a>
+			| Site built with <a target="_blank" href="http://www.carrotcakecms.com/">carrotcake cms</a>
+		</p>
+	</div>
+	<!-- end #footer -->
+	@Html.CarrotCakeHtml().IncludeFooter()
+</body>
+</html>

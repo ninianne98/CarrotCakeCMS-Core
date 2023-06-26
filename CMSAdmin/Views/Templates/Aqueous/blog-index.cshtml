@@ -1,0 +1,77 @@
+﻿@inject PagePayload CmsPage
+
+@{
+	Layout = "_main.cshtml";
+
+	CmsPage.TypeLabelPrefixes = CmsPage.GetDefaultTypeHeadingOptions();
+
+	var pager = new PagedDataSummary();
+	pager.ContentType = PagedDataSummary.SummaryContentType.Blog;
+	pager.PageSize = 10;
+	pager.IgnoreSitePath = false;
+	pager.FetchData();
+}
+
+<!-- Sidebar -->
+<div id="sidebar" class="4u">
+	@Html.Partial("_navBlog")
+</div>
+<!-- Sidebar -->
+<!-- Content -->
+<div id="content" class="8u skel-cell-important">
+	<section>
+		<header>
+			<h2>@CmsPage.Heading</h2>
+		</header>
+		<div>
+			@Html.CarrotCakeHtml().RenderWidget("phCenterTop")
+		</div>
+		<div>
+			@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+		</div>
+		<div>
+			@Html.CarrotCakeHtml().RenderWidget("phCenterBottom")
+		</div>
+	</section>
+
+	<section>
+		@if (pager != null) {
+
+			foreach (var item in pager.DataSource) {
+				<div>
+					<p>
+						<b>
+							<a href="@item.FileName">@item.NavigationText</a>
+							&nbsp;|&nbsp;
+							@String.Format("{0:d}", item.GoLiveDate)
+						</b>
+						<br />
+						by
+						@item.BylineUser.FullName_FirstLast
+						<br />
+						@item.PageTextPlainSummary
+					</p>
+
+					<p class="post-footer align-right">
+						<a class="button small" href="@item.FileName">
+							Read more
+						</a>
+					</p>
+				</div>
+
+			}
+
+			<div class="pagerfooterlinks">
+				@foreach (var i in pager.PageNumbers) {
+					using (Html.CarrotWeb().BeginWrappedItem("div", i, pager.PageNumber, new { @class = "pagerlink selectedwrap" }, new { @class = "pagerlink" })) {
+						using (Html.CarrotWeb().BeginWrappedItem("a", i, pager.PageNumber, new { @class = "selected", @href = pager.GetUrl(i) }, new { @href = pager.GetUrl(i) })) {
+							@String.Format(" {0} ", i)
+						}
+					}
+				}
+			</div>
+
+		}
+	</section>
+</div>
+<!-- Content -->

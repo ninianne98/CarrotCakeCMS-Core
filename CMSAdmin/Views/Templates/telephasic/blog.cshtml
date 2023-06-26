@@ -1,0 +1,70 @@
+﻿@inject PagePayload CmsPage
+@{
+	Layout = "_main.cshtml";
+
+	ViewBag.TelephasicBodyStyle = "right-sidebar is-preload";
+}
+
+<!-- Main -->
+<div class="wrapper">
+	<div class="container" id="main">
+		<div class="row gtr-150">
+			<div class="col-8 col-12-narrower">
+
+				<!-- Content -->
+				<article id="content">
+					<header>
+						<h2>@CmsPage.Heading</h2>
+						<span class="byline">
+							@String.Format(" By {0} on {1:d} ", CmsPage.ThePage.BylineUser.FullName_FirstLast, CmsPage.ThePage.GoLiveDate)
+						</span>
+					</header>
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterTop)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+					</div>
+					@if (CmsPage.ThePage.ContentType == ContentPageType.PageType.BlogEntry) {
+						var pagecat = CmsPage.GetPageCategories(25);
+						var pagetag = CmsPage.GetPageTags(25);
+						<div>
+							<ul class="actions small">
+								@foreach (var itm in pagecat) {
+									<li class="meta-item @String.Format("meta-count{0}", CmsPage.GetRoundedMetaPercentage(itm))"><a class="button small" href="@itm.Uri">@itm.Text</a></li>
+								}
+							</ul>
+
+							<ul class="actions small">
+								@foreach (var itm in pagetag) {
+									<li class="meta-item @String.Format("meta-count{0}", CmsPage.GetRoundedMetaPercentage(itm))"><a class="button small" href="@itm.Uri">@itm.Text</a></li>
+								}
+							</ul>
+						</div>
+					}
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterBottom)
+					</div>
+				</article>
+			</div>
+			<div class="col-4 col-12-narrower">
+
+				@Html.Partial("_blogNav")
+
+				<!-- Sidebar -->
+				<section id="sidebar">
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phRightTop)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextRight)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phRightBottom)
+					</div>
+				</section>
+			</div>
+		</div>
+		@Html.Partial("_features")
+	</div>
+</div>

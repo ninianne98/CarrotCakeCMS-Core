@@ -1,0 +1,99 @@
+﻿@model SiteTemplateUpdateModel
+
+@using Carrotware.CMS.CoreMVC.UI.Admin.Models
+
+@{
+	ViewBag.Title = "Site-Wide Template Update";
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	<fieldset class="fieldset-med">
+		<legend>
+			<label>
+				Content
+			</label>
+		</legend>
+		<p>
+			<b>Home Page</b>&nbsp;&nbsp;&nbsp;&nbsp;
+			@String.Format("{0}  [{1}] ", Model.HomePageTitle, Model.HomePageLink)
+			<br />
+			@Html.DropDownListFor(model => Model.HomePage, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			<br />
+		</p>
+		<p>
+			<b>All Content Pages (only)</b>
+			<br />
+			@Html.DropDownListFor(model => Model.AllPages, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			<br />
+		</p>
+		<p>
+			<b>All Top Level Pages (only)</b>
+			<br />
+			@Html.DropDownListFor(model => Model.TopPages, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			<br />
+		</p>
+		<p>
+			<b>All Sub Level Pages (only)</b>
+			<br />
+			@Html.DropDownListFor(model => Model.SubPages, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			<br />
+		</p>
+	</fieldset>
+	<br />
+	<fieldset class="fieldset-med">
+		<legend>
+			<label>
+				Blog
+			</label>
+		</legend>
+		<p>
+			<b>Index Page</b>
+			<br />
+			<div style="clear: both; display: block; min-height: 4px;">
+				<!-- parent page plugin-->
+				@{
+	var drill = new SitePageDrillDownModel {
+		FieldName = Html.NameFor(m => m.IndexPageID).ToString(),
+		CurrentPageID = Guid.Empty,
+		SelectedPageID = Model.IndexPageID
+	};
+				}
+
+				@Html.Partial("_SitePageDrillDown", drill)
+			</div>
+			<div style="clear: both; display: block; ">
+				<br />
+				@Html.DropDownListFor(model => Model.IndexPage, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+				<br />
+			</div>
+		</p>
+		<p>
+			<b>All Blog Posts (only)</b>
+			<br />
+			@Html.DropDownListFor(model => Model.BlogPages, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			<br />
+		</p>
+	</fieldset>
+	<br />
+	<fieldset class="fieldset-med">
+		<legend>
+			<label>
+				Everything (including home and blog index)
+			</label>
+		</legend>
+		<p>
+			<b>All Content (Content Pages and Blog Posts)</b>
+			<br />
+			@Html.DropDownListFor(model => Model.AllContent, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			<br />
+		</p>
+	</fieldset>
+	<p>
+		<br />
+	</p>
+	<p>
+		<input type="submit" name="btnSave" value="Save" id="btnSave" />
+	</p>
+}

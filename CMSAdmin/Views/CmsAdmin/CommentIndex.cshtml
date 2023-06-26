@@ -1,0 +1,92 @@
+﻿@model  CommentIndexModel
+
+@{
+
+	if (Model.Root_ContentID.HasValue) {
+		Layout = CarrotLayout.Popup;
+	}
+
+	ViewBag.Title = "Comment Index";
+}
+
+
+
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	@Html.HiddenFor(m => m.PageType)
+	@Html.HiddenFor(m => m.Root_ContentID)
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<PostComment>(Model.Comments);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix ui-widget-content ui-corner-all" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.PageSizeExternal = true;
+	grid.ConfigName(Html.NameFor(x => x.Comments));
+
+	<table>
+		<tr>
+			<td class="tablecaption">
+				public:
+			</td>
+			<td>
+				@Html.DropDownListFor(m => m.IsApproved, new SelectList(Model.FilterOptions, "Key", "Value"), "[Choose One]")
+			</td>
+			<td class="tablecaption">
+				spam:
+			</td>
+			<td>
+				@Html.DropDownListFor(m => m.IsSpam, new SelectList(Model.FilterOptions, "Key", "Value"), "[Choose One]")
+			</td>
+			<td class="tablecaption">
+				page size:
+			</td>
+			<td>
+				@Html.DropDownListFor(m => m.Comments.PageSize, new SelectList(Model.PageSizes.Select(x => new { Value = x, Text = x }), "Value", "Text"))
+			</td>
+			<td>
+				<input type="submit" name="btnApply" value="Apply" id="btnApply" />
+			</td>
+		</tr>
+	</table>
+
+	<p>
+		@String.Format("{0} total records", grid.DataPage.TotalRecords)
+	</p>
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<PostComment> {
+			HasHeadingText = false,
+			FormatTemplate = @<text>
+				@if (Model.Root_ContentID.HasValue) {
+					@Html.CarrotWeb().ActionImage(SiteActions.CommentAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.ContentCommentID, @pageComment = true }, "~/Assets/Admin/Images/pencil.png", "Edit", null, null)
+				} else {
+					@Html.CarrotWeb().ActionImage(SiteActions.CommentAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.ContentCommentID }, "~/Assets/Admin/Images/pencil.png", "Edit", null, null)
+				}
+			</text>
+		})
+		.AddColumn(x => x.CommenterName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.CommenterIP, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.CreateDate, new CarrotGridColumn { Sortable = true, CellFormatString = Helper.ShortDateTimeFormatPattern })
+		.AddColumn(x => x.NavMenuText, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.FileName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(new CarrotGridTemplateColumn<PostComment> {
+			HasHeadingText = false,
+			FormatTemplate = @<a target="_blank" href="@item.FileName">
+				<img src="/Assets/Admin/Images/html.png" alt="Visit Page" title="Visit Page" />
+			</a>
+		})
+		.AddColumn(x => x.IsSpam, new CarrotGridBooleanImageColumn {
+			Sortable = true,
+			ImagePathTrue = "~/Assets/Admin/Images/error.png",
+			ImagePathFalse = "~/Assets/Admin/Images/comment.png",
+			AlternateTextTrue = "Spam",
+			AlternateTextFalse = "Not Spam"
+		})
+		.AddColumn(x => x.IsApproved, new CarrotGridBooleanImageColumn { Sortable = true });
+
+		@grid.RenderToHtmlString()
+
+}

@@ -36,7 +36,7 @@ namespace Carrotware.Web.UI.Components {
 		public string ReturnAddress { get; set; }
 
 		public static EMailSettings GetEMailSettings(IWebHostEnvironment environment) {
-			var wwwPath = environment.WebRootPath;
+			var wwwPath = environment.ContentRootPath;
 			var mailSettings = new EMailSettings();
 
 			var xDoc = new XmlDocument();

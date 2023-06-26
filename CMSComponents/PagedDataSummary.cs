@@ -1,0 +1,139 @@
+﻿using Carrotware.CMS.Core;
+using Carrotware.CMS.Interface;
+using Carrotware.Web.UI.Components;
+using System.Web;
+
+/*
+* CarrotCake CMS (MVC Core)
+* http://www.carrotware.com/
+*
+* Copyright 2015, 2023, Samantha Copeland
+* Dual licensed under the MIT or GPL Version 3 licenses.
+*
+* Date: June 2023
+*/
+
+namespace Carrotware.CMS.UI.Components {
+
+	public class PagedDataSummary : PagedData<SiteNav>, IPagedContent {
+
+		public PagedDataSummary() {
+			this.SelectedCategorySlugs = new List<string>();
+			this.InitOrderByDescending(x => x.GoLiveDate);
+		}
+
+		public enum SummaryContentType {
+			Unknown,
+			Blog,
+			ContentPage,
+			ChildContentPage,
+			SpecifiedCategories,
+			SiteSearch
+		}
+
+		public bool IgnoreSitePath { get; set; }
+
+		public List<string> SelectedCategorySlugs { get; set; }
+
+		public SummaryContentType ContentType { get; set; }
+
+		public string GetSearchTerm() {
+			string sSearchTerm = string.Empty;
+
+			if (CarrotHttpHelper.QueryString(SiteData.SearchQueryParameter) != null) {
+				sSearchTerm = CarrotHttpHelper.QueryString(SiteData.SearchQueryParameter).ToString();
+			}
+
+			return sSearchTerm;
+		}
+
+		public string GetUrl(int pageNbr) {
+			if (this.ContentType == SummaryContentType.SiteSearch) {
+				string sSearchTerm = GetSearchTerm();
+				return string.Format("{0}?{1}={2}&{3}={4}", SiteData.CurrentScriptName, SiteData.SearchQueryParameter, HttpUtility.UrlEncode(sSearchTerm), this.PageNumbParm, pageNbr);
+			}
+
+			return string.Format("{0}?{1}={2}", SiteData.CurrentScriptName, this.PageNumbParm, pageNbr);
+		}
+
+		public void FetchData() {
+			base.ReadPageNbr();
+
+			string sPagePath = SiteData.CurrentScriptName;
+
+			if (string.IsNullOrEmpty(this.OrderBy)) {
+				this.InitOrderByDescending(x => x.GoLiveDate);
+			}
+
+			List<SiteNav> lstContents = new List<SiteNav>();
+
+			string sSearchTerm = string.Empty;
+
+			ContentPageType.PageType viewContentType = ContentPageType.PageType.BlogEntry;
+
+			if (this.IgnoreSitePath) {
+				sPagePath = string.Format("/siteid-{0}", SiteData.CurrentSiteID);
+			}
+
+			if (SiteData.CurrentSite.IsSiteSearchPath && !this.IgnoreSitePath) {
+				this.ContentType = SummaryContentType.SiteSearch;
+				sSearchTerm = GetSearchTerm();
+			}
+
+			switch (this.ContentType) {
+				case SummaryContentType.Blog:
+				case SummaryContentType.ContentPage:
+				case SummaryContentType.SiteSearch:
+					this.InitOrderByDescending(x => x.GoLiveDate);
+					break;
+			}
+
+			SortParm sp = this.ParseSort();
+			string sSortFld = sp.SortField;
+			string sSortDir = sp.SortDirection;
+
+			if (this.PageNumber <= 0) {
+				this.PageNumber = 1;
+			}
+
+			using (ISiteNavHelper navHelper = SiteNavFactory.GetSiteNavHelper()) {
+
+				switch (this.ContentType) {
+					case SummaryContentType.Blog:
+						viewContentType = ContentPageType.PageType.BlogEntry;
+						this.TotalRecords = navHelper.GetFilteredContentPagedCount(SiteData.CurrentSite, sPagePath, !SecurityData.IsAuthEditor);
+						lstContents = navHelper.GetFilteredContentPagedList(SiteData.CurrentSite, sPagePath, !SecurityData.IsAuthEditor, this.PageSize, this.PageNumberZeroIndex, sSortFld, sSortDir);
+						break;
+
+					case SummaryContentType.ChildContentPage:
+						viewContentType = ContentPageType.PageType.ContentEntry;
+						this.TotalRecords = navHelper.GetChildNavigationCount(SiteData.CurrentSiteID, sPagePath, !SecurityData.IsAuthEditor);
+						lstContents = navHelper.GetLatestChildContentPagedList(SiteData.CurrentSiteID, sPagePath, !SecurityData.IsAuthEditor, this.PageSize, this.PageNumberZeroIndex, sSortFld, sSortDir);
+						break;
+
+					case SummaryContentType.ContentPage:
+						viewContentType = ContentPageType.PageType.ContentEntry;
+						this.TotalRecords = navHelper.GetSitePageCount(SiteData.CurrentSiteID, viewContentType, !SecurityData.IsAuthEditor);
+						lstContents = navHelper.GetLatestContentPagedList(SiteData.CurrentSiteID, viewContentType, !SecurityData.IsAuthEditor, this.PageSize, this.PageNumberZeroIndex, sSortFld, sSortDir);
+						break;
+
+					case SummaryContentType.SpecifiedCategories:
+						viewContentType = ContentPageType.PageType.BlogEntry;
+						this.TotalRecords = navHelper.GetFilteredContentByIDPagedCount(SiteData.CurrentSite, null, SelectedCategorySlugs, !SecurityData.IsAuthEditor);
+						lstContents = navHelper.GetFilteredContentByIDPagedList(SiteData.CurrentSite, null, SelectedCategorySlugs, !SecurityData.IsAuthEditor, this.PageSize, this.PageNumberZeroIndex, sSortFld, sSortDir);
+						break;
+
+					case SummaryContentType.SiteSearch:
+						this.TotalRecords = navHelper.GetSiteSearchCount(SiteData.CurrentSiteID, sSearchTerm, !SecurityData.IsAuthEditor);
+						lstContents = navHelper.GetLatestContentSearchList(SiteData.CurrentSiteID, sSearchTerm, !SecurityData.IsAuthEditor, this.PageSize, this.PageNumberZeroIndex, sSortFld, sSortDir);
+						break;
+				}
+
+			}
+
+			lstContents = ControlUtilities.TweakData(lstContents);
+
+			this.DataSource = lstContents;
+		}
+	}
+}

@@ -46,6 +46,13 @@ END
 
 GO
 
+-- get rid of ~ as .net code does not use it
+UPDATE [dbo].[carrot_Content]
+SET [TemplateFile] = REPLACE([TemplateFile],'~/views/','/views/')
+WHERE [TemplateFile] like '~/views%' and [IsLatestVersion] = 1
+
+GO
+
 update [dbo].[AspNetRoles]
 set [NormalizedName] = upper([Name])
 

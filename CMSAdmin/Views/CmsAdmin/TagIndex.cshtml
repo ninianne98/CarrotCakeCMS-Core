@@ -1,0 +1,34 @@
+﻿@model PagedData<ContentTag>
+
+@{
+	ViewBag.Title = "Tag Index";
+}
+
+<p>
+	<a href="@SiteFilename.TagAddEditURL">
+		<img class="imgNoBorder" src="/Assets/Admin/Images/add.png" alt="Add" title="Add" />
+		Add Tag
+	</a>
+</p>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<ContentTag>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<ContentTag> {
+			HasHeadingText = false,
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.TagAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.ContentTagID }, "~/assets/admin/images/pencil.png", "Edit", null, null) </text>
+		})
+		.AddColumn(x => x.TagText, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.IsPublic, new CarrotGridBooleanImageColumn {
+			Sortable = true
+		});
+
+		@grid.RenderToHtmlString()
+}

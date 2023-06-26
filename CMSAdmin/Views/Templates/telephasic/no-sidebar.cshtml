@@ -1,0 +1,30 @@
+﻿@inject PagePayload CmsPage
+@{
+	Layout = "_main.cshtml";
+
+	ViewBag.TelephasicBodyStyle = "no-sidebar is-preload";
+}
+
+<!-- Main -->
+<div class="wrapper">
+	<div class="container" id="main">
+
+		<!-- Content -->
+		<article id="content">
+			<header>
+				<h2>@CmsPage.Heading</h2>
+			</header>
+			<div>
+				@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterTop)
+			</div>
+			<div>
+				@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+			</div>
+			<div>
+				@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterBottom)
+			</div>
+		</article>
+
+		@Html.Partial("_features")
+	</div>
+</div>

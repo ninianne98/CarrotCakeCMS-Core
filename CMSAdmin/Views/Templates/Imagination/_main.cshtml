@@ -1,0 +1,224 @@
+﻿@inject PagePayload CmsPage
+
+@*
+	Imagination by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+	https://templated.live/imagination
+
+	Conversion to CarrotCake CMS MVC Template: Carrotware
+*@
+
+@{
+	Layout = null;
+
+	string bodyCssClass = ViewBag.BodyCssClass ?? "not-homepage";
+	ViewBag.Title = CmsPage.Titlebar;
+	ViewBag.SiteName = CmsPage.TheSite.SiteName;
+
+	TwoLevelNavigation nav = new TwoLevelNavigation() {
+		CssSelected = "current active",
+		AutoStylingDisabled = true,
+		ElementId = "navmenu"
+	};
+
+	var pager = new PagedDataSummary();
+	pager.ContentType = PagedDataSummary.SummaryContentType.Blog;
+	pager.PageSize = 3;
+	pager.PageNumbParm = "nopage#";
+	pager.IgnoreSitePath = true;
+	pager.FetchData();
+
+	string imgPath = string.Empty;
+
+	List<string> imgs = new List<string>();
+	imgs.Add(@"/Assets/Imagination/images/pics01.jpg");
+	imgs.Add(@"/Assets/Imagination/images/pics03.jpg");
+	imgs.Add(@"/Assets/Imagination/images/pics04.jpg");
+
+	var cats = CmsPage.GetSiteCategories(5, true);
+	var tags = CmsPage.GetSiteTags(5, true);
+	var dates = CmsPage.GetSiteDates(5);
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	@Html.CarrotCakeHtml().MetaTags()
+	@Html.CarrotCakeHtml().Rss()
+
+	<title>@CmsPage.Titlebar</title>
+
+	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.NotUsed })
+
+	<link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' rel='stylesheet' type='text/css'>
+	<!--[if lte IE 8]><script src="/Assets/Imagination/js/html5shiv.js"></script><![endif]-->
+
+	<script src="/Assets/Imagination/js/jquery.dropotron.min.js"></script>
+	<script src="/Assets/Imagination/js/skel.min.js"></script>
+	<script src="/Assets/Imagination/js/skel-panels.min.js"></script>
+	<script src="/Assets/Imagination/js/init.js"></script>
+
+	<noscript>
+		<link rel="stylesheet" href="/Assets/Imagination/css/skel-noscript.css" />
+		<link rel="stylesheet" href="/Assets/Imagination/css/style.css" />
+		<link rel="stylesheet" href="/Assets/Imagination/css/style-desktop.css" />
+	</noscript>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			setTimeout("moveCMSZone();", 1250);
+
+			// Dropdowns.
+			$('#nav > ul').dropotron({
+				mode: 'fade',
+				speed: 300,
+				alignment: 'center',
+				noOpenerFade: true
+			});
+		});
+
+		var cmsHasMoved = false;
+
+		function moveCMSZone() {
+			if (!cmsHasMoved) {
+				$(document.body).append($('.cmsNavigationBlock').detach());
+				$(document.body).append($('.cmsMainAdvControls').detach());
+				cmsHasMoved = true;
+			}
+		}
+	</script>
+
+	@Html.CarrotCakeHtml().GetSiteCanonicalURL()
+
+	@Html.CarrotCakeHtml().RenderOpenGraph()
+
+	@Html.CarrotCakeHtml().IncludeHead()
+
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("input:button, input:submit, input:reset, button").removeClass('button').addClass('button');
+		});
+
+		$(document).ajaxComplete(function (event, xhr, settings) {
+			$("input:button, input:submit, input:reset, button").removeClass('button').addClass('button');
+		});
+	</script>
+
+</head>
+<body class="@bodyCssClass">
+
+	<div id="header-wrapper">
+
+		<!-- Header -->
+		<div id="header">
+			<div class="container">
+
+				<div id="logo">
+					<h1><a href="~/">@ViewBag.SiteName</a></h1>
+				</div> <!-- /Logo -->
+
+				<nav id="nav">
+					@nav
+				</nav> <!-- /Nav -->
+			</div>
+		</div> <!-- /Header -->
+		@RenderSection("Banner", required: false)
+	</div>
+
+	@RenderSection("Extra", required: false)
+
+	@RenderBody()
+
+	<!-- Featured -->
+	<div id="featured">
+		<div class="container">
+			@*<section>
+					<header>
+						<h2>Fusce ultrices fringilla metus</h2>
+						<span class="byline">Posuere eleifend odio quisque semper mattis</span>
+					</header>
+				</section>*@
+
+			<div class="row">
+				@foreach (var p in pager.DataSource) {
+					if (string.IsNullOrEmpty(p.Thumbnail)) {
+						imgPath = imgs.Where(x => x != imgPath).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+					} else {
+						imgPath = p.Thumbnail;
+					}
+
+					<section class="4u">
+						<a href="#" class="image full"><img src="@imgPath" alt=""></a>
+						<p>@p.PageTextPlainSummary</p>
+						<p><a href="@p.FileName" class="button">View Full Details</a></p>
+					</section>
+				}
+			</div>
+		</div>
+	</div>
+	<!-- /Featured -->
+	<!-- Footer -->
+	<div id="footer">
+		<div class="container">
+			<div class="row">
+				<section class="4u">
+					@if (dates.Any()) {
+						<header>
+							<h2>Dates</h2>
+						</header>
+						<ul class="default">
+							@foreach (var itm in dates) {
+								<li><a href="@itm.Uri">@itm.Text</a></li>
+							}
+						</ul>
+					}
+				</section>
+				<section class="4u">
+					@if (cats.Any()) {
+						<header>
+							<h2>Categories</h2>
+						</header>
+						<ul class="default">
+							@foreach (var itm in cats) {
+								<li><a href="@itm.Uri">@itm.Text</a></li>
+							}
+						</ul>
+					}
+				</section>
+				<section class="4u">
+					@if (tags.Any()) {
+						<header>
+							<h2>Tags</h2>
+						</header>
+						<ul class="default">
+							@foreach (var itm in tags) {
+								<li><a href="@itm.Uri">@itm.Text</a></li>
+							}
+						</ul>
+					}
+				</section>
+			</div>
+		</div>
+	</div>
+	<!-- /Footer -->
+	<!-- Copyright -->
+	<div id="copyright">
+		<div class="container">
+			@Html.Raw(string.Format("&copy;  {0}, {1}. All rights reserved.", DateTime.Now.Year, CmsPage.TheSite.SiteName.Trim()))
+			<br />
+			Design: <a target="_blank" href="https://templated.live">TEMPLATED</a>
+			Images: <a target="_blank" href="http://unsplash.com">Unsplash</a>
+			(<a target="_blank" href="http://unsplash.com/cc0">CC0</a>)
+			<br />
+			Site built with <a target="_blank" href="http://www.carrotcakecms.com/">carrotcakecms</a>
+		</div>
+	</div>
+
+	@Html.CarrotCakeHtml().IncludeFooter()
+</body>
+</html>

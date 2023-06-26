@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -26,12 +22,10 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public object Create(ControllerContext controllerContext) {
-			var ep = controllerContext.HttpContext.GetEndpoint();
-			var controllerActionDescriptor = ep.Metadata.GetMetadata<ControllerActionDescriptor>();
+			var type = controllerContext.ActionDescriptor.ControllerTypeInfo.AsType();
 
-			var type = controllerActionDescriptor.ControllerTypeInfo;
 			var isAdmin = type.GetInterfaces().Contains(typeof(IAdminModule));
-			var isWidget = type.GetInterfaces().Where(x => x == typeof(IWidget) || x == typeof(IWidgetDataObject)).Any();
+			var isWidget = type.GetInterfaces().Where(x => x == typeof(IWidget) || x == typeof(IWidgetController) || x == typeof(IWidgetDataObject)).Any();
 
 			if (isAdmin || isWidget) {
 				var site = new SiteTestInfo();
@@ -45,7 +39,7 @@ namespace Carrotware.CMS.Interface {
 				}
 
 				if (ctrl is IWidget) {
-					IWidget w = (IWidget)ctrl;
+					IWidget w = (ctrl as IWidget);
 					w.SiteID = site.SiteID;
 				}
 
@@ -53,7 +47,7 @@ namespace Carrotware.CMS.Interface {
 					var settings = new WidgetActionSettingModel();
 					settings.SiteID = site.SiteID;
 
-					IWidgetDataObject w = (IWidgetDataObject)ctrl;
+					IWidgetDataObject w = (ctrl as IWidgetDataObject);
 					w.WidgetPayload = settings;
 				}
 

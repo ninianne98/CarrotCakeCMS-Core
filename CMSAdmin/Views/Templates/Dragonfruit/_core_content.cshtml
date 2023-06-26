@@ -1,0 +1,16 @@
+﻿@inject PagePayload CmsPage
+
+<h1>
+	@CmsPage.Heading
+</h1>
+<div class="col-sm-12">
+	@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+	<br />
+</div>
+<div class="clearfix"></div>
+
+<div class="col-sm-12">
+	@Html.CarrotCakeHtml().RenderWidget("phCenterBottom")
+</div>
+
+<div class="clearfix"></div>

@@ -1,0 +1,30 @@
+﻿@model DatabaseSetupModel
+
+@{
+	ViewBag.Title = "Check Database";
+
+	Layout = CarrotLayout.Public;
+}
+
+<div class="status-scroll">
+
+	@foreach (var itm in Model.Messages) {
+		<div>
+			<b>
+				@itm
+			</b>
+		</div>
+	}
+</div>
+<div>
+	<br />
+	@if (Model.CreateUser) {
+		<input type="button" name="btnNext" value="Create First User" id="btnNext" onclick="location.href = '@SiteFilename.CreateFirstAdminURL';" />
+	} else {
+		<input type="button" name="btnNext" value="Continue" id="btnNext" onclick="location.href = '@SiteFilename.DashboardURL';" />
+	}
+</div>
+<p>
+	<a href="@String.Format("{0}?", SiteFilename.DatabaseSetupURL)">Re-run</a> &nbsp;
+	| &nbsp; <a href="@String.Format("{0}?signout=true", SiteFilename.DatabaseSetupURL)">Re-run with signout</a>
+</p>

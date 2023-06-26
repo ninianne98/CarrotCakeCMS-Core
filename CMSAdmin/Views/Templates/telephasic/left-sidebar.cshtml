@@ -1,0 +1,50 @@
+﻿@inject PagePayload CmsPage
+@{
+	Layout = "_main.cshtml";
+
+	ViewBag.TelephasicBodyStyle = "left-sidebar is-preload";
+}
+
+<!-- Main -->
+<div class="wrapper">
+	<div class="container" id="main">
+		<div class="row gtr-150">
+			<div class="col-4 col-12-narrower">
+
+				<!-- Sidebar -->
+				@Html.Partial("_searchBox")
+				@Html.Partial("_subPageNav")
+				<section id="sidebar">
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phLeftTop)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextLeft)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phLeftBottom)
+					</div>
+				</section>
+			</div>
+			<div class="col-8 col-12-narrower imp-narrower">
+
+				<!-- Content -->
+				<article id="content">
+					<header>
+						<h2>@CmsPage.Heading</h2>
+					</header>
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterTop)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+					</div>
+					<div>
+						@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phCenterBottom)
+					</div>
+				</article>
+			</div>
+		</div>
+		@Html.Partial("_features")
+	</div>
+</div>

@@ -17,30 +17,19 @@ namespace Carrotware.CMS.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.16")
+                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("AspNetUserRole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
@@ -68,7 +57,7 @@ namespace Carrotware.CMS.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -78,7 +67,8 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -90,7 +80,8 @@ namespace Carrotware.CMS.Data.Migrations
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -155,7 +146,7 @@ namespace Carrotware.CMS.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -165,7 +156,8 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -189,7 +181,8 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -198,10 +191,28 @@ namespace Carrotware.CMS.Data.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
+            modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserRole", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserToken", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
@@ -479,6 +490,25 @@ namespace Carrotware.CMS.Data.Migrations
                     b.ToTable("carrot_ContentTag", (string)null);
                 });
 
+            modelBuilder.Entity("Carrotware.CMS.Data.Models.CarrotContentTally", b =>
+                {
+                    b.Property<string>("DateSlug")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ContentCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateMonth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SiteID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("DateSlug");
+
+                    b.ToTable("CarrotContentTallies");
+                });
+
             modelBuilder.Entity("Carrotware.CMS.Data.Models.CarrotContentType", b =>
                 {
                     b.Property<Guid>("ContentTypeId")
@@ -496,31 +526,6 @@ namespace Carrotware.CMS.Data.Migrations
                         .HasName("carrot_ContentType_PK");
 
                     b.ToTable("carrot_ContentType", (string)null);
-                });
-
-            modelBuilder.Entity("Carrotware.CMS.Data.Models.CarrotDataInfo", b =>
-                {
-                    b.Property<Guid>("DataInfoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DataInfoID")
-                        .HasDefaultValueSql("(newid())");
-
-                    b.Property<string>("DataKey")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("DataValue")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("DataInfoId");
-
-                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("DataInfoId"), false);
-
-                    b.ToTable("carrot_DataInfo", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.CarrotRootContent", b =>
@@ -702,9 +707,6 @@ namespace Carrotware.CMS.Data.Migrations
                         .HasColumnName("SiteID")
                         .HasDefaultValueSql("(newid())");
 
-                    b.Property<bool>("AcceptTrackbacks")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("BlockIndex")
                         .HasColumnType("bit");
 
@@ -754,9 +756,6 @@ namespace Carrotware.CMS.Data.Migrations
                     b.Property<string>("MetaKeyword")
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
-
-                    b.Property<bool>("SendTrackbacks")
-                        .HasColumnType("bit");
 
                     b.Property<string>("SiteName")
                         .HasMaxLength(256)
@@ -821,7 +820,7 @@ namespace Carrotware.CMS.Data.Migrations
                     b.Property<bool>("ProcessComment")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("ProcessHtmltext")
+                    b.Property<bool>("ProcessHtmlText")
                         .HasColumnType("bit")
                         .HasColumnName("ProcessHTMLText");
 
@@ -981,7 +980,6 @@ namespace Carrotware.CMS.Data.Migrations
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotCategoryCounted", b =>
                 {
                     b.Property<Guid>("ContentCategoryId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentCategoryID");
 
@@ -1007,13 +1005,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentCategoryId");
 
-                    b.ToView("vw_carrot_CategoryCounted");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_CategoryCounted", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotCategoryUrl", b =>
                 {
                     b.Property<Guid>("ContentCategoryId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentCategoryID");
 
@@ -1044,13 +1043,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentCategoryId");
 
-                    b.ToView("vw_carrot_CategoryURL");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_CategoryURL", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotComment", b =>
                 {
                     b.Property<Guid>("ContentCommentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentCommentID");
 
@@ -1148,13 +1148,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentCommentId");
 
-                    b.ToView("vw_carrot_Comment");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_Comment", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotContent", b =>
                 {
                     b.Property<Guid>("ContentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentID");
 
@@ -1289,13 +1290,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentId");
 
-                    b.ToView("vw_carrot_Content");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_Content", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotContentChild", b =>
                 {
                     b.Property<Guid>("RootContentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Root_ContentID");
 
@@ -1343,13 +1345,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("RootContentId");
 
-                    b.ToView("vw_carrot_ContentChild");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_ContentChild", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotContentSnippet", b =>
                 {
                     b.Property<Guid>("ContentSnippetId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentSnippetID");
 
@@ -1416,13 +1419,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentSnippetId");
 
-                    b.ToView("vw_carrot_ContentSnippet");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_ContentSnippet", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotEditHistory", b =>
                 {
                     b.Property<Guid>("ContentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentID");
 
@@ -1505,13 +1509,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentId");
 
-                    b.ToView("vw_carrot_EditHistory");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_EditHistory", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotEditorUrl", b =>
                 {
                     b.Property<Guid?>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("EditDate")
@@ -1542,13 +1547,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToView("vw_carrot_EditorURL");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_EditorURL", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotTagCounted", b =>
                 {
                     b.Property<Guid>("ContentTagId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentTagID");
 
@@ -1574,13 +1580,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentTagId");
 
-                    b.ToView("vw_carrot_TagCounted");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_TagCounted", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotTagUrl", b =>
                 {
                     b.Property<Guid>("ContentTagId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ContentTagID");
 
@@ -1611,13 +1618,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("ContentTagId");
 
-                    b.ToView("vw_carrot_TagURL");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_TagURL", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotUserData", b =>
                 {
                     b.Property<Guid?>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
@@ -1680,13 +1688,14 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToView("vw_carrot_UserData");
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_carrot_UserData", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.vwCarrotWidget", b =>
                 {
                     b.Property<Guid>("RootWidgetId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Root_WidgetID");
 
@@ -1741,22 +1750,9 @@ namespace Carrotware.CMS.Data.Migrations
 
                     b.HasKey("RootWidgetId");
 
-                    b.ToView("vw_carrot_Widget");
-                });
+                    b.ToTable((string)null);
 
-            modelBuilder.Entity("AspNetUserRole", b =>
-                {
-                    b.HasOne("Carrotware.CMS.Data.Models.AspNetRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Carrotware.CMS.Data.Models.AspNetUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToView("vw_carrot_Widget", (string)null);
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetRoleClaim", b =>
@@ -1790,6 +1786,17 @@ namespace Carrotware.CMS.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserRole", b =>
+                {
+                    b.HasOne("Carrotware.CMS.Data.Models.AspNetRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserToken", b =>

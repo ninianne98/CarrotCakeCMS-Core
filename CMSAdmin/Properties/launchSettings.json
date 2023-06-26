@@ -1,0 +1,31 @@
+{
+	"profiles": {
+		"CMSAdminMVC": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"dotnetRunMessages": true,
+			//"applicationUrl": "https://localhost:7710;http://localhost:6710"
+			"applicationUrl": "http://localhost:6710"
+		},
+		"IIS Express": {
+			"commandName": "IISExpress",
+			"launchBrowser": true,
+			//"launchUrl": "/",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			}
+		}
+	},
+	"iisSettings": {
+		"windowsAuthentication": false,
+		"anonymousAuthentication": true,
+		"iisExpress": {
+			"applicationUrl": "http://localhost:6715",
+			//"sslPort": 44370
+			"sslPort": 0
+		}
+	}
+}

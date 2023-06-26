@@ -1,0 +1,36 @@
+﻿@inject PagePayload CmsPage
+
+<div id="contactUsForm">
+	@{
+		using (var cmtFrm = Html.CarrotCakeHtml().BeginContactForm(new SimpleAjaxFormOptions { UpdateTargetId = "contactUsForm" })) {
+			var cmt = cmtFrm.GetModelHelper("_contactus");
+			if (!cmt.ViewData.Model.IsSaved) {
+				@cmt.ValidationSummary(true, "", new { @class = "text-danger" })
+
+				<div class="row gtr-50">
+					<div class="col-6 col-12-mobile">
+						@cmt.TextBoxFor(m => m.CommenterName, new { placeholder = "Name" })
+						@cmt.ValidationMessageFor(m => m.CommenterName, "", new { @class = "text-danger" })
+					</div>
+					<div class="col-6 col-12-mobile">
+						@cmt.TextBoxFor(m => m.CommenterEmail, new { placeholder = "Email" })
+						@cmt.ValidationMessageFor(m => m.CommenterEmail, "", new { @class = "text-danger" })
+					</div>
+					<div class="col-12">
+						@cmt.ValidationMessageFor(m => m.PostCommentText, "", new { @class = "text-danger" })
+						@cmt.TextAreaFor(m => m.PostCommentText, new { rows = "5", cols = "50", placeholder = "Message" })
+					</div>
+					<div class="col-12">
+						<ul class="actions">
+							<li><input type="submit" value="Send Message" /></li>
+							<li><input type="reset" value="Clear form" /></li>
+						</ul>
+					</div>
+				</div>
+
+			} else {
+				<p>Thank you for your comment.</p>
+			}
+		}
+	}
+</div>

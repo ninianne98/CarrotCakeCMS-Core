@@ -1,0 +1,135 @@
+﻿@model PostTemplateUpdateModel
+
+@{
+	ViewBag.Title = "Bulk Apply Templates/Skins - Posts";
+}
+
+<script type="text/javascript">
+	function CheckTheBoxes() {
+		checkGridBoxes('contentIndex');
+	}
+
+	function UncheckTheBoxes() {
+		uncheckGridBoxes('contentIndex');
+	}
+</script>
+
+@Html.Partial("_blogIndexLinks")
+
+<br />
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contentIndex" })) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<ContentPage>(Model.Page);
+
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
+	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix ui-widget-content ui-corner-all" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.HtmlFormId = "contentIndex";
+	grid.PageSizeExternal = true;
+	grid.UseDataPage = false;
+	grid.ConfigName(Html.NameFor(x => x.Page.DataSource));
+
+	<table>
+		<tr>
+			<td class="tablecaption">
+				show content:
+			</td>
+			<td>
+				<div class="jqradioset">
+					@Html.RadioButtonFor(i => i.SelectedSearch, PageIndexModel.SearchBy.Filtered, new { GroupName = "rdoSelectedSearch", id = "rdoSelectedSearch1", onclick = "this.form.submit();" })
+					<label for="rdoSelectedSearch1">Show Filtered</label>
+
+					@Html.RadioButtonFor(i => i.SelectedSearch, PageIndexModel.SearchBy.AllPages, new { GroupName = "rdoSelectedSearch", id = "rdoSelectedSearch2", onclick = "this.form.submit();" })
+					<label for="rdoSelectedSearch2">Show All</label>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	if (Model.SelectedSearch == PageIndexModel.SearchBy.Filtered) {
+		<table>
+			<tr>
+				<td class="tablecaption">
+					go live date post filter:
+					<br />
+				</td>
+				<td>
+					&nbsp;&nbsp;
+				</td>
+				<td>
+					@Html.TextBoxFor(m => m.SearchDate, Helper.ShortDateFormatPattern, new { @class = "dateRegion form-control-sm", maxlength = "12", size = "16" })
+
+					@Html.DropDownListFor(m => m.SelectedRange, new SelectList(Model.DateRanges, "Key", "Value"))
+					<div style="clear: both; height: 2px;">
+					</div>
+				</td>
+				<td>
+					&nbsp;&nbsp;
+				</td>
+				<td>
+					<input type="submit" name="btnFilter" value="Apply" id="btnFilter" />
+				</td>
+			</tr>
+		</table>
+	} else {
+		<p>
+			<input id="btnChangePage" type="submit" value="Change Page Size" name="btnChangePage">
+			@Html.DropDownListFor(m => m.Page.PageSize, new SelectList(Model.PageSizes.Select(x => new { Value = x, Text = x }), "Value", "Text"))
+		</p>
+		@Html.HiddenFor(m => m.SelectedRange)
+	}
+
+	<table>
+		<tr>
+			<td class="tablecaption">
+				template to apply to selected pages:
+			</td>
+			<td>
+				@Html.DropDownListFor(model => Model.SelectedTemplate, new SelectList(Model.SiteTemplateList, "TemplatePath", "Caption"), "[Select Template]")
+			</td>
+		</tr>
+	</table>
+	<br />
+	<div>
+		<input type="submit" name="btnSaveMapping" value="Save" id="btnSaveMapping" />
+	</div>
+
+	<p>
+		<br />
+	</p>
+	<p>
+		<input type="button" value="Check All" onclick="CheckTheBoxes()" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" value="Uncheck All" onclick="UncheckTheBoxes()" />
+	</p>
+
+	<p>
+		@String.Format("{0} total records", grid.DataPage.TotalRecords)
+	</p>
+
+	grid
+		.AddColumn(new CarrotGridTemplateColumn<ContentPage> {
+			HasHeadingText = false,
+			FormatTemplate = @<text>
+
+				@grid.FormFieldFor(i => i.Selected, GridFormFieldType.Checkbox)
+				@grid.FormFieldFor(i => i.Root_ContentID, GridFormFieldType.Hidden)
+			</text>
+		})
+		.AddColumn(x => x.TemplateFile, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.NavMenuText, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.FileName, new CarrotGridColumn { Sortable = true })
+		.AddColumn(x => x.CreateDate, new CarrotGridColumn { Sortable = true, CellFormatString = Helper.ShortDateFormatPattern })
+		.AddColumn(x => x.EditDate, new CarrotGridColumn { Sortable = true, CellFormatString = Helper.ShortDateFormatPattern })
+
+		.AddColumn(x => x.PageActive, new CarrotGridBooleanImageColumn {
+			AlternateTextTrue = "Active",
+			AlternateTextFalse = "Inactive",
+			Sortable = true
+		});
+
+		<div class="tablezone">
+			@grid.OutputHtmlBody()
+		</div>
+}
