@@ -19,7 +19,6 @@ namespace Carrotware.CMS.UI.Components.Controllers {
 		protected MemoryStream _stream = new MemoryStream();
 
 		public HomeController(IWebHostEnvironment environment) : base(environment) {
-
 		}
 
 		protected override void Dispose(bool disposing) {
@@ -32,9 +31,8 @@ namespace Carrotware.CMS.UI.Components.Controllers {
 				string fc, string bc, string hbc, string hfc, string uf,
 				string sbg, string sfg, string bc2, string fc2) {
 
-			//var context = CarrotHttpHelper.HttpContext;
-			//context.Response.Cache.VaryByParams["el"] = true;
-			//context.Response.Cache.VaryByParams["ts"] = true;
+			this.VaryCacheByQuery(new string[] { "el", "ts", "f", "bg", "fc", "bc" }, 5);
+
 			DoCacheMagic(7);
 
 			var nav = new TwoLevelNavigation(f, bg, ubg, fc, bc,

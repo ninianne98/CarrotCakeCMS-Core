@@ -55,7 +55,7 @@ namespace Carrotware.Web.UI.Components {
 				};
 
 				message.Headers.Add("X-Computer", Environment.MachineName);
-				message.Headers.Add("X-Originating-IP", CarrotWebHelper.Current.Connection.RemoteIpAddress.ToString());
+				message.Headers.Add("X-Originating-IP", CarrotWebHelper.HttpContext.Connection.RemoteIpAddress.ToString());
 				message.Headers.Add("X-Application", "Carrotware Web " + CurrentDLLVersion);
 				message.Headers.Add("User-Agent", "Carrotware Web " + CurrentDLLVersion);
 				message.Headers.Add("Message-ID", "<" + Guid.NewGuid().ToString().ToLowerInvariant() + "@" + mailSettings.MailDomainName + ">");

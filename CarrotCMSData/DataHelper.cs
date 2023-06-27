@@ -1,9 +1,8 @@
 ﻿using Carrotware.CMS.Data.Models;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using System.Data;
 using System.Reflection;
 
 /*
@@ -66,6 +65,41 @@ namespace Carrotware.CMS.Data {
 				}
 			}
 			return script;
+		}
+
+		public static DataSet ExecDataSet(string connName, string queryText) {
+			return ExecDataSet(connName, queryText, null);
+		}
+
+		public static DataSet ExecDataSet(string connName, string queryText, List<SqlParameter> parms) {
+			IConfigurationRoot configuration = GetConfig();
+			var conn = configuration.GetConnectionString(connName);
+
+			var ds = new DataSet();
+
+			if (parms == null) {
+				parms = new List<SqlParameter>();
+			}
+
+			using (SqlConnection cn = new SqlConnection(conn)) {
+				using (SqlCommand cmd = new SqlCommand(queryText, cn)) {
+					cn.Open();
+					cmd.CommandType = CommandType.Text;
+
+					if (parms != null) {
+						foreach (var p in parms) {
+							cmd.Parameters.Add(p);
+						}
+					}
+
+					using (SqlDataAdapter da = new SqlDataAdapter(cmd)) {
+						da.Fill(ds);
+					}
+				}
+				cn.Close();
+			}
+
+			return ds;
 		}
 	}
 }

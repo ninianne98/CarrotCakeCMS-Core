@@ -58,8 +58,6 @@ namespace Carrotware.CMS.Interface {
 
 		public static IMemoryCache MemoryCache { get { return _memoryCache; } }
 
-		public static HttpContext Current { get { return HttpContext; } }
-
 		public static HttpRequest Request { get { return HttpContext.Request; } }
 
 		public static HttpResponse Response { get { return HttpContext.Response; } }
@@ -95,7 +93,7 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public static string Session(string name) {
-			var query = Current.Session;
+			var query = HttpContext.Session;
 
 			if (query.Keys.Any()) {
 				return query.GetString(name);

@@ -40,6 +40,8 @@ namespace Carrotware.CMS.Data.Models {
 
 		public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; } = new List<AspNetUserToken>();
 
+		public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; } = new List<AspNetUserRole>();
+
 		public virtual ICollection<CarrotUserData> CarrotUserData { get; set; } = new List<CarrotUserData>();
 	}
 }

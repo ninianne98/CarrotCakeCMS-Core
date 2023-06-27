@@ -65,7 +65,7 @@ namespace Carrotware.CMS.Interface {
 		public static string CurrentScriptName {
 			get {
 				string sPath = "/";
-				try { sPath = CarrotHttpHelper.Current.Request.Path; } catch { }
+				try { sPath = CarrotHttpHelper.HttpContext.Request.Path; } catch { }
 				return sPath;
 			}
 		}

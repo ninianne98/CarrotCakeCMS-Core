@@ -67,28 +67,20 @@ namespace Carrotware.CMS.Interface {
 
 		#region QueryString Parsers
 
-		public static bool IsWebView {
-			get { return (CarrotHttpHelper.Current != null); }
-		}
-
 		public static Guid GetGuidParameterFromQuery(string ParmName) {
 			Guid id = Guid.Empty;
-			if (IsWebView) {
-				if (CarrotHttpHelper.QueryString(ParmName) != null
-					&& !string.IsNullOrEmpty(CarrotHttpHelper.QueryString(ParmName).ToString())) {
-					id = new Guid(CarrotHttpHelper.QueryString(ParmName).ToString());
-				}
+			if (CarrotHttpHelper.QueryString(ParmName) != null
+				&& !string.IsNullOrEmpty(CarrotHttpHelper.QueryString(ParmName).ToString())) {
+				id = new Guid(CarrotHttpHelper.QueryString(ParmName).ToString());
 			}
 			return id;
 		}
 
 		public static string GetStringParameterFromQuery(string ParmName) {
 			string id = string.Empty;
-			if (IsWebView) {
-				if (CarrotHttpHelper.QueryString(ParmName) != null
-					&& !string.IsNullOrEmpty(CarrotHttpHelper.QueryString(ParmName).ToString())) {
-					id = CarrotHttpHelper.QueryString(ParmName).ToString();
-				}
+			if (CarrotHttpHelper.QueryString(ParmName) != null
+				&& !string.IsNullOrEmpty(CarrotHttpHelper.QueryString(ParmName).ToString())) {
+				id = CarrotHttpHelper.QueryString(ParmName).ToString();
 			}
 			return id;
 		}

@@ -32,9 +32,9 @@
 		if (!cmsPageInit2) {
 			cmsSetPageStatus(cmsPageLocked);
 
-			if(!cmsPageLocked){
+			if (!cmsPageLocked) {
 				setTimeout('cmsEditHB();', 1000);
-			} else{
+			} else {
 				setTimeout(function () { cmsAlertModal("The content is already being edited by '@lockUsername' "); }, 250);
 			}
 
@@ -64,7 +64,7 @@
 		var cmsScrollWPos = parseInt('@EditorPrefs.EditorWidgetScrollPosition');
 		var cmsOpenStat = @String.Format("{0};", EditorPrefs.EditorOpen.ToString().ToLowerInvariant())
 
-		cmsSetPageStatus(cmsPageLocked);
+			cmsSetPageStatus(cmsPageLocked);
 
 		cmsSetPrefs(cmsTabIdx, cmsMargin, cmsScrollPos, cmsScrollWPos, cmsOpenStat);
 
@@ -168,8 +168,10 @@
 															<p class="cmsToolItem cms-seagreen">
 																@Html.Raw(widget.Caption)
 																@if (widget.SystemPlugin) {
-																	<span style="float:right;" class="ui-icon ui-icon-star"></span>		} else {
-																	<span style="float:right;" class="ui-icon ui-icon-tag"></span>		}
+																	<span style="float:right;" class="ui-icon ui-icon-star"></span>
+																} else {
+																	<span style="float:right;" class="ui-icon ui-icon-tag"></span>
+																}
 															</p>
 															<p class="cmsWidgetToolboxPath">
 																@String.Format("{0}", widget.FilePath).Replace(".", ". ").Replace("/", "/ ")

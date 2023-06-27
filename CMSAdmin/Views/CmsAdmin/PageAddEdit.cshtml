@@ -50,9 +50,9 @@
 				"Yes": function () { OverwriteFileData(); }
 			};
 
-			if (theTitle.length > 0 ) {
+			if (theTitle.length > 0) {
 				if (theFile.length > 0 || theNav.length > 0) {
-					cmsAlertModalSmallBtns('There is already content title and/or filename, overwrite?', opts );
+					cmsAlertModalSmallBtns('There is already content title and/or filename, overwrite?', opts);
 				} else {
 					GeneratePageFilename2();
 				}
@@ -151,115 +151,115 @@
 
 		@if (Model.ContentPage.IsPageLocked) {
 			<text>
-		function EditHB() { }
+				function EditHB() { }
 
-		function cancelEditing() { }
+			function cancelEditing() { }
 
-		function deleteContent() { }
+			function deleteContent() { }
 
-		function cmsRecordCancellation() { }
+			function cmsRecordCancellation() { }
 
-		function openPage() {
-			var theURL = $('#OriginalFileName').val();
+			function openPage() {
+				var theURL = $('#OriginalFileName').val();
 
-			if (theURL.length > 1) {
-				window.setTimeout("location.href = '" + theURL + "';", 250);
-			} else {
-				cmsAlertModalSmall("No saved page to show.");
+				if (theURL.length > 1) {
+					window.setTimeout("location.href = '" + theURL + "';", 250);
+				} else {
+					cmsAlertModalSmall("No saved page to show.");
+				}
 			}
-		}
-		</text>
+			</text>
 
 		} else {
 
 			<text>
-		function openPage() {
-			var theURL = $('#OriginalFileName').val();
-			cmsOpenPage(theURL);
-		}
-
-		function EditHB() {
-			var dataObj = {};
-			dataObj["PageID"] = thisPageID;
-
-			var webMthd = webSvc + "/RecordHeartbeat";
-			setTimeout("EditHB();", 25 * 1000);
-
-			$.ajax({
-				type: "POST",
-				url: webMthd,
-				data: JSON.stringify(dataObj),
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: updateHeartbeat,
-				error: cmsAjaxFailedSwallow
-			});
-		}
-
-		function updateHeartbeat(data, status) {
-			var hb = $('#cmsHeartBeat');
-			hb.empty().append('HB:  ');
-			hb.append(data);
-		}
-
-		$(document).ready(function () {
-			setTimeout("EditHB();", 1500);
-		});
-
-		function cancelEditing() {
-
-			var opts = {
-				"No": function () { cmsAlertModalClose(); },
-				"Yes": function () {
-					cmsMakeOKToLeave();
-					cmsRecordCancellation();
-					window.setTimeout("location.href = '@SiteFilename.PageIndexURL';", 500);
-					cmsAlertModalClose();
+				function openPage() {
+					var theURL = $('#OriginalFileName').val();
+					cmsOpenPage(theURL);
 				}
-			};
 
-			cmsAlertModalSmallBtns('Are you sure you want to leave the editor? All changes will be lost!', opts);
+			function EditHB() {
+				var dataObj = {};
+				dataObj["PageID"] = thisPageID;
 
-		}
-
-		function deleteContent() {
-
-			var opts = {
-				"No": function () { cmsAlertModalClose(); },
-				"Yes": function () {
-					cmsMakeOKToLeave();
-					$('#btnDelete').click();
-					cmsAlertModalClose();
-				}
-			};
-
-			cmsAlertModalSmallBtns('Are you sure you want to delete this content? All version history and widget data will be lost!', opts);
-
-		}
-
-		//setTimeout("cmsSendTrackbackPageBatch('" + thePageID + "');", 1500);
-
-		function cmsRecordCancellation() {
-
-			if (thePageID != '@Guid.Empty') {
-
-				var webMthd = webSvc + "/CancelEditing";
+				var webMthd = webSvc + "/RecordHeartbeat";
+				setTimeout("EditHB();", 25 * 1000);
 
 				$.ajax({
 					type: "POST",
 					url: webMthd,
-					data: JSON.stringify({ ThisPage: thePageID }),
+					data: JSON.stringify(dataObj),
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
-					success: cmsAjaxGeneralCallback,
-					error: cmsAjaxFailed
+					success: updateHeartbeat,
+					error: cmsAjaxFailedSwallow
 				});
 			}
-		}
-		</text>
+
+			function updateHeartbeat(data, status) {
+				var hb = $('#cmsHeartBeat');
+				hb.empty().append('HB:  ');
+				hb.append(data);
+			}
+
+			$(document).ready(function () {
+				setTimeout("EditHB();", 1500);
+			});
+
+			function cancelEditing() {
+
+				var opts = {
+					"No": function () { cmsAlertModalClose(); },
+					"Yes": function () {
+						cmsMakeOKToLeave();
+						cmsRecordCancellation();
+						window.setTimeout("location.href = '@SiteFilename.PageIndexURL';", 500);
+						cmsAlertModalClose();
+					}
+				};
+
+				cmsAlertModalSmallBtns('Are you sure you want to leave the editor? All changes will be lost!', opts);
+
+			}
+
+			function deleteContent() {
+
+				var opts = {
+					"No": function () { cmsAlertModalClose(); },
+					"Yes": function () {
+						cmsMakeOKToLeave();
+						$('#btnDelete').click();
+						cmsAlertModalClose();
+					}
+				};
+
+				cmsAlertModalSmallBtns('Are you sure you want to delete this content? All version history and widget data will be lost!', opts);
+
+			}
+
+			//setTimeout("cmsSendTrackbackPageBatch('" + thePageID + "');", 1500);
+
+			function cmsRecordCancellation() {
+
+				if (thePageID != '@Guid.Empty') {
+
+					var webMthd = webSvc + "/CancelEditing";
+
+					$.ajax({
+						type: "POST",
+						url: webMthd,
+						data: JSON.stringify({ ThisPage: thePageID }),
+						contentType: "application/json; charset=utf-8",
+						dataType: "json",
+						success: cmsAjaxGeneralCallback,
+						error: cmsAjaxFailed
+					});
+				}
+			}
+			</text>
 		}
 
-		var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
+								var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
 
 		$(window).bind('beforeunload', function () {
 			//cmsConfirmLeavingPage = false;
@@ -533,10 +533,10 @@
 					<!-- parent page plugin-->
 					@{
 						var drill = new SitePageDrillDownModel {
-							FieldName = Html.NameFor(m => m.ContentPage.Parent_ContentID).ToString(),
-							CurrentPageID = Model.ContentPage.Root_ContentID,
-							SelectedPageID = Model.ContentPage.Parent_ContentID
-						};
+					FieldName = Html.NameFor(m => m.ContentPage.Parent_ContentID).ToString(),
+					CurrentPageID = Model.ContentPage.Root_ContentID,
+					SelectedPageID = Model.ContentPage.Parent_ContentID
+				};
 					}
 
 					@Html.Partial("_SitePageDrillDown", drill)
@@ -659,7 +659,7 @@
 		</div>
 	</div>
 
-						}
+}
 
 <div style="display: none">
 	@using (Html.BeginForm("DeleteContentPage", CmsRouteConstants.CmsController.Admin)) {

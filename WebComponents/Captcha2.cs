@@ -63,15 +63,15 @@ namespace Carrotware.Web.UI.Components {
 					randImg = this.ImageOptions.ElementAt(rand.Next(0, this.ImageOptions.Count));
 
 					try {
-						if (CarrotWebHelper.Current.Session.GetString(SessionKey) != null) {
-							imageName = CarrotWebHelper.Current.Session.GetString(SessionKey).ToString();
+						if (CarrotWebHelper.HttpContext.Session.GetString(SessionKey) != null) {
+							imageName = CarrotWebHelper.HttpContext.Session.GetString(SessionKey).ToString();
 						} else {
 							imageName = string.Format("{0}|{1}", randImg.Key, randImg.Value);
-							CarrotWebHelper.Current.Session.SetString(SessionKey, imageName);
+							CarrotWebHelper.HttpContext.Session.SetString(SessionKey, imageName);
 						}
 					} catch {
 						imageName = string.Format("{0}|{1}", randImg.Key, randImg.Value);
-						CarrotWebHelper.Current.Session.SetString(SessionKey, imageName);
+						CarrotWebHelper.HttpContext.Session.SetString(SessionKey, imageName);
 					}
 				}
 
@@ -90,7 +90,7 @@ namespace Carrotware.Web.UI.Components {
 			bool valid = this.SessionKeyValue.Value.ToLowerInvariant().Trim() == testValue.ToLowerInvariant().Trim();
 
 			if (valid) {
-				CarrotWebHelper.Current.Session.SetString(SessionKey, null);
+				CarrotWebHelper.HttpContext.Session.SetString(SessionKey, null);
 			}
 
 			return valid;

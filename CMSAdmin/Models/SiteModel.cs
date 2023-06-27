@@ -1,8 +1,5 @@
 ﻿using Carrotware.CMS.Core;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -37,7 +34,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public List<UserModel> Users { get; set; }
 
 		[Display(Name = "New User")]
-		public string NewUserId { get; set; }
+		public string? NewUserId { get; set; }
 
 		[Display(Name = "Add to Editor Role ")]
 		public bool NewUserAsEditor { get; set; }

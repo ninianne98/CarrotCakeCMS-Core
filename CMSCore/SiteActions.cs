@@ -68,6 +68,7 @@ namespace Carrotware.CMS.Core {
 		public static string SiteTemplateUpdate { get { return "SiteTemplateUpdate"; } }
 		public static string TagAddEdit { get { return "TagAddEdit"; } }
 		public static string TagIndex { get { return "TagIndex"; } }
+		public static string TemplatePreview { get { return "TemplatePreview"; } }
 		public static string TextWidgetIndex { get { return "TextWidgetIndex"; } }
 		public static string UserAdd { get { return "UserAdd"; } }
 		public static string UserEdit { get { return "UserEdit"; } }

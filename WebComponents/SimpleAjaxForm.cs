@@ -40,19 +40,24 @@ namespace Carrotware.Web.UI.Components {
 		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object routeValues = null, object attributes = null) {
 			SetAjaxForm(helper, options, routeValues, attributes);
 
-			_helper.ViewContext.Writer.Write(_tag.OpenTag() + Environment.NewLine);
+			RenderOpen();
 		}
 
 		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object attributes = null) {
 			SetAjaxForm(helper, options, null, attributes);
 
-			_helper.ViewContext.Writer.Write(_tag.OpenTag() + Environment.NewLine);
+			RenderOpen();
 		}
 
 		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options) {
 			SetAjaxForm(helper, options, null, null);
 
+			RenderOpen();
+		}
+
+		private void RenderOpen() {
 			_helper.ViewContext.Writer.Write(_tag.OpenTag() + Environment.NewLine);
+			_helper.PreserveViewPath();
 		}
 
 		public void SetAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object routeValues, object attributes) {

@@ -1,8 +1,5 @@
 ﻿using Carrotware.CMS.Data.Models;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 /*
@@ -81,14 +78,7 @@ namespace Carrotware.CMS.Core {
 			using (var db = CarrotCakeContext.Create()) {
 				string xml = this.GetXml();
 
-				xml = xml.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?>", string.Empty);
-
-				object[] paramItems = new object[] {
-						new SqlParameter("@site", this.SiteID),
-						new SqlParameter("@xml", XElement.Parse(xml)),
-					};
-
-				db.Database.ExecuteSqlRaw("exec carrot_UpdateGoLiveLocal @SiteID = @site, @xmlDocument = @xml", paramItems);
+				db.SprocCarrotUpdateGoLiveLocal(this.SiteID, xml);
 			}
 		}
 

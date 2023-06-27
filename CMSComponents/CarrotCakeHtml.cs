@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 
 /*
@@ -111,9 +112,16 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class CarrotCakeHtmlWeb {
 		internal IHtmlHelper _helper;
+		private RouteValueDictionary _keyValuePairs = new RouteValueDictionary();
 
 		public CarrotCakeHtmlWeb(IHtmlHelper htmlHelper) {
 			_helper = htmlHelper;
+			_keyValuePairs = new RouteValueDictionary();
+
+			foreach (var route in _helper.ViewContext.RouteData.Values) {
+				_keyValuePairs.Add(route.Key, route.Value);
+			}
+			_keyValuePairs["area"] = string.Empty;
 		}
 
 		public Controller GetFauxController() {
@@ -186,6 +194,18 @@ namespace Carrotware.CMS.UI.Components {
 		public string CurrentViewName {
 			get {
 				return _helper.ViewContext.View.Path;
+			}
+		}
+
+		public IPrincipal UserPrincipal {
+			get {
+				return _helper.ViewContext.HttpContext.User;
+			}
+		}
+
+		public bool IsAuthenticated {
+			get {
+				return this.UserPrincipal.Identity.IsAuthenticated;
 			}
 		}
 
@@ -385,7 +405,8 @@ namespace Carrotware.CMS.UI.Components {
 
 		private string WidgetCounterKey = "cmsViewWidgetCountKey";
 
-		int _widgetCount = 0;
+		private int _widgetCount = 0;
+
 		public int WidgetCount {
 			get {
 				return _widgetCount++;
@@ -404,7 +425,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		internal string GetResultViewStringFromController(string actionName, Type type, object obj, object payload) {
-			bool IsPost = _helper.ViewContext.HttpContext.Request.Method.ToUpper() == "POST";
+			bool isFormPost = HttpMethods.IsPost(_helper.ViewContext.HttpContext.Request.Method);
 
 			if (obj is Controller) {
 				MethodInfo methodInfo = null;
@@ -430,7 +451,7 @@ namespace Carrotware.CMS.UI.Components {
 				if (mthds.Count <= 1) {
 					methodInfo = mthds.FirstOrDefault();
 				} else {
-					if (!IsPost) {
+					if (!isFormPost) {
 						methodInfo = mthds.Where(x => x.GetCustomAttributes(typeof(HttpGetAttribute), true).Any()).FirstOrDefault();
 						if (methodInfo == null) {
 							methodInfo = mthds.Where(x => !x.GetCustomAttributes(typeof(HttpPostAttribute), true).Any()).FirstOrDefault();
@@ -458,7 +479,7 @@ namespace Carrotware.CMS.UI.Components {
 					} else {
 						List<object> parametersArray = new List<object>();
 
-						if (!IsPost || parameters.Length > 1) {
+						if (!isFormPost || parameters.Length > 1) {
 							foreach (ParameterInfo parm in parameters) {
 								object val = null;
 
@@ -573,6 +594,13 @@ namespace Carrotware.CMS.UI.Components {
 			return new HtmlString(bodyText);
 		}
 
+		internal void RestoreOriginalRoutes() {
+			// restore original routes
+			foreach (var route in _keyValuePairs) {
+				_helper.ViewContext.RouteData.Values[route.Key] = route.Value;
+			}
+		}
+
 		internal string RenderPartialToString(string partialViewName) {
 			return _helper.Partial(partialViewName).RenderToString();
 
@@ -614,6 +642,8 @@ namespace Carrotware.CMS.UI.Components {
 							  select w).ToList();
 
 			foreach (Widget widget in widgetList) {
+				RestoreOriginalRoutes();
+
 				bool isWidgetClass = false;
 				string widgetKey = string.Format("WidgetId_{0}_{1}", placeHolderName, this.WidgetCount);
 
@@ -639,9 +669,6 @@ namespace Carrotware.CMS.UI.Components {
 								obj = _helper.ViewContext.HttpContext.RequestServices.GetService(objType);
 								if (obj == null) {
 									obj = CarrotHttpHelper.HttpContext.RequestServices.GetService(objType);
-								}
-								if (obj == null) {
-									obj = CarrotHttpHelper.ServiceProvider.GetService(objType);
 								}
 							} else {
 								obj = Activator.CreateInstance(objType);
@@ -845,6 +872,8 @@ namespace Carrotware.CMS.UI.Components {
 					sbWidgetbBody.AppendLine(widgetWrapper);
 				}
 			}
+
+			RestoreOriginalRoutes();
 
 			string bodyText = string.Empty;
 

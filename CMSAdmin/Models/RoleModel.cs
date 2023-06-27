@@ -34,7 +34,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public List<UserModel> Users { get; set; }
 
 		[Display(Name = "New User")]
-		public string NewUserId { get; set; }
+		public string? NewUserId { get; set; }
 
 		public bool CanEditRoleName {
 			get {

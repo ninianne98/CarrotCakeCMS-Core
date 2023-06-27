@@ -81,11 +81,11 @@
 	grid
 		.AddColumn(new CarrotGridTemplateColumn<ContentPage> {
 			HasHeadingText = false,
-			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.PageAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.Root_ContentID }, "~/Assets/Admin/Images/pencil.png", "Edit with WYSIWYG", null, null) </text>
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.PageAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.Root_ContentID, @area = "" }, "~/Assets/Admin/Images/pencil.png", "Edit with WYSIWYG", null, null) </text>
 		})
 		.AddColumn(new CarrotGridTemplateColumn<ContentPage> {
 			HasHeadingText = false,
-			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.PageAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.Root_ContentID, @mode = SiteData.RawMode }, "~/Assets/Admin/Images/script.png", "Edit with Plain Text", null, null) </text>
+			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage(SiteActions.PageAddEdit, CmsRouteConstants.CmsController.Admin, new { @id = @item.Root_ContentID, @area = "", @mode = SiteData.RawMode }, "~/Assets/Admin/Images/script.png", "Edit with Plain Text", null, null) </text>
 		})
 		.AddColumn(new CarrotGridTemplateColumn<ContentPage> {
 			HasHeadingText = false,

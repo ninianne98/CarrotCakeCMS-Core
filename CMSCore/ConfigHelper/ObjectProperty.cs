@@ -1,8 +1,6 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using System.Reflection;
 
 /*
@@ -33,7 +31,7 @@ namespace Carrotware.CMS.Core {
 					WidgetAttribute.FieldMode.CheckBox : WidgetAttribute.FieldMode.TextBox;
 		}
 
-		public ObjectProperty(Object obj, PropertyInfo prop)
+		public ObjectProperty(object obj, PropertyInfo prop)
 			: this(prop) {
 			this.DefValue = obj.GetType().GetProperty(prop.Name).GetValue(obj, null);
 		}
@@ -43,7 +41,7 @@ namespace Carrotware.CMS.Core {
 		public bool CanRead { get; set; }
 		public Type PropertyType { get; set; }
 
-		public Object DefValue { get; set; }
+		public object DefValue { get; set; }
 
 		public PropertyInfo Props { get; set; }
 
@@ -75,8 +73,18 @@ namespace Carrotware.CMS.Core {
 
 		//============================
 
-		public static List<ObjectProperty> GetWidgetProperties(Widget w, Guid guidContentID) {
-			Object widget = new Object();
+		public static object GetWidgetObject(Type type) {
+			var obj = CarrotHttpHelper.HttpContext.RequestServices.GetService(type);
+
+			if (obj == null) {
+				obj = Activator.CreateInstance(type);
+			}
+
+			return obj;
+		}
+
+		public static List<ObjectProperty> GetWidgetProperties(Widget w) {
+			object widget = new object();
 
 			List<WidgetProps> lstProps = w.ParseDefaultControlProperties();
 
@@ -85,7 +93,7 @@ namespace Carrotware.CMS.Core {
 					try {
 						string className = w.ControlPath.Replace("CLASS:", "");
 						Type t = ReflectionUtilities.GetTypeFromString(className);
-						widget = Activator.CreateInstance(t);
+						widget = GetWidgetObject(t);
 					} catch (Exception ex) { }
 				} else {
 					try {
@@ -95,14 +103,14 @@ namespace Carrotware.CMS.Core {
 
 						Type t = ReflectionUtilities.GetTypeFromString(objectClass);
 
-						Object obj = Activator.CreateInstance(t);
-						Object attrib = ReflectionUtilities.GetAttribute<WidgetActionSettingModelAttribute>(t, objectPrefix);
+						object obj = GetWidgetObject(t);
+						object attrib = ReflectionUtilities.GetAttribute<WidgetActionSettingModelAttribute>(t, objectPrefix);
 
 						if (attrib != null && attrib is WidgetActionSettingModelAttribute) {
 							string attrClass = (attrib as WidgetActionSettingModelAttribute).ClassName;
 							Type s = ReflectionUtilities.GetTypeFromString(attrClass);
 
-							widget = Activator.CreateInstance(s);
+							widget = GetWidgetObject(s);
 						}
 					} catch (Exception ex) { }
 				}
@@ -116,7 +124,7 @@ namespace Carrotware.CMS.Core {
 							modelClass = path[1];
 							Type objType = ReflectionUtilities.GetTypeFromString(modelClass);
 
-							widget = Activator.CreateInstance(objType);
+							widget = GetWidgetObject(objType);
 						}
 					} catch (Exception ex) { }
 				}
@@ -144,8 +152,8 @@ namespace Carrotware.CMS.Core {
 
 			//require that widget be attributed to be on the list
 			List<string> widgetProperties = (from ww in widget.GetType().GetProperties()
-												where Attribute.IsDefined(ww, typeof(WidgetAttribute))
-												select ww.Name.ToLowerInvariant()).ToList();
+											 where Attribute.IsDefined(ww, typeof(WidgetAttribute))
+											 select ww.Name.ToLowerInvariant()).ToList();
 
 			List<string> limitedProperties = widgetProperties;
 			try {
@@ -246,7 +254,7 @@ namespace Carrotware.CMS.Core {
 			return lstPropsToEdit;
 		}
 
-		public static List<ObjectProperty> GetObjectProperties(Object obj) {
+		public static List<ObjectProperty> GetObjectProperties(object obj) {
 			List<ObjectProperty> props = (from i in ReflectionUtilities.GetProperties(obj)
 										  select GetCustProps(obj, i)).ToList();
 			return props;
@@ -263,7 +271,7 @@ namespace Carrotware.CMS.Core {
 			return props;
 		}
 
-		public static ObjectProperty GetCustProps(Object obj, PropertyInfo prop) {
+		public static ObjectProperty GetCustProps(object obj, PropertyInfo prop) {
 			ObjectProperty objprop = new ObjectProperty(obj, prop);
 
 			try {

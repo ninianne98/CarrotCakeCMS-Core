@@ -1,4 +1,5 @@
 ﻿using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -20,14 +21,27 @@ namespace Carrotware.CMS.Interface {
 					IEnumerable<string> viewLocations) {
 
 			var workingFolder = new List<string>();
-			// get the folder of the view + 1 level deeper - specifically because of templates
+
+			if (context.ActionContext is ControllerContext) {
+				// get the folder of the view, specifically because of partial postbacks
+				var controller = context.ActionContext as ControllerContext;
+				var filename = controller.RestoreViewPath();
+
+				if (!string.IsNullOrEmpty(filename) && filename.Length > 4) {
+					var folder = Path.GetDirectoryName(filename).FixPathSlashes();
+
+					workingFolder.Add(folder + "/{0}.cshtml");
+					workingFolder.Add(folder + "/{0}.vbhtml");
+				}
+			}
 
 			if (context.ActionContext is ViewContext) {
+				// get the folder of the view + 1 level deeper - specifically because of templates
 				var view = context.ActionContext as ViewContext;
 				var root = CarrotHttpHelper.MapPath("/");
 
 				var filename = view.ExecutingFilePath;
-				var folder = Path.GetDirectoryName(filename).NormalizeFilename();
+				var folder = Path.GetDirectoryName(filename).FixPathSlashes();
 
 				workingFolder.Add(folder + "/{0}.cshtml");
 				workingFolder.Add(folder + "/{0}.vbhtml");

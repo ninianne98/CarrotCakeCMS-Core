@@ -1,4 +1,7 @@
-﻿/*
+﻿using Carrotware.CMS.Core;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -13,12 +16,17 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 	public class DatabaseSetupModel {
 
 		public DatabaseSetupModel() {
-			this.CreateUser = true;
-			this.Messages = new List<string>();
+			this.CreateUser = false;
+			this.Messages = new List<SelectListItem>();
+
+			try {
+				this.CreateUser = !SecurityData.CheckUserExistance();
+				this.Messages = SecurityData.CheckMigrationHistory();
+			} catch { }
 		}
 
 		public bool CreateUser { get; set; }
 
-		public List<string> Messages { get; set; }
+		public List<SelectListItem> Messages { get; set; }
 	}
 }

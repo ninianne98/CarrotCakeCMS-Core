@@ -69,6 +69,8 @@ namespace Carrotware.CMS.Core {
 		public static string SiteTemplateUpdateURL { get { return SiteData.AdminFolderPath + SiteActions.SiteTemplateUpdate; } }
 		public static string TagAddEditURL { get { return SiteData.AdminFolderPath + SiteActions.TagAddEdit; } }
 		public static string TagIndexURL { get { return SiteData.AdminFolderPath + SiteActions.TagIndex; } }
+		public static string TemplatePreviewURL { get { return SiteData.AdminFolderPath + SiteActions.TemplatePreview; } }
+		public static string TemplatePreviewAltUrl { get { return SiteData.AdminFolderPath + SiteActions.TemplatePreview + ".ashx"; } }
 		public static string TextWidgetIndexURL { get { return SiteData.AdminFolderPath + SiteActions.TextWidgetIndex; } }
 		public static string UserAddURL { get { return SiteData.AdminFolderPath + SiteActions.UserAdd; } }
 		public static string UserEditURL { get { return SiteData.AdminFolderPath + SiteActions.UserEdit; } }

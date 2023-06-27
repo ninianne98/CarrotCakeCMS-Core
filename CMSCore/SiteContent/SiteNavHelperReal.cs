@@ -1,7 +1,5 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Carrotware.Web.UI.Components;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -339,13 +337,7 @@ namespace Carrotware.CMS.Core {
 		public List<ContentDateTally> GetMonthBlogUpdateList(Guid siteID, int iUpdates, bool bActiveOnly) {
 			SiteData site = SiteData.GetSiteFromCache(siteID);
 
-			object[] paramItems = new object[] {
-						new SqlParameter("@site", siteID),
-						new SqlParameter("@act", bActiveOnly),
-						new SqlParameter("@upd", iUpdates),
-			};
-
-			var lstContentTally = db.CarrotContentTallies.FromSqlRaw("carrot_BlogMonthlyTallies @SiteID = @site, @ActiveOnly = @act, @TakeTop = @upd", paramItems).AsEnumerable();
+			var lstContentTally = db.SprocCarrotBlogMonthlyTallies(siteID, bActiveOnly, iUpdates);
 
 			List<ContentDateTally> lstContent = (from ct in lstContentTally
 												 orderby ct.DateMonth descending

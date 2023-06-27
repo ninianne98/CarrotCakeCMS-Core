@@ -8,10 +8,7 @@ using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using System.Xml.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -104,16 +101,29 @@ app.UseAuthorization();
 //app.MapControllerRoute(
 //	name: "CmsRoutes",
 //	pattern: "{*" + CmsConstraint.RouteKey + "}",
-//	defaults: new { controller = CmsRouteConstants.Controller.Content, action = CmsRouteConstants.DefaultAction },
+//	defaults: new { controller = CmsRouteConstants.CmsController.Content, action = CmsRouteConstants.DefaultAction },
 //	constraints: new { key = new CmsConstraint(config) }
 //);
 
-string adminFolder = SiteData.AdminFolderPath.TrimPathSlashes();
-
 app.MapDynamicControllerRoute<CmsRouting>("{*" + CmsRouting.RouteKey + "}");
 
-app.MapControllerRoute(name: "CmsStdAreas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
-//app.MapControllerRoute(name: "CmsStdRoutes", pattern: "{controller=Home}/{action=Index}/{id?}");
+var cccConfig = CarrotCakeConfig.GetConfig();
+var adminFolder = cccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
+
+app.MapControllerRoute(name: "C3Admin_Route",
+	pattern: adminFolder + "/{action=Index}/{id?}",
+	defaults: new {
+		controller = CmsRouteConstants.CmsController.Admin
+	});
+
+app.MapControllerRoute(name: "C3AdminApi_Route",
+	pattern: "api/" + adminFolder + "/{action=Index}/{id?}",
+	defaults: new {
+		controller = CmsRouteConstants.CmsController.AdminApi
+	});
+
+app.MapControllerRoute(name: "C3StdAreas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(name: "C3StdRoutes", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.CarrotWebRouteSetup();
 

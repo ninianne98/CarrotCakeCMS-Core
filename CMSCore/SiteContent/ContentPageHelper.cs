@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -26,14 +25,15 @@ namespace Carrotware.CMS.Core {
 		public ContentPageHelper() { }
 
 		public void BulkUpdateTemplate(Guid siteID, List<Guid> lstUpd, string sTemplateFile) {
-			IQueryable<CarrotContent> queryCont = (from ct in db.CarrotContents
-												   join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
-												   where r.SiteId == siteID
-														  && lstUpd.Contains(r.RootContentId)
-														  && ct.IsLatestVersion == true
-												   select ct);
+			var queryCont = (from ct in db.CarrotContents
+							 join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+							 where r.SiteId == siteID
+									&& lstUpd.Contains(r.RootContentId)
+									&& ct.IsLatestVersion == true
+							 select ct.ContentId);
 
-			//db.CarrotContents.BatchUpdate(queryCont, p => new CarrotContent { TemplateFile = sTemplateFile });
+			db.CarrotContents.Where(x => queryCont.Contains(x.ContentId) && x.IsLatestVersion == true)
+				.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
 			db.SaveChanges();
 		}
@@ -47,7 +47,7 @@ namespace Carrotware.CMS.Core {
 		public void UpdateAllBlogTemplates(Guid siteID, string sTemplateFile) {
 			var query = CannedQueries.GetBlogAllContentTbl(db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId))
+			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
 			db.SaveChanges();
@@ -56,7 +56,7 @@ namespace Carrotware.CMS.Core {
 		public void UpdateAllPageTemplates(Guid siteID, string sTemplateFile) {
 			var query = CannedQueries.GetContentAllContentTbl(db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId))
+			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
 			db.SaveChanges();
@@ -65,7 +65,7 @@ namespace Carrotware.CMS.Core {
 		public void UpdateTopPageTemplates(Guid siteID, string sTemplateFile) {
 			var query = CannedQueries.GetContentTopContentTbl(db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId))
+			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
 			db.SaveChanges();
@@ -74,7 +74,7 @@ namespace Carrotware.CMS.Core {
 		public void UpdateSubPageTemplates(Guid siteID, string sTemplateFile) {
 			var query = CannedQueries.GetContentSubContentTbl(db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId))
+			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
 			db.SaveChanges();

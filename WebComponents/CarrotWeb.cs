@@ -13,10 +13,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.ResponseCaching;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Net.Http.Headers;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
@@ -138,27 +140,38 @@ namespace Carrotware.Web.UI.Components {
 
 		public static IMemoryCache MemoryCache { get { return _memoryCache; } }
 
-		public static HttpContext Current { get { return HttpContext; } }
-
 		public static HttpRequest Request { get { return HttpContext.Request; } }
 
 		public static HttpResponse Response { get { return HttpContext.Response; } }
 
 		public static HttpContext HttpContext { get { return _httpContextAccessor.HttpContext; } }
 
-		public static void VaryCacheByQuery(string[] keys) {
-			var responseCachingFeature = Current.Features.Get<IResponseCachingFeature>();
+		public static void VaryCacheByQuery(this Controller controller, string[] keys) {
+			VaryCacheByQuery(controller, keys, 1.5);
+		}
+
+		public static void VaryCacheByQuery(this Controller controller, string[] keys, double minutes) {
+			if (minutes < 0) { minutes = 0.25; }
+			if (minutes > 30) { minutes = 30; }
+
+			var responseCachingFeature = controller.HttpContext.Features.Get<IResponseCachingFeature>();
 
 			if (responseCachingFeature != null && keys != null && keys.Any()) {
 				responseCachingFeature.VaryByQueryKeys = keys;
 			}
+
+			controller.HttpContext.Response.GetTypedHeaders().CacheControl =
+									new CacheControlHeaderValue() {
+										Public = true,
+										MaxAge = TimeSpan.FromMinutes(minutes)
+									};
 		}
 
 		public static string QueryString(string name) {
 			var query = Request.QueryString;
 
 			if (query.HasValue) {
-				var dict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(query.Value);
+				var dict = QueryHelpers.ParseQuery(query.Value);
 
 				if (dict != null) {
 					if (dict.ContainsKey(name)) {
@@ -171,7 +184,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static string Session(string name) {
-			var query = Current.Session;
+			var query = HttpContext.Session;
 
 			if (query.Keys.Any()) {
 				return query.GetString(name);
@@ -190,6 +203,7 @@ namespace Carrotware.Web.UI.Components {
 			//var rootpaths = root.Split(Path.AltDirectorySeparatorChar);
 			//var newPath = path.Split(Path.AltDirectorySeparatorChar);
 			//return string.Join('/', rootpaths.Union(newPath).Where(x => x.Length > 0));
+			// not using Path.Combine because it re-roots the path, and we need the full path so we can do File.Exists
 			return Path.Join(root, p);
 		}
 
@@ -287,6 +301,31 @@ namespace Carrotware.Web.UI.Components {
 				var fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 				return fvi.FileVersion;
 			}
+		}
+
+		public static string PartialViewKey { get { return "__ViewPath"; } }
+
+		public static void PreserveViewPath(this IHtmlHelper helper) {
+			string filename;
+			// as partial postbacks may forget where the original view came from, back up the path into a hidden field
+
+			if (HttpMethods.IsPost(helper.ViewContext.HttpContext.Request.Method)) {
+				filename = helper.ViewContext.HttpContext.Request.Form[PartialViewKey].ToString();
+			} else {
+				filename = helper.ViewContext.ExecutingFilePath ?? string.Empty;
+			}
+
+			helper.ViewContext.Writer.Write(helper.Hidden(PartialViewKey, Utils.EncodeBase64(filename), new { @id = PartialViewKey }).RenderToHtmlString());
+		}
+
+		public static string RestoreViewPath(this ControllerContext controllerContext) {
+			string filename = string.Empty;
+			// as partial postbacks may forget where the original view came from, this is the restore from postback
+			if (HttpMethods.IsPost(controllerContext.HttpContext.Request.Method)) {
+				filename = controllerContext.HttpContext.Request.Form[PartialViewKey].ToString();
+			}
+
+			return Utils.DecodeBase64(filename);
 		}
 
 		public static string ShortDateFormatPattern {
@@ -862,7 +901,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public HtmlString GetIP() {
-			return new HtmlString(CarrotWebHelper.Current.Connection.RemoteIpAddress.ToString());
+			return new HtmlString(CarrotWebHelper.HttpContext.Connection.RemoteIpAddress.ToString());
 		}
 
 		public HtmlString GetHost() {

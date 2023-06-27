@@ -4,9 +4,7 @@ using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Reflection;
-using System.Runtime;
 using System.Xml.Serialization;
 
 /*
@@ -36,17 +34,10 @@ namespace Carrotware.CMS.UI.Components {
 			frmBuilder.MergeAttribute("action", page.TheSite.SiteSearchPath);
 			frmBuilder.MergeAttribute("method", "GET");
 
-			//frmBuilder.MergeAttribute("action", page.ThePage.FileName);
-			//frmBuilder.MergeAttribute("method", "POST");
-
 			var frmAttribs = formAttributes.ToAttributeDictionary();
 			frmBuilder.MergeAttributes(frmAttribs);
 
 			string frmTag = frmBuilder.RenderStartTag().RenderToString()
-							//+ Environment.NewLine
-							//+ helper.AntiForgeryToken().RenderToString()  // only put in if using a post
-							//+ Environment.NewLine
-							//+ frmID.ToString(TagRenderMode.SelfClosing)
 							+ Environment.NewLine;
 
 			_helper.ViewContext.Writer.Write(frmTag);
@@ -81,62 +72,6 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==================================================
 
-	//public class ContactForm : IDisposable {
-	//	protected IHtmlHelper _helper;
-
-	//	public ContactForm(IHtmlHelper helper, PagePayload page, object formAttributes = null) {
-	//		_helper = helper;
-
-	//		var frmID = new TagBuilder("input");
-	//		frmID.MergeAttribute("type", "hidden");
-	//		frmID.MergeAttribute("name", "form_type");
-	//		frmID.MergeAttribute("value", "ContactForm");
-
-	//		var frmBuilder = new TagBuilder("form");
-	//		frmBuilder.MergeAttribute("action", page.ThePage.FileName);
-	//		frmBuilder.MergeAttribute("method", "POST");
-
-	//		var frmAttribs = (IDictionary<string, object>)IHtmlHelper.AnonymousObjectToHtmlAttributes(formAttributes);
-	//		frmBuilder.MergeAttributes(frmAttribs);
-
-	//		string frmTag = frmBuilder.ToString(TagRenderMode.StartTag)
-	//						+ Environment.NewLine
-	//						+ _helper.AntiForgeryToken().RenderToString()
-	//						+ Environment.NewLine
-	//						+ frmID.ToString(TagRenderMode.SelfClosing);
-
-	//		_helper.ViewContext.Writer.Write(frmTag);
-	//	}
-
-	//	public IHtmlHelper<ContactInfo> GetModelHelper() {
-	//		ContactInfo model = new ContactInfo();
-
-	//		//var lst = ModelBinders.Binders.Values.Where(x => x is GenericModelBinder).Cast<GenericModelBinder>().ToList();
-	//		////.Where(x => x.BinderType is ContactInfo).ToList();
-
-	//		//if (!lst.Any()) {
-	//		//	var bind = new GenericModelBinder();
-	//		//	bind.BinderType = typeof(ContactInfo);
-	//		//	ModelBinders.Binders.Add(bind.BinderType, bind);
-	//		//}
-
-	//		if (_helper.ViewData[ContactInfo.Key] != null) {
-	//			model = _helper.ViewData[ContactInfo.Key] as ContactInfo;
-
-	//		} else {
-	//			model = new ContactInfo();
-	//		}
-
-	//		return new HtmlHelper<ContactInfo>(_helper.ViewContext, new WrapperForHtmlHelper<ContactInfo>(model, _helper.ViewData));
-	//	}
-
-	//	public void Dispose() {
-	//		_helper.ViewContext.Writer.Write("</form>");
-	//	}
-	//}
-
-	//==================================================
-
 	public class AjaxContactForm : IDisposable {
 		protected IHtmlHelper _helper;
 		protected SimpleAjaxForm frm = null;
@@ -168,7 +103,6 @@ namespace Carrotware.CMS.UI.Components {
 			} else {
 				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
-
 		}
 
 		public IHtmlHelper<ContactInfo> GetModelHelper(string partialName, IValidateHuman validateHuman) {
@@ -527,7 +461,6 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-
 			if (frm != null) {
 				frm.Dispose();
 			}
@@ -659,7 +592,6 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-
 			if (frm != null) {
 				frm.Dispose();
 			}
@@ -800,7 +732,6 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-
 			if (frm != null) {
 				frm.Dispose();
 			}
@@ -947,7 +878,6 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-
 			if (frm != null) {
 				frm.Dispose();
 			}
@@ -1099,7 +1029,6 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-
 			if (frm != null) {
 				frm.Dispose();
 			}
@@ -1226,16 +1155,6 @@ namespace Carrotware.CMS.UI.Components {
 	//==================================================
 
 	public class GenericModelBinder : IModelBinder {
-		//public T BindModel<T>(ControllerContext controllerContext, ModelBindingContext bindingContext) {
-		//	var request = controllerContext.HttpContext.Request;
-
-		//	T obj = Activator.CreateInstance<T>();
-
-		//	obj = FormHelper.ParseRequest<T>(obj, request);
-
-		//	return obj;
-		//}
-
 		public Type BinderType { get; set; }
 
 		public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {

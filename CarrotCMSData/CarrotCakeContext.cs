@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -29,6 +31,8 @@ namespace Carrotware.CMS.Data.Models {
 
 	public partial class CarrotCakeContext : DbContext {
 
+		public static string DBKey { get { return "CarrotwareCMS"; } }
+
 		public CarrotCakeContext() {
 		}
 
@@ -36,25 +40,24 @@ namespace Carrotware.CMS.Data.Models {
 			: base(options) {
 		}
 
-		//public CarrotCakeContext(IConfiguration configuration) {
-		//	_configuration = configuration;
-
-		//	var optionsBuilder = new DbContextOptionsBuilder<CarrotCakeContext>();
-
-		//	var conn = _configuration.GetConnectionString("CarrotwareCMS");
-		//	optionsBuilder.UseSqlServer(conn);
-		//}
-
 		public static CarrotCakeContext Create() {
 			var optionsBuilder = new DbContextOptionsBuilder<CarrotCakeContext>();
 
-			DataHelper.Configure("CarrotwareCMS", optionsBuilder);
+			DataHelper.Configure(DBKey, optionsBuilder);
 
 			return new CarrotCakeContext(optionsBuilder.Options);
 		}
 
+		public static DataSet Exec(string query, List<SqlParameter> parms) {
+			return DataHelper.ExecDataSet(DBKey, query, parms);
+		}
+
+		public static DataSet Exec(string query) {
+			return DataHelper.ExecDataSet(DBKey, query, null);
+		}
+
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-			DataHelper.Configure("CarrotwareCMS", optionsBuilder);
+			DataHelper.Configure(DBKey, optionsBuilder);
 		}
 
 		//=============================================
@@ -103,8 +106,33 @@ namespace Carrotware.CMS.Data.Models {
 		public virtual DbSet<vwCarrotUserData> vwCarrotUserData { get; set; } = null!;
 		public virtual DbSet<vwCarrotWidget> vwCarrotWidgets { get; set; } = null!;
 
-		// fake for sproc return
+		// fake for sproc return, see SprocCarrotBlogMonthlyTallies
 		public virtual DbSet<CarrotContentTally> CarrotContentTallies { get; set; } = null!;
+
+		//=============================================
+
+		public int SprocCarrotUpdateGoLiveLocal(Guid siteId, string xml) {
+			xml = xml.Replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>", string.Empty);
+			xml = xml.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?>", string.Empty);
+
+			object[] paramItems = new object[] {
+						new SqlParameter("@site", siteId),
+						new SqlParameter("@xml", xml),
+					};
+
+			return this.Database.ExecuteSqlRaw("exec dbo.carrot_UpdateGoLiveLocal @SiteID = @site, @xmlDocument = @xml", paramItems);
+		}
+
+		public IEnumerable<CarrotContentTally> SprocCarrotBlogMonthlyTallies(Guid siteId, bool activeOnly, int updates) {
+
+			object[] paramItems = new object[] {
+						new SqlParameter("@site", siteId),
+						new SqlParameter("@act", activeOnly),
+						new SqlParameter("@upd", updates),
+			};
+
+			return this.CarrotContentTallies.FromSqlRaw("exec dbo.carrot_BlogMonthlyTallies @SiteID = @site, @ActiveOnly = @act, @TakeTop = @upd", paramItems).AsEnumerable();
+		}
 
 		//=============================================
 
@@ -162,14 +190,16 @@ namespace Carrotware.CMS.Data.Models {
 			});
 
 			modelBuilder.Entity<AspNetUserRole>(entity => {
-				entity.HasNoKey();
+				entity.HasKey(e => new { e.UserId, e.RoleId });
 
 				entity.HasIndex(e => e.RoleId, "IX_AspNetUserRoles_RoleId");
+				entity.HasIndex(e => e.UserId, "IX_AspNetUserRoles_UserId");
 
 				entity.Property(e => e.RoleId).HasMaxLength(128);
 				entity.Property(e => e.UserId).HasMaxLength(128);
 
-				entity.HasOne(d => d.Role).WithMany().HasForeignKey(d => d.RoleId);
+				entity.HasOne(d => d.Role).WithMany(p => p.AspNetUserRoles).HasForeignKey(d => d.RoleId);
+				entity.HasOne(d => d.User).WithMany(p => p.AspNetUserRoles).HasForeignKey(d => d.UserId);
 			});
 
 			modelBuilder.Entity<AspNetUserToken>(entity => {

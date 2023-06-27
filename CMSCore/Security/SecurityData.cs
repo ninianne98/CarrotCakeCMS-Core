@@ -4,7 +4,7 @@ using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using System.Security.Principal;
 using System.Text;
@@ -31,6 +31,28 @@ namespace Carrotware.CMS.Core {
 
 		protected void LoadSettings() {
 			_config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
+		}
+
+		public static bool CheckUserExistance() {
+			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+				return (from u in db.AspNetUsers
+						select u.UserName).Take(10).Any();
+			}
+		}
+
+		public static List<SelectListItem> CheckMigrationHistory() {
+			var lst = new List<SelectListItem>();
+			string queryText = "SELECT [MigrationId], [ProductVersion] FROM [dbo].[__EFMigrationsHistory] ORDER BY [MigrationId] DESC, [ProductVersion]";
+
+			var ds = CarrotCakeContext.Exec(queryText);
+
+			if (ds.Tables.Count > 0) {
+				foreach (DataRow row in ds.Tables[0].Rows) {
+					lst.Add(new SelectListItem(row["MigrationId"].ToString(), row["ProductVersion"].ToString()));
+				}
+			}
+
+			return lst;
 		}
 
 		public static IdentityRole FindRole(string RoleName) {
@@ -315,7 +337,7 @@ namespace Carrotware.CMS.Core {
 
 		public static IPrincipal UserPrincipal {
 			get {
-				return CarrotHttpHelper.Current.User;
+				return CarrotHttpHelper.HttpContext.User;
 			}
 		}
 
@@ -481,6 +503,7 @@ namespace Carrotware.CMS.Core {
 		private static IdentityUser NewIdentityUser(AspNetUser u) {
 			return new IdentityUser(u.UserName) { Id = u.Id, Email = u.Email, UserName = u.UserName };
 		}
+
 		public static IdentityUser CurrentIdentityUser {
 			get {
 				if (string.IsNullOrEmpty(CurrentUserIdentityName)) {
@@ -603,7 +626,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public async Task<bool> ResetPassword(string resetUri, string email) {
-			HttpRequest request = CarrotHttpHelper.Current.Request;
+			HttpRequest request = CarrotHttpHelper.HttpContext.Request;
 			IdentityUser user = null;
 			string token = string.Empty;
 

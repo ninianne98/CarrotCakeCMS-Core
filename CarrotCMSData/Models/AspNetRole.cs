@@ -13,5 +13,7 @@ namespace Carrotware.CMS.Data.Models {
 		public string? ConcurrencyStamp { get; set; }
 
 		public virtual ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; } = new List<AspNetRoleClaim>();
+
+		public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; } = new List<AspNetUserRole>();
 	}
 }

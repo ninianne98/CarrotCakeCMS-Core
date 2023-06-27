@@ -411,7 +411,7 @@ namespace Carrotware.CMS.Core {
 		public ContentPageType.PageType ContentType { get; set; }
 
 		[Display(Name = "Slug")]
-		public string PageSlug { get; set; }
+		public string? PageSlug { get; set; }
 
 		public Guid ContentID { get; set; }
 		public Guid Root_ContentID { get; set; }
@@ -441,7 +441,7 @@ namespace Carrotware.CMS.Core {
 		[Required]
 		public string TemplateFile { get; set; }
 
-		public string Thumbnail { get; set; }
+		public string? Thumbnail { get; set; }
 
 		[Display(Name = "File Name")]
 		[StringLength(256)]
@@ -450,7 +450,7 @@ namespace Carrotware.CMS.Core {
 
 		[Display(Name = "Heading")]
 		[StringLength(256)]
-		public string PageHead { get; set; }
+		public string? PageHead { get; set; }
 
 		[Display(Name = "Title")]
 		[StringLength(256)]
@@ -463,13 +463,13 @@ namespace Carrotware.CMS.Core {
 		public string NavMenuText { get; set; }
 
 		[Display(Name = "Body")]
-		public string PageText { get; set; }
+		public string? PageText { get; set; }
 
 		[Display(Name = "Left Body")]
-		public string LeftPageText { get; set; }
+		public string? LeftPageText { get; set; }
 
 		[Display(Name = "Right Body")]
-		public string RightPageText { get; set; }
+		public string? RightPageText { get; set; }
 
 		public int NavOrder { get; set; }
 		public Guid? Parent_ContentID { get; set; }
@@ -496,16 +496,14 @@ namespace Carrotware.CMS.Core {
 
 		[Display(Name = "Meta Description")]
 		[StringLength(1024)]
-		public string MetaDescription { get; set; }
+		public string? MetaDescription { get; set; }
 
 		[Display(Name = "Meta Keyword")]
 		[StringLength(1024)]
-		public string MetaKeyword { get; set; }
+		public string? MetaKeyword { get; set; }
 
 		[Display(Name = "Versions")]
 		public int VersionCount { get; set; }
-
-		public string NewTrackBackURLs { get; set; }
 
 		[Display(Name = "Selected Item")]
 		public bool Selected { get; set; }
@@ -598,7 +596,7 @@ namespace Carrotware.CMS.Core {
 			return this.EditUser;
 		}
 
-		public ExtendedUserData EditUser {
+		public ExtendedUserData? EditUser {
 			get {
 				if (_user == null && this.EditUserId.HasValue) {
 					_user = new ExtendedUserData(this.EditUserId.Value);
@@ -613,7 +611,7 @@ namespace Carrotware.CMS.Core {
 			return this.CreateUser;
 		}
 
-		public ExtendedUserData CreateUser {
+		public ExtendedUserData? CreateUser {
 			get {
 				if (_crUser == null) {
 					_crUser = new ExtendedUserData(this.CreateUserId);
@@ -628,7 +626,7 @@ namespace Carrotware.CMS.Core {
 			return this.CreditUser;
 		}
 
-		public ExtendedUserData CreditUser {
+		public ExtendedUserData? CreditUser {
 			get {
 				if (_creditUser == null && this.CreditUserId.HasValue) {
 					_creditUser = new ExtendedUserData(this.CreditUserId.Value);
@@ -639,7 +637,7 @@ namespace Carrotware.CMS.Core {
 
 		private ExtendedUserData _bylineUser = null;
 
-		public ExtendedUserData BylineUser {
+		public ExtendedUserData? BylineUser {
 			get {
 				if (_bylineUser == null) {
 					_bylineUser = this.CreditUser;
@@ -711,7 +709,7 @@ namespace Carrotware.CMS.Core {
 		public IHtmlContent HeadingText { get { return new HtmlString(this.PageHead); } }
 
 		public string RequestedFileName {
-			get { return CarrotHttpHelper.Current.Request.Path; }
+			get { return CarrotHttpHelper.HttpContext.Request.Path; }
 		}
 
 		private List<ValidationResult> _errors = null;

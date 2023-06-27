@@ -71,18 +71,18 @@
 									.AddColumn(new CarrotGridTemplateColumn<UserModel> {
 										HasHeadingText = false,
 										FormatTemplate = @<text> @grid.FormFieldFor(m => m.Selected, GridFormFieldType.Checkbox)
+										@grid.FormFieldFor(m => m.User.Id, GridFormFieldType.Hidden)
 										@grid.FormFieldFor(m => m.User.UserName, GridFormFieldType.Hidden)
 										@grid.FormFieldFor(m => m.User.UserKey, GridFormFieldType.Hidden)
 										@grid.FormFieldFor(m => m.User.UserId, GridFormFieldType.Hidden)
 										@grid.FormFieldFor(m => m.User.Email, GridFormFieldType.Hidden)
 										@grid.FormFieldFor(m => m.User.FullName_FirstLast, GridFormFieldType.Hidden)</text>
 									})
-						.AddColumn(x => x.User.UserName, new CarrotGridColumn())
-						.AddColumn(x => x.User.FullName_FirstLast, new CarrotGridColumn())
-						.AddColumn(x => x.User.Email, new CarrotGridColumn());
+									.AddColumn(x => x.User.UserName, new CarrotGridColumn())
+									.AddColumn(x => x.User.FullName_FirstLast, new CarrotGridColumn())
+									.AddColumn(x => x.User.Email, new CarrotGridColumn());
 
 									@grid.OutputHtmlBody()
-
 								}
 							</div>
 

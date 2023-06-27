@@ -40,9 +40,9 @@
 			var webMthd = webSvc + "/GenerateBlogFilePrefix";
 
 			$.ajax({
-				type: "POST",
-				url: webMthd,
-				data: JSON.stringify({ ThePageSlug: mySlug, GoLiveDate: sGoLiveDate }),
+				type: "GET",
+				url: webMthd + "?ThePageSlug=" + encodeURIComponent(mySlug) + "&GoLiveDate=" + encodeURIComponent(sGoLiveDate),
+				//data: JSON.stringify({ ThePageSlug: mySlug, GoLiveDate: sGoLiveDate }),
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				success: editPrefixCallback,
@@ -209,7 +209,7 @@
 
 		} else {
 
-			<text>
+		<text>
 		function openPage() {
 			var theURL = $('#OriginalFileName').val();
 			cmsOpenPage(theURL);
@@ -271,7 +271,6 @@
 			};
 
 			cmsAlertModalSmallBtns('Are you sure you want to delete this content? All version history and widget data will be lost!', opts);
-
 		}
 
 		function cmsRecordCancellation() {

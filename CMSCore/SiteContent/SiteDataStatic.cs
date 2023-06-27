@@ -710,7 +710,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static string TemplatePreviewParameter {
-			get { return "carrot_templatepreview".ToLowerInvariant(); }
+			get { return "c3pv".ToLowerInvariant(); }
 		}
 
 		public static string DefaultDirectoryFilename {
@@ -736,7 +736,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static string PreviewTemplateFilePage {
-			get { return AdminFolderPath + "TemplatePreview"; }
+			get { return SiteFilename.TemplatePreviewAltUrl; }
 		}
 
 		public static bool IsPageSampler {

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 	[CmsAuthorize]
-	public class CmsAdminApiController : ControllerBase {
+	public class CmsAdminApiController : ControllerBase, IDisposable {
 
 		public static class ServiceResponse {
 			public static string OK { get { return "OK"; } }
@@ -38,26 +38,14 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		public CmsAdminApiController() {
-		}
+		public CmsAdminApiController() { }
 
-		private ContentPageHelper pageHelper = new ContentPageHelper();
-		private WidgetHelper widgetHelper = new WidgetHelper();
-		private SiteMapOrderHelper sitemapHelper = new SiteMapOrderHelper();
+		protected ContentPageHelper pageHelper = new ContentPageHelper();
+		protected WidgetHelper widgetHelper = new WidgetHelper();
+		protected SiteMapOrderHelper sitemapHelper = new SiteMapOrderHelper();
 
-		private Guid CurrentPageGuid = Guid.Empty;
-		private ContentPage filePage = null;
-
-		private List<ContentPage> _pages = null;
-
-		protected List<ContentPage> lstActivePages {
-			get {
-				if (_pages == null) {
-					_pages = pageHelper.GetLatestContentList(SiteData.CurrentSite.SiteID, true);
-				}
-				return _pages;
-			}
-		}
+		protected Guid CurrentPageGuid = Guid.Empty;
+		protected ContentPage filePage = null;
 
 		public ContentPage cmsAdminContent {
 			get {
@@ -410,16 +398,16 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
-		public List<UserProfile> FindUsers(string searchTerm) {
+		[HttpGet]
+		public string FindUsers(string searchTerm) {
 			string search = CMSConfigHelper.DecodeBase64(searchTerm);
 
 			List<UserProfile> lstUsers = SecurityData.GetUserProfileSearch(search);
 
-			return lstUsers.OrderBy(x => x.UserName).ToList();
+			return JsonSerializer.Serialize(lstUsers.OrderBy(x => x.UserName).ToList());
 		}
 
-		[HttpPost]
+		[HttpGet]
 		public string FindCreditUsers(string searchTerm) {
 			string search = CMSConfigHelper.DecodeBase64(searchTerm);
 
@@ -622,7 +610,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
+		[HttpGet]
 		public string GenerateBlogFilePrefix(string ThePageSlug, string GoLiveDate) {
 			try {
 				DateTime goLiveDate = Convert.ToDateTime(GoLiveDate);
@@ -1251,6 +1239,18 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
+			}
+		}
+
+		public void Dispose() {
+			if (pageHelper != null) {
+				pageHelper.Dispose();
+			}
+			if (widgetHelper != null) {
+				widgetHelper.Dispose();
+			}
+			if (sitemapHelper != null) {
+				sitemapHelper.Dispose();
 			}
 		}
 	}

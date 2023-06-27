@@ -7,13 +7,11 @@
 }
 
 <div class="status-scroll">
-
 	@foreach (var itm in Model.Messages) {
-		<div>
-			<b>
-				@itm
-			</b>
-		</div>
+		<p>
+			<b>@itm.Text</b> -
+			<span>@itm.Value</span>
+		</p>
 	}
 </div>
 <div>
@@ -25,6 +23,6 @@
 	}
 </div>
 <p>
-	<a href="@String.Format("{0}?", SiteFilename.DatabaseSetupURL)">Re-run</a> &nbsp;
-	| &nbsp; <a href="@String.Format("{0}?signout=true", SiteFilename.DatabaseSetupURL)">Re-run with signout</a>
+	<a href="@String.Format("{0}?", SiteFilename.DatabaseSetupURL)">Check</a> &nbsp;
+	| &nbsp; <a href="@String.Format("{0}?signout=true", SiteFilename.DatabaseSetupURL)">Check with signout</a>
 </p>

@@ -1,9 +1,6 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -230,7 +227,7 @@ namespace Carrotware.CMS.Core {
 			navNew.PageText = "<h2>Content CENTER</h2>\r\n" + SiteNavHelperMock.SampleBody;
 
 			navNew.TemplateFile = SiteData.PreviewTemplateFile;
-			navNew.FileName = SiteData.PreviewTemplateFilePage + "?" + CarrotHttpHelper.Current.Request.QueryString.ToString();
+			navNew.FileName = SiteData.PreviewTemplateFilePage + "?" + CarrotHttpHelper.HttpContext.Request.QueryString.ToString();
 
 			navNew.PageText = "<h2>Content CENTER</h2>\r\n" + sFile2;
 

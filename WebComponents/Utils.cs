@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -18,7 +15,7 @@ namespace Carrotware.Web.UI.Components {
 	public class Utils {
 
 		public static string DecodeBase64(string ValIn) {
-			string val = String.Empty;
+			string val = string.Empty;
 			if (!string.IsNullOrEmpty(ValIn)) {
 				Encoding enc = Encoding.GetEncoding("ISO-8859-1"); //Western European (ISO)
 				val = enc.GetString(Convert.FromBase64String(ValIn));
@@ -27,7 +24,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static string EncodeBase64(string ValIn) {
-			string val = String.Empty;
+			string val = string.Empty;
 			if (!string.IsNullOrEmpty(ValIn)) {
 				Encoding enc = Encoding.GetEncoding("ISO-8859-1"); //Western European (ISO)
 				byte[] toEncodeAsBytes = enc.GetBytes(ValIn);

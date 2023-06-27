@@ -24,11 +24,11 @@ namespace Carrotware.CMS.Core {
 		public string Email { get; set; }
 
 		public bool EmailConfirmed { get; set; }
-		public string PasswordHash { get; set; }
-		public string SecurityStamp { get; set; }
+		public string? PasswordHash { get; set; }
+		public string? SecurityStamp { get; set; }
 
 		[Display(Name = "Phone #")]
-		public string PhoneNumber { get; set; }
+		public string? PhoneNumber { get; set; }
 
 		public bool PhoneNumberConfirmed { get; set; }
 		public bool TwoFactorEnabled { get; set; }
@@ -55,18 +55,18 @@ namespace Carrotware.CMS.Core {
 
 		[StringLength(128)]
 		[Display(Name = "Nickname")]
-		public string UserNickName { get; set; }
+		public string? UserNickName { get; set; }
 
 		[StringLength(128)]
 		[Display(Name = "First")]
-		public string FirstName { get; set; }
+		public string? FirstName { get; set; }
 
 		[StringLength(128)]
 		[Display(Name = "Last")]
-		public string LastName { get; set; }
+		public string? LastName { get; set; }
 
 		[Display(Name = "Bio")]
-		public string UserBio { get; set; }
+		public string? UserBio { get; set; }
 
 		[Display(Name = "URL")]
 		public string EditorURL { get { return ContentPageHelper.ScrubFilename(this.UserId, string.Format("/{0}/{1}", SiteData.CurrentSite.BlogEditorFolderPath, this.UserName)); } }
@@ -104,6 +104,8 @@ namespace Carrotware.CMS.Core {
 				}
 			}
 		}
+
+		//==================================
 
 		public ExtendedUserData() { }
 

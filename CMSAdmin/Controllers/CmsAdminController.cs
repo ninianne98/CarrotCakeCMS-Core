@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Web;
 
@@ -31,7 +32,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			RouteValueDictionary vals = context.RouteData.Values;
 			string action = vals["action"].ToString().ToLowerInvariant();
-			string controller = vals["controller"].ToString().ToLowerInvariant();
+			//string controller = vals["controller"].ToString().ToLowerInvariant();
+			//context.RouteData.Values.Remove("area");
 
 			if (this.HttpContext.User.Identity.IsAuthenticated) {
 				//carveouts for setup
@@ -562,9 +564,14 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[AllowAnonymous]
 		public ActionResult DatabaseSetup(string signout) {
-			// TODO: just show the EF migration here
+			if (!string.IsNullOrEmpty(signout)) {
+				SignOut();
+				Response.Redirect(SiteFilename.DatabaseSetupURL);
+			}
 
-			return View();
+			var model = new DatabaseSetupModel();
+
+			return View(model);
 		}
 
 		[AllowAnonymous]
@@ -612,9 +619,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			return View(model);
 		}
 
-
 		[AllowAnonymous]
 		public ActionResult Login(string returnUrl) {
+			RedirectIfNoUsersExist();
+
 			LoginViewModel model = new LoginViewModel();
 			model.ReturnUrl = HttpUtility.UrlEncode(returnUrl);
 
@@ -704,7 +712,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[AllowAnonymous]
 		public ActionResult NotAuthorized() {
-
 			return View();
 		}
 
@@ -735,7 +742,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		public ActionResult Index() {
-			RedirectIfUsersExist();
+			RedirectIfNoUsersExist();
 
 			DashboardInfo model = new DashboardInfo();
 
@@ -1204,7 +1211,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult PageAddEdit(ContentPageModel model) {
+			model.ClearOptionalItems(ModelState);
 			Helper.ForceValidation(ModelState, model);
+
 			model.Mode = SiteData.EditMode(model.Mode);
 			ViewBag.ContentEditMode = model.Mode;
 
@@ -1310,7 +1319,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult BlogPostAddEdit(ContentPageModel model) {
+			model.ClearOptionalItems(ModelState);
 			Helper.ForceValidation(ModelState, model);
+
 			model.Mode = SiteData.EditMode(model.Mode);
 			ViewBag.ContentEditMode = model.Mode;
 
@@ -1354,7 +1365,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 						orderby aw.WidgetOrder, aw.EditDate
 						select aw).FirstOrDefault();
 
-			List<ObjectProperty> lstProps = ObjectProperty.GetWidgetProperties(w, pageid);
+			List<ObjectProperty> lstProps = ObjectProperty.GetWidgetProperties(w);
 
 			WidgetProperties model = new WidgetProperties(w, lstProps);
 
@@ -1570,6 +1581,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult PageAddChild(ContentPageModel model) {
+			model.ClearOptionalItems(ModelState);
 			model.VisitPage = false;
 
 			if (ModelState.IsValid && model.ParentID.HasValue) {
@@ -1656,7 +1668,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		// [ValidateInput(false)]
 		public ActionResult ContentEdit(ContentSingleModel model) {
 			if (ModelState.IsValid) {
 				cmsHelper.OverrideKey(model.PageId);
@@ -2264,7 +2275,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		// [ValidateInput(false)]
 		public ActionResult SiteSkinEdit(SiteSkinModel model) {
 			if (ModelState.IsValid) {
 				model.SaveFile();
@@ -2787,7 +2797,12 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			return pageContents;
 		}
 
-		public ActionResult TemplatePreview() {
+		[HttpGet]
+		// had to hack as an ASHX url due to the querystring not playing nicely - route was not being hit
+
+		public IActionResult TemplatePreview([FromQuery, MaxLength(2048)] string c3pv) {
+			this.VaryCacheByQuery(new string[] { "c3pv" }, 2);
+			var view = Utils.DecodeBase64(c3pv);
 			var page = PayloadHelper.GetSamplerPayload();
 
 			return View(page.ThePage.TemplateFile);
@@ -2797,11 +2812,20 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			Helper.AddErrors(ModelState, result);
 		}
 
+		private void RedirectIfNoUsersExist() {
+			var dbstat = new DatabaseSetupModel();
+			if (dbstat.CreateUser) {
+				RedirectToAction(SiteActions.CreateFirstAdmin, new { @signout = true });
+			}
+			return;
+		}
+
 		private void RedirectIfUsersExist() {
-			// TODO: fix user check
-			//if (UsersExist) {
-			//	Response.Redirect(SiteFilename.DashboardURL);
-			//}
+			var dbstat = new DatabaseSetupModel();
+			if (!dbstat.CreateUser) {
+				RedirectToAction(SiteActions.Dashboard, new { @signout = true });
+			}
+			return;
 		}
 
 		private ActionResult RedirectToLocal(string returnUrl) {

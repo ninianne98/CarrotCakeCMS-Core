@@ -51,15 +51,29 @@ namespace Carrotware.CMS.Core {
 			var routes = requestedUri.Split('/').Where(x => x.Length > 0).ToArray();
 
 			if (routes.Length > 0) {
-				if (routes[0].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
-					routeData.Add(CmsRouting.PageIdKey, adminFolder);
-					routeData[CmsRouting.SpecialKey] = true;
-					routeData["controller"] = CmsRouteConstants.CmsController.Admin;
-					routeData["action"] = routes.Length > 1 ? routes[1] : SiteActions.Index;
-					routeData["id"] = routes.Length > 2 ? routes[2] : null;
+				//if (routes[0].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
+				//	routeData.Add(CmsRouting.PageIdKey, adminFolder);
+				//	routeData[CmsRouting.SpecialKey] = true;
+				//	routeData["controller"] = CmsRouteConstants.CmsController.Admin;
+				//	routeData["action"] = routes.Length > 1 ? routes[1] : SiteActions.Index;
+				//	routeData["id"] = routes.Length > 2 ? routes[2] : null;
+				//	routeData["area"] = null;
+				//	return navData;
+				//}
 
-					return navData;
-				}
+				//if (routes.Length >= 3 && routes[0].ToLowerInvariant() == "api"
+				//		&& routes[1].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
+				//	var method = routes[2].ToString();
+				//	if (method.Length >= 3) {
+				//		routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.CmsController.AdminApi);
+				//		routeData[CmsRouting.SpecialKey] = true;
+				//		routeData["controller"] = CmsRouteConstants.CmsController.AdminApi;
+				//		routeData["action"] = method;
+				//		routeData["id"] = routes.Length > 3 ? routes[3] : null;
+				//		routeData["area"] = null;
+				//		return navData;
+				//	}
+				//}
 
 				if (routes.Length >= 2 && routes[0].ToLowerInvariant() == CmsRouteConstants.CmsController.AjaxForms.ToLowerInvariant()) {
 					var formaction = routes[1].ToString();
@@ -69,42 +83,45 @@ namespace Carrotware.CMS.Core {
 						routeData["controller"] = CmsRouteConstants.CmsController.Content;
 						routeData["action"] = Path.GetFileNameWithoutExtension(formaction);
 						routeData["id"] = routes.Length > 2 ? routes[2] : null;
-
-						return navData;
-					}
-				}
-
-				if (routes.Length >= 3 && routes[0].ToLowerInvariant() == "api"
-								&& routes[1].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
-					var method = routes[2].ToString();
-					if (method.Length >= 3) {
-						routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.CmsController.AdminApi);
-						routeData[CmsRouting.SpecialKey] = true;
-						routeData["controller"] = CmsRouteConstants.CmsController.AdminApi;
-						routeData["action"] = method;
-						routeData["id"] = routes.Length > 3 ? routes[3] : null;
+						routeData["area"] = null;
 
 						return navData;
 					}
 				}
 			}
 
-			if (requestedUri.EndsWith(".ashx")) {
-				if (requestedUri == SiteFilename.RssFeedUri) {
+			if (requestedUri.ToLowerInvariant().EndsWith(".ashx")) {
+				// use ashx hack because a long querystring fails to reach the route otherwise
+				if (requestedUri.ToLowerInvariant() == SiteFilename.TemplatePreviewAltUrl.ToLowerInvariant()) {
+					routeData.Add(CmsRouting.PageIdKey, SiteActions.TemplatePreview);
+					routeData.Add(CmsRouting.SpecialKey, true);
+					routeData["controller"] = CmsRouteConstants.CmsController.Admin;
+					routeData["action"] = SiteActions.TemplatePreview;
+					routeData["id"] = null;
+					routeData["area"] = null;
+
+					return navData;
+				}
+
+				if (requestedUri.ToLowerInvariant() == SiteFilename.RssFeedUri.ToLowerInvariant()) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.RssAction);
 					routeData.Add(CmsRouting.SpecialKey, true);
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
 					routeData["action"] = CmsRouteConstants.RssAction;
 					routeData["id"] = null;
+					routeData["area"] = null;
+
 					return navData;
 				}
 
-				if (requestedUri == SiteFilename.SiteMapUri) {
+				if (requestedUri.ToLowerInvariant() == SiteFilename.SiteMapUri.ToLowerInvariant()) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.SiteMapAction);
 					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
 					routeData["action"] = CmsRouteConstants.SiteMapAction;
 					routeData["id"] = null;
+					routeData["area"] = null;
+
 					return navData;
 				}
 
@@ -157,6 +174,7 @@ namespace Carrotware.CMS.Core {
 							routeData["controller"] = CmsRouteConstants.CmsController.Content;
 							routeData["action"] = CmsRouteConstants.DefaultAction;
 							routeData["id"] = null;
+							routeData["area"] = null;
 						} else {
 							SiteData.WriteDebugException("cmsroutehelper == null", new Exception(string.Format("_PageNotFound: {0}", sCurrentPage)));
 							// routeData["action"] = CmsRouteConstants.NotFoundAction;

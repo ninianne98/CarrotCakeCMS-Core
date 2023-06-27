@@ -1,4 +1,5 @@
 ﻿using Carrotware.CMS.Core;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
@@ -44,7 +45,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		private ExtendedUserData _usr = null;
 
-		public ExtendedUserData CreditUser {
+		public ExtendedUserData? CreditUser {
 			get {
 				if (this.ContentPage.CreditUserId.HasValue) {
 					if (_usr == null) {
@@ -448,6 +449,17 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			}
 
 			return errors;
+		}
+
+		public ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
+			// these child objects are for display only, and their validation is not needed
+			foreach (var ms in modelState.ToArray()) {
+				if (ms.Key.ToLowerInvariant().Contains("bylineuser") || ms.Key.ToLowerInvariant().Contains("createuser")) {
+					modelState.Remove(ms.Key);
+				}
+			}
+
+			return modelState;
 		}
 	}
 }

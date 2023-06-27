@@ -346,7 +346,7 @@ function cmsPreviewTemplate2() {
 	var tmpl = $(cmsTemplateListPreviewer).val();
 	tmpl = cmsMakeStringSafe(tmpl);
 
-	var srcURL = cmsTemplatePreview + "?carrot_templatepreview=" + tmpl;
+	var srcURL = cmsTemplatePreview + "?c3pv=" + tmpl;
 
 	var editIFrame = $('#cmsFrameEditorPreview');
 	$(editIFrame).attr('src', srcURL);
@@ -380,7 +380,7 @@ function cmsPreviewTemplate() {
 	var tmplReal = $(cmsTemplateDDL).val();
 	tmpl = cmsMakeStringSafe(tmplReal);
 
-	cmsLaunchWindowOnly(cmsTemplatePreview + "?carrot_templatepreview=" + tmpl);
+	cmsLaunchWindowOnly(cmsTemplatePreview + "?c3pv=" + tmpl);
 
 	var editFrame = $('#cmsModalFrame');
 

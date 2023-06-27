@@ -95,7 +95,7 @@ namespace Carrotware.CMS.Core {
 
 		public static string DomainName {
 			get {
-				var domName = CarrotHttpHelper.Current.Request.Host.Value;
+				var domName = CarrotHttpHelper.HttpContext.Request.Host.Value;
 				if ((domName.IndexOf(":") > 0) && (domName.EndsWith(":80") || domName.EndsWith(":443"))) {
 					domName = domName.Substring(0, domName.IndexOf(":"));
 				}
@@ -407,7 +407,7 @@ namespace Carrotware.CMS.Core {
 
 		public static string PluginAreaPath {
 			get {
-				string path = CarrotHttpHelper.Current.Request.Path;
+				string path = CarrotHttpHelper.HttpContext.Request.Path;
 
 				int i1 = path.IndexOf("/") + 1;
 				int i2 = path.IndexOf("/", 2) - 1;
@@ -417,7 +417,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<CMSAdminModuleMenu> GetCurrentAdminModuleControlList() {
-			HttpRequest request = CarrotHttpHelper.Current.Request;
+			HttpRequest request = CarrotHttpHelper.HttpContext.Request;
 			string pf = string.Empty;
 
 			CMSAdminModule mod = (from m in AdminModules

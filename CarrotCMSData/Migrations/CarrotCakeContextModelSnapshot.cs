@@ -17,7 +17,7 @@ namespace Carrotware.CMS.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -193,17 +193,19 @@ namespace Carrotware.CMS.Data.Migrations
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserRole", b =>
                 {
-                    b.Property<string>("RoleId")
-                        .IsRequired()
+                    b.Property<string>("UserId")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
+                    b.Property<string>("RoleId")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("UserId", "RoleId");
 
                     b.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+
+                    b.HasIndex(new[] { "UserId" }, "IX_AspNetUserRoles_UserId");
 
                     b.ToTable("AspNetUserRoles");
                 });
@@ -1791,12 +1793,20 @@ namespace Carrotware.CMS.Data.Migrations
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserRole", b =>
                 {
                     b.HasOne("Carrotware.CMS.Data.Models.AspNetRole", "Role")
-                        .WithMany()
+                        .WithMany("AspNetUserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Carrotware.CMS.Data.Models.AspNetUser", "User")
+                        .WithMany("AspNetUserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUserToken", b =>
@@ -2020,6 +2030,8 @@ namespace Carrotware.CMS.Data.Migrations
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetRole", b =>
                 {
                     b.Navigation("AspNetRoleClaims");
+
+                    b.Navigation("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("Carrotware.CMS.Data.Models.AspNetUser", b =>
@@ -2027,6 +2039,8 @@ namespace Carrotware.CMS.Data.Migrations
                     b.Navigation("AspNetUserClaims");
 
                     b.Navigation("AspNetUserLogins");
+
+                    b.Navigation("AspNetUserRoles");
 
                     b.Navigation("AspNetUserTokens");
 

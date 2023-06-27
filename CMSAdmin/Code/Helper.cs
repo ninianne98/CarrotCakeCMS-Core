@@ -31,8 +31,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 
 		public static string WebServiceAddress {
 			get {
-				// TODO: read config entry
-				return "/api/c3-admin";
+				var cccConfig = CarrotCakeConfig.GetConfig();
+				var adminFolder = cccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
+
+				return "/api/" + adminFolder;
 			}
 		}
 
@@ -169,7 +171,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
-		public static void ForceValidation(ModelStateDictionary stateDictionary, Object m) {
+		public static void ForceValidation(ModelStateDictionary stateDictionary, object m) {
 			IValidatableObject model = null;
 
 			if (m is IValidatableObject) {

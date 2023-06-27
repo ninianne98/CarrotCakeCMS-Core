@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -38,7 +32,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		}
 
 		public ActionResult GetImageThumb(string thumb, bool? scale, int? square) {
-			CarrotWebHelper.VaryCacheByQuery(new string[] { "thumb", "scale", "square" });
+			this.VaryCacheByQuery(new string[] { "thumb", "scale", "square" }, 1);
 
 			DoCacheMagic(3);
 
@@ -138,95 +132,100 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			return bmpNew;
 		}
 
-		public ActionResult GetWebResource(string r, string ts) {
-			CarrotWebHelper.VaryCacheByQuery(new string[] { "r", "ts" });
+		public IActionResult GetWebResource(string r, string ts) {
+			this.VaryCacheByQuery(new string[] { "r", "ts" }, 7);
 
-			DoCacheMagic(5);
-
-			var mime = "text/x-plain";
 			string resource = Utils.DecodeBase64(r);
 
-			var res = resource.Split(':');
-			var ext = Path.GetExtension(res[0]);
+			if (resource != null && resource.Length > 0) {
+				DoCacheMagic(7);
 
-			if (FileDataHelper.MimeTypes.ContainsKey(ext)) {
-				mime = FileDataHelper.MimeTypes[ext];
-			}
+				var mime = "text/x-plain";
+				var res = resource.Split(':');
+				var ext = Path.GetExtension(res[0]);
 
-			if (mime == "text/x-plain") {
-				// sometimes the lookup fails, fix these common types so they render binary/byte[]
-				var exts = new string[] { ".exe", ".zip", ".png", ".gif", ".jpg", ".jpeg", ".webp", ".mp3", ".mp4" };
-				if (exts.Contains(ext.ToLowerInvariant())) {
-					mime = "application/octet-stream";
+				if (FileDataHelper.MimeTypes.ContainsKey(ext)) {
+					mime = FileDataHelper.MimeTypes[ext];
 				}
-			}
 
-			if (mime.ToLowerInvariant().StartsWith("text")) {
-				var assembly = CarrotWebHelper.GetAssembly(res);
+				if (mime == "text/x-plain") {
+					// sometimes the lookup fails, fix these common types so they render binary/byte[]
+					var exts = new string[] { ".exe", ".zip", ".png", ".gif", ".jpg", ".jpeg", ".webp", ".mp3", ".mp4" };
+					if (exts.Contains(ext.ToLowerInvariant())) {
+						mime = "application/octet-stream";
+					}
+				}
 
-				var txt = CarrotWebHelper.GetManifestResourceText(this.GetType(), resource);
-				var sb = new StringBuilder(txt);
+				if (mime.ToLowerInvariant().StartsWith("text")) {
+					var assembly = CarrotWebHelper.GetAssembly(res);
 
-				//because things like css might have images that are in the dll with the css
-				try {
-					Regex webResourceRegEx = new Regex(@"<%\s*=\s*(?<rt>WebResource)\(""(?<rn>[^""]*)""\)\s*%>", RegexOptions.Singleline);
-					MatchCollection matches = webResourceRegEx.Matches(txt);
+					var txt = CarrotWebHelper.GetManifestResourceText(this.GetType(), resource);
+					var sb = new StringBuilder(txt);
 
-					if (matches.Count > 0) {
-						List<string> resNames = assembly.GetManifestResourceNames().ToList();
+					//because things like css might have images that are in the dll with the css
+					try {
+						Regex webResourceRegEx = new Regex(@"<%\s*=\s*(?<rt>WebResource)\(""(?<rn>[^""]*)""\)\s*%>", RegexOptions.Singleline);
+						MatchCollection matches = webResourceRegEx.Matches(txt);
 
-						foreach (Match m in matches) {
-							var orig = m.Value;
-							Group g = m.Groups["rn"];
+						if (matches.Count > 0) {
+							List<string> resNames = assembly.GetManifestResourceNames().ToList();
 
-							string resourceName = g.Value;
+							foreach (Match m in matches) {
+								var orig = m.Value;
+								Group g = m.Groups["rn"];
 
-							var shortestNamespace = assembly.GetTypes()
-													.Where(x => x != null && !string.IsNullOrEmpty(x.Namespace))
-													.OrderBy(n => n.Namespace.Length)
-													.Select(n => n.Namespace)
-													.FirstOrDefault();
+								string resourceName = g.Value;
 
-							//var altResourceName1 = string.Format("{0}.{1}", CarrotWebHelper.TrimAssemblyName(assembly), resourceName);
-							var altResourceName2 = string.Format("{0}.{1}", shortestNamespace, resourceName);
+								var shortestNamespace = assembly.GetTypes()
+														.Where(x => x != null && !string.IsNullOrEmpty(x.Namespace))
+														.OrderBy(n => n.Namespace.Length)
+														.Select(n => n.Namespace)
+														.FirstOrDefault();
 
-							//validate that the resource is even there, and match the case that it is stored with
-							var embeddedName = resNames.Where(x => x.ToLowerInvariant() == resourceName.ToLowerInvariant()
-											//|| x.ToLowerInvariant() == altResourceName1.ToLowerInvariant()
-											|| x.ToLowerInvariant() == altResourceName2.ToLowerInvariant()).FirstOrDefault();
+								var altResourceName2 = string.Format("{0}.{1}", shortestNamespace, resourceName);
 
-							//if plugging in the namespace didn't do it, just get trailing matches
-							if (string.IsNullOrWhiteSpace(embeddedName)) {
-								embeddedName = resNames.OrderByDescending(x => x.Length)
-											.Where(x => x.ToLowerInvariant().EndsWith(resourceName.ToLowerInvariant()))
-											.FirstOrDefault();
-							}
+								//validate that the resource is even there, and match the case that it is stored with
+								var embeddedName = resNames.Where(x => x.ToLowerInvariant() == resourceName.ToLowerInvariant()
+												//|| x.ToLowerInvariant() == altResourceName1.ToLowerInvariant()
+												|| x.ToLowerInvariant() == altResourceName2.ToLowerInvariant()).FirstOrDefault();
 
-							// only do the sub if the name is found
-							if (!string.IsNullOrWhiteSpace(embeddedName)) {
-								// search the same assembly as had the initial file that was loaded
-								sb.Replace(orig, CarrotWebHelper.GetWebResourceUrl(assembly, embeddedName));
+								//if plugging in the namespace didn't do it, just get trailing matches
+								if (string.IsNullOrWhiteSpace(embeddedName)) {
+									embeddedName = resNames.OrderByDescending(x => x.Length)
+												.Where(x => x.ToLowerInvariant().EndsWith(resourceName.ToLowerInvariant()))
+												.FirstOrDefault();
+								}
+
+								// only do the sub if the name is found
+								if (!string.IsNullOrWhiteSpace(embeddedName)) {
+									// search the same assembly as had the initial file that was loaded
+									sb.Replace(orig, CarrotWebHelper.GetWebResourceUrl(assembly, embeddedName));
+								}
 							}
 						}
-					}
-				} catch (Exception ex) { }
+					} catch (Exception ex) { }
 
-				txt = sb.ToString();
+					txt = sb.ToString();
 
-				var byteArray = Encoding.UTF8.GetBytes(txt);
-				_stream = new MemoryStream(byteArray);
-			} else {
-				var bytes = CarrotWebHelper.GetManifestResourceBytes(this.GetType(), resource);
-				_stream = new MemoryStream(bytes);
+					var byteArray = Encoding.UTF8.GetBytes(txt);
+					_stream = new MemoryStream(byteArray);
+				} else {
+					var bytes = CarrotWebHelper.GetManifestResourceBytes(this.GetType(), resource);
+					_stream = new MemoryStream(bytes);
+				}
+
+				return File(_stream, mime);
 			}
 
-			return File(_stream, mime);
+			this.VaryCacheByQuery(new string[] { "r", "ts" }, 0.1);
+			this.Response.StatusCode = 404;
+			return Content("Not Found");
 		}
 
 		public ActionResult GetCaptchaImage(string fgcolor, string bgcolor, string ncolor) {
-			CarrotWebHelper.VaryCacheByQuery(new string[] { "fgcolor", "bgcolor", "ncolor", "ts" });
+			this.VaryCacheByQuery(new string[] { "fgcolor", "bgcolor", "ncolor", "ts" }, 1);
 
-			DoCacheMagic(3);
+			DoCacheMagic(1);
 
 			Color f = CarrotWebHelper.DecodeColor(fgcolor);
 			Color b = CarrotWebHelper.DecodeColor(bgcolor);
@@ -251,7 +250,8 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		public ActionResult GetCarrotCalendarCss(string el, string wc, string wb, string cc, string cb,
 												string tc, string tb, string tsb, string tl,
 												string nc, string nb, string nsb, string nl) {
-			CarrotWebHelper.VaryCacheByQuery(new string[] { "el", "ts" });
+
+			this.VaryCacheByQuery(new string[] { "el", "wc", "wb", "cc", "tc", "tb" }, 3);
 
 			DoCacheMagic(7);
 
@@ -270,7 +270,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		}
 
 		public ActionResult GetCarrotHelp(string id) {
-			var context = CarrotWebHelper.Current;
+			var context = CarrotWebHelper.HttpContext;
 			// context.Response.Cache.VaryByParams["ts"] = true;
 
 			DoCacheMagic(10);

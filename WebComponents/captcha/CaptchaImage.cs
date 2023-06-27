@@ -62,9 +62,9 @@ namespace Carrotware.Web.UI.Components {
 				bValid = true;
 			}
 
-			if (CarrotWebHelper.Current != null) {
+			if (CarrotWebHelper.HttpContext != null) {
 				guid = Guid.NewGuid().ToString().Substring(0, 6);
-				CarrotWebHelper.Current.Session.SetString(SessionKey, guid);
+				CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 			}
 			return bValid;
 		}
@@ -78,17 +78,17 @@ namespace Carrotware.Web.UI.Components {
 		public static string SessionKeyValue {
 			get {
 				string guid = "ABCXYZ";
-				if (CarrotWebHelper.Current != null) {
+				if (CarrotWebHelper.HttpContext != null) {
 					try {
-						if (CarrotWebHelper.Current.Session.GetString(SessionKey) != null) {
-							guid = CarrotWebHelper.Current.Session.GetString(SessionKey);
+						if (CarrotWebHelper.HttpContext.Session.GetString(SessionKey) != null) {
+							guid = CarrotWebHelper.HttpContext.Session.GetString(SessionKey);
 						} else {
 							guid = Guid.NewGuid().ToString().Substring(0, 6);
-							CarrotWebHelper.Current.Session.SetString(SessionKey, guid);
+							CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 						}
 					} catch {
 						guid = Guid.NewGuid().ToString().Substring(0, 6);
-						CarrotWebHelper.Current.Session.SetString(SessionKey, guid);
+						CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 					}
 				}
 				return guid.ToUpperInvariant();
@@ -126,7 +126,7 @@ namespace Carrotware.Web.UI.Components {
 			graphics.DrawString(guid, font, textBrush, sidePadding, topPadding);
 			graphics.FillRectangle(hatch2, rect);
 
-			CarrotWebHelper.Current.Response.ContentType = "image/x-png";
+			CarrotWebHelper.HttpContext.Response.ContentType = "image/x-png";
 
 			using (MemoryStream memStream = new MemoryStream()) {
 				bmpCaptcha.Save(memStream, ImageFormat.Png);

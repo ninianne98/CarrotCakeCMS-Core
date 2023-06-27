@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -21,23 +22,25 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			_environment = environment;
 		}
 
-		protected void DoCacheMagic(int interval) {
-			var context = CarrotWebHelper.Current;
+		protected void DoCacheMagic(double minutes) {
+			if (minutes < 0) { minutes = 0.25; }
+			if (minutes > 30) { minutes = 30; }
+
+			var context = this.HttpContext;
 
 			DateTime dtModified = GetFauxModDate(10);
 			DateTime? dtM = GetModDate(context);
 			string strModifed = dtModified.ToUniversalTime().ToString("r");
 
-			//context.Response.Headers.Append("Last-Modified", strModifed);
-			//context.Response.Headers.Append("Date", strModifed);
 			context.Response.GetTypedHeaders().CacheControl =
-									new Microsoft.Net.Http.Headers.CacheControlHeaderValue() {
+									new CacheControlHeaderValue() {
 										Public = true,
-										MaxAge = TimeSpan.FromMinutes(interval)
+										MaxAge = TimeSpan.FromMinutes(minutes)
 									};
 
-			Response.Headers.LastModified = strModifed;
-			Response.Headers.Expires = dtModified.AddMinutes(interval).AddSeconds(-5).ToString("r");
+			context.Response.Headers.LastModified = strModifed;
+			context.Response.Headers.Date = strModifed;
+			context.Response.Headers.Expires = dtModified.AddMinutes(minutes).AddSeconds(-5).ToString("r");
 
 			if (dtM == null || dtM.Value != dtModified) {
 				context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
@@ -46,11 +49,11 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			}
 		}
 
-		protected DateTime GetFauxModDate(int interval) {
+		protected DateTime GetFauxModDate(double minutes) {
 			DateTime now = DateTime.Now;
 
 			DateTime dtMod = now.AddMinutes(-90);
-			TimeSpan ts = TimeSpan.FromMinutes(interval);
+			TimeSpan ts = TimeSpan.FromMinutes(minutes);
 			DateTime dtModified = new DateTime(((dtMod.Ticks + ts.Ticks - 1) / ts.Ticks) * ts.Ticks);
 
 			return dtModified;
