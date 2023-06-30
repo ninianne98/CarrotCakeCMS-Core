@@ -133,12 +133,12 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		}
 
 		public IActionResult GetWebResource(string r, string ts) {
-			this.VaryCacheByQuery(new string[] { "r", "ts" }, 7);
-
 			string resource = Utils.DecodeBase64(r);
 
 			if (resource != null && resource.Length > 0) {
-				DoCacheMagic(7);
+				this.VaryCacheByQuery(new string[] { "r", "ts" }, 5);
+
+				DoCacheMagic(5);
 
 				var mime = "text/x-plain";
 				var res = resource.Split(':');
@@ -217,8 +217,8 @@ namespace Carrotware.Web.UI.Components.Controllers {
 				return File(_stream, mime);
 			}
 
-			this.VaryCacheByQuery(new string[] { "r", "ts" }, 0.1);
 			this.Response.StatusCode = 404;
+
 			return Content("Not Found");
 		}
 
@@ -251,7 +251,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 												string tc, string tb, string tsb, string tl,
 												string nc, string nb, string nsb, string nl) {
 
-			this.VaryCacheByQuery(new string[] { "el", "wc", "wb", "cc", "tc", "tb" }, 3);
+			this.VaryCacheByQuery(new string[] { "el", "wc", "wb", "cc", "tc", "tb", "ts" }, 3);
 
 			DoCacheMagic(7);
 
@@ -270,9 +270,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		}
 
 		public ActionResult GetCarrotHelp(string id) {
-			var context = CarrotWebHelper.HttpContext;
-			// context.Response.Cache.VaryByParams["ts"] = true;
-
+			this.VaryCacheByQuery(new string[] { "id", "ts" }, 7);
 			DoCacheMagic(10);
 
 			DateTime timeAM = DateTime.Now.Date.AddHours(7);  // 7AM

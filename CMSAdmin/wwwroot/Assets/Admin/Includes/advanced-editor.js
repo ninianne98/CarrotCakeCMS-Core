@@ -8,8 +8,8 @@ function cmsSetPageStatus(stat) {
 	cmsIsPageLocked = stat;
 }
 
-var webSvc = "/api/c3-admin";
-var adminUri = "/c3-admin/";
+var webSvc = cmsWebServiceApi;
+var adminUri = cmsAdminBasePath;
 var thisPage = ""; // used in escaped fashion
 var thisPageNav = "";  // used non-escaped (redirects)
 var thisPageNavSaved = "";  // used non-escaped (redirects)
@@ -45,6 +45,10 @@ function cmsSetServiceParms(serviceURL, pagePath, pageID) {
 	thisPage = cmsMakeStringSafe(pagePath);
 	thisPageID = pageID;
 
+	cmsSetTick();
+}
+
+function cmsSetTick() {
 	var d = new Date();
 	cmsTimeTick = d.getTime();
 }
@@ -336,17 +340,12 @@ function cmsSaveGenericContent(val, key) {
 	});
 }
 
-var cmsTemplatePreview = "";
-
-function cmsSetPreviewFileName(tmplName) {
-	cmsTemplatePreview = tmplName;
-}
-
 function cmsPreviewTemplate2() {
 	var tmpl = $(cmsTemplateListPreviewer).val();
 	tmpl = cmsMakeStringSafe(tmpl);
+	cmsSetTick();
 
-	var srcURL = cmsTemplatePreview + "?c3pv=" + tmpl;
+	var srcURL = cmsTemplatePreview + "?" + cmsTemplatePreviewQS + "=" + tmpl + "&ts=" + cmsTimeTick;
 
 	var editIFrame = $('#cmsFrameEditorPreview');
 	$(editIFrame).attr('src', srcURL);
@@ -379,8 +378,9 @@ function cmsWidePreview(width) {
 function cmsPreviewTemplate() {
 	var tmplReal = $(cmsTemplateDDL).val();
 	tmpl = cmsMakeStringSafe(tmplReal);
+	cmsSetTick();
 
-	cmsLaunchWindowOnly(cmsTemplatePreview + "?c3pv=" + tmpl);
+	cmsLaunchWindowOnly(cmsTemplatePreview + "?" + cmsTemplatePreviewQS + "=" + tmpl + "&ts=" + cmsTimeTick);
 
 	var editFrame = $('#cmsModalFrame');
 
@@ -1369,6 +1369,7 @@ function cmsCloseModalWin() {
 function cmsDirtyPageRefresh() {
 	cmsSaveToolbarPosition();
 	cmsMakeOKToLeave();
+	cmsSetTick();
 	window.setTimeout('cmsMakeOKToLeave();', 500);
 	window.setTimeout('cmsMakeOKToLeave();', 700);
 	window.setTimeout("location.href = \'" + thisPageNav + "?carrotedit=true&carrottick=" + cmsTimeTick + "\'", 800);

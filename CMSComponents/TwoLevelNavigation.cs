@@ -145,7 +145,7 @@ namespace Carrotware.CMS.UI.Components {
 
 		public static string NavigationStylePath {
 			get {
-				return "/carrotcakenavstyle.ashx";
+				return "/carrotcakenavstyle.axd";
 			}
 		}
 

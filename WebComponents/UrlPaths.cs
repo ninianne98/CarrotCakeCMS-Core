@@ -17,7 +17,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public static string ResourcePath {
 			get {
-				return "/carrotwarewebresource.ashx";
+				return "/carrotwarewebresource.axd";
 			}
 		}
 

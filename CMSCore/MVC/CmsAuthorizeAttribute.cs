@@ -28,7 +28,8 @@ namespace Carrotware.CMS.Core {
 			string action = vals["action"].ToString().ToLowerInvariant();
 			string controller = vals["controller"].ToString().ToLowerInvariant();
 
-			if (CmsRouteConstants.CmsController.Admin.ToLowerInvariant() == controller && lstInitSiteActions.Contains(action)) {
+			if (CmsRouteConstants.CmsController.Admin.ToLowerInvariant() == controller
+					&& lstInitSiteActions.Contains(action)) {
 				return;
 			}
 

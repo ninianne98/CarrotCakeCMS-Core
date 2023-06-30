@@ -22,6 +22,18 @@
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="6.0.18" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.18" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.18" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="Views\Shared\_CarrotWebBlank.cshtml" />
@@ -302,17 +314,6 @@
 		<EmbeddedResource Include="bootstrap\bootstrap.min.css.map" />
 		<EmbeddedResource Include="bootstrap\bootstrap.min.css" />
 		<EmbeddedResource Include="bootstrap\bootstrap.min.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="6.0.18" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.18" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.18" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Web;
@@ -30,10 +31,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public override void OnActionExecuting(ActionExecutingContext context) {
 			base.OnActionExecuting(context);
 
+			var path = context.HttpContext.Request.Path;
 			RouteValueDictionary vals = context.RouteData.Values;
 			string action = vals["action"].ToString().ToLowerInvariant();
 			//string controller = vals["controller"].ToString().ToLowerInvariant();
-			//context.RouteData.Values.Remove("area");
+			context.RouteData.Values.Remove("area");
 
 			if (this.HttpContext.User.Identity.IsAuthenticated) {
 				//carveouts for setup
@@ -71,6 +73,16 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			get {
 				return SiteData.CurrentSiteID;
 			}
+		}
+
+		protected void NoCache() {
+			this.HttpContext.Response.GetTypedHeaders()
+				.CacheControl =
+						new CacheControlHeaderValue() {
+							Public = true,
+							NoCache = true,
+							MaxAge = TimeSpan.FromMinutes(-1)
+						};
 		}
 
 		//
@@ -621,6 +633,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[AllowAnonymous]
 		public ActionResult Login(string returnUrl) {
+			NoCache();
 			RedirectIfNoUsersExist();
 
 			LoginViewModel model = new LoginViewModel();
@@ -742,6 +755,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		public ActionResult Index() {
+			NoCache();
 			RedirectIfNoUsersExist();
 
 			DashboardInfo model = new DashboardInfo();
@@ -761,6 +775,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[AllowAnonymous]
 		public ActionResult About() {
+			NoCache();
 			return View();
 		}
 
@@ -2798,14 +2813,14 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpGet]
-		// had to hack as an ASHX url due to the querystring not playing nicely - route was not being hit
+		public IActionResult TemplatePreview([FromQuery, MaxLength(2048)] string c3pv, string ts) {
+			// have had to hack as an ASHX url due to the querystring not playing nicely - route was not being hit
+			NoCache();
 
-		public IActionResult TemplatePreview([FromQuery, MaxLength(2048)] string c3pv) {
-			this.VaryCacheByQuery(new string[] { "c3pv" }, 2);
+			this.VaryCacheByQuery(new string[] { "c3pv", "ts" }, 0.25);
 			var view = Utils.DecodeBase64(c3pv);
-			var page = PayloadHelper.GetSamplerPayload();
 
-			return View(page.ThePage.TemplateFile);
+			return View(SiteData.PreviewTemplateFile);
 		}
 
 		protected void AddErrors(IdentityResult result) {
@@ -2815,7 +2830,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		private void RedirectIfNoUsersExist() {
 			var dbstat = new DatabaseSetupModel();
 			if (dbstat.CreateUser) {
-				RedirectToAction(SiteActions.CreateFirstAdmin, new { @signout = true });
+				Response.Redirect(SiteActions.CreateFirstAdmin + "?signout=true");
 			}
 			return;
 		}
@@ -2823,7 +2838,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		private void RedirectIfUsersExist() {
 			var dbstat = new DatabaseSetupModel();
 			if (!dbstat.CreateUser) {
-				RedirectToAction(SiteActions.Dashboard, new { @signout = true });
+				Response.Redirect(SiteActions.Dashboard);
 			}
 			return;
 		}

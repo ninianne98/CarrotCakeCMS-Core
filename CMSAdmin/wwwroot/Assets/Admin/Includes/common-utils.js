@@ -35,7 +35,7 @@ function AjaxBtnLoad() {
 	}
 }
 
-var webSvc = "/api/c3-admin";
+var webSvc = cmsWebServiceApi;
 
 function cmsScrubDate(val) {
 	val = val.replace(/m/gi, 'mm');
@@ -137,7 +137,7 @@ function uncheckGridBoxes(gridID) {
 
 //===================
 
-var webSvc = "/api/c3-admin";
+var webSvc = cmsWebServiceApi;
 
 function cmsGetServiceAddress() {
 	return webSvc;
@@ -640,8 +640,8 @@ function DirtyPageRefresh() {
 		});
 
 		var url = (window.location != window.parent.location)
-					? document.referrer
-					: document.location.href;
+			? document.referrer
+			: document.location.href;
 
 		window.setTimeout("location.href = \'" + url + "?carrottick=" + timeTick + "\'", 800);
 	} else {
@@ -692,7 +692,7 @@ $(document).ajaxError(function (event, jqxhr, settings, exception) {
 
 //=======================
 
-var adminUri = "/c3-admin/";
+var adminUri = cmsAdminBasePath;
 
 function cmsGetAdminPath() {
 	var webMthd = webSvc + "/GetSiteAdminFolder";

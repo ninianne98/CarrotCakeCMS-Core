@@ -25,13 +25,30 @@
 
 
 	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.18" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.18" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.18" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.18" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.14" />
+		<PackageReference Include="MimeKit" Version="4.0.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
 		<None Include="Views\Templates\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="Views\Templates\**\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		
+
 		<None Include="Views\CmsContent\PlainPage\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
@@ -43,7 +60,7 @@
 	<ItemGroup>
 
 		<Content Include="Views\_ViewImports.cshtml">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Views\_ViewStart.cshtml" />
 
@@ -275,20 +292,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.18" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.18" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.18" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.18" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.14" />
-		<PackageReference Include="MimeKit" Version="4.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Include="Code\Helper.cs" />
 		<Compile Include="Controllers\CmsAdminApiController.cs" />
 		<Compile Include="Controllers\CmsAdminController.cs" />
@@ -339,7 +342,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Properties\C3ConfigSchema.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="wwwroot\Assets\Admin\editor\advedit.amethystorchid.min.css" />

@@ -23,13 +23,24 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var environment = builder.Environment;
-//var config = builder.Configuration;
 
 var buildCfg = new ConfigurationBuilder()
-			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-			.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables();
 
 var config = buildCfg.Build();
+
+builder.Logging.ClearProviders();
+
+var logConfig = config.GetSection("Logging");
+var logPrefix = logConfig.GetValue<string>("LogPrefix") ?? AppDomain.CurrentDomain.FriendlyName;
+var loggerFactory = LoggerFactory.Create(builder => {
+	builder.AddConfiguration(config.GetSection("Logging"));
+	builder.AddDebug();
+	builder.AddSimpleConsole();
+});
 
 services.AddDbContext<CarrotCakeContext>(opt => opt.UseSqlServer(config.GetConnectionString("CarrotwareCMS")));
 
@@ -45,6 +56,7 @@ services.AddResponseCaching();
 services.AddHttpContextAccessor();
 services.AddSingleton(environment);
 services.AddSingleton(config);
+services.AddSingleton(loggerFactory);
 
 CarrotWebHelper.Configure(config, environment, services);
 CarrotHttpHelper.Configure(config, environment, services);
@@ -82,18 +94,19 @@ app.UseDeveloperExceptionPage();
 
 string cmsControler = nameof(CmsContentController).Replace("Controller", "");
 
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
 app.Use(async (context, next) => {
 	await next();
+	//Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
 	if (context.Response.StatusCode == 404) {
 		context.Request.Path = string.Format("/{0}/Get404", cmsControler);
 		await next();
 	}
 });
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -19,6 +19,8 @@ namespace Carrotware.CMS.Core {
 			page.ThePage = ContentPageHelper.GetSamplerView();
 			page.ThePage.TemplateFile = SiteData.PreviewTemplateFile;
 
+			CarrotHttpHelper.HttpContext.Items[PagePayload.ItemKey] = page;
+
 			return page;
 		}
 
@@ -29,9 +31,9 @@ namespace Carrotware.CMS.Core {
 				page = CarrotHttpHelper.HttpContext.Items[PagePayload.ItemKey] as PagePayload;
 			} else {
 				if (SiteData.CurrentRoutePageID != null) {
-					page = PayloadHelper.GetContent();
+					page = GetContent();
 				} else {
-					page = PayloadHelper.GetSamplerPayload();
+					page = GetSamplerPayload();
 				}
 
 				CarrotHttpHelper.HttpContext.Items[PagePayload.ItemKey] = page;

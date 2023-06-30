@@ -2,10 +2,10 @@
 Source code for CarrotCakeCMS (MVC - Core), .Net Core 6
 
 [SITE_CT]: http://www.carrotware.com/contact?from=github-core
-[REPO_SF]: http://sourceforge.net/projects/carrotcakecmsmvc/
+[REPO_SF]: http://sourceforge.net/projects/carrotcakecmscore/
 [REPO_GH]: https://github.com/ninianne98/CarrotCakeCMS-Core/
 
-[DOC_PDF]: http://www.carrotware.com/fileassets/CarrotCakeMVCDevNotes.pdf?from=github-core
+[DOC_PDF]: http://www.carrotware.com/fileassets/CarrotCakeCoreDevNotes.pdf?from=github-core
 [DOC]: http://www.carrotware.com/carrotcake-download?from=github-core "CarrotCakeCMS User Documentation"
 [TMPLT]: http://www.carrotware.com/carrotcake-templates?from=github-core
 [IDE]: https://visualstudio.microsoft.com/
@@ -34,8 +34,8 @@ CarrotCakeCMS (MVC) is maintained by Samantha Copeland
 
 ### Install Development Tools
 
-1. **[Visual Studio Community/Express/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C]) Professional (or higher) editions OK.  Typically being developed on VS 2022 Enterprise. 
-1. **[SQL Server Express 2012 (or higher/later)][SQL]** - currently vetted on 2012R2 and 2016 Express.  EF 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
+1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C]) Professional (or higher) editions OK.  Typically being developed on VS 2022 Enterprise. 
+1. **[SQL Server Express 2012 (or higher/later)][SQL]** - currently vetted on 2012 and 2016 Express.  Entity Framework Core 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
 1. **[SQL Server Management Studio (SSMS)][SSMS]** - required for managing the database
 
 ### Get the Source Code
@@ -65,7 +65,7 @@ CarrotCakeCMS (MVC) is maintained by Samantha Copeland
 
 	There may be some warnings, you can ignore them
 
-1. The SQL Server database should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the MVC and WebForms editions.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data, Make a backup FIRST!.
+1. The SQL Server database should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data, Make a backup FIRST!.
 
 1. if the database is empty or has pending database changes, the EF migrations will be automatically applied.
 

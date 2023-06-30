@@ -75,6 +75,8 @@ namespace Carrotware.Web.UI.Components {
 			});
 
 			services.AddSession(options => {
+				options.IdleTimeout = TimeSpan.FromHours(2);
+				options.Cookie.Name = "." + AppDomain.CurrentDomain.FriendlyName.Replace(".", "") + ".Session";
 				options.Cookie.IsEssential = true;
 			});
 
@@ -93,7 +95,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public static void CarrotWebRouteSetup(this WebApplication app) {
 			Assembly asmbly = typeof(CarrotWebHelper).Assembly;
-			string _areaName = string.Empty;
+			string _areaName = "CarrotWeb";
 
 			app.UseSession();
 
@@ -601,7 +603,7 @@ namespace Carrotware.Web.UI.Components {
 			var resName = HttpUtility.HtmlEncode(Utils.EncodeBase64(string.Format("{0}:{1}", resource, asmb)));
 
 			try {
-				var ver = assembly.GetName().Version.ToString().Replace(".", string.Empty);
+				var ver = FileVersion.Replace(".", string.Empty);
 				sUri = string.Format("{0}?r={1}&ts={2}-{3}", UrlPaths.ResourcePath, resName, ver, DateKey());
 			} catch {
 				sUri = string.Format("{0}?r={1}&ts={2}", UrlPaths.ResourcePath, resName, DateKey());

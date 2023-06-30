@@ -41,6 +41,12 @@ namespace Carrotware.CMS.UI.Components {
 			get { return SiteFilename.RssFeedUri; }
 		}
 
+		public static string AdminScriptValues {
+			get {
+				return "/carrotcakeadmininfo.axd";
+			}
+		}
+
 		internal static string RenderView(RenderWidgetData data, PartialViewResult partialResult) {
 			return RenderView(data, partialResult, null);
 		}
@@ -122,6 +128,14 @@ namespace Carrotware.CMS.UI.Components {
 				_keyValuePairs.Add(route.Key, route.Value);
 			}
 			_keyValuePairs["area"] = string.Empty;
+		}
+
+		public string SiteMapUri {
+			get { return SiteFilename.SiteMapUri; }
+		}
+
+		public string RssUri {
+			get { return SiteFilename.RssFeedUri; }
 		}
 
 		public Controller GetFauxController() {
@@ -403,8 +417,6 @@ namespace Carrotware.CMS.UI.Components {
 			return new AjaxChangeProfileForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
-		private string WidgetCounterKey = "cmsViewWidgetCountKey";
-
 		private int _widgetCount = 0;
 
 		public int WidgetCount {
@@ -599,6 +611,12 @@ namespace Carrotware.CMS.UI.Components {
 			foreach (var route in _keyValuePairs) {
 				_helper.ViewContext.RouteData.Values[route.Key] = route.Value;
 			}
+
+			_helper.ViewContext.RouteData.Values["area"] = null;
+			_helper.ViewContext.RouteData.Values["widgetid"] = null;
+
+			_helper.ViewContext.RouteData.Values.Remove("area");
+			_helper.ViewContext.RouteData.Values.Remove("widgetid");
 		}
 
 		internal string RenderPartialToString(string partialViewName) {
@@ -643,6 +661,7 @@ namespace Carrotware.CMS.UI.Components {
 
 			foreach (Widget widget in widgetList) {
 				RestoreOriginalRoutes();
+				_helper.ViewContext.RouteData.Values["widgetid"] = widget.Root_WidgetID;
 
 				bool isWidgetClass = false;
 				string widgetKey = string.Format("WidgetId_{0}_{1}", placeHolderName, this.WidgetCount);

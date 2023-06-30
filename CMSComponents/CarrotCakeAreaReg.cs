@@ -1,6 +1,5 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.CMS.UI.Components.Controllers;
-using Carrotware.Web.UI.Components;
 using System.Xml.Linq;
 
 /*
@@ -16,6 +15,7 @@ using System.Xml.Linq;
 namespace Carrotware.CMS.UI.Components {
 
 	public class CarrotCakeAreaReg : BaseWidgetLoader {
+
 		public CarrotCakeAreaReg() : base() { }
 
 		public override void LoadWidgets(IServiceCollection services) {
@@ -33,7 +33,11 @@ namespace Carrotware.CMS.UI.Components {
 					name: this.AreaName + "_GetNavigationCss",
 					pattern: TwoLevelNavigation.NavigationStylePath + "/{id?}",
 					defaults: new { controller = home, action = nameof(HomeController.GetNavigationCss) });
-		}
 
+			app.MapControllerRoute(
+					name: this.AreaName + "_GetAminScriptValues",
+					pattern: CarrotCakeCmsHelper.AdminScriptValues + "/{id?}",
+					defaults: new { controller = home, action = nameof(HomeController.GetAdminScriptValues) });
+		}
 	}
 }

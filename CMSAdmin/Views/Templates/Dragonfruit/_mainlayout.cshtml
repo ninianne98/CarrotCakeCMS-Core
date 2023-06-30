@@ -17,6 +17,7 @@
 @{
 	Layout = null;
 
+	string viewKey = "Dragonfruit_NavPills";
 	ViewBag.Title = CmsPage.Titlebar;
 	ViewBag.SiteName = CmsPage.TheSite.SiteName;
 
@@ -31,15 +32,25 @@
 		homePageUri = String.Empty;
 	}
 
-	Dictionary<Guid, string> navPills = new Dictionary<Guid, string>();
-	if (this.ViewData["Dragonfruit_NavPills"] != null) {
-		navPills = (Dictionary<Guid, string>)this.ViewData["Dragonfruit_NavPills"];
-	} else {
-		navPills = (from p in CmsPage.TopNav
+	var topNav = CmsPage.TopNav.ToList();
+
+	Dictionary<Guid, string> navPills = null;
+	if (this.ViewData[viewKey] != null) {
+		navPills = (Dictionary<Guid, string>)this.ViewData[viewKey];
+
+		if (!topNav.Where(x => navPills.Select(y => y.Key).Contains(x.Root_ContentID)).Any()) {
+			// probably a sampler view
+			navPills = null;
+		}
+	}
+
+	if (navPills == null) {
+		navPills = (from p in topNav
 					orderby p.NavOrder
 					select p).ToDictionary(kvp => kvp.Root_ContentID, kvp => String.Format("navigate{0}", kvp.FileName.Replace("/", "_").Replace("-", "_")).ToLowerInvariant());
 	}
-	this.ViewData["Dragonfruit_NavPills"] = navPills;
+
+	this.ViewData[viewKey] = navPills;
 }
 
 <!DOCTYPE html>

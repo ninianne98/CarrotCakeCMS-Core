@@ -50,30 +50,22 @@ namespace Carrotware.CMS.Core {
 
 			var routes = requestedUri.Split('/').Where(x => x.Length > 0).ToArray();
 
-			if (routes.Length > 0) {
-				//if (routes[0].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
-				//	routeData.Add(CmsRouting.PageIdKey, adminFolder);
-				//	routeData[CmsRouting.SpecialKey] = true;
-				//	routeData["controller"] = CmsRouteConstants.CmsController.Admin;
-				//	routeData["action"] = routes.Length > 1 ? routes[1] : SiteActions.Index;
-				//	routeData["id"] = routes.Length > 2 ? routes[2] : null;
-				//	routeData["area"] = null;
-				//	return navData;
-				//}
+			if (routes.Length >= 1) {
+				if (routes[0].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
+					routeData.Add(CmsRouting.PageIdKey, adminFolder);
+					routeData[CmsRouting.SpecialKey] = true;
+					routeData["controller"] = CmsRouteConstants.CmsController.Admin;
 
-				//if (routes.Length >= 3 && routes[0].ToLowerInvariant() == "api"
-				//		&& routes[1].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
-				//	var method = routes[2].ToString();
-				//	if (method.Length >= 3) {
-				//		routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.CmsController.AdminApi);
-				//		routeData[CmsRouting.SpecialKey] = true;
-				//		routeData["controller"] = CmsRouteConstants.CmsController.AdminApi;
-				//		routeData["action"] = method;
-				//		routeData["id"] = routes.Length > 3 ? routes[3] : null;
-				//		routeData["area"] = null;
-				//		return navData;
-				//	}
-				//}
+					return navData;
+				}
+				if (routes.Length >= 2 && routes[0].ToLowerInvariant() == "api"
+							&& routes[1].ToLowerInvariant() == adminFolder.ToLowerInvariant()) {
+					routeData.Add(CmsRouting.PageIdKey, adminFolder);
+					routeData[CmsRouting.SpecialKey] = true;
+					routeData["controller"] = CmsRouteConstants.CmsController.AdminApi;
+
+					return navData;
+				}
 
 				if (routes.Length >= 2 && routes[0].ToLowerInvariant() == CmsRouteConstants.CmsController.AjaxForms.ToLowerInvariant()) {
 					var formaction = routes[1].ToString();
@@ -90,9 +82,11 @@ namespace Carrotware.CMS.Core {
 				}
 			}
 
-			if (requestedUri.ToLowerInvariant().EndsWith(".ashx")) {
+			requestedUri = requestedUri.ToLowerInvariant();
+
+			if (requestedUri.Contains(".") && requestedUri.Length > 3) {
 				// use ashx hack because a long querystring fails to reach the route otherwise
-				if (requestedUri.ToLowerInvariant() == SiteFilename.TemplatePreviewAltUrl.ToLowerInvariant()) {
+				if (requestedUri == SiteFilename.TemplatePreviewAltUrl.ToLowerInvariant()) {
 					routeData.Add(CmsRouting.PageIdKey, SiteActions.TemplatePreview);
 					routeData.Add(CmsRouting.SpecialKey, true);
 					routeData["controller"] = CmsRouteConstants.CmsController.Admin;
@@ -103,7 +97,7 @@ namespace Carrotware.CMS.Core {
 					return navData;
 				}
 
-				if (requestedUri.ToLowerInvariant() == SiteFilename.RssFeedUri.ToLowerInvariant()) {
+				if (requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant()) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.RssAction);
 					routeData.Add(CmsRouting.SpecialKey, true);
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
@@ -114,7 +108,7 @@ namespace Carrotware.CMS.Core {
 					return navData;
 				}
 
-				if (requestedUri.ToLowerInvariant() == SiteFilename.SiteMapUri.ToLowerInvariant()) {
+				if (requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant()) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.SiteMapAction);
 					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
@@ -131,18 +125,26 @@ namespace Carrotware.CMS.Core {
 			} else {
 				// find page even if not live, controller will enforce visibility
 
+				//cms pages can't have a . in them, short circuit
+				if (SiteData.CurrentScriptName.Contains(".")) {
+					return navData;
+				}
+
 				string sCurrentPage = SiteData.CurrentScriptName;
 
 				try {
 					string sScrubbedURL = SiteData.AlternateCurrentScriptName;
+
+					if (site == null || SiteData.CurrentSiteExists == false) {
+						navData = SiteNavHelper.GetEmptyHome();
+					}
 
 					if (sScrubbedURL.ToLowerInvariant() != sCurrentPage.ToLowerInvariant()) {
 						requestedUri = sScrubbedURL;
 					}
 
 					using (ISiteNavHelper navHelper = SiteNavFactory.GetSiteNavHelper()) {
-
-						if (SiteData.IsLikelyHomePage(requestedUri)) {
+						if (SiteData.IsLikelyHomePage(requestedUri) && navData == null) {
 							navData = navHelper.FindHome(site.SiteID);
 							if (navData != null) {
 								requestedUri = navData.FileName;

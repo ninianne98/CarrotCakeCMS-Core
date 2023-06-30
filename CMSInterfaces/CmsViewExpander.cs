@@ -46,13 +46,15 @@ namespace Carrotware.CMS.Interface {
 				workingFolder.Add(folder + "/{0}.cshtml");
 				workingFolder.Add(folder + "/{0}.vbhtml");
 
-				var folders = Directory.GetDirectories(Path.Join(root, folder));
+				try {
+					var folders = Directory.GetDirectories(Path.Join(root, folder));
 
-				foreach (var f in folders) {
-					var fldr = f.Replace(root, string.Empty).FixPathSlashes();
-					workingFolder.Add((fldr + "/{0}.cshtml").FixPathSlashes());
-					workingFolder.Add((fldr + "/{0}.vbhtml").FixPathSlashes());
-				}
+					foreach (var f in folders) {
+						var fldr = f.Replace(root, string.Empty).FixPathSlashes();
+						workingFolder.Add((fldr + "/{0}.cshtml").FixPathSlashes());
+						workingFolder.Add((fldr + "/{0}.vbhtml").FixPathSlashes());
+					}
+				} catch { }
 			}
 
 			var views = new[] {

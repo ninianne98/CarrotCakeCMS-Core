@@ -277,30 +277,31 @@ namespace Carrotware.CMS.Core {
 		public void Save() {
 			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
 				bool bNew = false;
-				var usr = CompiledQueries.cqFindUserTblByID(_db, this.UserId);
+				var userData = CompiledQueries.cqFindUserTblByID(_db, this.UserId);
+				var authUser = _db.AspNetUsers.Where(x => x.UserName == this.UserName || x.Id == this.UserKey).FirstOrDefault();
 
-				if (usr == null) {
-					usr = new CarrotUserData();
-					usr.UserKey = this.UserKey;
-					usr.UserId = Guid.NewGuid();
+				if (userData == null && authUser != null) {
+					userData = new CarrotUserData();
+					userData.UserId = Guid.NewGuid();
+					userData.UserKey = authUser.Id;
 					bNew = true;
 				}
 
-				usr.UserNickName = this.UserNickName;
-				usr.FirstName = this.FirstName;
-				usr.LastName = this.LastName;
-				usr.UserBio = this.UserBio;
+				userData.UserNickName = this.UserNickName;
+				userData.FirstName = this.FirstName;
+				userData.LastName = this.LastName;
+				userData.UserBio = this.UserBio;
 
 				if (bNew) {
-					_db.CarrotUserData.Add(usr);
+					_db.CarrotUserData.Add(userData);
 				}
 
 				_db.SaveChanges();
 
-				this.UserId = usr.UserId;
+				this.UserId = userData.UserId;
 
 				//grab fresh copy from DB
-				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(_db, usr.UserId);
+				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(_db, userData.UserId);
 				LoadUserData(rc);
 			}
 		}

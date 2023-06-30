@@ -587,11 +587,9 @@ namespace Carrotware.CMS.Core {
 					data.IdentityResult = result;
 
 					if (result.Succeeded) {
-						user = new IdentityUser(user.UserName);
-
 						var newusr = new ExtendedUserData();
 						newusr.UserKey = user.Id;
-						newusr.Id = user.Id;
+						newusr.UserName = user.UserName;
 						newusr.Save();
 
 						newusr = ExtendedUserData.FindByUserID(newusr.UserId);

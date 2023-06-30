@@ -27,8 +27,13 @@
 	  <Content Remove="compilerconfig.json" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="adminHelp.js" />
+	</ItemGroup>
+
 
 	<ItemGroup>
+		<EmbeddedResource Include="adminHelp.js" />
 		<EmbeddedResource Include="feed.png" />
 		<EmbeddedResource Include="_WidgetWrapper.cshtml" />
 		<EmbeddedResource Include="TopMenu.txt" />

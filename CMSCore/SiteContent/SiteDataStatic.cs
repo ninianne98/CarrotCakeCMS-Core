@@ -736,7 +736,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static string PreviewTemplateFilePage {
-			get { return SiteFilename.TemplatePreviewAltUrl; }
+			get { return SiteFilename.TemplatePreviewURL; }
 		}
 
 		public static bool IsPageSampler {
@@ -867,9 +867,10 @@ namespace Carrotware.CMS.Core {
 				Guid? id = null;
 				try {
 					var data = CarrotHttpHelper.HttpContext.GetRouteData();
-					if (data != null && data.Values != null) {
+					if (data != null && data.Values != null
+								&& data.Values[CmsRouting.PageIdKey] != null) {
 						var val = data.Values[CmsRouting.PageIdKey].ToString() ?? "";
-						if (val.Length > 30) {
+						if (val.Length > 27) {
 							id = new Guid(val);
 						}
 					}

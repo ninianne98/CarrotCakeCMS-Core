@@ -1,15 +1,15 @@
 ﻿<h1>This site is under construction</h1>
 <h2>This is the homepage</h2>
 
-<p>This website is being built with CarrotCake CMS, an open source c# project. CarrotCake is a 
-	template-based ASP.Net CMS (<a target="_blank" href="http://en.wikipedia.org/wiki/Content_management_system">content management system</a>) 
+<p>This website is being built with CarrotCake CMS Core, an open source c# project. CarrotCake is a 
+	template-based .Net Core CMS (<a target="_blank" href="http://en.wikipedia.org/wiki/Content_management_system">content management system</a>) 
 	built with C#, SQL server, <a target="_blank" href="http://jqueryui.com/">jQueryUI</a>, and 
 	<a target="_blank" href="https://www.tiny.cloud/">TinyMCE</a>. If you have found this software useful or have
 	published a site with CarrotCake, we'd love to <a target="_blank" href="http://www.carrotware.com/contact">hear</a> from you.</p>
 
 <p>Source code and documentation is available on 
-	<a target="_blank" href="https://github.com/ninianne98/CarrotCakeCMS-MVC">GitHub</a> or
-	<a target="_blank" href="https://sourceforge.net/projects/carrotcakecmsmvc/">SourceForge</a>.
+	<a target="_blank" href="https://github.com/ninianne98/CarrotCakeCMS-Core">GitHub</a> or
+	<a target="_blank" href="https://sourceforge.net/projects/carrotcakecmscore/">SourceForge</a>.
 	Documentation and assemblies can be found <a target="_blank" href="http://www.carrotware.com/carrotcake-download">here</a>.</p>
 
 <p>Some features include: blogging engine, configurable date based blog post URLs, blog post content association with categories and tags, 

@@ -794,7 +794,7 @@ namespace Carrotware.CMS.Core {
 			navData.PageHead = "NONE";
 			navData.TitleBar = "NONE";
 			navData.PageActive = false;
-			navData.PageText = "<p>NO PAGE CONTENT</p>" + SiteNavHelperMock.SampleBody;
+			navData.PageText = "<p>NO PAGE CONTENT</p>" + SiteNavHelper.SampleBody;
 			navData.EditDate = DateTime.Now.Date.AddDays(-1);
 			navData.CreateDate = DateTime.Now.Date.AddDays(-10);
 			navData.GoLiveDate = DateTime.Now.Date.AddDays(1);
@@ -834,8 +834,8 @@ namespace Carrotware.CMS.Core {
 			var sbFile1 = new StringBuilder();
 			var sbFile2 = new StringBuilder();
 
-			SiteNavHelperMock.ResetCaption();
-			var caption = SiteNavHelperMock.GetNextCaption();
+			SiteNavHelper.ResetCaption();
+			var caption = SiteNavHelper.GetNextCaption();
 
 			try {
 				Assembly _assembly = Assembly.GetExecutingAssembly();

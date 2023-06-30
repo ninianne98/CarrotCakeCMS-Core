@@ -24,9 +24,12 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		protected ManageSecurity securityHelper = new ManageSecurity();
 		protected CMSConfigHelper cmsHelper = new CMSConfigHelper();
 		private PagePayload _page = null;
+		private readonly ILogger _logger;
 
-		public CmsContentController()
+		public CmsContentController(ILogger<CmsContentController> logger)
 			: base() {
+
+			_logger = logger;
 			this.TemplateFile = string.Empty;
 			this.WidgetCount = 0;
 		}

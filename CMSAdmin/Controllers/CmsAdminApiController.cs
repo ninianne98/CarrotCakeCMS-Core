@@ -38,7 +38,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		public CmsAdminApiController() { }
+		private readonly ILogger _logger;
+
+		public CmsAdminApiController(ILogger<CmsAdminApiController> logger) {
+			_logger = logger;
+		}
 
 		protected ContentPageHelper pageHelper = new ContentPageHelper();
 		protected WidgetHelper widgetHelper = new WidgetHelper();
@@ -171,6 +175,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					return JsonSerializer.Serialize(Convert.ToDateTime("12/31/1899").ToString());
 				}
 			} catch (Exception ex) {
+				_logger.LogError(ex, "RecordHeartbeat");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(DateTime.MinValue.ToString());
@@ -190,6 +195,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "CancelEditing");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -209,6 +215,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "RecordEditorPosition");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -268,6 +275,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 								  select l).ToList();
 				}
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GetChildPages");
 				SiteData.WriteDebugException("webservice", ex);
 
 				throw;
@@ -279,27 +287,27 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpGet]
 		public string GetPageCrumbs(string PageID, string CurrPageID) {
 			Guid? ContentPageID = Guid.Empty;
-			if (!string.IsNullOrEmpty(PageID)) {
-				if (PageID.Length > 20) {
-					ContentPageID = new Guid(PageID);
-				}
-			}
-
 			Guid ContPageID = Guid.Empty;
-			if (!string.IsNullOrEmpty(CurrPageID)) {
-				if (CurrPageID.Length > 20) {
-					ContPageID = new Guid(CurrPageID);
-				}
-			}
-
 			List<SiteMapOrder> lstSiteMap = new List<SiteMapOrder>();
 
-			int iLevel = 0;
-
-			int iLenB = 0;
-			int iLenA = 1;
-
 			try {
+				if (!string.IsNullOrEmpty(PageID)) {
+					if (PageID.Length > 20) {
+						ContentPageID = new Guid(PageID);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(CurrPageID)) {
+					if (CurrPageID.Length > 20) {
+						ContPageID = new Guid(CurrPageID);
+					}
+				}
+
+				int iLevel = 0;
+
+				int iLenB = 0;
+				int iLenA = 1;
+
 				while (iLenB < iLenA && SiteData.CurrentSiteExists) {
 					iLenB = lstSiteMap.Count;
 
@@ -314,6 +322,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					iLenA = lstSiteMap.Count;
 				}
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GetPageCrumbs");
 				SiteData.WriteDebugException("webservice", ex);
 
 				throw;
@@ -342,6 +351,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "UpdatePageTemplate");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -392,6 +402,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ValidateBlogFolders");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -431,6 +442,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ValidateUniqueCategory");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -452,6 +464,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ValidateUniqueTag");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -476,6 +489,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					return JsonSerializer.Serialize(Convert.ToDateTime("12/31/1899").ToString());
 				}
 			} catch (Exception ex) {
+				_logger.LogError(ex, "RecordSnippetHeartbeat");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(DateTime.MinValue.ToString());
@@ -494,6 +508,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "CancelSnippetEditing");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -531,6 +546,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ValidateUniqueSnippet");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -558,6 +574,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GetSnippetVersionText");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -579,6 +596,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(SiteData.GenerateNewFilename(CurrentPageGuid, sThePageTitle, goLiveDate, pageType));
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GenerateNewFilename");
 				SiteData.WriteDebugException("webservice", ex);
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
 			}
@@ -592,6 +610,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(IsUniqueFilename(TheFileName, CurrentPageGuid));
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ValidateUniqueFilename");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -604,6 +623,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return ret ? ServiceResponse.OK : ServiceResponse.Fail;
 			} catch (Exception ex) {
+				_logger.LogError(ex, "IsUniqueFilename");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return ex.ToString();
@@ -618,6 +638,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ContentPageHelper.CreateFileNameFromSlug(SiteData.CurrentSite, goLiveDate, ThePageSlug));
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GenerateBlogFilePrefix");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -633,6 +654,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(IsUniqueBlogFilename(ThePageSlug, dateGoLive, CurrentPageGuid));
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ValidateUniqueBlogFilename");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -645,6 +667,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return ret ? ServiceResponse.OK : ServiceResponse.Fail;
 			} catch (Exception ex) {
+				_logger.LogError(ex, "IsUniqueBlogFilename");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return ex.ToString();
@@ -684,6 +707,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(TheSlug));
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GenerateCategoryTagSlug");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -697,6 +721,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(TheSlug));
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GenerateSnippetSlug");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -750,6 +775,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				cmsAdminWidget = cacheWidget;
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "MoveWidgetToNewZone");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -840,6 +866,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				cmsAdminWidget = cacheWidget;
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "CacheWidgetUpdate");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -882,6 +909,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GetWidgetText");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -924,6 +952,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GetWidgetVersionText");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -962,6 +991,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "GetWidgetLatestText");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ServiceResponse.Fail);
@@ -996,6 +1026,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "DeleteWidget");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -1049,6 +1080,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "CopyWidget");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -1082,6 +1114,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "RemoveWidget");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -1115,6 +1148,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "ActivateWidget");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -1146,6 +1180,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "CacheGenericContent");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -1183,6 +1218,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "CacheContentZoneText");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
@@ -1236,6 +1272,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
 			} catch (Exception ex) {
+				_logger.LogError(ex, "PublishChanges");
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());

@@ -172,7 +172,7 @@ function cmsSetFileName(v) {
 
 //===================
 
-var adminUri = "/c3-admin/";
+var adminUri = cmsAdminBasePath;
 
 function cmsGetAdminPath() {
 	var webMthd = webSvc + "/GetSiteAdminFolder";
