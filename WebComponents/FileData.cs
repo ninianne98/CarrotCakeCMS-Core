@@ -72,15 +72,29 @@ namespace Carrotware.Web.UI.Components {
 
 		private static string _wwwpath = null;
 
-		private static string WWWPath {
+		private static string WebPath {
 			get {
 				if (_wwwpath == null) {
-					_wwwpath = CarrotWebHelper.WebHostEnvironment.ContentRootPath.NormalizeFilename();
+					_wwwpath = CarrotWebHelper.WebHostEnvironment.WebRootPath.NormalizeFilename();
 					if (!_wwwpath.EndsWith(Path.AltDirectorySeparatorChar)) {
 						_wwwpath = _wwwpath + Path.AltDirectorySeparatorChar;
 					}
 				}
 				return _wwwpath;
+			}
+		}
+
+		private static string _contentpath = null;
+
+		private static string ContentPath {
+			get {
+				if (_contentpath == null) {
+					_contentpath = CarrotWebHelper.WebHostEnvironment.ContentRootPath.NormalizeFilename();
+					if (!_contentpath.EndsWith(Path.AltDirectorySeparatorChar)) {
+						_contentpath = _contentpath + Path.AltDirectorySeparatorChar;
+					}
+				}
+				return _contentpath;
 			}
 		}
 
@@ -124,7 +138,7 @@ namespace Carrotware.Web.UI.Components {
 					string sP = sQuery + myFileName + "/";
 
 					f.FileName = myFileName;
-					f.FolderPath = MakeFilePathUniform(sP);
+					f.FolderPath = sP.NormalizeFilename();
 					f.FileDate = File.GetLastWriteTime(MyFile.FullName);
 				}
 			}
@@ -154,7 +168,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public FileData GetFileInfo(string sQuery, string myFile) {
-			sQuery = MakeFilePathUniform(sQuery);
+			sQuery = sQuery.NormalizeFilename();
 			string sPath = MakeFileFolderPath(sQuery);
 
 			string myFileName = string.Empty;
@@ -183,7 +197,7 @@ namespace Carrotware.Web.UI.Components {
 				string sP = sQuery;
 
 				f.FileName = myFileName;
-				f.FolderPath = MakeFilePathUniform(sP);
+				f.FolderPath = sP.NormalizeFilename();
 				f.FileDate = myFileDate;
 				f.FileSize = myFileSize;
 				f.FileSizeFriendly = myFileSizeF;
@@ -209,25 +223,9 @@ namespace Carrotware.Web.UI.Components {
 			return f;
 		}
 
-		public static string MakeFilePathUniform(string sDirPath) {
-			string _path = "/";
-			if (!string.IsNullOrEmpty(sDirPath)) {
-				_path = @"/" + sDirPath;
-
-				if (!Directory.Exists(WWWPath + _path)) {
-					_path = _path.Replace(@"\", @"/");
-					_path = _path.Substring(0, _path.Length - 1);
-					_path = _path.Substring(0, _path.LastIndexOf(@"/"));
-				}
-				_path = _path + @"/";
-				_path = _path.Replace(@"\", @"/").Replace(@"///", @"/").Replace("//", "/").Replace("//", "/");
-			}
-			return _path;
-		}
-
 		public static string MakeFileFolderPath(string sDirPath) {
-			string _path = MakeFilePathUniform(sDirPath);
-			string _map = CarrotWebHelper.MapPath(_path);
+			string _path = sDirPath.NormalizeFilename();
+			string _map = CarrotWebHelper.MapWebPath(_path);
 			return _map;
 		}
 
@@ -235,9 +233,24 @@ namespace Carrotware.Web.UI.Components {
 			string sPathPrefix = "/";
 
 			if (!string.IsNullOrEmpty(sDirPath)) {
-				sPathPrefix = sDirPath.Replace(WWWPath, @"/");
+				sDirPath = sDirPath.NormalizeFilename();
+				sPathPrefix = sDirPath.Replace(WebPath.NormalizeFilename(), @"/");
 			}
-			sPathPrefix = MakeFilePathUniform(sPathPrefix);
+
+			sPathPrefix = sPathPrefix.NormalizeFilename();
+
+			return sPathPrefix;
+		}
+
+		public static string MakeContentFolderPath(string sDirPath) {
+			string sPathPrefix = "/";
+
+			if (!string.IsNullOrEmpty(sDirPath)) {
+				sDirPath = sDirPath.NormalizeFilename();
+				sPathPrefix = sDirPath.Replace(ContentPath.NormalizeFilename(), @"/");
+			}
+
+			sPathPrefix = sPathPrefix.NormalizeFilename();
 
 			return sPathPrefix;
 		}

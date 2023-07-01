@@ -106,15 +106,15 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<SiteNav> GetPageCrumbNavigation(Guid siteID, string sPage, bool bActiveOnly) {
-			return SiteNavHelper.GetSamplerFakeNav(Guid.NewGuid());
+			return SiteNavHelper.GetSamplerFakeNav(sPage);
 		}
 
-		public List<SiteNav> GetChildNavigation(Guid siteID, string sparentPageID, bool bActiveOnly) {
-			return SiteNavHelper.GetSamplerFakeNav(Guid.NewGuid());
+		public List<SiteNav> GetChildNavigation(Guid siteID, string parentPage, bool bActiveOnly) {
+			return SiteNavHelper.GetSamplerFakeNav(parentPage);
 		}
 
 		public List<SiteNav> GetSiblingNavigation(Guid siteID, string sPage, bool bActiveOnly) {
-			return SiteNavHelper.GetSamplerFakeNav(Guid.NewGuid());
+			return SiteNavHelper.GetSamplerFakeNav(sPage);
 		}
 
 		public int GetChildNavigationCount(Guid siteID, Guid? parentPageID, bool bActiveOnly) {
@@ -178,23 +178,23 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public SiteNav GetLatestVersion(Guid siteID, Guid rootContentID) {
-			return SiteNavHelper.GetSamplerView();
+			return SiteNavHelper.GetSamplerHome();
 		}
 
 		public SiteNav GetLatestVersion(Guid siteID, bool bActiveOnly, string sPage) {
-			return SiteNavHelper.GetSamplerView();
+			return SiteNavHelper.GetSamplerHome();
 		}
 
 		public SiteNav FindHome(Guid siteID) {
-			return SiteNavHelper.GetSamplerView();
+			return SiteNavHelper.GetSamplerHome();
 		}
 
 		public SiteNav FindByFilename(Guid siteID, string urlFileName) {
-			return SiteNavHelper.GetSamplerView();
+			return SiteNavHelper.GetSamplerHome();
 		}
 
 		public SiteNav FindHome(Guid siteID, bool bActiveOnly) {
-			return SiteNavHelper.GetSamplerView();
+			return SiteNavHelper.GetSamplerHome();
 		}
 
 		public int GetFilteredContentPagedCount(SiteData currentSite, string sFilterPath, bool bActiveOnly) {
@@ -307,7 +307,9 @@ namespace Carrotware.CMS.Core {
 			return SiteNavHelper.GetSamplerFakeNav(pageSize);
 		}
 
-		public void Dispose() { }
+		public void Dispose() {
+			//SiteNavHelper.ResetFakeData();
+		}
 	}
 
 }

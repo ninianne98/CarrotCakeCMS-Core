@@ -2815,6 +2815,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpGet]
 		public IActionResult TemplatePreview([FromQuery, MaxLength(2048)] string c3pv, string ts) {
 			// have had to hack as an ASHX url due to the querystring not playing nicely - route was not being hit
+			//SiteNavHelper.ResetFakeData();
 			NoCache();
 
 			this.VaryCacheByQuery(new string[] { "c3pv", "ts" }, 0.25);

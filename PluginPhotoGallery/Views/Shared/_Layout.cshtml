@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+@{
+	Layout = null;
+
+	string areaName = ViewBag.WidgetAssemblyName;
+	string areaAlias = string.Format("{0}_Default", areaName);
+}
+
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - @ViewBag.WidgetAssemblyName</title>
+	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.Silver })
+
+	@(new Bootstrap() { SelectedSkin = Bootstrap.BootstrapColorScheme.Plum })
+	<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			doStyles();
+		});
+
+		$(document).ajaxComplete(function (event, xhr, settings) {
+			doStyles();
+		});
+
+		function doStyles() {
+			$("input:button, input:submit, input:reset, button").button();
+			$("input:button, input:submit, input:reset, button").addClass('btn');
+		}
+
+		function cmsPreSaveTrigger() {
+			return true;
+		}
+	</script>
+
+	<style>
+		.tablepager li {
+			cursor: pointer;
+			float: left;
+			list-style: outside none none;
+			margin: 2px;
+			padding: 4px 0;
+			position: relative;
+		}
+
+		.tablepager a {
+			margin: 5px;
+			padding: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				@Html.ActionLink("Widget: Photos (Core)", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "GalleryList;GalleryView;GalleryView2;GalleryView3;GalleryView4", "Test", new { @class = "active" }, null)) {
+						@Html.RouteLink("Galleries", areaAlias, new { action = "GalleryList", controller = "Test" })
+					}
+
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "Index;View;Edit", "Test", new { @class = "active" }, null)) {
+						@Html.RouteLink("Images", areaAlias, new { action = "Index", controller = "Test" })
+					}
+
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active dropdown" }, new { @id = "tabAdmin", @class = "dropdown" })) {
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin Test <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							@*<li>@Html.ActionLink("Database", "GalleryDatabase", "Admin")</li>*@
+							<li>@Html.ActionLink("Gallery List", "Index", "Admin")</li>
+							<li>@Html.ActionLink("Add Gallery", "CreateGallery", "Admin")</li>
+						</ul>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - @ViewBag.WidgetAssemblyName</p>
+		</footer>
+	</div>
+</body>
+</html>

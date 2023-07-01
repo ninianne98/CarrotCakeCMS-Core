@@ -68,15 +68,15 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 				string skinName = skinPath.Substring(skinPath.LastIndexOf(@"\") + 1);
 
 				FileData skinFolder = helpFile.GetFolderInfo("/", templateFile);
-				skinFolder.FolderPath = FileDataHelper.MakeWebFolderPath(templateFile);
-				fldrWorking = helpFile.SpiderDeepFoldersFD(FileDataHelper.MakeWebFolderPath(templateFile));
+				skinFolder.FolderPath = FileDataHelper.MakeContentFolderPath(templateFile);
+				fldrWorking = helpFile.SpiderDeepFoldersFD(FileDataHelper.MakeContentFolderPath(templateFile));
 				fldrWorking.Add(skinFolder);
 
 				try {
-					string assetPath = string.Format("~/assets/{0}", skinName);
+					string assetPath = string.Format("/assets/{0}", skinName);
 
-					if (Directory.Exists(CarrotHttpHelper.MapPath(assetPath))) {
-						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapPath(assetPath));
+					if (Directory.Exists(CarrotHttpHelper.MapWebPath(assetPath))) {
+						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapWebPath(assetPath));
 						fldrWorking.Add(incFolder);
 
 						var assetFlds = helpFile.SpiderDeepFoldersFD(FileDataHelper.MakeWebFolderPath(incFolder.FolderPath));
@@ -86,25 +86,25 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 				} catch (Exception ex) { }
 
 				try {
-					if (Directory.Exists(CarrotHttpHelper.MapPath("/includes"))) {
-						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapPath("/includes"));
+					if (Directory.Exists(CarrotHttpHelper.MapWebPath("/includes"))) {
+						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapWebPath("/includes"));
 						fldrWorking.Add(incFolder);
 					}
-					if (Directory.Exists(CarrotHttpHelper.MapPath("/js"))) {
-						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapPath("/js"));
+					if (Directory.Exists(CarrotHttpHelper.MapWebPath("/js"))) {
+						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapWebPath("/js"));
 						fldrWorking.Add(incFolder);
 					}
-					if (Directory.Exists(CarrotHttpHelper.MapPath("/css"))) {
-						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapPath("/css"));
+					if (Directory.Exists(CarrotHttpHelper.MapWebPath("/css"))) {
+						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapWebPath("/css"));
 						fldrWorking.Add(incFolder);
 					}
 
-					if (Directory.Exists(CarrotHttpHelper.MapPath("/Scripts"))) {
-						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapPath("/Scripts"));
+					if (Directory.Exists(CarrotHttpHelper.MapWebPath("/Scripts"))) {
+						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapWebPath("/Scripts"));
 						fldrWorking.Add(incFolder);
 					}
-					if (Directory.Exists(CarrotHttpHelper.MapPath("/Content"))) {
-						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapPath("/Content"));
+					if (Directory.Exists(CarrotHttpHelper.MapWebPath("/Content"))) {
+						FileData incFolder = helpFile.GetFolderInfo("/", CarrotHttpHelper.MapWebPath("/Content"));
 						fldrWorking.Add(incFolder);
 					}
 				} catch (Exception ex) { }
@@ -131,6 +131,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public void ReadFile() {
 			string realPath = CarrotHttpHelper.MapPath(this.EditFile);
+			if (!File.Exists(realPath)) {
+				realPath = CarrotHttpHelper.MapWebPath(this.EditFile);
+			}
 
 			if (File.Exists(realPath)) {
 				using (StreamReader sr = new StreamReader(realPath)) {
@@ -159,6 +162,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public void SaveFile() {
 			string realPath = CarrotHttpHelper.MapPath(this.EditFile);
+			if (!File.Exists(realPath)) {
+				realPath = CarrotHttpHelper.MapWebPath(this.EditFile);
+			}
 
 			if (File.Exists(realPath)) {
 				Encoding encode = System.Text.Encoding.Default;

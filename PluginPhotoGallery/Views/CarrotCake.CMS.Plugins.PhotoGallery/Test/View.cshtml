@@ -1,0 +1,50 @@
+﻿@model CarrotCake.CMS.Plugins.PhotoGallery.Data.GalleryImage
+
+@{
+	ViewBag.Title = "View";
+
+	var img = new HtmlTag(HtmlTag.EasyTag.Image);
+	img.Uri = Model.GalleryImageName;
+
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+	<div class="row">
+		<div class="col-md-10">
+			@img.EmitHtmlSelfClosingTag()
+		</div>
+	</div>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.GalleryImageName)
+		</dt>
+
+		<dd>
+			@Html.DisplayFor(model => model.GalleryImageName)
+		</dd>
+
+		<dt>
+			@Html.DisplayNameFor(model => model.ImageOrder)
+		</dt>
+
+		<dd>
+			@Html.DisplayFor(model => model.ImageOrder)
+		</dd>
+
+		<dt>
+			@Html.DisplayNameFor(model => model.GalleryId)
+		</dt>
+
+		<dd>
+			@Html.DisplayFor(model => model.GalleryId)
+		</dd>
+	</dl>
+</div>
+<p>
+	@Html.ActionLink("Edit", "Edit", new { id = Model.GalleryImageId })
+	| @Html.ActionLink("Gallery", "GalleryView", new { id = Model.GalleryId })
+	| @Html.ActionLink("Back to List", "Index")
+</p>

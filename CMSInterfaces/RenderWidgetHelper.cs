@@ -164,15 +164,15 @@ namespace Carrotware.CMS.Interface {
 			}
 
 			if (!string.IsNullOrWhiteSpace(areaName)) {
-				routeData.Add("area", areaName);
+				routeData["area"] = areaName;
 			}
 
-			routeData.Add("action", actionName);
-			routeData.Add("controller", controlerName);
+			routeData["action"] = actionName;
+			routeData["controller"] = controlerName;
 
 			foreach (var r in source.RouteData.Values.Where(x => x.Key.ToLowerInvariant() != "controller"
-					&& x.Key.ToLowerInvariant() != "action")) {
-				routeData.Add(r.Key, r.Value);
+					&& x.Key.ToLowerInvariant() != "action" && x.Key.ToLowerInvariant() != "area")) {
+				routeData[r.Key] = r.Value;
 			}
 
 			if (controller is IWidgetDataObject) {

@@ -48,7 +48,7 @@ CarrotCakeCMS (MVC) is maintained by Samantha Copeland
 
 1. Start **Visual Studio**
 
-1. Open **CarrotCakeMVC.sln** solution in the root of the repository
+1. Open **CarrotCakeCoreMVC.sln** solution in the root of the repository
 
 	Note: If your file extensions are hidden, you will not see the ".sln"
 	Other SLN files are demo widgets for how to wire in custom code/extensions

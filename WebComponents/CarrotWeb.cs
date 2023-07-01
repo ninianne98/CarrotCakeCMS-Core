@@ -74,6 +74,7 @@ namespace Carrotware.Web.UI.Components {
 				));
 			});
 
+			services.AddDistributedMemoryCache();
 			services.AddSession(options => {
 				options.IdleTimeout = TimeSpan.FromHours(2);
 				options.Cookie.Name = "." + AppDomain.CurrentDomain.FriendlyName.Replace(".", "") + ".Session";
@@ -98,6 +99,13 @@ namespace Carrotware.Web.UI.Components {
 			string _areaName = "CarrotWeb";
 
 			app.UseSession();
+
+			app.Use(async delegate (HttpContext Context, Func<Task> Next) {
+				var TempKey = Guid.NewGuid().ToString();
+				Context.Session.Set(TempKey, Array.Empty<byte>());
+				Context.Session.Remove(TempKey);
+				await Next();
+			});
 
 			string home = nameof(HomeController).Replace("Controller", "");
 
@@ -198,14 +206,17 @@ namespace Carrotware.Web.UI.Components {
 		public static HtmlEncoder HtmlEncoder { get; set; } = HtmlEncoder.Default;
 		public static UrlEncoder UrlEncoder { get; set; } = UrlEncoder.Default;
 
+		public static string MapWebPath(string path) {
+			var p = path.NormalizeFilename();
+			string root = _webHostEnvironment.WebRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+			return Path.Join(root, p);
+		}
+
 		public static string MapPath(string path) {
 			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.ContentRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			//var rootpaths = root.Split(Path.AltDirectorySeparatorChar);
-			//var newPath = path.Split(Path.AltDirectorySeparatorChar);
-			//return string.Join('/', rootpaths.Union(newPath).Where(x => x.Length > 0));
-			// not using Path.Combine because it re-roots the path, and we need the full path so we can do File.Exists
 			return Path.Join(root, p);
 		}
 

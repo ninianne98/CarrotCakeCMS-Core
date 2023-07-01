@@ -265,8 +265,12 @@ namespace Carrotware.CMS.Core {
 			return dateOut;
 		}
 
-		public string GetFolderPrefix(string sDirPath) {
-			return FileDataHelper.MakeWebFolderPath(sDirPath);
+		public string GetWebFolderPrefix(string sDirPath) {
+			return FileDataHelper.MakeWebFolderPath(sDirPath).FixPathSlashes();
+		}
+
+		public string GetContentFolderPrefix(string sDirPath) {
+			return FileDataHelper.MakeContentFolderPath(sDirPath).FixPathSlashes();
 		}
 
 		public List<CMSAdminModule> AdminModules {
@@ -324,7 +328,7 @@ namespace Carrotware.CMS.Core {
 						string sTplDef = Path.Join(theDir, "Public.config");
 
 						if (File.Exists(sTplDef)) {
-							string sPathPrefix = GetFolderPrefix(theDir);
+							string sPathPrefix = GetContentFolderPrefix(theDir);
 							DataSet ds = ReadDataSetConfig(CMSConfigFileType.PublicCtrl, sPathPrefix);
 
 							var _p2 = (from d in ds.Tables[0].AsEnumerable()
@@ -474,7 +478,7 @@ namespace Carrotware.CMS.Core {
 						string sTplDef = theDir + @"\Admin.config";
 
 						if (File.Exists(sTplDef)) {
-							string sPathPrefix = GetFolderPrefix(theDir);
+							string sPathPrefix = GetContentFolderPrefix(theDir);
 							DataSet ds = ReadDataSetConfig(CMSConfigFileType.AdminMod, sPathPrefix);
 
 							var _modules = (from d in ds.Tables[0].AsEnumerable()
@@ -630,7 +634,7 @@ namespace Carrotware.CMS.Core {
 						string sTplDef = Path.Join(theDir, "Skin.config");
 
 						if (File.Exists(sTplDef)) {
-							string sPathPrefix = GetFolderPrefix(theDir);
+							string sPathPrefix = GetContentFolderPrefix(theDir);
 							DataSet ds = ReadDataSetConfig(CMSConfigFileType.SkinDef, sPathPrefix);
 
 							var _p2 = (from d in ds.Tables[0].AsEnumerable()

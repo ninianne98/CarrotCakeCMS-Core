@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<OutputPath>bin\</OutputPath>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<RootNamespace>CarrotCake.CMS.Plugins.PhotoGallery</RootNamespace>
+		<AssemblyName>CarrotCake.CMS.Plugins.PhotoGallery</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Carrotware</Authors>
+		<Company>Carrotware</Company>
+		<Copyright>2023</Copyright>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<Version>6.1.0.0</Version>
+		<VersionPrefix>6.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="wwwroot\Assets\Admin\**" />
+		<Compile Remove="wwwroot\gallery-testing\**" />
+		<Content Remove="wwwroot\Assets\Admin\**" />
+		<Content Remove="wwwroot\gallery-testing\**" />
+		<EmbeddedResource Remove="wwwroot\Assets\Admin\**" />
+		<EmbeddedResource Remove="wwwroot\gallery-testing\**" />
+		<None Remove="wwwroot\Assets\Admin\**" />
+		<None Remove="wwwroot\gallery-testing\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Update="Views\CarrotCake.CMS.Plugins.PhotoGallery\Public.config">
+			<SubType>Designer</SubType>
+		</Content>
+		<Content Update="Views\CarrotCake.CMS.Plugins.PhotoGallery\_ViewImports.cshtml">
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
+		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.3" />
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.3" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Code\GalleryExportList.cs" />
+		<Compile Remove="Code\PublicSettings.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Edit.cshtml" />
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryList.cshtml" />
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView.cshtml" />
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView2.cshtml" />
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Index.cshtml" />
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\TestShowPrettyPhotoGallery.cshtml" />
+	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\View.cshtml" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(ProjectDir)\wwwroot\Assets\prettyPhoto\*&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\prettyPhoto\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\bin\$(TargetName)*&quot; &quot;$(SolutionDir)CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\$(TargetName)\*&quot; &quot;$(SolutionDir)CMSAdmin\Views\$(TargetName)&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C" />
+	</Target>
+</Project>

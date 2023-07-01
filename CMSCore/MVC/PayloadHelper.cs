@@ -24,6 +24,16 @@ namespace Carrotware.CMS.Core {
 			return page;
 		}
 
+		public static PagePayload SetSamplerPayload(ContentPage cp) {
+			var page = new PagePayload();
+			page.ThePage = cp;
+			page.ThePage.TemplateFile = SiteData.PreviewTemplateFile;
+
+			CarrotHttpHelper.HttpContext.Items[PagePayload.ItemKey] = page;
+
+			return page;
+		}
+
 		public static PagePayload GetContentFromContext() {
 			var page = new PagePayload();
 

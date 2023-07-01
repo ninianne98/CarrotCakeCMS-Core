@@ -1,15 +1,10 @@
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Northwind;
 using Northwind.Data;
 
@@ -74,6 +69,7 @@ app.UseResponseCaching();
 app.MigrateDatabase();
 
 // app.UseStatusCodePages();
+app.UseDeveloperExceptionPage();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {

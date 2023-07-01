@@ -86,7 +86,7 @@ namespace Carrotware.Web.UI.Components {
 							guid = Guid.NewGuid().ToString().Substring(0, 6);
 							CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 						}
-					} catch {
+					} catch (Exception ex) {
 						guid = Guid.NewGuid().ToString().Substring(0, 6);
 						CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 					}

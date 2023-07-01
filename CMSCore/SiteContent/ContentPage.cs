@@ -147,23 +147,26 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void ResetHeartbeatLock() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var rc = CompiledQueries.cqGetRootContentTbl(_db, this.SiteID, this.Root_ContentID);
+			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+				var rc = CompiledQueries.cqGetRootContentTbl(db, this.SiteID, this.Root_ContentID);
 
-				rc.EditHeartbeat = DateTime.UtcNow.AddHours(-2);
-				rc.HeartbeatUserId = null;
-				_db.SaveChanges();
+				if (rc != null) {
+					rc.EditHeartbeat = DateTime.UtcNow.AddHours(-2);
+					rc.HeartbeatUserId = null;
+					db.SaveChanges();
+				}
 			}
 		}
 
 		public void RecordHeartbeatLock(Guid currentUserID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var rc = CompiledQueries.cqGetRootContentTbl(_db, this.SiteID, this.Root_ContentID);
+			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+				var rc = CompiledQueries.cqGetRootContentTbl(db, this.SiteID, this.Root_ContentID);
 
-				rc.HeartbeatUserId = currentUserID;
-				rc.EditHeartbeat = DateTime.UtcNow;
-
-				_db.SaveChanges();
+				if (rc != null) {
+					rc.HeartbeatUserId = currentUserID;
+					rc.EditHeartbeat = DateTime.UtcNow == rc.EditHeartbeat ? DateTime.UtcNow.AddSeconds(-3) : DateTime.UtcNow;
+					db.SaveChanges();
+				}
 			}
 		}
 

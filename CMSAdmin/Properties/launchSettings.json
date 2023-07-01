@@ -7,6 +7,7 @@
 				"ASPNETCORE_ENVIRONMENT": "Development"
 			},
 			"dotnetRunMessages": true,
+			"hotReloadEnabled": false,
 			//"applicationUrl": "https://localhost:17710;http://localhost:16710"
 			"applicationUrl": "http://localhost:16710"
 		},
@@ -22,6 +23,7 @@
 	"iisSettings": {
 		"windowsAuthentication": false,
 		"anonymousAuthentication": true,
+		"hotReloadEnabled": false,
 		"iisExpress": {
 			"applicationUrl": "http://localhost:16715",
 			//"sslPort": 44370

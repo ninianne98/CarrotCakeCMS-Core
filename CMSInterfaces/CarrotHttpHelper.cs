@@ -102,13 +102,17 @@ namespace Carrotware.CMS.Interface {
 			return null;
 		}
 
+		public static string MapWebPath(string path) {
+			var p = path.NormalizeFilename();
+			string root = _webHostEnvironment.WebRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+			return Path.Join(root, p);
+		}
+
 		public static string MapPath(string path) {
 			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.ContentRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			//var rootpaths = root.Split(Path.AltDirectorySeparatorChar);
-			//var newPath = path.Split(Path.AltDirectorySeparatorChar);
-			//return string.Join('/', rootpaths.Union(newPath).Where(x => x.Length > 0));
 			return Path.Join(root, p);
 		}
 

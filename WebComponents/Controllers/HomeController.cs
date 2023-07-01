@@ -62,7 +62,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			int iWidth = iThumb;
 
 			if (!string.IsNullOrEmpty(sImageUri)) {
-				sImgPath = Path.Combine(_environment.ContentRootPath, sImageUri);
+				sImgPath = Path.Join(_environment.WebRootPath, sImageUri).NormalizeFilename();
 				if (System.IO.File.Exists(sImgPath)) {
 					using (Bitmap bmpOriginal = new Bitmap(sImgPath)) {
 						if (scaleImage) {

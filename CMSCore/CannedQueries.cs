@@ -1,5 +1,4 @@
 ﻿using Carrotware.CMS.Data.Models;
-using System;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -244,6 +243,18 @@ namespace Carrotware.CMS.Core {
 						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 						&& ct.IsLatestVersion == true
+					select ct);
+		}
+
+		internal static IQueryable<vwCarrotContent> GetContentByParent(CarrotCakeContext ctx, Guid siteID, Guid? parentContentID, bool bActiveOnly) {
+			return (from ct in ctx.vwCarrotContents
+					orderby ct.NavOrder, ct.NavMenuText
+					where ct.SiteId == siteID
+						   && ct.ParentContentId == parentContentID
+						   && ct.IsLatestVersion == true
+						   && (ct.PageActive == true || bActiveOnly == false)
+						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
+						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 					select ct);
 		}
 
