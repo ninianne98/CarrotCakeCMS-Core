@@ -35,9 +35,8 @@ var config = buildCfg.Build();
 builder.Logging.ClearProviders();
 
 var logConfig = config.GetSection("Logging");
-var logPrefix = logConfig.GetValue<string>("LogPrefix") ?? AppDomain.CurrentDomain.FriendlyName;
 var loggerFactory = LoggerFactory.Create(builder => {
-	builder.AddConfiguration(config.GetSection("Logging"));
+	builder.AddConfiguration(logConfig);
 	builder.AddDebug();
 	builder.AddSimpleConsole();
 });
@@ -68,10 +67,9 @@ services.AddTransient<ICarrotSite, SiteBasicInfo>();
 
 services.AddScoped(typeof(PagePayload));
 services.AddScoped(typeof(CmsRouting));
+services.AddTransient<IControllerActivator, CmsActivator>();
 
 services.LoadWidgets();
-
-services.AddTransient<IControllerActivator, CmsActivator>();
 
 var app = builder.Build();
 
@@ -140,8 +138,8 @@ app.MapControllerRoute(name: "C3StdAreas", pattern: "{area}/{controller=Home}/{a
 
 app.CarrotWebRouteSetup();
 
-app.RegisterWidgets();
-
 app.MapRazorPages();
+
+app.RegisterWidgets();
 
 app.Run();

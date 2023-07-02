@@ -23,10 +23,7 @@
 		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
 		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="2.2.4" />
@@ -43,7 +40,6 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
 		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.12" />
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -127,5 +123,11 @@
 		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.ttf" />
 		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.woff" />
 		<None Include="wwwroot\x-fonts\glyphicons-halflings-regular.woff2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 </Project>

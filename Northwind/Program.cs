@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
 using Northwind;
 using Northwind.Data;
 
@@ -30,9 +29,6 @@ var buildCfg = new ConfigurationBuilder()
 var config = buildCfg.Build();
 
 var widget = new NorthRegistration();
-
-services.AddDbContext<NorthwindContext>(opt => opt.UseSqlServer(config.GetConnectionString("NorthwindConnection")));
-services.AddDatabaseDeveloperPageExceptionFilter();
 
 services.AddControllersWithViews();
 services.AddRazorPages();

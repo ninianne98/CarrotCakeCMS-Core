@@ -1,12 +1,10 @@
 using CarrotCake.CMS.Plugins.PhotoGallery.Code;
-using CarrotCake.CMS.Plugins.PhotoGallery.Data;
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -21,17 +19,16 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var environment = builder.Environment;
-//var config = builder.Configuration;
 
 var buildCfg = new ConfigurationBuilder()
-			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-			.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables();
 
 var config = buildCfg.Build();
 
 var widget = new GalleryRegistration();
-
-services.AddDbContext<GalleryContext>(opt => opt.UseSqlServer(config.GetConnectionString("CarrotwareCMS")));
 
 services.AddControllersWithViews();
 services.AddRazorPages();
@@ -53,19 +50,17 @@ services.Configure<RazorViewEngineOptions>(options => {
 	options.ViewLocationExpanders.Add(new CmsViewExpander());
 });
 
-widget.LoadWidgets(services);
-
 services.AddTransient<ICarrotSite, SiteTestInfo>();
 services.AddTransient<IControllerActivator, CmsTestActivator>();
 
 CarrotWebHelper.Configure(config, environment, services);
 CarrotHttpHelper.Configure(config, environment, services);
 
+widget.LoadWidgets(services);
+
 var app = builder.Build();
 
 app.UseResponseCaching();
-
-app.MigrateDatabase();
 
 // app.UseStatusCodePages();
 app.UseDeveloperExceptionPage();
@@ -78,8 +73,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-widget.RegisterWidgets(app);
-
 app.MapControllerRoute(
 	name: "StdRoutes",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -87,5 +80,7 @@ app.MapControllerRoute(
 app.CarrotWebRouteSetup();
 
 app.MapRazorPages();
+
+widget.RegisterWidgets(app);
 
 app.Run();

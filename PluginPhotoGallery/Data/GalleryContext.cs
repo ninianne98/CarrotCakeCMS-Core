@@ -15,14 +15,6 @@ public partial class GalleryContext : DbContext {
 
 	//================================
 
-	public virtual DbSet<Gallery> Galleries { get; set; }
-
-	public virtual DbSet<GalleryImage> GalleryImages { get; set; }
-
-	public virtual DbSet<GalleryImageMetaData> GalleryImageMetaData { get; set; }
-
-	//================================
-
 	public static GalleryContext Create() {
 		var optionsBuilder = new DbContextOptionsBuilder<GalleryContext>();
 
@@ -34,6 +26,14 @@ public partial class GalleryContext : DbContext {
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 		DataHelper.Configure("CarrotwareCMS", optionsBuilder);
 	}
+
+	//================================
+
+	public virtual DbSet<Gallery> Galleries { get; set; }
+
+	public virtual DbSet<GalleryImage> GalleryImages { get; set; }
+
+	public virtual DbSet<GalleryImageMetaData> GalleryImageMetaData { get; set; }
 
 	//================================
 

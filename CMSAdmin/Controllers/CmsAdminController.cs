@@ -654,10 +654,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				return View(model);
 			}
 
-			string returnUrl = HttpUtility.UrlDecode(model.ReturnUrl);
+			string returnUrl = model.ReturnUrl != null ? HttpUtility.UrlDecode(model.ReturnUrl) : SiteFilename.DashboardURL;
 
 			// This doesn't count login failures towards account lockout
-
 			var user = await securityHelper.UserManager.FindByNameAsync(model.UserName);
 			var result = await securityHelper.SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 

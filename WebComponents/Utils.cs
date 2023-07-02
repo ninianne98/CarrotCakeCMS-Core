@@ -12,9 +12,9 @@
 
 namespace Carrotware.Web.UI.Components {
 
-	public class Utils {
+	public static class Utils {
 
-		public static string DecodeBase64(string ValIn) {
+		public static string DecodeBase64(this string ValIn) {
 			string val = string.Empty;
 			if (!string.IsNullOrEmpty(ValIn)) {
 				Encoding enc = Encoding.GetEncoding("ISO-8859-1"); //Western European (ISO)
@@ -23,7 +23,7 @@ namespace Carrotware.Web.UI.Components {
 			return val;
 		}
 
-		public static string EncodeBase64(string ValIn) {
+		public static string EncodeBase64(this string ValIn) {
 			string val = string.Empty;
 			if (!string.IsNullOrEmpty(ValIn)) {
 				Encoding enc = Encoding.GetEncoding("ISO-8859-1"); //Western European (ISO)

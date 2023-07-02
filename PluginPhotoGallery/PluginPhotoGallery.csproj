@@ -4,6 +4,7 @@
 		<Nullable>enable</Nullable>
 		<OutputPath>bin\</OutputPath>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultItems>false</EnableDefaultItems>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<RootNamespace>CarrotCake.CMS.Plugins.PhotoGallery</RootNamespace>
 		<AssemblyName>CarrotCake.CMS.Plugins.PhotoGallery</AssemblyName>
@@ -22,34 +23,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="wwwroot\Assets\Admin\**" />
-		<Compile Remove="wwwroot\gallery-testing\**" />
-		<Content Remove="wwwroot\Assets\Admin\**" />
-		<Content Remove="wwwroot\gallery-testing\**" />
-		<EmbeddedResource Remove="wwwroot\Assets\Admin\**" />
-		<EmbeddedResource Remove="wwwroot\gallery-testing\**" />
-		<None Remove="wwwroot\Assets\Admin\**" />
-		<None Remove="wwwroot\gallery-testing\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<Content Update="Views\CarrotCake.CMS.Plugins.PhotoGallery\Public.config">
-			<SubType>Designer</SubType>
-		</Content>
-		<Content Update="Views\CarrotCake.CMS.Plugins.PhotoGallery\_ViewImports.cshtml">
-		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-	</ItemGroup>
-	<ItemGroup>
 		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
 		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
-	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
 			<PrivateAssets>all</PrivateAssets>
@@ -59,21 +38,108 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
 		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.3" />
 		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.3" />
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Remove="Code\GalleryExportList.cs" />
-		<Compile Remove="Code\PublicSettings.cs" />
+		<Compile Include="Code\GalleryGroup.cs" />
+		<Compile Include="Code\GalleryHelper.cs" />
+		<Compile Include="Code\GalleryImageEntry.cs" />
+		<Compile Include="Code\GalleryMetaData.cs" />
+		<Compile Include="Code\GalleryRegistration.cs" />
+		<Compile Include="Code\GallerySettings.cs" />
+		<Compile Include="Controllers\AdminController.cs" />
+		<Compile Include="Controllers\BasePublicController.cs" />
+		<Compile Include="Controllers\HomeController.cs" />
+		<Compile Include="Controllers\TestController.cs" />
+		<Compile Include="Data\DataHelper.cs" />
+		<Compile Include="Data\Gallery.cs" />
+		<Compile Include="Data\GalleryContext.cs" />
+		<Compile Include="Data\GalleryImage.cs" />
+		<Compile Include="Data\GalleryImageMetaData.cs" />
+		<Compile Include="Data\Migrations\20230625212349_InitialGallery.cs" />
+		<Compile Include="Data\Migrations\20230625212349_InitialGallery.Designer.cs" />
+		<Compile Include="Data\Migrations\GalleryContextModelSnapshot.cs" />
+		<Compile Include="Models\EditPhotoGalleryModel.cs" />
+		<Compile Include="Models\GalleryModel.cs" />
+		<Compile Include="Models\GalleryTest.cs" />
+		<Compile Include="Program.cs" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Edit.cshtml" />
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryList.cshtml" />
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView.cshtml" />
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView2.cshtml" />
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Index.cshtml" />
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\TestShowPrettyPhotoGallery.cshtml" />
-	  <None Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\View.cshtml" />
+		<Content Include="appsettings.Development.json" />
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Properties\launchSettings.json" />
+		<Content Include="Views\_ViewImports.cshtml" />
+		<Content Include="Views\_ViewStart.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\_ViewImports.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin.config" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\EditGallery.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\EditGalleryPhotos.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\EditImageMetaData.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\GalleryDatabase.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\Index.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Home\Index.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Home\ShowPrettyPhotoGallery.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Public.config" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Edit.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryList.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView2.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Index.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\TestShowPrettyPhotoGallery.cshtml" />
+		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\View.cshtml" />
+		<Content Include="Views\Shared\_Layout.cshtml" />
+		<Content Include="Views\Shared\_LayoutPop.cshtml" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\btnNext.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\btnPrevious.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\contentPattern.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\default_thumbnail.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\loader.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\sprite.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_square\btnNext.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_square\btnPrevious.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_square\contentPattern.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_square\default_thumbnail.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_square\loader.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\dark_square\sprite.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\default_thumb.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\loader.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\sprite.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\sprite_next.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\sprite_prev.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\sprite_x.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\default\sprite_y.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\btnNext.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\btnPrevious.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\contentPatternBottom.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\contentPatternLeft.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\contentPatternRight.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\contentPatternTop.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\default_thumbnail.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\loader.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\facebook\sprite.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_rounded\btnNext.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_rounded\btnPrevious.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_rounded\default_thumbnail.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_rounded\loader.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_rounded\sprite.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_square\btnNext.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_square\btnPrevious.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_square\default_thumbnail.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_square\loader.gif" />
+		<Content Include="wwwroot\Assets\prettyPhoto\light_square\sprite.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\PhotoIcon.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\PhotoIcon2.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\PhotoIcon3.png" />
+		<Content Include="wwwroot\Assets\prettyPhoto\prettyPhoto.css" />
+		<Content Include="wwwroot\Content\Site.css" />
+		<Content Include="wwwroot\favicon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="wwwroot\Assets\prettyPhoto\jquery.prettyPhoto.js" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

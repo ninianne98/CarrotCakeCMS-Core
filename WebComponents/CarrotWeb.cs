@@ -66,6 +66,10 @@ namespace Carrotware.Web.UI.Components {
 			_webHostEnvironment = environment;
 			_services = services;
 
+			_serviceProvider = services.BuildServiceProvider();
+			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
+			_memoryCache = _serviceProvider.GetRequiredService<IMemoryCache>();
+
 			services.AddMvc().AddRazorRuntimeCompilation();
 
 			services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
@@ -77,16 +81,12 @@ namespace Carrotware.Web.UI.Components {
 			services.AddDistributedMemoryCache();
 			services.AddSession(options => {
 				options.IdleTimeout = TimeSpan.FromHours(2);
-				options.Cookie.Name = "." + AppDomain.CurrentDomain.FriendlyName.Replace(".", "") + ".Session";
+				options.Cookie.Name = ".CarrotWeb.Session";
 				options.Cookie.IsEssential = true;
 			});
 
 			services.AddMemoryCache();
 			services.AddHttpContextAccessor();
-
-			_serviceProvider = services.BuildServiceProvider();
-			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
-			_memoryCache = _serviceProvider.GetRequiredService<IMemoryCache>();
 
 			try {
 				_signinmanager = _serviceProvider.GetRequiredService<SignInManager<IdentityUser>>();
@@ -387,7 +387,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public static string EncodeColor(Color color) {
+		public static string EncodeColor(this Color color) {
 			var colorCode = ColorTranslator.ToHtml(color);
 
 			string sColor = string.Empty;
@@ -400,7 +400,7 @@ namespace Carrotware.Web.UI.Components {
 			return sColor;
 		}
 
-		public static string DecodeColorString(string colorCode) {
+		public static string DecodeColorString(this string colorCode) {
 			string sColor = string.Empty;
 			if (!string.IsNullOrEmpty(colorCode)) {
 				sColor = colorCode;
@@ -414,7 +414,7 @@ namespace Carrotware.Web.UI.Components {
 			return sColor;
 		}
 
-		public static Color DecodeColor(string colorCode) {
+		public static Color DecodeColor(this string colorCode) {
 			string sColor = DecodeColorString(colorCode);
 
 			if (sColor.ToLowerInvariant().EndsWith("transparent")) {
