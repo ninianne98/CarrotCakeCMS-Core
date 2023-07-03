@@ -1,4 +1,4 @@
-# CarrotCakeCMS-MVC (Core 6)
+# CarrotCakeCMS (MVC Core)
 Source code for CarrotCakeCMS (MVC - Core), .Net Core 6
 
 [SITE_CT]: http://www.carrotware.com/contact?from=github-core
@@ -25,17 +25,17 @@ Other features also include date based release and retirement of content - allow
 
 ---
 
-## CarrotCakeCMS (MVC) Developer Quick Start Guide
+## CarrotCakeCMS (MVC Core) Developer Quick Start Guide
 
 Copyright (c) 2011, 2015, 2023 Samantha Copeland
 Licensed under the MIT or GPL v3 License
 
-CarrotCakeCMS (MVC) is maintained by Samantha Copeland
+CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 ### Install Development Tools
 
-1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C]) Professional (or higher) editions OK.  Typically being developed on VS 2022 Enterprise. 
-1. **[SQL Server Express 2012 (or higher/later)][SQL]** - currently vetted on 2012 and 2016 Express.  Entity Framework Core 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
+1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise. 
+1. **[SQL Server Express 2012 (or higher/later)][SQL]** - currently vetted on 2012 Express and 2016 Express.  Entity Framework Core 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
 1. **[SQL Server Management Studio (SSMS)][SSMS]** - required for managing the database
 
 ### Get the Source Code
@@ -65,7 +65,42 @@ CarrotCakeCMS (MVC) is maintained by Samantha Copeland
 
 	There may be some warnings, you can ignore them
 
-1. The SQL Server database should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data, Make a backup FIRST!.
+1. The SQL Server database should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  
+
+### Make a backup FIRST when upgrading!
+
+```sql
+-- if you plan to use an existing database from the MVC 5 version, you will need to have some entries in the migrations table
+-- to create the migrations tableM
+
+CREATE TABLE [dbo].[__EFMigrationsHistory](
+	[MigrationId] [nvarchar](150) NOT NULL,
+	[ProductVersion] [nvarchar](32) NOT NULL,
+ CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY CLUSTERED 
+(
+	[MigrationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+-- main CMS MVC 5-> MVC Core 6 - create the ef table and execute the insert for 00000000000000_Initial
+-- the password hashes will be incorrect, so perform a password reset once the DB has been upgraded
+IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='00000000000000_Initial')
+			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[membership_User]') AND type in (N'U'))) BEGIN
+	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
+		values ('00000000000000_Initial','7.0.0')
+END
+
+-- photo gallery widget - create the ef table (if not done for the main CMS) and execute the insert for 20230625212349_InitialGallery
+IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230625212349_InitialGallery')
+			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
+	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
+		values ('20230625212349_InitialGallery','7.0.0')
+END
+
+-- to validate
+select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'
+```
 
 1. if the database is empty or has pending database changes, the EF migrations will be automatically applied.
 
@@ -79,6 +114,6 @@ CarrotCakeCMS (MVC) is maintained by Samantha Copeland
 
 1. After successfully logging in, you can create and manage your new website
 
-### Using CarrotCakeCMS
+### Using CarrotCakeCMS Core
 
 For additional information on how to use CarrotCakeCMS, please see the **[CarrotCakeCMS Documentation][DOC]**.

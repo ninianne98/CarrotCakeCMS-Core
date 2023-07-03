@@ -334,7 +334,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="appsettings.Development.json" />
+		<Content Include="appsettings.Development.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
