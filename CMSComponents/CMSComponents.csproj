@@ -61,6 +61,11 @@
 	<ItemGroup>
 		<None Include="compilerconfig.json" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="xcopy &quot;$(ProjectDir)\skins\*.min.css&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\skins\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\editor\*.min.css&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\editor\&quot; /F/R/Y/I/S/C&#xD;&#xA;" />
 	</Target>

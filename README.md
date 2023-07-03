@@ -71,7 +71,8 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 ```sql
 -- if you plan to use an existing database from the MVC 5 version, you will need to have some entries in the migrations table
--- to create the migrations tableM
+
+-- to create the migrations table:
 
 CREATE TABLE [dbo].[__EFMigrationsHistory](
 	[MigrationId] [nvarchar](150) NOT NULL,
@@ -83,7 +84,7 @@ CREATE TABLE [dbo].[__EFMigrationsHistory](
 ) ON [PRIMARY]
 GO
 
--- main CMS MVC 5-> MVC Core 6 - create the ef table and execute the insert for 00000000000000_Initial
+-- main CMS MVC 5-> MVC Core 6 - create the ef table (if needed) and execute the insert for 00000000000000_Initial
 -- the password hashes will be incorrect, so perform a password reset once the DB has been upgraded
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='00000000000000_Initial')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[membership_User]') AND type in (N'U'))) BEGIN
@@ -91,7 +92,7 @@ IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='000000
 		values ('00000000000000_Initial','7.0.0')
 END
 
--- photo gallery widget - create the ef table (if not done for the main CMS) and execute the insert for 20230625212349_InitialGallery
+-- photo gallery widget - create the ef table (if needed) and execute the insert for 20230625212349_InitialGallery
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230625212349_InitialGallery')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])

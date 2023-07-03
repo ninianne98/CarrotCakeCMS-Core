@@ -51,4 +51,10 @@
 	<ItemGroup>
 		<Folder Include="Properties\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 </Project>
