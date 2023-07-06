@@ -80,7 +80,7 @@ namespace Carrotware.Web.UI.Components {
 
 			services.AddDistributedMemoryCache();
 			services.AddSession(options => {
-				options.IdleTimeout = TimeSpan.FromHours(2);
+				options.IdleTimeout = TimeSpan.FromMinutes(30);
 				options.Cookie.Name = ".CarrotWeb.Session";
 				options.Cookie.IsEssential = true;
 			});
@@ -328,7 +328,7 @@ namespace Carrotware.Web.UI.Components {
 				filename = helper.ViewContext.ExecutingFilePath ?? string.Empty;
 			}
 
-			helper.ViewContext.Writer.Write(helper.Hidden(PartialViewKey, Utils.EncodeBase64(filename), new { @id = PartialViewKey }).RenderToHtmlString());
+			helper.ViewContext.Writer.Write(helper.Hidden(PartialViewKey, filename.EncodeBase64(), new { @id = PartialViewKey }).RenderToHtmlString());
 		}
 
 		public static string RestoreViewPath(this ControllerContext controllerContext) {
@@ -338,7 +338,7 @@ namespace Carrotware.Web.UI.Components {
 				filename = controllerContext.HttpContext.Request.Form[PartialViewKey].ToString();
 			}
 
-			return Utils.DecodeBase64(filename);
+			return filename.DecodeBase64();
 		}
 
 		public static string ShortDateFormatPattern {
@@ -426,12 +426,6 @@ namespace Carrotware.Web.UI.Components {
 			}
 
 			return ColorTranslator.FromHtml(sColor);
-		}
-
-		public static string GetAssemblyName(this Assembly assembly) {
-			var assemblyName = assembly.ManifestModule.Name;
-			//return assemblyName.Substring(0, assemblyName.Length - 4);
-			return Path.GetFileNameWithoutExtension(assemblyName);
 		}
 
 		public static string HtmlFormat(StringBuilder input) {
@@ -611,7 +605,7 @@ namespace Carrotware.Web.UI.Components {
 			string sUri = string.Empty;
 
 			var asmb = assembly.ManifestModule.Name;
-			var resName = HttpUtility.HtmlEncode(Utils.EncodeBase64(string.Format("{0}:{1}", resource, asmb)));
+			var resName = HttpUtility.HtmlEncode(string.Format("{0}:{1}", resource, asmb).EncodeBase64());
 
 			try {
 				var ver = FileVersion.Replace(".", string.Empty);

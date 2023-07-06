@@ -151,7 +151,7 @@ namespace Carrotware.CMS.UI.Components {
 			this.ValidateSettings = null;
 
 			if (!string.IsNullOrEmpty(this.EncodedSettings)) {
-				string sXML = CMSConfigHelper.DecodeBase64(this.EncodedSettings);
+				string sXML = this.EncodedSettings.DecodeBase64();
 				XmlSerializer xmlSerializer = new XmlSerializer(type);
 				using (StringReader stringReader = new StringReader(sXML)) {
 					this.ValidateSettings = xmlSerializer.Deserialize(stringReader);

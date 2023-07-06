@@ -1,4 +1,5 @@
 ﻿using Carrotware.CMS.Core;
+using Carrotware.CMS.Core.MVC;
 using Carrotware.CMS.CoreMVC.UI.Admin.Models;
 using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
@@ -2818,7 +2819,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			NoCache();
 
 			this.VaryCacheByQuery(new string[] { "c3pv", "ts" }, 0.25);
-			var view = Utils.DecodeBase64(c3pv);
+			var view = c3pv.DecodeBase64();
 
 			return View(SiteData.PreviewTemplateFile);
 		}

@@ -50,13 +50,13 @@ services.Configure<RazorViewEngineOptions>(options => {
 	options.ViewLocationExpanders.Add(new CmsViewExpander());
 });
 
+CarrotWebHelper.Configure(config, environment, services);
+CarrotHttpHelper.Configure(config, environment, services);
+
 widget.LoadWidgets(services);
 
 services.AddTransient<ICarrotSite, SiteTestInfo>();
 services.AddTransient<IControllerActivator, CmsTestActivator>();
-
-CarrotWebHelper.Configure(config, environment, services);
-CarrotHttpHelper.Configure(config, environment, services);
 
 var app = builder.Build();
 
@@ -85,6 +85,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 widget.RegisterWidgets(app);
+
+app.MapFallback(context => {
+	context.Response.Redirect(CmsTestHomeAttribute.DefaultPage.FixPathSlashes());
+	return Task.CompletedTask;
+});
 
 app.MapControllerRoute(
 	name: "StdRoutes",

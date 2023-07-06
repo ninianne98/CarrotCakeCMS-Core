@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
-using Carrotware.Web.UI.Components;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -46,20 +45,6 @@ namespace Carrotware.CMS.Interface {
 				services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
 					options.FileProviders.Add(new EmbeddedFileProvider(assembly));
 				});
-
-				//services.AddControllersWithViews()
-				//			.AddControllersAsServices()
-				//			.ConfigureApplicationPartManager(apm => apm.ApplicationParts.Add(part));
-
-				//services.AddControllersWithViews()
-				//		.AddControllersAsServices()
-				//		.AddRazorRuntimeCompilation()
-				//		.AddViewComponentsAsServices()
-				//		.AddApplicationPart(assembly);
-
-				//services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
-				//	options.FileProviders.Add(new EmbeddedFileProvider(assembly));
-				//});
 			}
 		}
 
@@ -70,8 +55,11 @@ namespace Carrotware.CMS.Interface {
 
 			if (this.AreaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
 				app.MapControllerRoute(
-								name: this.AreaName + "_Default",
-								pattern: this.AreaName + "/{controller=Home}/{action=Index}/{id?}");
+							name: this.AreaName + "_Default",
+							pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+				//app.MapControllerRoute(
+				//			name: this.AreaName + "_Default",
+				//			pattern: this.AreaName + "/{controller=Home}/{action=Index}/{id?}");
 			}
 		}
 	}

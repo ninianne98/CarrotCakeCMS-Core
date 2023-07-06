@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using System;
 using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -88,6 +85,12 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public static void RegisterWidgets(this WebApplication app) {
+			//app.UseEndpoints(endpoints => {
+			//	endpoints.MapGet("/DefaultWidgetLandingTestHomePage", async (context) => {
+			//		context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+			//	});
+			//});
+
 			string nsp = typeof(WidgetLoad).Namespace.ToLowerInvariant();
 
 			foreach (var assembly in _assemblies) {

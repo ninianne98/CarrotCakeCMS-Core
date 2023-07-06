@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
+	[WidgetController(typeof(BasePublicController))]
 	public class TestController : BasePublicController {
 		private GalleryHelper helper = new GalleryHelper();
 

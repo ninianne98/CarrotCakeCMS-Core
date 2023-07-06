@@ -1,7 +1,9 @@
 ﻿using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,16 +78,14 @@ namespace Carrotware.CMS.Interface {
 			return desc.Select(s => provider.GetRequiredService(s.ServiceType));
 		}
 
-		public static string QueryString(string name) {
+		public static string QueryString(string key) {
 			var query = Request.QueryString;
 
 			if (query.HasValue) {
-				var dict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(query.Value);
+				var dict = QueryHelpers.ParseQuery(query.Value);
 
-				if (dict != null) {
-					if (dict.ContainsKey(name)) {
-						return dict[name];
-					}
+				if (dict != null && dict.ContainsKey(key)) {
+					return dict[key];
 				}
 			}
 

@@ -65,11 +65,11 @@ services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 services.AddTransient<ICarrotSite, SiteBasicInfo>();
 
+services.LoadWidgets();
+
 services.AddScoped(typeof(PagePayload));
 services.AddScoped(typeof(CmsRouting));
 services.AddTransient<IControllerActivator, CmsActivator>();
-
-services.LoadWidgets();
 
 var app = builder.Build();
 
@@ -100,11 +100,13 @@ app.UseRouting();
 app.Use(async (context, next) => {
 	await next();
 	//Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
-	if (context.Response.StatusCode == 404) {
+	if (context.Response.StatusCode == (int)System.Net.HttpStatusCode.NotFound) {
 		context.Request.Path = string.Format("/{0}/Get404", cmsControler);
 		await next();
 	}
 });
+
+app.CarrotWebRouteSetup();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -133,10 +135,9 @@ app.MapControllerRoute(name: "C3AdminApi_Route",
 		controller = CmsRouteConstants.CmsController.AdminApi
 	});
 
-app.MapControllerRoute(name: "C3StdAreas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(name: "C3StdAreas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(name: "C3StdAreas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
 //app.MapControllerRoute(name: "C3StdRoutes", pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.CarrotWebRouteSetup();
 
 app.MapRazorPages();
 

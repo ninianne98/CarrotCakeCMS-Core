@@ -29,7 +29,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public SiteSkinModel(string encodedPath, string altPath)
 			: this(encodedPath) {
-			this.AltPath = CMSConfigHelper.DecodeBase64(altPath);
+			this.AltPath = altPath.DecodeBase64();
 
 			this.EditFile = this.AltPath;
 		}
@@ -37,7 +37,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public SiteSkinModel(string encodedPath)
 			: this() {
 			this.EncodedPath = encodedPath;
-			this.TemplateFile = CMSConfigHelper.DecodeBase64(encodedPath);
+			this.TemplateFile = encodedPath.DecodeBase64();
 			this.FullFilePath = CarrotHttpHelper.MapPath(this.TemplateFile);
 
 			using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {

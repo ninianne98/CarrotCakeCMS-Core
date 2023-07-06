@@ -9,6 +9,7 @@ using System.Data;
 
 namespace Northwind.Controllers {
 
+	[WidgetController(typeof(AdminController))]
 	public class AdminController : BaseAdminWidgetController {
 		protected NorthwindContext db = new NorthwindContext();
 

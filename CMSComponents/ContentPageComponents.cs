@@ -224,7 +224,7 @@ namespace Carrotware.CMS.UI.Components {
 				HttpContext ctx = CarrotHttpHelper.HttpContext;
 
 				if (!SiteData.CurrentSite.MainCanonicalURL.ToLowerInvariant().Contains(@"://" + CMSConfigHelper.DomainName.ToLowerInvariant())) {
-					ctx.Response.StatusCode = 301;
+					ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.MovedPermanently;
 				}
 			}
 

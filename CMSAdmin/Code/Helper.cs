@@ -4,6 +4,7 @@ using Carrotware.CMS.UI.Components;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using static Carrotware.CMS.UI.Components.CmsSkin;
 
@@ -44,7 +45,13 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			get {
 				var actualSkin = SkinOption.Classic;
 				try {
-					actualSkin = (SkinOption)CarrotHttpHelper.CacheGet("SiteSkin");
+					var cacheSkin = CarrotHttpHelper.CacheGet("SiteSkin");
+					if (cacheSkin != null) {
+						actualSkin = (SkinOption)cacheSkin;
+					} else {
+						actualSkin = SkinOption.Classic;
+						_theme = SkinOption.None;
+					}
 				} catch {
 					actualSkin = SkinOption.Classic;
 					_theme = SkinOption.None;

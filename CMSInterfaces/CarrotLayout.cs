@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 
@@ -18,7 +19,7 @@ namespace Carrotware.CMS.Interface {
 
 		public static string LayoutKey { get { return "UseStdWidgetLayout"; } }
 
-		public static string ToggleLayout(ViewDataDictionary viewData, string viewName) {
+		public static string ToggleLayout(IHtmlHelper helper, ViewDataDictionary viewData, string viewName) {
 			bool useWidget = viewData[LayoutKey] != null ? ((bool)viewData[LayoutKey]) : false;
 
 			if (useWidget) {
@@ -32,7 +33,7 @@ namespace Carrotware.CMS.Interface {
 			get {
 				return CarrotHttpHelper.Configuration.GetValue<string>("LayoutMain") != null
 					? CarrotHttpHelper.Configuration.GetValue<string>("LayoutMain").ToString()
-					: "~/Views/Shared/_LayoutModule.cshtml";
+					: "/Views/Shared/_LayoutModule.cshtml";
 			}
 		}
 
@@ -40,13 +41,13 @@ namespace Carrotware.CMS.Interface {
 			get {
 				return CarrotHttpHelper.Configuration.GetValue<string>("LayoutPopup") != null
 					? CarrotHttpHelper.Configuration.GetValue<string>("LayoutPopup").ToString()
-					: "~/Views/CmsAdmin/_LayoutPopup.cshtml";
+					: "/Views/CmsAdmin/_LayoutPopup.cshtml";
 			}
 		}
 
 		public static string Public {
 			get {
-				return "~/Views/CmsAdmin/_LayoutPublic.cshtml";
+				return "/Views/CmsAdmin/_LayoutPublic.cshtml";
 			}
 		}
 

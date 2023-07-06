@@ -81,8 +81,6 @@ namespace Carrotware.CMS.Core {
 			CarrotHttpHelper.CacheRemove(ModuleKey);
 
 			try {
-				//VirtualDirectory.RegisterRoutes(true);
-
 				if (SiteData.CurrentSiteExists) {
 					SiteData.CurrentSite.LoadTextWidgets();
 				}
@@ -411,12 +409,14 @@ namespace Carrotware.CMS.Core {
 
 		public static string PluginAreaPath {
 			get {
-				string path = CarrotHttpHelper.HttpContext.Request.Path;
+				string path = CarrotHttpHelper.HttpContext.Request.Path.ToString().Normalize();
+				if (path != @"/") {
+					int i1 = path.IndexOf("/") + 1;
+					int i2 = path.IndexOf("/", 2) - 1;
 
-				int i1 = path.IndexOf("/") + 1;
-				int i2 = path.IndexOf("/", 2) - 1;
-
-				return path.Substring(i1, i2);
+					return path.Substring(i1, i2);
+				}
+				return SiteData.AdminFolderPath;
 			}
 		}
 
@@ -1011,12 +1011,12 @@ namespace Carrotware.CMS.Core {
 
 		//=====================
 
-		public static string DecodeBase64(string ValIn) {
-			return Utils.DecodeBase64(ValIn);
+		public static string DecodeBase64(string text) {
+			return text.DecodeBase64();
 		}
 
-		public static string EncodeBase64(string ValIn) {
-			return Utils.EncodeBase64(ValIn);
+		public static string EncodeBase64(string text) {
+			return text.EncodeBase64();
 		}
 
 		public void OverrideKey(Guid guidContentID) {

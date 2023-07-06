@@ -172,7 +172,8 @@ namespace Carrotware.CMS.Core {
 							SiteData.WriteDebugException("cmsroutehelper != null", new Exception(string.Format("Default: {0}", navData.FileName)));
 
 							routeData[CmsRouting.SpecialKey] = false;
-							routeData.Add(CmsRouting.PageIdKey, navData.Root_ContentID);
+							routeData[CmsRouting.PageIdKey] = navData.Root_ContentID;
+							routeData[CmsRouting.RouteKey] = !string.IsNullOrEmpty(requestedUri) ? requestedUri : @"/";
 							routeData["controller"] = CmsRouteConstants.CmsController.Content;
 							routeData["action"] = CmsRouteConstants.DefaultAction;
 							routeData["id"] = null;

@@ -150,7 +150,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					SiteData.WriteDebugException("cmscontentcontroller_defaultview", new Exception("Empty _page"));
 					return View("_EmptyHome");
 				} else {
-					Response.StatusCode = 404;
+					Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 					SiteData.WriteDebugException("cmscontentcontroller_httpnotfound", new Exception("HttpNotFound"));
 					return NotFound();
 				}
@@ -160,7 +160,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public ActionResult PageNotFound() {
 			//SiteData.Perform404Redirect(Request.Path);
 
-			Response.StatusCode = 404;
+			Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 			SiteData.WriteDebugException("cmscontentcontroller_pagenotfound", new Exception(string.Format("HttpNotFound: {0}", Request.Path)));
 
 			return NotFound();

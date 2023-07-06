@@ -133,7 +133,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		}
 
 		public IActionResult GetWebResource(string r, string ts) {
-			string resource = Utils.DecodeBase64(r);
+			string resource = r.DecodeBase64();
 
 			if (resource != null && resource.Length > 0) {
 				this.VaryCacheByQuery(new string[] { "r", "ts" }, 5);
@@ -217,7 +217,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 				return File(_stream, mime);
 			}
 
-			this.Response.StatusCode = 404;
+			this.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 
 			return Content("Not Found");
 		}
@@ -234,7 +234,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			Bitmap bmpCaptcha = CaptchaImage.GetCaptchaImage(f, b, n);
 
 			if (bmpCaptcha == null) {
-				Response.StatusCode = 404;
+				Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 				//Response.StatusDescription = "Not Found";
 				byte[] bb = new byte[0];
 
@@ -258,8 +258,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			var cal = new Calendar(wc, wb, cc, cb, tc, tb, tsb,
 									tl, nc, nb, nsb, nl);
 
-			cal.ElementId = Utils.DecodeBase64(el).Replace("{", "").Replace(">", "").Replace("<", "").Replace(">", "")
-									.Replace("'", "").Replace("\\", "").Replace("//", "").Replace(":", "");
+			cal.ElementId = el.DecodeBase64().ScrubQueryElement();
 
 			var txt = cal.GenerateCSS();
 			var byteArray = Encoding.UTF8.GetBytes(txt);

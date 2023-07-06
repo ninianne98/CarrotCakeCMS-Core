@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
+	[WidgetController(typeof(AdminController))]
 	public class AdminController : BaseAdminWidgetController {
 		protected readonly IWebHostEnvironment _webenv;
 		protected readonly ICarrotSite _site;
@@ -138,7 +139,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			string imageFile = string.Empty;
 
 			if (!string.IsNullOrEmpty(path)) {
-				imageFile = Utils.DecodeBase64(path);
+				imageFile = path.DecodeBase64();
 			}
 
 			if (imageFile.Contains("../") || imageFile.Contains(@"..\")) {
@@ -181,7 +182,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			meta.ImageTitle = model.ImageTitle;
 			meta.Save();
 
-			return RedirectToAction("EditImageMetaData", new { @path = Utils.EncodeBase64(meta.GalleryImageName) });
+			return RedirectToAction("EditImageMetaData", new { @path = meta.GalleryImageName.EncodeBase64() });
 		}
 	}
 }

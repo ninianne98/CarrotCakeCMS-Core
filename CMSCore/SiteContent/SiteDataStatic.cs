@@ -586,7 +586,7 @@ namespace Carrotware.CMS.Core {
 
 		public static void Show404MessageFull() {
 			HttpContext context = CarrotHttpHelper.HttpContext;
-			context.Response.StatusCode = 404;
+			context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 
 			Exception errInner = new Exception("The resource you are looking for (or one of its dependencies) could have been removed, had its name changed, or is temporarily unavailable. Please review the following URL and make sure that it is spelled correctly.");
 			Exception err = new Exception("File or directory not found, 404.", errInner);
@@ -596,12 +596,12 @@ namespace Carrotware.CMS.Core {
 
 		public static void Show404MessageShort() {
 			HttpContext context = CarrotHttpHelper.HttpContext;
-			context.Response.StatusCode = 404;
+			context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 		}
 
 		public static void Show301Message(string sFileRequested) {
 			HttpContext context = CarrotHttpHelper.HttpContext;
-			context.Response.StatusCode = 301;
+			context.Response.StatusCode = (int)System.Net.HttpStatusCode.MovedPermanently;
 		}
 
 		public static void WriteDebugException(string sSrc, Exception objErr) {

@@ -588,7 +588,7 @@ namespace Carrotware.CMS.Core {
 
 			context.Response.WriteAsync(sRSSXML);
 
-			context.Response.StatusCode = 200;
+			context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 		}
 
 		public string GetRSSFeed(string feedType) {

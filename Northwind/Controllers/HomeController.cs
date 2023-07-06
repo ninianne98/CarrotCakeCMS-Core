@@ -8,6 +8,7 @@ using Northwind.Models;
 
 namespace Northwind.Controllers {
 
+	[WidgetController(typeof(HomeController))]
 	public class HomeController : BaseDataWidgetController {
 		protected readonly IActionContextAccessor _accessor;
 		protected readonly IWebHostEnvironment _webHostEnvironment;
@@ -25,6 +26,11 @@ namespace Northwind.Controllers {
 
 		//public HomeController() {
 		//}
+
+		[CmsTestHome]
+		public ActionResult DefaultHome() {
+			return View("Index");
+		}
 
 		public ActionResult Index() {
 			return View();
