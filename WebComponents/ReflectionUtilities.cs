@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -314,6 +311,14 @@ namespace Carrotware.Web.UI.Components {
 			page = page < 1 ? 1 : page;
 			pageSize = pageSize < 1 ? 10 : pageSize;
 			var skip = (page - 1) * pageSize;
+
+			return list.Skip(skip).Take(pageSize).ToList();
+		}
+
+		public static IEnumerable<T> PaginateListFromZero<T>(this IQueryable<T> list, int page, int pageSize) {
+			page = page < 0 ? 0 : page;
+			pageSize = pageSize < 1 ? 10 : pageSize;
+			var skip = page * pageSize;
 
 			return list.Skip(skip).Take(pageSize).ToList();
 		}

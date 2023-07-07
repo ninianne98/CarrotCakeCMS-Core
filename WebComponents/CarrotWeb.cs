@@ -80,7 +80,7 @@ namespace Carrotware.Web.UI.Components {
 
 			services.AddDistributedMemoryCache();
 			services.AddSession(options => {
-				options.IdleTimeout = TimeSpan.FromMinutes(30);
+				options.IdleTimeout = TimeSpan.FromHours(8);
 				options.Cookie.Name = ".CarrotWeb.Session";
 				options.Cookie.IsEssential = true;
 			});

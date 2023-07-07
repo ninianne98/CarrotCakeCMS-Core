@@ -1,6 +1,4 @@
-﻿using System;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -13,6 +11,6 @@
 namespace Carrotware.CMS.Interface.Controllers {
 
 	public class BaseDataWidgetController : BaseWidgetController, IWidgetDataObject {
-		public virtual Object WidgetPayload { get; set; }
+		public virtual object WidgetPayload { get; set; }
 	}
 }

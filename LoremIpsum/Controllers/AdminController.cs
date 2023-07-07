@@ -19,11 +19,6 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 	[WidgetController(typeof(AdminController))]
 	public class AdminController : BaseAdminWidgetController {
 
-		[CmsTestHome]
-		public ActionResult DefaultHome() {
-			return View("Index");
-		}
-
 		public ActionResult Index() {
 			return View();
 		}

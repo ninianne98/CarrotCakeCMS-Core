@@ -2,8 +2,8 @@
 using Carrotware.CMS.Interface.Controllers;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Northwind.Data;
 using System.Data;
 
@@ -13,18 +13,16 @@ namespace Northwind.Controllers {
 	public class AdminController : BaseAdminWidgetController {
 		protected NorthwindContext db = new NorthwindContext();
 
-		protected readonly IActionContextAccessor _accessor;
 		protected readonly IWebHostEnvironment _webHostEnvironment;
 		protected readonly ICarrotSite _site;
 
-		public AdminController(IWebHostEnvironment environment, IActionContextAccessor accessor, ICarrotSite site) {
+		public AdminController(IWebHostEnvironment environment, ICarrotSite site) {
 			if (db == null) {
 				db = new NorthwindContext();
 			}
 
 			_site = site;
 			_webHostEnvironment = environment;
-			_accessor = accessor;
 		}
 
 		public new void Dispose() {
@@ -171,7 +169,7 @@ namespace Northwind.Controllers {
 			model.InitOrderBy(x => x.LastName, true);
 			model.PageSize = 5;
 
-			model.DataSource = (from c in db.Employees
+			model.DataSource = (from c in db.Employees.Include(x => x.EmployeeTerritories)
 								orderby c.LastName ascending
 								select c).Take(model.PageSize).ToList();
 
@@ -191,7 +189,7 @@ namespace Northwind.Controllers {
 			var srt = model.ParseSort();
 
 			model.DataSource = new List<Employee>();
-			IQueryable<Employee> query = (from c in db.Employees select c);
+			IQueryable<Employee> query = (from c in db.Employees.Include(x => x.EmployeeTerritories) select c);
 
 			query = query.SortByParm(srt.SortField, srt.SortDirection);
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Concurrent;
 
 /*
 * CarrotCake CMS (MVC5)
@@ -40,7 +35,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public string FullFileName {
 			get {
-				return string.Format("/{0}/{1}", this.FolderPath, this.FileName).Replace(@"///", @"/").Replace(@"//", @"/").Replace(@"//", @"/");
+				return Path.Join(this.FolderPath, this.FileName).FixPathSlashes();
 			}
 		}
 
@@ -118,16 +113,16 @@ namespace Carrotware.Web.UI.Components {
 
 			string myFileName;
 
-			FileData f = new FileData();
+			var f = new FileData();
 			f.FileName = myFile;
 
-			bool IsFolder = Directory.Exists(myFile);
+			bool isFolder = Directory.Exists(myFile);
 
-			if (IsFolder) {
+			if (isFolder) {
 				myFileName = myFile;
 				f.FileName = Path.GetFileName(myFileName).Trim();
 				if (myFile.Length >= sPath.Length) {
-					f.FolderPath = string.Format("/{0}/{1}/", sQuery, myFile.Substring(sPath.Length)).Replace(@"\", @"/").Replace(@"///", @"/").Replace(@"//", @"/").Replace(@"//", @"/");
+					f.FolderPath = string.Format("/{0}/{1}/", sQuery, myFile.Substring(sPath.Length)).FixPathSlashes();
 				}
 				f.FileDate = Convert.ToDateTime(Directory.GetLastWriteTime(myFile));
 			} else {
@@ -138,7 +133,7 @@ namespace Carrotware.Web.UI.Components {
 					string sP = sQuery + myFileName + "/";
 
 					f.FileName = myFileName;
-					f.FolderPath = sP.NormalizeFilename();
+					f.FolderPath = sP.FixPathSlashes();
 					f.FileDate = File.GetLastWriteTime(MyFile.FullName);
 				}
 			}
@@ -149,41 +144,42 @@ namespace Carrotware.Web.UI.Components {
 		public List<FileData> GetFolders(string sQuery) {
 			string sPath = MakeFileFolderPath(sQuery);
 
-			var dsID = new List<FileData>();
+			var files = new List<FileData>();
 
 			if (Directory.Exists(sPath)) {
 				foreach (string myFile in Directory.GetDirectories(sPath, "*.*")) {
 					string myFileName;
-					FileData f = new FileData();
+					var f = new FileData();
 					f.FileName = myFile;
 					myFileName = Path.GetFileName(myFile).Trim();
 					if (myFileName.Length > 0) {
 						f = GetFolderInfo(sQuery, myFile);
-						dsID.Add(f);
+						files.Add(f);
 					}
 				}
 			}
 
-			return dsID;
+			return files;
 		}
 
 		public FileData GetFileInfo(string sQuery, string myFile) {
 			sQuery = sQuery.NormalizeFilename();
 			string sPath = MakeFileFolderPath(sQuery);
 
-			string myFileName = string.Empty;
+			string myFileName = Path.GetFileName(myFile).Trim();
 			DateTime myFileDate = Convert.ToDateTime("1899-01-01");
 			string myFileSizeF = string.Empty;
 			long myFileSize;
 
-			FileData f = new FileData();
+			var f = new FileData();
 			f.FileName = myFile;
 
-			myFileName = Path.GetFileName(myFile).Trim();
-			if (myFileName.Length > 0 && File.Exists(sPath + "/" + myFileName)) {
-				FileInfo MyFile = new FileInfo(sPath + "/" + myFileName);
-				myFileDate = File.GetLastWriteTime(MyFile.FullName);
-				myFileSize = MyFile.Length;
+			var testFile = Path.Join(sPath, myFileName).NormalizeFilename();
+
+			if (myFileName.Length > 0 && File.Exists(testFile)) {
+				var fileInfo = new FileInfo(testFile);
+				myFileDate = File.GetLastWriteTime(fileInfo.FullName);
+				myFileSize = fileInfo.Length;
 
 				myFileSizeF = myFileSize.ToString() + " B";
 
@@ -194,15 +190,15 @@ namespace Carrotware.Web.UI.Components {
 						myFileSizeF = (Convert.ToDouble(Convert.ToInt32((myFileSize * 100) / 1024)) / 100).ToString() + " KB";
 					}
 				}
-				string sP = sQuery;
+				string myPath = sQuery.FixPathSlashes();
 
-				f.FileName = myFileName;
-				f.FolderPath = sP.NormalizeFilename();
+				f.FileName = Path.GetFileName(myFileName);
+				f.FolderPath = myPath;
 				f.FileDate = myFileDate;
 				f.FileSize = myFileSize;
 				f.FileSizeFriendly = myFileSizeF;
-				if (!string.IsNullOrEmpty(MyFile.Extension)) {
-					f.FileExtension = MyFile.Extension.ToLowerInvariant();
+				if (!string.IsNullOrEmpty(fileInfo.Extension)) {
+					f.FileExtension = fileInfo.Extension.ToLowerInvariant();
 				} else {
 					f.FileExtension = ".";
 				}
@@ -224,7 +220,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static string MakeFileFolderPath(string sDirPath) {
-			string _path = sDirPath.NormalizeFilename();
+			string _path = sDirPath.FixPathSlashes();
 			string _map = CarrotWebHelper.MapWebPath(_path);
 			return _map;
 		}
@@ -258,15 +254,13 @@ namespace Carrotware.Web.UI.Components {
 		public List<FileData> GetFiles(string sQuery) {
 			string sPath = MakeFileFolderPath(sQuery);
 
-			var dsID = new List<FileData>();
+			var files = new List<FileData>();
 
 			if (Directory.Exists(sPath)) {
 				foreach (string myFile in Directory.GetFiles(sPath, "*.*")) {
-					string myFileName;
+					string myFileName = Path.GetFileName(myFile).NormalizeFilename();
 
-					myFileName = Path.GetFileName(myFile).Trim();
-
-					FileData f = new FileData();
+					var f = new FileData();
 					f.FileName = myFileName;
 
 					if (myFileName.Length > 0) {
@@ -276,14 +270,14 @@ namespace Carrotware.Web.UI.Components {
 							if (!(from b in this.BlockedTypes
 								  where b.ToLowerInvariant().Replace(".", "") == f.FileExtension.Replace(".", "")
 								  select b).Any()) {
-								dsID.Add(f);
+								files.Add(f);
 							}
 						} catch (Exception ex) { }
 					}
 				}
 			}
 
-			return dsID;
+			return files;
 		}
 
 		private List<string> _spiderdirs = null;
@@ -355,7 +349,7 @@ namespace Carrotware.Web.UI.Components {
 
 		private static ConcurrentDictionary<string, string> _dict = null;
 
-		public static ConcurrentDictionary<string, string> MimeTypes {
+		public static Dictionary<string, string> MimeTypes {
 			get {
 				if (_dict == null) {
 					_dict = new ConcurrentDictionary<string, string>();
@@ -581,7 +575,7 @@ namespace Carrotware.Web.UI.Components {
 					_dict.TryAdd(".zsh", "text/x-script.zsh");
 				}
 
-				return _dict;
+				return _dict.ToDictionary(pair => pair.Key, pair => pair.Value);
 			}
 		}
 	}

@@ -510,7 +510,10 @@ namespace Carrotware.CMS.Core {
 					return null;
 				}
 
-				return NewIdentityUser(CurrentExUser);
+				var userTask = CarrotHttpHelper.UserManager.FindByNameAsync(CurrentUserIdentityName);
+				var user = userTask.Result;
+
+				return user;
 			}
 		}
 

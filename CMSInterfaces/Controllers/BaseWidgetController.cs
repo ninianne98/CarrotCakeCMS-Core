@@ -1,5 +1,4 @@
-﻿using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +17,8 @@ using System.Reflection;
 namespace Carrotware.CMS.Interface.Controllers {
 
 	public class BaseWidgetController : Controller, IWidgetController {
+		public static bool WidgetStandaloneMode { get; set; } = true;
+
 		public string AssemblyName { get; set; }
 
 		public bool UseStdWidgetLayout { get; set; } = true;
@@ -34,7 +35,7 @@ namespace Carrotware.CMS.Interface.Controllers {
 		public virtual void LoadAreaInfo() {
 			if (this.UseArea) {
 				if (string.IsNullOrEmpty(this.AssemblyName)
-					|| ViewData["WidgetAssemblyName"] == null) {
+									|| ViewData["WidgetAssemblyName"] == null) {
 					Assembly asmbly = this.GetType().Assembly;
 
 					string assemblyName = asmbly.GetAssemblyName();
@@ -55,6 +56,7 @@ namespace Carrotware.CMS.Interface.Controllers {
 
 		public override void OnActionExecuting(ActionExecutingContext context) {
 			base.OnActionExecuting(context);
+
 			LoadAreaInfo();
 			SetArea(context);
 		}
@@ -62,6 +64,7 @@ namespace Carrotware.CMS.Interface.Controllers {
 		public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next) {
 			LoadAreaInfo();
 			SetArea(context);
+
 			return base.OnActionExecutionAsync(context, next);
 		}
 
@@ -78,6 +81,5 @@ namespace Carrotware.CMS.Interface.Controllers {
 				}
 			}
 		}
-
 	}
 }

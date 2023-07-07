@@ -68,6 +68,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			} catch (Exception ex) {
 				//assumption is database is probably empty / needs updating, so trigger the under construction view
 				SiteData.WriteDebugException("cmscontentcontroller_defaultview", ex);
+				_logger.LogWarning(ex, "cmscontentcontroller_defaultview");
 
 				return View("_EmptyHome");
 			}
@@ -124,7 +125,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				Response.Headers.LastModified = strModifed;
 
-				DateTime dtExpire = DateTime.Now.AddSeconds(15);
+				DateTime dtExpire = DateTime.Now.AddSeconds(30);
 
 				if (User.Identity.IsAuthenticated) {
 					dtExpire = DateTime.Now.AddMinutes(-30);
@@ -134,12 +135,14 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				}
 
 				SiteData.WriteDebugException("cmscontentcontroller_defaultview _page != null", new Exception(string.Format("Loading: {0} {1} {2}", _page.ThePage.FileName, _page.ThePage.TemplateFile, this.DisplayTemplateFile)));
+				_logger.LogInformation("cmscontentcontroller_defaultview _page != null");
 
 				return View(this.DisplayTemplateFile);
 			} else {
 				string sFileRequested = Request.Path;
 
 				SiteData.WriteDebugException("cmscontentcontroller_defaultview _page == null", new Exception(string.Format("Requesting: {0} {1}", sFileRequested, this.DisplayTemplateFile)));
+				_logger.LogInformation("cmscontentcontroller_defaultview _page == null");
 
 				DateTime dtModified = DateTime.Now.Date;
 				string strModifed = dtModified.ToString("r");
@@ -148,10 +151,14 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				if (SiteData.IsLikelyHomePage(sFileRequested)) {
 					SiteData.WriteDebugException("cmscontentcontroller_defaultview", new Exception("Empty _page"));
+					_logger.LogInformation("cmscontentcontroller_defaultview");
+
 					return View("_EmptyHome");
 				} else {
 					Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 					SiteData.WriteDebugException("cmscontentcontroller_httpnotfound", new Exception("HttpNotFound"));
+					_logger.LogInformation("cmscontentcontroller_httpnotfound");
+
 					return NotFound();
 				}
 			}
@@ -162,6 +169,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
 			SiteData.WriteDebugException("cmscontentcontroller_pagenotfound", new Exception(string.Format("HttpNotFound: {0}", Request.Path)));
+			_logger.LogInformation("cmscontentcontroller_pagenotfound");
 
 			return NotFound();
 		}

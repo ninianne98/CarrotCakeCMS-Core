@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Carrotware.CMS.Interface {
-	public interface IWidgetLoader {
 
+	public interface IWidgetLoader {
 		string AreaName { get; }
 
 		void RegisterWidgets(WebApplication app);

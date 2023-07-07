@@ -54,12 +54,16 @@ namespace Carrotware.CMS.Interface {
 			string nsp = typeof(BaseWidgetLoader).Namespace;
 
 			if (this.AreaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
-				app.MapControllerRoute(
-							name: this.AreaName + "_Default",
-							pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-				//app.MapControllerRoute(
-				//			name: this.AreaName + "_Default",
-				//			pattern: this.AreaName + "/{controller=Home}/{action=Index}/{id?}");
+				try {
+					app.MapControllerRoute(
+								name: this.AreaName + "_Area",
+								pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+				} catch (Exception ex) { }
+				//try {
+				//	app.MapControllerRoute(
+				//				name: this.AreaName + "_Default",
+				//				pattern: this.AreaName + "/{controller=Home}/{action=Index}/{id?}");
+				//} catch (Exception ex) { }
 			}
 		}
 	}

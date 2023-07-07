@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Routing;
-using System.Reflection;
+﻿using Carrotware.CMS.Interface.Controllers;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -12,17 +12,28 @@ using System.Reflection;
 */
 
 namespace Carrotware.CMS.Interface {
-	public class WidgetControllerAttribute : Attribute, IRouteValueProvider {
-		public WidgetControllerAttribute(Type type) {
-			var areaName = type.Assembly.GetAssemblyName();
 
+	public class WidgetControllerAttribute : Attribute, IRouteValueProvider {
+
+		public WidgetControllerAttribute(Type type) {
 			this.RouteKey = "area";
-			this.RouteValue = areaName;
+
+			if (!BaseWidgetController.WidgetStandaloneMode) {
+				var areaName = type.Assembly.GetAssemblyName();
+
+				this.RouteValue = areaName;
+			} else {
+				this.RouteValue = "";
+			}
 		}
 
 		public WidgetControllerAttribute(string areaName) {
 			this.RouteKey = "area";
-			this.RouteValue = areaName;
+			if (!BaseWidgetController.WidgetStandaloneMode) {
+				this.RouteValue = areaName;
+			} else {
+				this.RouteValue = "";
+			}
 		}
 
 		public string RouteKey { get; }

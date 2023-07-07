@@ -1,12 +1,7 @@
 ﻿using Carrotware.CMS.Data.Models;
-using Carrotware.CMS.Data.Models;
 using Microsoft.AspNetCore.Html;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)

@@ -1,10 +1,6 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
 using System.Web;
 
 /*
@@ -35,10 +31,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public FileBrowserModel(string queryPath, string useTiny, string returnVal, string viewMode)
 			: this() {
 			this.QueryPath = queryPath ?? @"/";
-			this.ViewMode = viewMode ?? defaultBrowseMode;
 
-			this.QueryPath = this.QueryPath.StartsWith(@"/") ? this.QueryPath : @"/" + this.QueryPath;
-			this.QueryPath.Replace("//", "/").Replace("//", "/");
+			this.ViewMode = viewMode ?? defaultBrowseMode;
+			this.QueryPath = this.QueryPath.FixPathSlashes();
 
 			if (string.IsNullOrEmpty(this.QueryPath) || this.QueryPath == @"/") {
 				this.QueryPath = @"/";
@@ -163,7 +158,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public string CreateFileSrc(string sPath, string sFile, string sMime) {
 			if (this.FileImageLink(sMime).ToLowerInvariant() == "image") {
-				return string.Format("{0}{1}", sPath, sFile).ToLowerInvariant();
+				return Path.Join(sPath, sFile).FixPathSlashes().ToLowerInvariant();
 			} else {
 				return "/Assets/Admin/images/document.png";
 			}

@@ -1,7 +1,6 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.CMS.Interface.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Northwind.Code;
 using Northwind.Data;
 using Northwind.Models;
@@ -10,13 +9,11 @@ namespace Northwind.Controllers {
 
 	[WidgetController(typeof(HomeController))]
 	public class HomeController : BaseDataWidgetController {
-		protected readonly IActionContextAccessor _accessor;
 		protected readonly IWebHostEnvironment _webHostEnvironment;
 		protected readonly ICarrotSite _site;
 
-		public HomeController(IWebHostEnvironment environment, IActionContextAccessor accessor, ICarrotSite site) {
+		public HomeController(IWebHostEnvironment environment, ICarrotSite site) {
 			_webHostEnvironment = environment;
-			_accessor = accessor;
 			_site = site;
 		}
 
@@ -26,11 +23,6 @@ namespace Northwind.Controllers {
 
 		//public HomeController() {
 		//}
-
-		[CmsTestHome]
-		public ActionResult DefaultHome() {
-			return View("Index");
-		}
 
 		public ActionResult Index() {
 			return View();

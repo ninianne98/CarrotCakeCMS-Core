@@ -3,7 +3,7 @@
 	Layout = null;
 
 	string areaName = ViewBag.WidgetAssemblyName;
-	string areaAlias = string.Format("{0}_Default", areaName);
+	string areaAlias = string.Format("{0}_Area", areaName);
 }
 
 <html>
@@ -60,24 +60,24 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				@Html.ActionLink(string.Format("{0}  (Core)", areaName), "DefaultHome", "Home", new { area = areaName }, new { @class = "navbar-brand" })
+				@Html.ActionLink(string.Format("{0}  (Core)", areaName), "Index", "Home", null, new { @class = "navbar-brand" })
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "GalleryList;GalleryView;GalleryView2;GalleryView3;GalleryView4", "Test", new { @class = "active" }, null)) {
-						@Html.RouteLink("Galleries", areaAlias, new { action = "GalleryList", controller = "Test" })
+						@Html.ActionLink("Galleries", "GalleryList", "Test")
 					}
 
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "Index;View;Edit", "Test", new { @class = "active" }, null)) {
-						@Html.RouteLink("Images", areaAlias, new { action = "Index", controller = "Test" })
+						@Html.ActionLink("Images", "Index", "Test")
 					}
 
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active dropdown" }, new { @id = "tabAdmin", @class = "dropdown" })) {
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin Test <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li>@Html.RouteLink("Gallery List", areaAlias, new { action = "Index", controller = "Admin" })</li>
-							<li>@Html.RouteLink("Add Gallery", areaAlias, new { action = "CreateGallery", controller = "Admin" })</li>
+							<li>@Html.ActionLink("Gallery List", "Index", "Admin")</li>
+							<li>@Html.ActionLink("Add Gallery", "CreateGallery", "Admin")</li>
 						</ul>
 					}
 				</ul>

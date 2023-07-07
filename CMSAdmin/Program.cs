@@ -3,6 +3,7 @@ using Carrotware.CMS.CoreMVC.UI.Admin.Controllers;
 using Carrotware.CMS.Data;
 using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
+using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -70,6 +71,8 @@ services.LoadWidgets();
 services.AddScoped(typeof(PagePayload));
 services.AddScoped(typeof(CmsRouting));
 services.AddTransient<IControllerActivator, CmsActivator>();
+
+BaseWidgetController.WidgetStandaloneMode = false;
 
 var app = builder.Build();
 

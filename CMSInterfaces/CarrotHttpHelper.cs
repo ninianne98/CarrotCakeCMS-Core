@@ -1,5 +1,4 @@
 ﻿using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -60,6 +59,10 @@ namespace Carrotware.CMS.Interface {
 
 		public static IMemoryCache MemoryCache { get { return _memoryCache; } }
 
+		public static SignInManager<IdentityUser> SignInManager { get { return _signinmanager; } }
+
+		public static UserManager<IdentityUser> UserManager { get { return _usermanager; } }
+
 		public static HttpRequest Request { get { return HttpContext.Request; } }
 
 		public static HttpResponse Response { get { return HttpContext.Response; } }
@@ -104,14 +107,14 @@ namespace Carrotware.CMS.Interface {
 
 		public static string MapWebPath(string path) {
 			var p = path.NormalizeFilename();
-			string root = _webHostEnvironment.WebRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			string root = _webHostEnvironment.WebRootPath.NormalizeFilename();
 
 			return Path.Join(root, p);
 		}
 
 		public static string MapPath(string path) {
 			var p = path.NormalizeFilename();
-			string root = _webHostEnvironment.ContentRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			string root = _webHostEnvironment.ContentRootPath.NormalizeFilename();
 
 			return Path.Join(root, p);
 		}

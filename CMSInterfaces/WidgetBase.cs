@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Html;
-using System;
-using System.Collections.Generic;
-using System.Text.Encodings.Web;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *

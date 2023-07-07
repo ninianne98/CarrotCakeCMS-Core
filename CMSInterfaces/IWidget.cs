@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *

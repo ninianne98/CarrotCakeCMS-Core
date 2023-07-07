@@ -32,7 +32,7 @@ namespace Carrotware.CMS.Interface {
 			files.RemoveAll(x => x.Contains("Microsoft.AspNetCore"));
 			files.RemoveAll(x => x.Contains("Microsoft.CodeAnalysis"));
 			files.RemoveAll(x => x.Contains("Microsoft.EntityFrameworkCore"));
-			files.RemoveAll(x => x.Contains("Microsoft.VisualStudio."));
+			files.RemoveAll(x => x.Contains("Microsoft.VisualStudio"));
 
 			return files.ToArray();
 		}
@@ -52,6 +52,7 @@ namespace Carrotware.CMS.Interface {
 										|| t.GetInterface(nameof(IWidgetSettings)) != null
 										|| t.GetInterface(nameof(IWidgetLoader)) != null
 										|| t.GetInterface(nameof(IWidgetDataObject)) != null
+										|| t.GetInterface(nameof(IWidgetRawData)) != null
 										|| t.GetInterface(nameof(IAdminModule)) != null).FirstOrDefault();
 
 					if (widget != null && !widget.FullName.ToLowerInvariant().Contains(nsp)) {
@@ -68,13 +69,14 @@ namespace Carrotware.CMS.Interface {
 										|| t.GetInterface(nameof(IWidgetSettings)) != null
 										|| t.GetInterface(nameof(IWidgetLoader)) != null
 										|| t.GetInterface(nameof(IWidgetDataObject)) != null
+										|| t.GetInterface(nameof(IWidgetRawData)) != null
 										|| t.GetInterface(nameof(IAdminModule)) != null).ToList();
 
 					if (widgets.Any()) {
 						foreach (var t in widgets) {
 							if (!t.Namespace.ToLowerInvariant().StartsWith(nsp)
-										&& !t.GetTypeInfo().IsAbstract
-										&& !t.GetTypeInfo().IsInterface
+										&& t.IsClass
+										&& !t.IsAbstract
 										&& !t.Name.ToLowerInvariant().Contains("anonymoustype")) {
 								_types.Add(t);
 							}
@@ -85,12 +87,6 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public static void RegisterWidgets(this WebApplication app) {
-			//app.UseEndpoints(endpoints => {
-			//	endpoints.MapGet("/DefaultWidgetLandingTestHomePage", async (context) => {
-			//		context.Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
-			//	});
-			//});
-
 			string nsp = typeof(WidgetLoad).Namespace.ToLowerInvariant();
 
 			foreach (var assembly in _assemblies) {
@@ -121,10 +117,10 @@ namespace Carrotware.CMS.Interface {
 			foreach (var assembly in _assemblies) {
 				try {
 					var types = assembly.GetTypes();
-
 					var part = new AssemblyPart(assembly);
+
 					services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
-						options.FileProviders.Add(new EmbeddedFileProvider(part.Assembly));
+						options.FileProviders.Add(new EmbeddedFileProvider(assembly));
 					});
 
 					services.AddControllers().PartManager.ApplicationParts.Add(part);

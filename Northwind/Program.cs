@@ -1,4 +1,5 @@
 using Carrotware.CMS.Interface;
+using Carrotware.CMS.Interface.Controllers;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -58,6 +59,8 @@ widget.LoadWidgets(services);
 services.AddTransient<ICarrotSite, SiteTestInfo>();
 services.AddTransient<IControllerActivator, CmsTestActivator>();
 
+BaseWidgetController.WidgetStandaloneMode = true;
+
 var app = builder.Build();
 
 app.UseResponseCaching();
@@ -85,11 +88,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 widget.RegisterWidgets(app);
-
-app.MapFallback(context => {
-	context.Response.Redirect(CmsTestHomeAttribute.DefaultPage.FixPathSlashes());
-	return Task.CompletedTask;
-});
 
 app.MapControllerRoute(
 	name: "StdRoutes",

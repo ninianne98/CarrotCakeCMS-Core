@@ -15,6 +15,7 @@
 	<link href="/Assets/Admin/Includes/uploadfile.css?@versionKey" rel="stylesheet" type="text/css" />
 	<link href="/Assets/Admin/Includes/filebrowser.css?@versionKey" rel="stylesheet" type="text/css" />
 
+	@(new AdminScriptInfo())
 	<script src="/Assets/iCheck/icheck.min.js?@versionKey" type="text/javascript"></script>
 	<script src="/Assets/Admin/Includes/icheck.init.js?@versionKey" type="text/javascript"></script>
 	<script src="/Assets/Admin/Includes/jquery.form.min.js?@versionKey" type="text/javascript"></script>
@@ -235,8 +236,8 @@
 										<img id="imgThmbnail" filetype="@Model.FileImageLink(f.MimeType)" alt="" src="@Model.CreateFileSrc(f.FolderPath, f.FileName, f.MimeType)" />
 									</div>
 									<div style="margin: 3px;" id="imgSubContainer">
-										<a id="lnkContent" href='@Model.CreateFileLink(string.Format("{0}{1}", f.FolderPath, f.FileName))'>
-											@Html.CarrotWeb().ImageSizer(string.Format("{0}{1}", f.FolderPath, f.FileName), f.FileName, 50, true, null)
+										<a id="lnkContent" href='@Model.CreateFileLink(f.FullFileName)'>
+											@Html.CarrotWeb().ImageSizer(f.FullFileName, f.FileName, 50, true, null)
 										</a>
 									</div>
 									<div style="margin: 3px; text-align: center;">
@@ -245,7 +246,7 @@
 									</div>
 								</div>
 							</div>
-					}
+						}
 					</div>
 				} else {
 					<div id="rpFiles">
@@ -282,7 +283,7 @@
 										<td>
 											<div class="ImgGroup" id="imgContainerGroup">
 												<div id="imgContainer" onmouseout="hideImg(this)" onmouseover="showImg(this, 'file')">
-													<a id="lnkContent" href='@Model.CreateFileLink(String.Format("{0}{1}", f.FolderPath, f.FileName))'>
+													<a id="lnkContent" href='@Model.CreateFileLink(f.FullFileName)'>
 														@f.FileName
 													</a>
 												</div>
@@ -306,7 +307,7 @@
 							}
 						</table>
 					</div>
-								}
+				}
 			</div>
 
 			<div>
@@ -342,7 +343,7 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="button" id="Button1" name="cancel" value="Cancel" onclick="window.close();" />
 						</div>
-				}
+					}
 
 					<div style="clear: both; height:110px">
 						@if (Model.UseTinyMCE) {
@@ -361,7 +362,7 @@
 					<img style="max-height: 99%; max-width: 99%; display: block; margin:2px;  margin-left: auto; margin-right: auto;" id="imgThmbnailSelected" src="/Assets/Admin/images/LargeDoc.png" />
 				</div>
 			</div>
-								}
+		}
 	</div>
 
 	<div id="imgWrapperMain" style="display: none;">

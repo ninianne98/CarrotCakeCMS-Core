@@ -1,18 +1,15 @@
 ﻿using Carrotware.CMS.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
 	[WidgetController(typeof(BasePublicController))]
 	public class HomeController : BasePublicController {
-
 		protected readonly IWebHostEnvironment _webHostEnvironment;
 		protected readonly ICarrotSite _site;
 
 		public HomeController(IWebHostEnvironment environment, ICarrotSite site) {
-
 			_site = site;
 			_webHostEnvironment = environment;
 		}
@@ -25,11 +22,6 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			// use the test id to build a fake payload so the widget can be loaded for dev
 			string action = vals["action"].ToString().ToLowerInvariant();
 			string controller = vals["controller"].ToString().ToLowerInvariant();
-		}
-
-		[CmsTestHome]
-		public ActionResult DefaultHome() {
-			return View("Index");
 		}
 
 		public ActionResult Index() {

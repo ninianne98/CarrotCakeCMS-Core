@@ -672,7 +672,7 @@ namespace Carrotware.CMS.Core {
 							 select c).AsQueryable();
 			}
 
-			lstContent = (from q in queryable select new ContentPage(q)).PaginateList(pageNumber, pageSize);
+			lstContent = (from q in queryable select new ContentPage(q)).PaginateListFromZero(pageNumber, pageSize);
 
 			return lstContent.ToList();
 		}
@@ -700,7 +700,7 @@ namespace Carrotware.CMS.Core {
 
 			if (rc != null) {
 				rc.HeartbeatUserId = currentUserID;
-				rc.EditHeartbeat = DateTime.UtcNow;
+				rc.EditHeartbeat = DateTime.UtcNow == rc.EditHeartbeat ? DateTime.UtcNow.AddSeconds(-3) : DateTime.UtcNow;
 				db.SaveChanges();
 				return true;
 			}

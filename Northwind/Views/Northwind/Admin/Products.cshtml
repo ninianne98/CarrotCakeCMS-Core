@@ -40,6 +40,7 @@
 			HasHeadingText = false,
 			FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("EditProduct", "Admin", new { @id = @item.ProductId, @area=ViewBag.WidgetAssemblyName }, "~/assets/admin/images/pencil.png", "Edit", null, null) </text>
 		})
+		.AddColumn(x => x.ProductId, new CarrotGridColumn { Sortable = true })
 		.AddColumn(new CarrotGridTemplateColumn<Product> {
 			HeaderText = "SUP",
 			FormatTemplate = @<text> @grid.DropDownFor(m => m.SupplierId, new SelectList(ViewBag.SupplierList, "SupplierId", "CompanyName"), String.Empty, new { @class = "form-control" }) </text>

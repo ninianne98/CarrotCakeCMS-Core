@@ -1,6 +1,4 @@
-﻿using System;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -13,6 +11,7 @@
 namespace Carrotware.CMS.Interface {
 
 	public class WidgetActionSettingModel : WidgetBase, IWidgetView {
+
 		public WidgetActionSettingModel() { }
 
 		#region IWidgetView Attributes
