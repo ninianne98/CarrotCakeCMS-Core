@@ -1,4 +1,5 @@
 ﻿using Carrotware.Web.UI.Components.Controllers;
+using Carrotware.Web.UI.Components.SessionData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
@@ -14,10 +15,12 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -61,6 +64,12 @@ namespace Carrotware.Web.UI.Components {
 		private static UserManager<IdentityUser> _usermanager;
 		private static IMemoryCache _memoryCache;
 
+		public static void PrepareSqlSession(this IServiceCollection services, string dbKey) {
+			_services = services;
+
+			SessionContext.DBKey = dbKey;
+		}
+
 		public static void Configure(IConfigurationRoot configuration, IWebHostEnvironment environment, IServiceCollection services) {
 			_configuration = configuration;
 			_webHostEnvironment = environment;
@@ -78,11 +87,24 @@ namespace Carrotware.Web.UI.Components {
 				));
 			});
 
-			services.AddDistributedMemoryCache();
-			services.AddSession(options => {
-				options.IdleTimeout = TimeSpan.FromHours(8);
-				options.Cookie.Name = ".CarrotWeb.Session";
-				options.Cookie.IsEssential = true;
+			if (!SessionContext.DBKeyExists) {
+				services.AddDistributedMemoryCache();
+			} else {
+				var connString = configuration.GetConnectionString(SessionContext.DBKey);
+
+				services.AddDbContext<SessionContext>(opt => opt.UseSqlServer(connString));
+
+				services.AddDistributedSqlServerCache(opt => {
+					opt.ConnectionString = connString;
+					opt.SchemaName = "dbo";
+					opt.TableName = "AspNetCache";
+				});
+			}
+
+			services.AddSession(opt => {
+				opt.IdleTimeout = TimeSpan.FromHours(6);
+				opt.Cookie.Name = ".CarrotWeb.Session";
+				opt.Cookie.IsEssential = true;
 			});
 
 			services.AddMemoryCache();
@@ -92,6 +114,16 @@ namespace Carrotware.Web.UI.Components {
 				_signinmanager = _serviceProvider.GetRequiredService<SignInManager<IdentityUser>>();
 				_usermanager = _serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 			} catch (Exception ex) { }
+		}
+
+		public static void ConfigureSession(this WebApplication app) {
+			if (SessionContext.DBKeyExists) {
+				SessionContext.MigrateDatabase(app);
+
+				SessionContext.CleanExpiredSession();
+			}
+
+			app.UseSession();
 		}
 
 		public static void CarrotWebRouteSetup(this WebApplication app) {
@@ -857,7 +889,6 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public IHtmlHelper<T> CarrotHtmlHelper<T>(T model) where T : class {
-
 			// provide a valid partial, but it doesn't matter what, so long as it has no model
 			return CarrotHtmlHelper("_CarrotWebBlank", model);
 		}

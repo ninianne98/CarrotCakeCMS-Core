@@ -42,7 +42,7 @@ var loggerFactory = LoggerFactory.Create(builder => {
 	builder.AddSimpleConsole();
 });
 
-services.AddDbContext<CarrotCakeContext>(opt => opt.UseSqlServer(config.GetConnectionString("CarrotwareCMS")));
+services.AddDbContext<CarrotCakeContext>(opt => opt.UseSqlServer(config.GetConnectionString(CarrotCakeContext.DBKey)));
 
 // auth  stuff
 services.ConfigureCmsAuth(config);
@@ -57,6 +57,8 @@ services.AddHttpContextAccessor();
 services.AddSingleton(environment);
 services.AddSingleton(config);
 services.AddSingleton(loggerFactory);
+
+services.PrepareSqlSession(CarrotCakeContext.DBKey);
 
 CarrotWebHelper.Configure(config, environment, services);
 CarrotHttpHelper.Configure(config, environment, services);
@@ -108,6 +110,8 @@ app.Use(async (context, next) => {
 		await next();
 	}
 });
+
+app.ConfigureSession();
 
 app.CarrotWebRouteSetup();
 

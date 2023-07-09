@@ -1197,7 +1197,6 @@ namespace Carrotware.CMS.Core {
 		public static void CleanUpSerialData() {
 			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
 				_db.CarrotSerialCache.Where(c => c.EditDate < DateTime.UtcNow.AddHours(-6)).ExecuteDelete();
-				_db.SaveChanges();
 			}
 		}
 	}

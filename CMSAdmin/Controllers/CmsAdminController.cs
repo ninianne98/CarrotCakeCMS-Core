@@ -1,10 +1,10 @@
 ﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Core.MVC;
 using Carrotware.CMS.CoreMVC.UI.Admin.Models;
 using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
 using Carrotware.CMS.Security.Models;
 using Carrotware.Web.UI.Components;
+using Carrotware.Web.UI.Components.SessionData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -93,6 +93,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[ValidateAntiForgeryToken]
 		public ActionResult LogOff() {
 			SignOut();
+
+			SessionContext.CleanExpiredSession();
+
 			//after signout, take to login
 			if (!SecurityData.IsAuthenticated) {
 				return RedirectToAction(this.GetActionName(x => x.Login("")));
@@ -582,6 +585,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				Response.Redirect(SiteFilename.DatabaseSetupURL);
 			}
 
+			SessionContext.CleanExpiredSession();
+
 			var model = new DatabaseSetupModel();
 
 			return View(model);
@@ -636,6 +641,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public ActionResult Login(string returnUrl) {
 			NoCache();
 			RedirectIfNoUsersExist();
+
+			SessionContext.CleanExpiredSession();
 
 			LoginViewModel model = new LoginViewModel();
 			model.ReturnUrl = HttpUtility.UrlEncode(returnUrl);
@@ -761,6 +768,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			DashboardInfo model = new DashboardInfo();
 
 			CMSConfigHelper.CleanUpSerialData();
+			SessionContext.CleanExpiredSession();
 
 			model.Pages = pageHelper.GetSitePageCount(this.CurrentSiteID, ContentPageType.PageType.ContentEntry);
 			model.Posts = pageHelper.GetSitePageCount(this.CurrentSiteID, ContentPageType.PageType.BlogEntry);
@@ -996,6 +1004,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			LoadDatePattern();
 
 			CMSConfigHelper.CleanUpSerialData();
+			SessionContext.CleanExpiredSession();
+
 			SiteData site = null;
 			bool bNewSite = !SiteData.CurrentSiteExists;
 
@@ -1833,6 +1843,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpGet]
 		public ActionResult PageIndex() {
 			CMSConfigHelper.CleanUpSerialData();
+			SessionContext.CleanExpiredSession();
+
 			PageIndexModel model = new PageIndexModel();
 			model.SelectedSearch = PageIndexModel.SearchBy.Filtered;
 
@@ -2440,6 +2452,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpGet]
 		public ActionResult BlogPostIndex() {
 			CMSConfigHelper.CleanUpSerialData();
+			SessionContext.CleanExpiredSession();
+
 			PostIndexModel model = new PostIndexModel();
 			model.SelectedSearch = PageIndexModel.SearchBy.AllPages;
 

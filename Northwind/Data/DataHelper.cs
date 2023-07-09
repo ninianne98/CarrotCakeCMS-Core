@@ -19,7 +19,7 @@ namespace Northwind.Data {
 		public static IConfigurationRoot GetConfig() {
 			return new ConfigurationBuilder()
 					.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-					.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true).Build();
+					.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 		}
 
 		public static void Configure(string connName, DbContextOptionsBuilder optionsBuilder) {
