@@ -23,8 +23,8 @@ namespace Carrotware.CMS.Core.MVC {
 	public class CmsAdminRouteAttribute : Attribute, IRouteTemplateProvider {
 		public CmsAdminRouteAttribute(AdminArea type) {
 
-			var cccConfig = CarrotCakeConfig.GetConfig();
-			var adminFolder = cccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
+			var config = CarrotCakeConfig.GetConfig();
+			var adminFolder = config.MainConfig.AdminFolderPath.TrimPathSlashes();
 
 			switch (type) {
 				case AdminArea.AdminGui:

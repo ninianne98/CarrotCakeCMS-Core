@@ -22,7 +22,6 @@ namespace Carrotware.Web.UI.Components.Controllers {
 		protected MemoryStream _stream = new MemoryStream();
 
 		public HomeController(IWebHostEnvironment environment) : base(environment) {
-
 		}
 
 		protected override void Dispose(bool disposing) {
@@ -31,7 +30,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			_stream.Dispose();
 		}
 
-		public ActionResult GetImageThumb(string thumb, bool? scale, int? square) {
+		public IActionResult GetImageThumb(string thumb, bool? scale, int? square) {
 			this.VaryCacheByQuery(new string[] { "thumb", "scale", "square" }, 1);
 
 			DoCacheMagic(3);
@@ -222,7 +221,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			return Content("Not Found");
 		}
 
-		public ActionResult GetCaptchaImage(string fgcolor, string bgcolor, string ncolor) {
+		public IActionResult GetCaptchaImage(string fgcolor, string bgcolor, string ncolor) {
 			this.VaryCacheByQuery(new string[] { "fgcolor", "bgcolor", "ncolor", "ts" }, 1);
 
 			DoCacheMagic(1);
@@ -247,10 +246,9 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			return File(_stream.ToArray(), "image/png");
 		}
 
-		public ActionResult GetCarrotCalendarCss(string el, string wc, string wb, string cc, string cb,
+		public IActionResult GetCarrotCalendarCss(string el, string wc, string wb, string cc, string cb,
 												string tc, string tb, string tsb, string tl,
 												string nc, string nb, string nsb, string nl) {
-
 			this.VaryCacheByQuery(new string[] { "el", "wc", "wb", "cc", "tc", "tb", "ts" }, 3);
 
 			DoCacheMagic(7);
@@ -268,7 +266,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			return File(_stream, "text/css");
 		}
 
-		public ActionResult GetCarrotHelp(string id) {
+		public IActionResult GetCarrotHelp(string id) {
 			this.VaryCacheByQuery(new string[] { "id", "ts" }, 7);
 			DoCacheMagic(10);
 

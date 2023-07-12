@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Data;
+using Northwind.Models;
 using System.Data;
 
 namespace Northwind.Controllers {
@@ -31,6 +32,23 @@ namespace Northwind.Controllers {
 			if (db != null) {
 				db.Dispose();
 			}
+		}
+
+		[HttpGet]
+		public ActionResult Math() {
+			var model = new MathModel();
+
+			model.GetResult();
+
+			return View(model);
+		}
+
+		[HttpPost]
+		public ActionResult Math(MathModel model) {
+			model.GetResult();
+			ModelState.Clear();
+
+			return View(model);
 		}
 
 		// GET: Admin

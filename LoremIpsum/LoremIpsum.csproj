@@ -23,6 +23,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
@@ -31,8 +32,6 @@
 			<TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7" />
-		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.3" />
-		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.3" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0">
 			<TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
@@ -53,6 +52,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="global.json" />
+		<Content Include="Properties\C3ConfigSchema.json" />
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="Views\_ViewStart.cshtml" />
 		<Content Include="Views\Shared\_Layout.cshtml" />
@@ -68,19 +68,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Views\LoremIpsum\Admin.config">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Views\LoremIpsum\Admin\Index.cshtml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Views\LoremIpsum\Admin\View.cshtml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Views\LoremIpsum\_ViewImports.cshtml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<Content Include="Views\_ViewImports.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Views\Admin.config" />
+	  <None Include="Views\Admin\Index.cshtml" />
+	  <None Include="Views\Admin\View.cshtml" />
+	  <None Include="Views\Admin\Login.cshtml" />
+	  <None Include="Views\Shared\_LayoutModule.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -90,6 +86,6 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy &quot;$(ProjectDir)\Views\$(TargetName)\*&quot; &quot;$(SolutionDir)CMSAdmin\Views\$(TargetName)&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\bin\$(TargetName)*&quot; &quot;$(SolutionDir)CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;" />
+	  <Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;" />
 	</Target>
 </Project>

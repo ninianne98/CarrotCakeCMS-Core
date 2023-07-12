@@ -2,6 +2,10 @@
 using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
 using Carrotware.CMS.Interface.Controllers;
+using Carrotware.CMS.Security;
+using Carrotware.CMS.Security.Models;
+using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 /*
@@ -18,9 +22,33 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 
 	[WidgetController(typeof(AdminController))]
 	public class AdminController : BaseAdminWidgetController {
+		ManageSecurity securityHelper = new ManageSecurity();
 
 		public ActionResult Index() {
 			return View();
+		}
+
+		[HttpGet]
+		[AllowAnonymous]
+		public IActionResult Login() {
+			var model = new UserLogin();
+			return View(model);
+		}
+
+		[HttpPost]
+		[AllowAnonymous]
+		public async Task<IActionResult> Login(UserLogin model) {
+			if (ModelState.IsValid) {
+				var user = await securityHelper.UserManager.FindByNameAsync(model.Username);
+				var result = await securityHelper.SignInManager.PasswordSignInAsync(model.Username, model.Password, true, true);
+
+				if (result.Succeeded) {
+					return RedirectToAction(this.GetActionName(x => x.Index()));
+				}
+			}
+
+			ModelState.AddModelError("message", "Invalid login attempt");
+			return View(model);
 		}
 
 		[HttpGet]

@@ -1,0 +1,41 @@
+﻿@model MathModel
+@{
+	Layout = Carrotware.CMS.Interface.CarrotLayout.Main;
+
+	ViewBag.Title = "Math";
+
+	string theTime = DateTime.Now.ToString("o");
+}
+
+<div id="divMathForm">
+	<h2>Do Some Math</h2>
+	@using (Html.BeginForm()) {
+		<p>
+			@theTime
+		</p>
+		<table style="width:550px">
+			<tr>
+				<td>
+					@Html.TextBoxFor(x=> x.Number1)
+				</td>
+				<td>
+					/
+				</td>
+				<td>
+					@Html.TextBoxFor(x=> x.Number2)
+				</td>
+				<td>
+					=
+				</td>
+				<td>
+					@Html.TextBoxFor(x=> x.Number3)
+				</td>
+			</tr>
+		</table>
+
+		<p>
+			<br>
+			<input type="submit" class="btn btn-info" value="Submit" />
+		</p>
+	}
+</div>

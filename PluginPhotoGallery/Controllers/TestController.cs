@@ -159,7 +159,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			var model = new GalleryTest();
 			model.Settings = (GallerySettings)this.WidgetPayload;
 
-			var data = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowPrettyPhotoGallery", this.AssemblyName, this.WidgetPayload);
+			var data = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowPrettyPhotoGallery", this.AreaName, this.WidgetPayload);
 			Controller ctrl = data.Controller;
 
 			var result = ((HomeController)ctrl).ShowPrettyPhotoGallery();
@@ -182,7 +182,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			var model = new GalleryTest();
 			model.Settings = (GallerySettings)this.WidgetPayload;
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowPrettyPhotoGallery", this.AssemblyName, this.WidgetPayload);
+			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowPrettyPhotoGallery", this.AreaName, this.WidgetPayload);
 			model.PartialResult = RenderWidgetHelper.ExecuteAction(ctrl);
 			model.RenderedContent = RenderWidgetHelper.ResultToString(ctrl, model.PartialResult);
 

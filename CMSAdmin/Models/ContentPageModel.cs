@@ -113,7 +113,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			}
 		}
 
-		public string OriginalFileName { get; set; }
+		public string? OriginalFileName { get; set; }
 
 		public List<Widget> WidgetListText { get; set; }
 
@@ -185,18 +185,19 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			this.WidgetListText = new List<Widget>();
 
 			if (this.ContentPage != null && this.ContentPage.Root_ContentID != Guid.Empty) {
-				using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {
+				using (var cmsHelper = new CMSConfigHelper()) {
 					cmsHelper.OverrideKey(this.ContentPage.Root_ContentID);
+					if (cmsHelper.cmsAdminWidget != null) {
+						this.WidgetListHtml = (from w in cmsHelper.cmsAdminWidget
+											   where w.IsLatestVersion == true
+											   && w.ControlPath.StartsWith("CLASS:Carrotware.CMS.UI.Components.ContentRichText,")
+											   select w).ToList();
 
-					this.WidgetListHtml = (from w in cmsHelper.cmsAdminWidget
-										   where w.IsLatestVersion == true
-										   && w.ControlPath.StartsWith("CLASS:Carrotware.CMS.UI.Components.ContentRichText,")
-										   select w).ToList();
-
-					this.WidgetListText = (from w in cmsHelper.cmsAdminWidget
-										   where w.IsLatestVersion == true
-										   && w.ControlPath.StartsWith("CLASS:Carrotware.CMS.UI.Components.ContentPlainText,")
-										   select w).ToList();
+						this.WidgetListText = (from w in cmsHelper.cmsAdminWidget
+											   where w.IsLatestVersion == true
+											   && w.ControlPath.StartsWith("CLASS:Carrotware.CMS.UI.Components.ContentPlainText,")
+											   select w).ToList();
+					}
 				}
 			}
 		}

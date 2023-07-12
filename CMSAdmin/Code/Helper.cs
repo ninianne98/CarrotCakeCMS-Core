@@ -32,8 +32,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 
 		public static string WebServiceAddress {
 			get {
-				var cccConfig = CarrotCakeConfig.GetConfig();
-				var adminFolder = cccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
+				var config = CarrotCakeConfig.GetConfig();
+				var adminFolder = config.MainConfig.AdminFolderPath.TrimPathSlashes();
 
 				return "/api/" + adminFolder;
 			}

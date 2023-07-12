@@ -1,5 +1,6 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
+using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
 using Carrotware.CMS.UI.Components;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +33,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			_logger = logger;
 			this.TemplateFile = string.Empty;
 			this.WidgetCount = 0;
+
+			BaseWidgetController.WidgetStandaloneMode = false;
 		}
 
 		public override void OnActionExecuting(ActionExecutingContext context) {

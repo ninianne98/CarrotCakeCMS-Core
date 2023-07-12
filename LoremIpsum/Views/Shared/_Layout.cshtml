@@ -2,7 +2,8 @@
 @{
 	Layout = null;
 
-	string areaName = ViewBag.WidgetAssemblyName;
+	string areaName = ViewBag.WidgetAreaName;
+	string assemblyName = ViewBag.WidgetAssemblyName;
 	string areaAlias = string.Format("{0}_Area", areaName);
 }
 
@@ -57,10 +58,19 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				@Html.ActionLink(string.Format("{0}  (Core)", areaName), "Index", "Admin", null, new { @class = "navbar-brand" })
+				@Html.ActionLink(string.Format("{0}  (Core)", assemblyName), "Index", "Admin", null, new { @class = "navbar-brand" })
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
+					@if (User.Identity.IsAuthenticated) {
+						<li class="nav-item">
+							<a class="nav-link text-dark" title="Manage">Hello @User.Identity.Name!</a>
+						</li>
+					} else {
+						@using (Html.CarrotWeb().BeginWrappedItem("li", "Login", "Admin", new { @class = "active" }, null)) {
+							@Html.ActionLink("Login", "Login", "Admin")
+						}
+					}
 
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active dropdown" }, new { @id = "tabAdmin", @class = "dropdown" })) {
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin Test <b class="caret"></b></a>
@@ -69,7 +79,6 @@
 							<li>@Html.ActionLink("Create Posts", "Posts", "Admin")</li>
 						</ul>
 					}
-
 				</ul>
 			</div>
 		</div>

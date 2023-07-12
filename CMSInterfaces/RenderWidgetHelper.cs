@@ -159,7 +159,7 @@ namespace Carrotware.CMS.Interface {
 			var routeData = data.RouteData.Values;
 
 			if (controller is IWidgetController && string.IsNullOrEmpty(areaName)) {
-				areaName = ((IWidgetController)controller).AssemblyName;
+				areaName = ((IWidgetController)controller).AreaName;
 			}
 
 			if (!string.IsNullOrWhiteSpace(areaName)) {

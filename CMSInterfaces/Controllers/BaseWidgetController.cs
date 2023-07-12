@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 /*
@@ -21,8 +19,10 @@ namespace Carrotware.CMS.Interface.Controllers {
 
 		public string AssemblyName { get; set; }
 
+		public string AreaName { get; set; }
+
 		public bool UseStdWidgetLayout { get; set; } = true;
-		public bool UseArea { get; set; } = true;
+		public bool UseArea { get; set; } = !WidgetStandaloneMode;
 
 		public string TestSiteID {
 			get {
@@ -33,17 +33,20 @@ namespace Carrotware.CMS.Interface.Controllers {
 		}
 
 		public virtual void LoadAreaInfo() {
+			Assembly asmbly = this.GetType().Assembly;
+			string assemblyName = asmbly.GetAssemblyName();
+
+			this.AssemblyName = assemblyName;
+			ViewData["WidgetAssemblyName"] = assemblyName;
+			ViewBag.WidgetAssemblyName = assemblyName;
+
 			if (this.UseArea) {
-				if (string.IsNullOrEmpty(this.AssemblyName)
-									|| ViewData["WidgetAssemblyName"] == null) {
-					Assembly asmbly = this.GetType().Assembly;
+				if (string.IsNullOrEmpty(this.AreaName)
+									|| ViewData["WidgetAreaName"] == null) {
 
-					string assemblyName = asmbly.GetAssemblyName();
-
-					this.AssemblyName = assemblyName;
-
-					ViewData["WidgetAssemblyName"] = assemblyName;
-					ViewBag.WidgetAssemblyName = assemblyName;
+					this.AreaName = assemblyName;
+					ViewData["WidgetAreaName"] = assemblyName;
+					ViewBag.WidgetAreaName = assemblyName;
 				}
 			}
 

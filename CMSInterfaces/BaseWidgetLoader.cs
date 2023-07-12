@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Carrotware.CMS.Interface.Controllers;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 
@@ -23,9 +22,13 @@ namespace Carrotware.CMS.Interface {
 		public string AreaName { get { return _areaName; } }
 
 		protected void LoadArea() {
-			Assembly assembly = this.GetType().Assembly;
+			if (!BaseWidgetController.WidgetStandaloneMode) {
+				Assembly assembly = this.GetType().Assembly;
 
-			_areaName = assembly.GetAssemblyName();
+				_areaName = assembly.GetAssemblyName();
+			} else {
+				_areaName = string.Empty;
+			}
 		}
 
 		public virtual void LoadWidgets(IServiceCollection services) {
@@ -53,12 +56,13 @@ namespace Carrotware.CMS.Interface {
 
 			string nsp = typeof(BaseWidgetLoader).Namespace;
 
-			if (this.AreaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
+			if (!string.IsNullOrEmpty(this.AreaName) && this.AreaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
 				try {
 					app.MapControllerRoute(
 								name: this.AreaName + "_Area",
 								pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 				} catch (Exception ex) { }
+
 				//try {
 				//	app.MapControllerRoute(
 				//				name: this.AreaName + "_Default",

@@ -1,6 +1,7 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.CoreMVC.UI.Admin.Models;
 using Carrotware.CMS.Interface;
+using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
 using Carrotware.CMS.Security.Models;
 using Carrotware.Web.UI.Components;
@@ -31,6 +32,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		public override void OnActionExecuting(ActionExecutingContext context) {
 			base.OnActionExecuting(context);
+
+			BaseWidgetController.WidgetStandaloneMode = false;
 
 			var path = context.HttpContext.Request.Path;
 			RouteValueDictionary vals = context.RouteData.Values;
@@ -638,7 +641,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[AllowAnonymous]
-		public ActionResult Login(string returnUrl) {
+		public ActionResult Login(string? returnUrl) {
 			NoCache();
 			RedirectIfNoUsersExist();
 
@@ -662,7 +665,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				return View(model);
 			}
 
-			string returnUrl = model.ReturnUrl != null ? HttpUtility.UrlDecode(model.ReturnUrl) : SiteFilename.DashboardURL;
+			string returnUrl = !string.IsNullOrEmpty(model.ReturnUrl) ? HttpUtility.UrlDecode(model.ReturnUrl) : SiteFilename.DashboardURL;
 
 			// This doesn't count login failures towards account lockout
 			var user = await securityHelper.UserManager.FindByNameAsync(model.UserName);
@@ -2858,7 +2861,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			return;
 		}
 
-		private ActionResult RedirectToLocal(string returnUrl) {
+		private ActionResult RedirectToLocal(string? returnUrl) {
 			if (Url.IsLocalUrl(returnUrl)) {
 				return Redirect(returnUrl);
 			}

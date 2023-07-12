@@ -1,5 +1,6 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
+using Carrotware.Web.UI.Components;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
@@ -626,37 +627,31 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static void PerformRedirectToErrorPage(string sErrorKey, string sReqURL) {
-			//parse web.config as XML because of medium trust issues
 			HttpContext context = CarrotHttpHelper.HttpContext;
 
-			XmlDocument xDoc = new XmlDocument();
-			xDoc.Load(CarrotHttpHelper.MapPath("/Web.config"));
+			var errors = CustomErrorConfig.GetConfig();
 
-			XmlElement xmlCustomErrors = xDoc.SelectSingleNode("//system.web/customErrors") as XmlElement;
+			if (errors != null) {
+				string defaultRedirectPage = errors.DefaultRedirect;
+				var errorCodes = errors.ErrorCodes;
 
-			if (xmlCustomErrors != null) {
-				string redirectPage = string.Empty;
+				if (errorCodes != null && errorCodes.Any()) {
+					int errorCode = int.Parse(sErrorKey);
+					var customErr = errorCodes.Where(x => x.StatusCode == errorCode).FirstOrDefault();
 
-				if (xmlCustomErrors.Attributes["mode"] != null && xmlCustomErrors.Attributes["mode"].Value.ToLowerInvariant() != "off") {
-					if (xmlCustomErrors.Attributes["defaultRedirect"] != null) {
-						redirectPage = xmlCustomErrors.Attributes["defaultRedirect"].Value;
-					}
+					if (customErr != null) {
+						var redirectPage = customErr.Uri.Length > 0 ? customErr.Uri : defaultRedirectPage;
 
-					if (xmlCustomErrors.HasChildNodes) {
-						XmlNode xmlErrNode = xmlCustomErrors.SelectSingleNode("//system.web/customErrors/error[@statusCode='" + sErrorKey + "']");
-						if (xmlErrNode != null) {
-							redirectPage = xmlErrNode.Attributes["redirect"].Value;
+						string sQS = string.Empty;
+						if (context.Request.QueryString != null) {
+							if (!string.IsNullOrEmpty(context.Request.QueryString.ToString())) {
+								sQS = HttpUtility.UrlEncode(string.Format("?{0}", context.Request.QueryString));
+							}
 						}
-					}
-					string sQS = string.Empty;
-					if (context.Request.QueryString != null) {
-						if (!string.IsNullOrEmpty(context.Request.QueryString.ToString())) {
-							sQS = HttpUtility.UrlEncode(string.Format("?{0}", context.Request.QueryString));
-						}
-					}
 
-					if (!string.IsNullOrEmpty(redirectPage) && !sQS.ToLowerInvariant().Contains("aspxerrorpath")) {
-						context.Response.Redirect(string.Format("{0}?aspxerrorpath={1}{2}", redirectPage, sReqURL, sQS));
+						if (!string.IsNullOrEmpty(redirectPage) && !sQS.ToLowerInvariant().Contains("aspxerrorpath")) {
+							context.Response.Redirect(string.Format("{0}?aspxerrorpath={1}{2}", redirectPage, sReqURL, sQS));
+						}
 					}
 				}
 			}

@@ -1,5 +1,4 @@
 using Carrotware.CMS.Core;
-using Carrotware.CMS.CoreMVC.UI.Admin.Controllers;
 using Carrotware.CMS.Data;
 using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
@@ -7,7 +6,6 @@ using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,7 +36,9 @@ builder.Logging.ClearProviders();
 var logConfig = config.GetSection("Logging");
 var loggerFactory = LoggerFactory.Create(builder => {
 	builder.AddConfiguration(logConfig);
+#if DEBUG
 	builder.AddDebug();
+#endif
 	builder.AddSimpleConsole();
 });
 
@@ -63,7 +63,7 @@ services.PrepareSqlSession(CarrotCakeContext.DBKey);
 CarrotWebHelper.Configure(config, environment, services);
 CarrotHttpHelper.Configure(config, environment, services);
 
-services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+services.AddHttpContextAccessor();
 services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 services.AddTransient<ICarrotSite, SiteBasicInfo>();
@@ -80,11 +80,11 @@ var app = builder.Build();
 
 app.UseResponseCaching();
 
+app.ConfigureErrorHandling(environment);
+
+var ccConfig = CarrotCakeConfig.GetConfig();
+
 app.MigrateDatabase();
-
-// app.UseStatusCodePages();
-
-app.UseDeveloperExceptionPage();
 
 //// Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment()) {
@@ -95,21 +95,18 @@ app.UseDeveloperExceptionPage();
 //	app.UseHsts();
 //}
 
-string cmsControler = nameof(CmsContentController).Replace("Controller", "");
-
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseRouting();
 
-app.Use(async (context, next) => {
-	await next();
-	//Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
-	if (context.Response.StatusCode == (int)System.Net.HttpStatusCode.NotFound) {
-		context.Request.Path = string.Format("/{0}/Get404", cmsControler);
-		await next();
-	}
-});
+//app.Use(async (context, next) => {
+//	await next();
+//	//Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
+//	if (context.Response.StatusCode == (int)System.Net.HttpStatusCode.NotFound) {
+//		context.Request.Path = @"/";
+//		await next();
+//	}
+//});
 
 app.ConfigureSession();
 
@@ -127,8 +124,7 @@ app.UseAuthorization();
 
 app.MapDynamicControllerRoute<CmsRouting>("{*" + CmsRouting.RouteKey + "}");
 
-var cccConfig = CarrotCakeConfig.GetConfig();
-var adminFolder = cccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
+var adminFolder = ccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
 
 app.MapControllerRoute(name: "C3Admin_Route",
 	pattern: adminFolder + "/{action=Index}/{id?}",
@@ -146,8 +142,10 @@ app.MapControllerRoute(name: "C3AdminApi_Route",
 //app.MapControllerRoute(name: "C3StdAreas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
 //app.MapControllerRoute(name: "C3StdRoutes", pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.RegisterWidgets();
+
 app.MapRazorPages();
 
-app.RegisterWidgets();
+app.UseStaticFiles();
 
 app.Run();

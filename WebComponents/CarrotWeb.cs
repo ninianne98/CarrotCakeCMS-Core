@@ -1,9 +1,7 @@
 ﻿using Carrotware.Web.UI.Components.Controllers;
 using Carrotware.Web.UI.Components.SessionData;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -17,10 +15,7 @@ using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -167,6 +162,58 @@ namespace Carrotware.Web.UI.Components {
 					defaults: new { controller = home, action = nameof(HomeController.GetWebResource) });
 		}
 
+		public static void ConfigureErrorHandling(this WebApplication app, IWebHostEnvironment env) {
+			var errorConfig = CustomErrorConfig.GetConfig();
+			var errorCodes = errorConfig.ErrorCodes;
+
+			if (env.IsDevelopment() || errorConfig.Developer) {
+				app.UseDeveloperExceptionPage();
+			}
+
+			int internalErr = StatusCodes.Status500InternalServerError;
+
+			app.UseStatusCodePages(async context => {
+				var code = context.HttpContext.Response.StatusCode;
+				var errPath = context.HttpContext.Request.Path.ToString() ?? "/";
+				var err = errorCodes.Where(x => x.StatusCode == code
+											&& x.StatusCode != internalErr).FirstOrDefault();
+
+				if (err != null) {
+					if (context.HttpContext.Response.StatusCode == err.StatusCode) {
+
+						if (!string.IsNullOrEmpty(err.Uri)
+										&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
+							var oldPath = HttpUtility.UrlEncode(errPath);
+							context.HttpContext.Response.Redirect(err.Uri + "?aspxerrorpath=" + oldPath);
+						}
+					}
+				}
+			});
+
+			if (errorCodes.Where(x => x.StatusCode == internalErr).Any()) {
+				app.UseExceptionHandler(appError => {
+					appError.Run(async context => {
+						var errPath = context.Request.Path.ToString() ?? "/";
+						var err = errorCodes.Where(x => x.StatusCode == internalErr).First();
+						var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
+
+						if (exceptionHandler != null) {
+							context.Items["CarrotErrorFeature"] = exceptionHandler;
+							context.Items["CarrotError"] = exceptionHandler.Error;
+							var errKey = Guid.NewGuid().ToString();
+							CacheInsert(errKey, exceptionHandler, 5);
+
+							if (!string.IsNullOrEmpty(err.Uri)
+										&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
+								var oldPath = HttpUtility.UrlEncode(errPath);
+								context.Response.Redirect(err.Uri + "?aspxerrorpath=" + oldPath + "&err=" + errKey);
+							}
+						}
+					});
+				});
+			}
+		}
+
 		public static IUrlHelper GetUrlHelper(this IHtmlHelper htmlHelper) {
 			var urlHelperFactory = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService<IUrlHelperFactory>();
 			return urlHelperFactory.GetUrlHelper(htmlHelper.ViewContext);
@@ -242,14 +289,14 @@ namespace Carrotware.Web.UI.Components {
 			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.WebRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			return Path.Join(root, p);
+			return Path.Join(root, p).NormalizeFilename();
 		}
 
 		public static string MapPath(string path) {
 			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.ContentRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			return Path.Join(root, p);
+			return Path.Join(root, p).NormalizeFilename();
 		}
 
 		public static string NormalizeFilename(this string path) {

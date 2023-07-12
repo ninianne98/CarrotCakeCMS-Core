@@ -1,0 +1,37 @@
+﻿@model MathModel
+@{
+	string theTime = DateTime.Now.ToString("o");
+}
+
+<div id="divMathForm">
+	<h2>Do Some Math</h2>
+	@using (Html.CarrotWeb().BeginSimpleAjaxForm(new SimpleAjaxFormOptions() { FormId = "mathForm1", UpdateTargetId = "divMathForm" }, new { @action = "Math" }, null)) {
+		<p>
+			@theTime
+		</p>
+		<table style="width:550px">
+			<tr>
+				<td>
+					@Html.TextBoxFor(x=> x.Number1)
+				</td>
+				<td>
+					/
+				</td>
+				<td>
+					@Html.TextBoxFor(x=> x.Number2)
+				</td>
+				<td>
+					=
+				</td>
+				<td>
+					@Html.TextBoxFor(x=> x.Number3)
+				</td>
+			</tr>
+		</table>
+
+		<p>
+			<br>
+			<input type="submit" class="btn btn-info" value="Submit" />
+		</p>
+	}
+</div>

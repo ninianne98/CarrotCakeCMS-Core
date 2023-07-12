@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 /*
@@ -14,8 +15,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace Carrotware.Web.UI.Components.Controllers {
 
-	public class BaseController : Microsoft.AspNetCore.Mvc.Controller {
-
+	public class BaseController : Controller {
 		protected IWebHostEnvironment _environment;
 
 		public BaseController(IWebHostEnvironment environment) {

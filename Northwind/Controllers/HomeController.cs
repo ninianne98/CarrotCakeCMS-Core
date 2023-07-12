@@ -28,6 +28,30 @@ namespace Northwind.Controllers {
 			return View();
 		}
 
+		public ActionResult TestMath() {
+			var model = new MathModel();
+
+			model.GetResult();
+
+			return View(model);
+		}
+
+		[HttpGet]
+		public ActionResult Math() {
+			var model = new MathModel();
+
+			model.GetResult();
+
+			return PartialView(model);
+		}
+
+		[HttpPost]
+		public ActionResult Math(MathModel model) {
+			model.GetResult();
+			ModelState.Clear();
+			return PartialView(model);
+		}
+
 		[HttpGet]
 		public ActionResult Sampler() {
 			SelectSkin model = new SelectSkin();

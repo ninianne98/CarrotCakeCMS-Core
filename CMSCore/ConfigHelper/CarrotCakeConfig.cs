@@ -1,6 +1,5 @@
 ﻿using Carrotware.CMS.Interface;
 using System.ComponentModel;
-using System.Text.Json.Serialization;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -17,9 +16,9 @@ namespace Carrotware.CMS.Core {
 	public class CarrotCakeConfig {
 
 		public static CarrotCakeConfig GetConfig(IConfigurationRoot config) {
-			var security = config.GetSection("CarrotCakeCMS").Get<CarrotCakeConfig>();
+			var settings = config.GetSection("CarrotCakeCMS").Get<CarrotCakeConfig>();
 
-			return security ?? new CarrotCakeConfig();
+			return settings ?? new CarrotCakeConfig();
 		}
 
 		public static CarrotCakeConfig GetConfig() {
@@ -46,7 +45,6 @@ namespace Carrotware.CMS.Core {
 
 		[ConfigurationKeyName("ConfigFile")]
 		public ConfigFile ConfigFileLocation { get; set; } = new ConfigFile();
-
 	}
 
 	//==============================
@@ -78,7 +76,6 @@ namespace Carrotware.CMS.Core {
 
 	//==============================
 	public class ConfigFile {
-
 		public string TextContentProcessors { get; set; } = "TextContentProcessors.config";
 
 		public string TemplatePath { get; set; } = "/Views/Templates/";
@@ -88,7 +85,6 @@ namespace Carrotware.CMS.Core {
 
 	//==============================
 	public class AdminFooter {
-
 		public string ViewPathMain { get; set; } = null;
 
 		public string ViewPathPopup { get; set; } = null;

@@ -1,11 +1,13 @@
 using CarrotCake.CMS.Plugins.LoremIpsum.Code;
+using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
 using Carrotware.CMS.Interface.Controllers;
+using Carrotware.CMS.Security;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -29,6 +31,11 @@ var buildCfg = new ConfigurationBuilder()
 
 var config = buildCfg.Build();
 
+services.AddDbContext<CarrotCakeContext>(opt => opt.UseSqlServer(config.GetConnectionString(CarrotCakeContext.DBKey)));
+
+// auth  stuff
+services.ConfigureCmsAuth(config);
+
 var widget = new LoremRegistration();
 
 services.AddControllersWithViews();
@@ -37,14 +44,11 @@ services.AddMvc().AddControllersAsServices();
 
 services.AddResponseCaching();
 
-var accessor = new HttpContextAccessor();
-
-services.AddSingleton<IHttpContextAccessor>(accessor);
 services.AddHttpContextAccessor();
 services.AddSingleton(environment);
 services.AddSingleton(config);
 
-services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+services.AddHttpContextAccessor();
 services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 services.Configure<RazorViewEngineOptions>(options => {

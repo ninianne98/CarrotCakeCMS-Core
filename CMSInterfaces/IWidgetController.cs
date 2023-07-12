@@ -12,5 +12,7 @@ namespace Carrotware.CMS.Interface {
 
 	public interface IWidgetController {
 		string AssemblyName { get; set; }
+
+		string AreaName { get; set; }
 	}
 }

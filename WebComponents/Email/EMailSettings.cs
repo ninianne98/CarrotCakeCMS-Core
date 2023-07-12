@@ -1,11 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Net.Mail;
 using System.Xml;
-using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Hosting;
 
 /*
 * CarrotCake CMS (MVC Core)

@@ -1,7 +1,6 @@
-﻿using Northwind.Data;
-using System.Collections.Generic;
+﻿using Carrotware.CMS.Interface.Controllers;
+using Northwind.Data;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Northwind.Models {
 
@@ -22,9 +21,15 @@ namespace Northwind.Models {
 		public List<string> Views {
 			get {
 				if (_views == null || !_views.Any()) {
-					_views.Add("~/Views/Northwind/Home/ProductSearchMulti.cshtml");
-					_views.Add("~/Views/Northwind/Home/ProductSearchAltMulti.cshtml");
-					_views.Add("~/Views/Northwind/Home/ProductSearchAlt2Multi.cshtml");
+					if (BaseWidgetController.WidgetStandaloneMode) {
+						_views.Add("~/Views/Home/ProductSearchMulti.cshtml");
+						_views.Add("~/Views/Home/ProductSearchAltMulti.cshtml");
+						_views.Add("~/Views/Home/ProductSearchAlt2Multi.cshtml");
+					} else {
+						_views.Add("~/Views/Northwind/Home/ProductSearchMulti.cshtml");
+						_views.Add("~/Views/Northwind/Home/ProductSearchAltMulti.cshtml");
+						_views.Add("~/Views/Northwind/Home/ProductSearchAlt2Multi.cshtml");
+					}
 				}
 
 				return _views;

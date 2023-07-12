@@ -23,13 +23,13 @@ namespace Carrotware.CMS.Security.Models {
 	}
 
 	public class ExternalLoginListViewModel {
-		public string ReturnUrl { get; set; }
+		public string? ReturnUrl { get; set; }
 	}
 
 	public class SendCodeViewModel {
 		public string SelectedProvider { get; set; }
 		public ICollection<SelectListItem> Providers { get; set; }
-		public string ReturnUrl { get; set; }
+		public string? ReturnUrl { get; set; }
 		public bool RememberMe { get; set; }
 	}
 
@@ -42,7 +42,7 @@ namespace Carrotware.CMS.Security.Models {
 		[Display(Name = "Code")]
 		public string Code { get; set; }
 
-		public string ReturnUrl { get; set; }
+		public string? ReturnUrl { get; set; }
 
 		[Display(Name = "Remember this browser?")]
 		public bool RememberBrowser { get; set; }

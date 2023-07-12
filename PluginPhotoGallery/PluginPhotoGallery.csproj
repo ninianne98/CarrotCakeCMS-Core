@@ -74,23 +74,6 @@
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="Views\_ViewImports.cshtml" />
 		<Content Include="Views\_ViewStart.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\_ViewImports.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin.config" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\EditGallery.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\EditGalleryPhotos.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\EditImageMetaData.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\GalleryDatabase.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Admin\Index.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Home\Index.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Home\ShowPrettyPhotoGallery.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Public.config" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Edit.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryList.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\GalleryView2.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\Index.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\TestShowPrettyPhotoGallery.cshtml" />
-		<Content Include="Views\CarrotCake.CMS.Plugins.PhotoGallery\Test\View.cshtml" />
 		<Content Include="Views\Shared\_Layout.cshtml" />
 		<Content Include="Views\Shared\_LayoutPop.cshtml" />
 		<Content Include="wwwroot\Assets\prettyPhoto\dark_rounded\btnNext.png" />
@@ -139,10 +122,26 @@
 		<Content Include="wwwroot\favicon.ico" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Include="Views\Admin.config" />
+		<None Include="Views\Admin\EditGallery.cshtml" />
+		<None Include="Views\Admin\EditGalleryPhotos.cshtml" />
+		<None Include="Views\Admin\EditImageMetaData.cshtml" />
+		<None Include="Views\Admin\GalleryDatabase.cshtml" />
+		<None Include="Views\Admin\Index.cshtml" />
+		<None Include="Views\Home\Index.cshtml" />
+		<None Include="Views\Home\ShowPrettyPhotoGallery.cshtml" />
+		<None Include="Views\Public.config" />
+		<None Include="Views\Test\Edit.cshtml" />
+		<None Include="Views\Test\GalleryList.cshtml" />
+		<None Include="Views\Test\GalleryView.cshtml" />
+		<None Include="Views\Test\GalleryView2.cshtml" />
+		<None Include="Views\Test\Index.cshtml" />
+		<None Include="Views\Test\TestShowPrettyPhotoGallery.cshtml" />
+		<None Include="Views\Test\View.cshtml" />
 		<None Include="wwwroot\Assets\prettyPhoto\jquery.prettyPhoto.js" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy &quot;$(ProjectDir)\wwwroot\Assets\prettyPhoto\*&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\prettyPhoto\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\bin\$(TargetName)*&quot; &quot;$(SolutionDir)CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\$(TargetName)\*&quot; &quot;$(SolutionDir)CMSAdmin\Views\$(TargetName)&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C" />
+		<Exec Command="xcopy &quot;$(ProjectDir)\wwwroot\Assets\prettyPhoto\*&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\prettyPhoto\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Home\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Home\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C" />
 	</Target>
 </Project>

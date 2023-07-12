@@ -252,6 +252,7 @@ namespace Carrotware.CMS.Core {
 					where ct.SiteId == siteID
 						   && ct.ParentContentId == parentContentID
 						   && ct.IsLatestVersion == true
+						   && ct.ContentTypeId == ContentPageType.GetIDByType(ContentPageType.PageType.ContentEntry)
 						   && (ct.PageActive == true || bActiveOnly == false)
 						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
@@ -265,6 +266,7 @@ namespace Carrotware.CMS.Core {
 						   && ct.ParentContentId == parentContentID
 						   && ct.ParentContentId != null
 						   && ct.IsLatestVersion == true
+						   && ct.ContentTypeId == ContentPageType.GetIDByType(ContentPageType.PageType.ContentEntry)
 						   && (ct.PageActive == true || bActiveOnly == false)
 						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
@@ -278,6 +280,7 @@ namespace Carrotware.CMS.Core {
 					where ct.SiteId == siteID
 						   && cp.ParentFileName == parentPage
 						   && ct.IsLatestVersion == true
+						   && ct.ContentTypeId == ContentPageType.GetIDByType(ContentPageType.PageType.ContentEntry)
 						   && (ct.PageActive == true || bActiveOnly == false)
 						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)

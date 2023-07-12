@@ -54,11 +54,6 @@
 	</Target>
 
 	<ItemGroup>
-		<None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-		<None Include="Properties\PublishProfiles\FolderProfile.pubxml.user" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="wwwroot\favicon.ico" />
 		
 		<Content Include="appsettings.Development.json">
@@ -87,7 +82,25 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 
-		<None Include="Views\Templates\**\*">
+		<None Include="Views\Templates\Aqueous\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Templates\citrus-island\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Templates\Dragonfruit\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Templates\Imagination\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Templates\oilpainting\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Templates\telephasic\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Templates\Waterdrops\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="Views\CmsContent\**\*">
@@ -131,10 +144,6 @@
 		<None Include="wwwroot\Assets\Waterdrops\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="App_Data\" />
 	</ItemGroup>
 
 	<ItemGroup>
