@@ -125,8 +125,9 @@ namespace Carrotware.CMS.UI.Components {
 			_keyValuePairs = new RouteValueDictionary();
 
 			foreach (var route in _helper.ViewContext.RouteData.Values) {
-				_keyValuePairs.Add(route.Key, route.Value);
+				_keyValuePairs[route.Key] = route.Value;
 			}
+			// since this is from CmsContent, block area to not accidentally pick up a widget scope
 			_keyValuePairs["area"] = string.Empty;
 		}
 
@@ -612,6 +613,7 @@ namespace Carrotware.CMS.UI.Components {
 				_helper.ViewContext.RouteData.Values[route.Key] = route.Value;
 			}
 
+			// since this is from CmsContent, block area to not accidentally pick up a widget scope
 			_helper.ViewContext.RouteData.Values["area"] = null;
 			_helper.ViewContext.RouteData.Values["widgetid"] = null;
 
@@ -621,8 +623,6 @@ namespace Carrotware.CMS.UI.Components {
 
 		internal string RenderPartialToString(string partialViewName) {
 			return _helper.Partial(partialViewName).RenderToString();
-
-			//return RenderPartialToString(partialViewName, null);
 		}
 
 		internal string RenderPartialToString(string partialViewName, object model) {
@@ -702,7 +702,6 @@ namespace Carrotware.CMS.UI.Components {
 							if (attrib != null && attrib is WidgetActionSettingModelAttribute) {
 								string attrClass = (attrib as WidgetActionSettingModelAttribute).ClassName;
 								Type s = ReflectionUtilities.GetTypeFromString(attrClass);
-								// settings = _helper.ViewContext.HttpContext.RequestServices.GetService(s);
 								settings = Activator.CreateInstance(s);
 							}
 						} else {
@@ -843,9 +842,9 @@ namespace Carrotware.CMS.UI.Components {
 					sbWidget.Replace("[[sequence]]", widget.WidgetOrder.ToString());
 					sbWidget.Replace("[[ITEM_ID]]", widget.Root_WidgetID.ToString());
 
-					CMSPlugin plug = (from p in this.CmsPage.Plugins
-									  where p.FilePath.ToLowerInvariant() == widget.ControlPath.ToLowerInvariant()
-									  select p).FirstOrDefault();
+					var plug = (from p in this.CmsPage.Plugins
+								where p.FilePath.ToLowerInvariant() == widget.ControlPath.ToLowerInvariant()
+								select p).FirstOrDefault();
 
 					string captionPrefix = string.Empty;
 
@@ -892,8 +891,6 @@ namespace Carrotware.CMS.UI.Components {
 				}
 			}
 
-			RestoreOriginalRoutes();
-
 			string bodyText = string.Empty;
 
 			if (SecurityData.AdvancedEditMode) {
@@ -901,6 +898,8 @@ namespace Carrotware.CMS.UI.Components {
 			} else {
 				bodyText = sbWidgetbBody.ToString();
 			}
+
+			RestoreOriginalRoutes();
 
 			return new HtmlString(bodyText);
 		}

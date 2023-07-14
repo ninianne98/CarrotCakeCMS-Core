@@ -35,12 +35,12 @@
 	</Target>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.18" />
+		<PackageReference Include="MailKit" Version="4.1.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.20" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.20" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.7" />
-		<PackageReference Include="MimeKit" Version="4.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.9" />
+		<PackageReference Include="MimeKit" Version="4.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

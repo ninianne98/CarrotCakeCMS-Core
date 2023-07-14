@@ -58,6 +58,9 @@ namespace Carrotware.Web.UI.Components {
 		private static SignInManager<IdentityUser> _signinmanager;
 		private static UserManager<IdentityUser> _usermanager;
 		private static IMemoryCache _memoryCache;
+		private static ILoggerFactory _loggerfactory;
+		private static ILogger _logger;
+
 
 		public static void PrepareSqlSession(this IServiceCollection services, string dbKey) {
 			_services = services;
@@ -73,6 +76,9 @@ namespace Carrotware.Web.UI.Components {
 			_serviceProvider = services.BuildServiceProvider();
 			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
 			_memoryCache = _serviceProvider.GetRequiredService<IMemoryCache>();
+
+			_loggerfactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+			_logger = _loggerfactory.CreateLogger<CarrotWebHelp>();
 
 			services.AddMvc().AddRazorRuntimeCompilation();
 
@@ -108,7 +114,9 @@ namespace Carrotware.Web.UI.Components {
 			try {
 				_signinmanager = _serviceProvider.GetRequiredService<SignInManager<IdentityUser>>();
 				_usermanager = _serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-			} catch (Exception ex) { }
+			} catch (Exception ex) {
+				_logger.LogError(ex, "Configure");
+			}
 		}
 
 		public static void ConfigureSession(this WebApplication app) {
@@ -180,6 +188,7 @@ namespace Carrotware.Web.UI.Components {
 
 				if (err != null) {
 					if (context.HttpContext.Response.StatusCode == err.StatusCode) {
+						_logger.LogWarning($"StatusCode: {err.StatusCode} Path: {errPath}");
 
 						if (!string.IsNullOrEmpty(err.Uri)
 										&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
@@ -198,6 +207,8 @@ namespace Carrotware.Web.UI.Components {
 						var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
 
 						if (exceptionHandler != null) {
+							_logger.LogCritical(exceptionHandler.Error, $"StatusCode: {err.StatusCode} Path: {errPath}");
+
 							context.Items["CarrotErrorFeature"] = exceptionHandler;
 							context.Items["CarrotError"] = exceptionHandler.Error;
 							var errKey = Guid.NewGuid().ToString();

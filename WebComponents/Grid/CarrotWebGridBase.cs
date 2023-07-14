@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;

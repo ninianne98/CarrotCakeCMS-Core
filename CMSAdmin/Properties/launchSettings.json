@@ -6,12 +6,13 @@
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development"
 			},
-			"dotnetRunMessages": true,
 			"hotReloadEnabled": false,
+			"dotnetRunMessages": true,
 			//"applicationUrl": "https://localhost:17710;http://localhost:16710"
 			"applicationUrl": "http://localhost:16710"
 		},
 		"IIS Express": {
+			"hotReloadEnabled": false,
 			"commandName": "IISExpress",
 			"launchBrowser": true,
 			//"launchUrl": "/",

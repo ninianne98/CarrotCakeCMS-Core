@@ -145,16 +145,16 @@ namespace Carrotware.Web.UI.Components {
 
 			string fldName = DataFieldName(columnName);
 
-			HtmlString formFld = new HtmlString(string.Empty);
+			var formFld = new HtmlString(string.Empty);
 
 			if (val != null && selectList.SelectedValue == null) {
 				selectList = new SelectList(selectList.Items, selectList.DataValueField, selectList.DataTextField, val);
 			}
 
 			if (!string.IsNullOrEmpty(optionLabel)) {
-				formFld = new HtmlString(_htmlHelper.DropDownList(fldName, selectList, optionLabel, htmlAttributes).ToString());
+				formFld = _htmlHelper.DropDownList(fldName, selectList, optionLabel, htmlAttributes).RenderToHtmlString();
 			} else {
-				formFld = new HtmlString(_htmlHelper.DropDownList(fldName, selectList, htmlAttributes).ToString());
+				formFld = _htmlHelper.DropDownList(fldName, selectList, htmlAttributes).RenderToHtmlString();
 			}
 
 			return formFld;
