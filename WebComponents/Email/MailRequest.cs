@@ -1,8 +1,8 @@
-﻿using Carrotware.CMS.Interface;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.IO;
+using System.Reflection;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -14,44 +14,34 @@ using MimeKit.IO;
 * Date: June 2023
 */
 
-namespace Carrotware.CMS.Security {
-
-	public class SmtpSettings {
-		public string FromEmail { get; set; }
-		public string DisplayName { get; set; }
-		public string SmtpUsername { get; internal set; }
-		public string SmtpPassword { get; set; }
-		public string Host { get; set; } = "localhost";
-		public int Port { get; set; } = 587;
-		public bool UseTls { get; set; } = false;
-		public bool UseSpecifiedPickupDirectory { get; set; } = true;
-		public string PickupDirectoryLocation { get; set; } = Path.GetTempPath();
-	}
-
-	//===============================
+namespace Carrotware.Web.UI.Components {
 
 	public class MailRequest {
+
+		public MailRequest() {
+			this.EmailTo = new List<string>();
+			this.Subject = string.Empty;
+			this.Body = string.Empty;
+			this.Attachments = new List<IFormFile>();
+
+			_mailSettings = new SmtpSettings();
+		}
 
 		public MailRequest(SmtpSettings mailSettings) : this() {
 			_mailSettings = mailSettings;
 		}
 
 		public static MailRequest Create() {
-			var mailSettings = CarrotHttpHelper.ServiceProvider.GetService<SmtpSettings>();
+			var mailSettings = SmtpSettings.GetEMailSettings();
 			return new MailRequest(mailSettings);
 		}
 
-		public MailRequest() {
-			this.Emails = new List<string>();
-			this.Subject = string.Empty;
-			this.Body = string.Empty;
-			this.Attachments = null;
-
-			_mailSettings = new SmtpSettings();
+		internal static Version CurrentDLLVersion {
+			get { return Assembly.GetExecutingAssembly().GetName().Version; }
 		}
 
 		public void ConfigureMessage(string email, string subject, string body) {
-			this.Emails.Add(email);
+			this.EmailTo.Add(email);
 			this.Subject = subject;
 			this.Body = body;
 		}
@@ -62,7 +52,7 @@ namespace Carrotware.CMS.Security {
 		}
 
 		public void ConfigureMessage(List<string> emails, string subject, string body) {
-			this.Emails = emails;
+			this.EmailTo = emails;
 			this.Subject = subject;
 			this.Body = body;
 		}
@@ -72,16 +62,30 @@ namespace Carrotware.CMS.Security {
 			this.Attachments = attach;
 		}
 
-		public List<string> Emails { get; set; }
+		public List<string> EmailTo { get; set; } = new List<string>();
+		public List<string> EmailCC { get; set; } = new List<string>();
 		public string Subject { get; set; }
 		public string Body { get; set; }
 		public bool HtmlBody { get; set; }
-		public List<IFormFile>? Attachments { get; set; }
+		public List<IFormFile> Attachments { get; set; } = new List<IFormFile>();
+		public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
 
 		private SmtpSettings _mailSettings;
 
+		public Dictionary<string, string> DefaultHeaders {
+			get {
+				var head = new Dictionary<string, string>();
+				head.Add("X-Computer", Environment.MachineName);
+				head.Add("X-Originating-IP", CarrotWebHelper.HttpContext.Connection.RemoteIpAddress.ToString());
+				head.Add("X-Application", "Carrotware Web " + CurrentDLLVersion);
+				head.Add("User-Agent", "Carrotware Web " + CurrentDLLVersion);
+				head.Add("Message-ID", "<" + Guid.NewGuid().ToString().ToLowerInvariant() + "@" + _mailSettings.Host + ">");
+				return head;
+			}
+		}
+
 		public void SaveToPickupDirectory(MimeMessage msg) {
-			var path = Path.Combine(_mailSettings.PickupDirectoryLocation, string.Format("{0}.eml", Guid.NewGuid()).ToLowerInvariant());
+			var path = Path.Join(_mailSettings.PickupDirectoryLocation, string.Format("{0}.eml", Guid.NewGuid()).ToLowerInvariant());
 
 			try {
 				using (var stream = System.IO.File.Open(path, FileMode.CreateNew)) {
@@ -114,11 +118,30 @@ namespace Carrotware.CMS.Security {
 			var email = new MimeMessage();
 			var builder = new BodyBuilder();
 
-			email.Sender = MailboxAddress.Parse(_mailSettings.FromEmail);
-			foreach (var addy in request.Emails) {
+			if (string.IsNullOrEmpty(_mailSettings.DisplayName)) {
+				email.Sender = MailboxAddress.Parse(_mailSettings.FromEmail);
+			} else {
+				email.Sender = new MailboxAddress(_mailSettings.DisplayName, _mailSettings.FromEmail);
+			}
+
+			foreach (var h in this.DefaultHeaders) {
+				if (!request.Headers.ContainsKey(h.Key)) {
+					email.Headers.Add(h.Key, h.Value);
+				}
+			}
+
+			foreach (var addy in request.EmailTo) {
 				email.To.Add(MailboxAddress.Parse(addy));
 			}
+			foreach (var addy in request.EmailCC) {
+				email.Cc.Add(MailboxAddress.Parse(addy));
+			}
+
 			email.Subject = request.Subject;
+
+			foreach (var h in request.Headers) {
+				email.Headers.Add(h.Key, h.Value);
+			}
 
 			if (request.Attachments != null) {
 				byte[] fileBytes;

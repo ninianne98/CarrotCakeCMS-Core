@@ -21,13 +21,11 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var environment = builder.Environment;
 
-var buildCfg = new ConfigurationBuilder()
-				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-				.AddEnvironmentVariables();
+var config = builder.CreateConfig();
 
-var config = buildCfg.Build();
+services.AddHttpContextAccessor();
+services.AddSingleton(environment);
+services.AddSingleton(config);
 
 var widget = new GalleryRegistration();
 
@@ -37,22 +35,15 @@ services.AddMvc().AddControllersAsServices();
 
 services.AddResponseCaching();
 
-var accessor = new HttpContextAccessor();
-
-services.AddSingleton<IHttpContextAccessor>(accessor);
 services.AddHttpContextAccessor();
-services.AddSingleton(environment);
-services.AddSingleton(config);
-
-services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 services.Configure<RazorViewEngineOptions>(options => {
 	options.ViewLocationExpanders.Add(new CmsViewExpander());
 });
 
-CarrotWebHelper.Configure(config, environment, services);
-CarrotHttpHelper.Configure(config, environment, services);
+builder.ConfigureCarrotWeb(config);
+builder.ConfigureCarrotHttpHelper(config);
 
 widget.LoadWidgets(services);
 

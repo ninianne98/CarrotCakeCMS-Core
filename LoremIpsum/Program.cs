@@ -23,13 +23,23 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var environment = builder.Environment;
 
-var buildCfg = new ConfigurationBuilder()
-				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-				.AddEnvironmentVariables();
+var config = builder.CreateConfig();
 
-var config = buildCfg.Build();
+services.AddHttpContextAccessor();
+services.AddSingleton(environment);
+services.AddSingleton(config);
+
+builder.Logging.ClearProviders();
+
+var logConfig = config.GetSection("Logging");
+var loggerFactory = LoggerFactory.Create(builder => {
+	builder.AddConfiguration(logConfig);
+#if DEBUG
+	builder.AddDebug();
+#endif
+	builder.AddSimpleConsole();
+});
+services.AddSingleton(loggerFactory);
 
 services.AddDbContext<CarrotCakeContext>(opt => opt.UseSqlServer(config.GetConnectionString(CarrotCakeContext.DBKey)));
 
@@ -44,19 +54,14 @@ services.AddMvc().AddControllersAsServices();
 
 services.AddResponseCaching();
 
-services.AddHttpContextAccessor();
-services.AddSingleton(environment);
-services.AddSingleton(config);
-
-services.AddHttpContextAccessor();
 services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 services.Configure<RazorViewEngineOptions>(options => {
 	options.ViewLocationExpanders.Add(new CmsViewExpander());
 });
 
-CarrotWebHelper.Configure(config, environment, services);
-CarrotHttpHelper.Configure(config, environment, services);
+builder.ConfigureCarrotWeb(config);
+builder.ConfigureCarrotHttpHelper(config);
 
 widget.LoadWidgets(services);
 

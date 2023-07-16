@@ -1,4 +1,5 @@
-﻿using Carrotware.Web.UI.Components.Controllers;
+﻿using Azure.Identity;
+using Carrotware.Web.UI.Components.Controllers;
 using Carrotware.Web.UI.Components.SessionData;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Html;
@@ -15,8 +16,11 @@ using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
@@ -68,52 +72,71 @@ namespace Carrotware.Web.UI.Components {
 			SessionContext.DBKey = dbKey;
 		}
 
-		public static void Configure(IConfigurationRoot configuration, IWebHostEnvironment environment, IServiceCollection services) {
-			_configuration = configuration;
-			_webHostEnvironment = environment;
-			_services = services;
+		public static IConfigurationRoot CreateConfig(this WebApplicationBuilder builder) {
+			var environment = builder.Environment;
 
-			_serviceProvider = services.BuildServiceProvider();
+			var buildCfg = new ConfigurationBuilder()
+				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables();
+
+			var config = buildCfg.Build();
+			builder.Services.TryAddSingleton(config);
+
+			return config;
+		}
+
+		public static void ConfigureCarrotWeb(this WebApplicationBuilder builder, IConfigurationRoot configuration) {
+			_configuration = configuration;
+			_webHostEnvironment = builder.Environment;
+			_services = builder.Services;
+
+			_services.AddHttpContextAccessor();
+			_services.TryAddSingleton(_webHostEnvironment);
+			_services.TryAddSingleton(_configuration);
+			_services.TryAddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+
+			_serviceProvider = _services.BuildServiceProvider();
 			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
 			_memoryCache = _serviceProvider.GetRequiredService<IMemoryCache>();
 
 			_loggerfactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
 			_logger = _loggerfactory.CreateLogger<CarrotWebHelp>();
 
-			services.AddMvc().AddRazorRuntimeCompilation();
+			_services.AddMvc().AddRazorRuntimeCompilation();
 
-			services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
+			_services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
 				options.FileProviders.Add(new EmbeddedFileProvider(
 					 typeof(CarrotWebHelper).Assembly
 				));
 			});
 
 			if (!SessionContext.DBKeyExists) {
-				services.AddDistributedMemoryCache();
+				_services.AddDistributedMemoryCache();
 			} else {
 				var connString = configuration.GetConnectionString(SessionContext.DBKey);
 
-				services.AddDbContext<SessionContext>(opt => opt.UseSqlServer(connString));
+				_services.AddDbContext<SessionContext>(opt => opt.UseSqlServer(connString));
 
-				services.AddDistributedSqlServerCache(opt => {
+				_services.AddDistributedSqlServerCache(opt => {
 					opt.ConnectionString = connString;
 					opt.SchemaName = "dbo";
 					opt.TableName = "AspNetCache";
 				});
 			}
 
-			services.AddSession(opt => {
+			_services.AddSession(opt => {
 				opt.IdleTimeout = TimeSpan.FromHours(6);
 				opt.Cookie.Name = ".CarrotWeb.Session";
 				opt.Cookie.IsEssential = true;
 			});
 
-			services.AddMemoryCache();
-			services.AddHttpContextAccessor();
+			_services.AddMemoryCache();
 
 			try {
-				_signinmanager = _serviceProvider.GetRequiredService<SignInManager<IdentityUser>>();
-				_usermanager = _serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+				_signinmanager = _serviceProvider.GetService<SignInManager<IdentityUser>>();
+				_usermanager = _serviceProvider.GetService<UserManager<IdentityUser>>();
 			} catch (Exception ex) {
 				_logger.LogError(ex, "Configure");
 			}
@@ -184,11 +207,17 @@ namespace Carrotware.Web.UI.Components {
 				var code = context.HttpContext.Response.StatusCode;
 				var errPath = context.HttpContext.Request.Path.ToString() ?? "/";
 				var err = errorCodes.Where(x => x.StatusCode == code
-											&& x.StatusCode != internalErr).FirstOrDefault();
+											&& x.StatusCode < internalErr).FirstOrDefault();
 
 				if (err != null) {
 					if (context.HttpContext.Response.StatusCode == err.StatusCode) {
-						_logger.LogWarning($"StatusCode: {err.StatusCode} Path: {errPath}");
+						var msg = $"StatusCode: {err.StatusCode} Path: {errPath}";
+
+						if (err.StatusCode <= 299) {
+							_logger.LogDebug(msg);
+						} else {
+							_logger.LogInformation(msg);
+						}
 
 						if (!string.IsNullOrEmpty(err.Uri)
 										&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
@@ -199,16 +228,19 @@ namespace Carrotware.Web.UI.Components {
 				}
 			});
 
-			if (errorCodes.Where(x => x.StatusCode == internalErr).Any()) {
+			if (errorConfig.Developer == false && errorCodes.Where(x => x.StatusCode >= internalErr).Any()) {
 				app.UseExceptionHandler(appError => {
 					appError.Run(async context => {
+						var code = context.Response.StatusCode;
 						var errPath = context.Request.Path.ToString() ?? "/";
-						var err = errorCodes.Where(x => x.StatusCode == internalErr).First();
+						var err = errorCodes.Where(x => x.StatusCode == code).FirstOrDefault();
 						var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
 
-						if (exceptionHandler != null) {
-							_logger.LogCritical(exceptionHandler.Error, $"StatusCode: {err.StatusCode} Path: {errPath}");
+						if (code >= internalErr) {
+							_logger.LogCritical(exceptionHandler.Error, $"StatusCode: {code} Path: {errPath}");
+						}
 
+						if (exceptionHandler != null && err != null) {
 							context.Items["CarrotErrorFeature"] = exceptionHandler;
 							context.Items["CarrotError"] = exceptionHandler.Error;
 							var errKey = Guid.NewGuid().ToString();
@@ -958,8 +990,8 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public IHtmlHelper<T> CarrotHtmlHelper<T>(string partialViewName, T model) where T : class {
-			var razoract = _helper.ViewContext.HttpContext.RequestServices.GetService(typeof(IRazorPageActivator)) as IRazorPageActivator;
-			var razorengine = _helper.ViewContext.HttpContext.RequestServices.GetService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+			var razoract = _helper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorPageActivator)) as IRazorPageActivator;
+			var razorengine = _helper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			var page = new CarrotRazorPage<T>();
 

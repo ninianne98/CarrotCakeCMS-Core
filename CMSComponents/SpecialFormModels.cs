@@ -132,7 +132,7 @@ namespace Carrotware.CMS.UI.Components {
 
 				string sEmail = string.Join(";", emails);
 
-				EmailHelper.SendMail(null, "", sEmail, mailSubject, sBody, false);
+				EmailHelper.SendMail(null, sEmail, mailSubject, sBody, false);
 			}
 		}
 	}

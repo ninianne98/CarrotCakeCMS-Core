@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -124,7 +122,6 @@ namespace Carrotware.CMS.Interface {
 			var svc = new object();
 			Controller controller = null;
 
-			//var req = CarrotHttpHelper.ServiceProvider.GetRequiredService(type);
 			svc = CarrotHttpHelper.HttpContext.RequestServices.GetService(type);
 			if (svc == null) {
 				svc = source.HttpContext.RequestServices.GetService(type);
@@ -162,6 +159,7 @@ namespace Carrotware.CMS.Interface {
 				areaName = ((IWidgetController)controller).AreaName;
 			}
 
+			routeData["area"] = string.Empty;
 			if (!string.IsNullOrWhiteSpace(areaName)) {
 				routeData["area"] = areaName;
 			}
@@ -189,7 +187,7 @@ namespace Carrotware.CMS.Interface {
 			var routeData = data.RouteData;
 			var actionName = routeData.Values["action"].ToString();
 
-			MethodInfo methodInfo = null;
+			MethodInfo? methodInfo = null;
 			List<MethodInfo> mthds = type.GetMethods().Where(x => x.Name == actionName).ToList();
 
 			// because there might be an overload, get the GET version if there is more than one
@@ -249,7 +247,7 @@ namespace Carrotware.CMS.Interface {
 		public static string ResultToString(RenderWidgetData data, PartialViewResult partialResult, string viewName = null) {
 			Controller controller = data.Controller;
 			string stringResult = null;
-			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			if (string.IsNullOrEmpty(viewName)) {
 				viewName = data.RouteData.Values["action"].ToString();
@@ -284,7 +282,6 @@ namespace Carrotware.CMS.Interface {
 			var parts = typeName.Split(',');
 			var currentAssembly = Assembly.GetExecutingAssembly();
 			var fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath;
-			//var fldr = CarrotHttpHelper.WebHostEnvironment.ContentRootPath;
 
 			if (parts.Length == 2) {
 				var files = Directory.GetFiles(fldr, $"{parts[1].Trim()}.dll", SearchOption.AllDirectories);

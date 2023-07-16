@@ -1,9 +1,8 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -23,19 +22,30 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void OnAuthorization(AuthorizationFilterContext context) {
-			List<string> lstInitSiteActions = (new string[] { "login", "logoff", "about", "forgotpassword", "createfirstadmin", "databasesetup", "notauthorized" }).ToList();
 			RouteValueDictionary vals = context.RouteData.Values;
 			string action = vals["action"].ToString().ToLowerInvariant();
 			string controller = vals["controller"].ToString().ToLowerInvariant();
 
-			if (CmsRouteConstants.CmsController.Admin.ToLowerInvariant() == controller
-					&& lstInitSiteActions.Contains(action)) {
+			List<string> anonMethods = (new string[] { "login", "logoff", "about" }).ToList();
+
+			var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
+			if (descriptor != null) {
+				// use reflection to see if the method/action has an anon permission and honor it
+				var type = descriptor.ControllerTypeInfo;
+				anonMethods = type.GetMethods()
+							  .Where(m => m.GetCustomAttributes(typeof(AllowAnonymousAttribute), false).Length > 0)
+							  .Select(x => x.Name.ToLowerInvariant())
+							  .Where(x => x == action)
+							  .Distinct().ToList();
+			}
+
+			if (anonMethods.Contains(action)) {
 				return;
 			}
 
 			if (!(SecurityData.GetIsAdminFromCache() || SecurityData.GetIsSiteEditorFromCache())) {
 				var _config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
-				//context.Result = new UnauthorizedObjectResult(string.Empty);
+				context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 				context.HttpContext.Response.Redirect(_config.AdditionalSettings.LoginPath);
 			}
 

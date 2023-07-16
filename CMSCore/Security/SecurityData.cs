@@ -605,13 +605,12 @@ namespace Carrotware.CMS.Core {
 			return data;
 		}
 
-		public async Task<IdentityResult> ResetPassword(IdentityUser user, string code, string password) {
+		public async Task<IdentityResult> ResetPassword(IdentityUser user, string token, string password) {
 			var result = new IdentityResult();
 
 			if (user != null && !string.IsNullOrEmpty(user.Id)) {
 				var mgr = new ManageSecurity();
-				var usr = await mgr.FindByUsernameAsync(user.Id);
-				result = await mgr.UserManager.ResetPasswordAsync(usr, code, password);
+				result = await mgr.UserManager.ResetPasswordAsync(user, token, password);
 				return result;
 			}
 

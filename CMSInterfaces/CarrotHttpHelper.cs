@@ -1,11 +1,7 @@
 ﻿using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Text.Encodings.Web;
 
@@ -31,14 +27,16 @@ namespace Carrotware.CMS.Interface {
 		private static UserManager<IdentityUser> _usermanager;
 		private static IMemoryCache _memoryCache;
 
-		public static void Configure(IConfigurationRoot configuration, IWebHostEnvironment environment, IServiceCollection services) {
+		public static void ConfigureCarrotHttpHelper(this WebApplicationBuilder builder, IConfigurationRoot configuration) {
 			_configuration = configuration;
-			_webHostEnvironment = environment;
-			_services = services;
+			_webHostEnvironment = builder.Environment;
+			_services = builder.Services;
 
-			services.AddMemoryCache();
-			services.AddHttpContextAccessor();
-			_serviceProvider = services.BuildServiceProvider();
+			_services.AddMemoryCache();
+			_services.AddHttpContextAccessor();
+			_serviceProvider = _services.BuildServiceProvider();
+
+			_services.AddMvc().AddControllersAsServices();
 
 			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
 			_memoryCache = _serviceProvider.GetRequiredService<IMemoryCache>();

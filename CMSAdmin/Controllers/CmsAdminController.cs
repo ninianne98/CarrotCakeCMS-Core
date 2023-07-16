@@ -46,7 +46,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				List<string> lstOKNoSiteActions = (new string[] { "login", "logoff", "about", "siteinfo", "siteindex", "filebrowser", "userindex", "roleindex", "userprofile", "changepassword" }).ToList();
 
 				//carvouts for anon pages
-				List<string> lstInitSiteActions = (new string[] { "login", "logoff", "about", "forgotpassword", "createfirstadmin", "databasesetup", "notauthorized" }).ToList();
+				List<string> lstInitSiteActions = (new string[] { "login", "logoff", "about", "forgotpassword", "forgotpasswordconfirmation", "resetpassword", "resetpasswordconfirmation",
+								"createfirstadmin", "databasesetup", "notauthorized" }).ToList();
 
 				try {
 					if (!lstInitSiteActions.Contains(action)) {
@@ -692,8 +693,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[AllowAnonymous]
-		public ActionResult ResetPassword(string code) {
-			return View();
+		public ActionResult ResetPassword(string? token) {
+			var model = new ResetPasswordViewModel();
+			model.Token = token ?? string.Empty;
+			return View(model);
 		}
 
 		[HttpPost]
@@ -713,7 +716,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 
 			SecurityData sd = new SecurityData();
-			var result = await sd.ResetPassword(user, model.Code, model.Password);
+			var result = await sd.ResetPassword(user, model.Token, model.Password);
 			if (result.Succeeded) {
 				return RedirectToAction(SiteActions.ResetPasswordConfirmation);
 			}
@@ -754,7 +757,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					return View("ForgotPasswordConfirmation");
 				} else {
 					SecurityData sd = new SecurityData();
-					sd.ResetPassword(model.Email);
+					await sd.ResetPassword(model.Email);
 					return RedirectToAction(SiteActions.ForgotPasswordConfirmation);
 				}
 			}

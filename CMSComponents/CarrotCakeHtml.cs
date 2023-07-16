@@ -52,7 +52,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		internal static string RenderView(RenderWidgetData data, PartialViewResult partialResult, string viewName) {
-			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			var controller = data.Controller;
 			var routeData = data.RouteData;

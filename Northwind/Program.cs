@@ -23,11 +23,23 @@ var services = builder.Services;
 var environment = builder.Environment;
 //var config = builder.Configuration;
 
-var buildCfg = new ConfigurationBuilder()
-			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-			.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+var config = builder.CreateConfig();
 
-var config = buildCfg.Build();
+services.AddHttpContextAccessor();
+services.AddSingleton(environment);
+services.AddSingleton(config);
+
+builder.Logging.ClearProviders();
+
+var logConfig = config.GetSection("Logging");
+var loggerFactory = LoggerFactory.Create(builder => {
+	builder.AddConfiguration(logConfig);
+#if DEBUG
+	builder.AddDebug();
+#endif
+	builder.AddSimpleConsole();
+});
+services.AddSingleton(loggerFactory);
 
 var widget = new NorthRegistration();
 
@@ -37,22 +49,15 @@ services.AddMvc().AddControllersAsServices();
 
 services.AddResponseCaching();
 
-var accessor = new HttpContextAccessor();
-
-services.AddSingleton<IHttpContextAccessor>(accessor);
 services.AddHttpContextAccessor();
-services.AddSingleton(environment);
-services.AddSingleton(config);
-
-services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 services.Configure<RazorViewEngineOptions>(options => {
 	options.ViewLocationExpanders.Add(new CmsViewExpander());
 });
 
-CarrotWebHelper.Configure(config, environment, services);
-CarrotHttpHelper.Configure(config, environment, services);
+builder.ConfigureCarrotWeb(config);
+builder.ConfigureCarrotHttpHelper(config);
 
 widget.LoadWidgets(services);
 

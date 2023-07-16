@@ -22,15 +22,35 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 
 	[WidgetController(typeof(AdminController))]
 	public class AdminController : BaseAdminWidgetController {
-		ManageSecurity securityHelper = new ManageSecurity();
+		private ManageSecurity securityHelper = new ManageSecurity();
+		protected readonly ICarrotSite _site;
+		private readonly ILogger<AdminController> _logger;
 
-		public ActionResult Index() {
+		public AdminController(ILogger<AdminController> logger, ICarrotSite site) {
+			_logger = logger;
+			_site = site;
+		}
+
+		public IActionResult Index() {
 			return View();
 		}
 
 		[HttpGet]
 		[AllowAnonymous]
+		public IActionResult LogOut() {
+			_logger.LogInformation($"Admin : LogOut: {DateTime.UtcNow}");
+
+			securityHelper.SignInManager.SignOutAsync();
+			this.HttpContext.Session.Clear();
+
+			return RedirectToAction(this.GetActionName(x => x.Index()));
+		}
+
+		[HttpGet]
+		[AllowAnonymous]
 		public IActionResult Login() {
+			_logger.LogInformation($"Admin : Login: {DateTime.UtcNow}");
+
 			var model = new UserLogin();
 			return View(model);
 		}
@@ -47,12 +67,13 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 				}
 			}
 
+			_logger.LogWarning($"Admin : Login Fail: {model.Username} - {DateTime.UtcNow}");
 			ModelState.AddModelError("message", "Invalid login attempt");
 			return View(model);
 		}
 
 		[HttpGet]
-		public ActionResult Pages() {
+		public IActionResult Pages() {
 			ViewBag.Title = "Pages";
 			var model = new ContentCreator(ContentPageType.PageType.ContentEntry);
 
@@ -61,7 +82,7 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Pages(ContentCreator model) {
+		public IActionResult Pages(ContentCreator model) {
 			ViewBag.Title = "Pages";
 			model.ContentType = ContentPageType.PageType.ContentEntry;
 
@@ -73,7 +94,7 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult Posts() {
+		public IActionResult Posts() {
 			ViewBag.Title = "Posts";
 			var model = new ContentCreator(ContentPageType.PageType.BlogEntry);
 
@@ -82,7 +103,7 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Controllers {
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Posts(ContentCreator model) {
+		public IActionResult Posts(ContentCreator model) {
 			ViewBag.Title = "Posts";
 			model.ContentType = ContentPageType.PageType.BlogEntry;
 
