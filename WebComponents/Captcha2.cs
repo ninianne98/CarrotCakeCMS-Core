@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *

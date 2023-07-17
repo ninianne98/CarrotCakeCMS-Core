@@ -57,8 +57,6 @@ services.PrepareSqlSession(CarrotCakeContext.DBKey);
 builder.ConfigureCarrotWeb(config);
 builder.ConfigureCarrotHttpHelper(config);
 
-services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
-
 services.AddTransient<ICarrotSite, SiteBasicInfo>();
 
 services.LoadWidgets();

@@ -239,7 +239,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public PartialViewResult Contact(ContactInfo model) {
 			model.ReconstructSettings();

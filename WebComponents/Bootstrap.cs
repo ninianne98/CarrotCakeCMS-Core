@@ -8,8 +8,6 @@
 * Date: June 2023
 */
 
-using Microsoft.AspNetCore.Html;
-
 namespace Carrotware.Web.UI.Components {
 
 	public class Bootstrap : BaseWebComponent {

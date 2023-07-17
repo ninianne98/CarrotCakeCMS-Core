@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
 using System.Text.Encodings.Web;
 
@@ -32,8 +33,11 @@ namespace Carrotware.CMS.Interface {
 			_webHostEnvironment = builder.Environment;
 			_services = builder.Services;
 
-			_services.AddMemoryCache();
+			_httpContextAccessor = new HttpContextAccessor();
+			_services.TryAddSingleton(_httpContextAccessor);
 			_services.AddHttpContextAccessor();
+
+			_services.AddMemoryCache();
 			_serviceProvider = _services.BuildServiceProvider();
 
 			_services.AddMvc().AddControllersAsServices();

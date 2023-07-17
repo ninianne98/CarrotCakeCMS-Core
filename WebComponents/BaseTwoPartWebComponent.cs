@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using System;
 
 /*
 * CarrotCake CMS (MVC Core)

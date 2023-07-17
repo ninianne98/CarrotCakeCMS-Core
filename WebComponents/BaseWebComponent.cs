@@ -1,7 +1,4 @@
-﻿using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
-using System.IO;
+﻿using Microsoft.AspNetCore.Html;
 using System.Text.Encodings.Web;
 
 /*

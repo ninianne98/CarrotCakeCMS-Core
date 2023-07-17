@@ -13,7 +13,7 @@ namespace Carrotware.Web.UI.Components {
 	public class SmtpSettings {
 		public string FromEmail { get; set; }
 		public string DisplayName { get; set; }
-		public string SmtpUsername { get; internal set; }
+		public string SmtpUsername { get; set; }
 		public string SmtpPassword { get; set; }
 		public string Host { get; set; } = "localhost";
 		public int Port { get; set; } = 587;
@@ -24,6 +24,10 @@ namespace Carrotware.Web.UI.Components {
 		public static SmtpSettings GetEMailSettings() {
 			var config = CarrotWebHelper.ServiceProvider.GetRequiredService<IConfigurationRoot>();
 
+			return GetEMailSettings(config);
+		}
+
+		public static SmtpSettings GetEMailSettings(IConfigurationRoot config) {
 			if (config.GetSection(nameof(SmtpSettings)).Exists()) {
 				return config.GetSection(nameof(SmtpSettings)).Get<SmtpSettings>();
 			}

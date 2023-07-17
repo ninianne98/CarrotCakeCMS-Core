@@ -23,12 +23,8 @@ namespace Carrotware.CMS.Security {
 			services.AddDbContext<AppIdentityDbContext>(opt => opt.UseSqlServer(config.GetConnectionString("CarrotwareCMS")));
 
 			// inc here because of password recovery - part of auth
-			if (config.GetSection(nameof(SmtpSettings)).Exists()) {
-				var emailConfig = config.GetSection(nameof(SmtpSettings)).Get<SmtpSettings>();
-				services.AddSingleton(emailConfig);
-			} else {
-				services.AddSingleton(new SmtpSettings());
-			}
+			var emailConfig = SmtpSettings.GetEMailSettings(config);
+			services.AddSingleton(emailConfig);
 
 			bool setCookieExpireTimeSpan = securitySettings.AdditionalSettings.SetCookieExpireTimeSpan;
 			string loginPath = securitySettings.AdditionalSettings.LoginPath;

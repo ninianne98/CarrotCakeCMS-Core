@@ -1,5 +1,4 @@
-﻿using Azure.Identity;
-using Carrotware.Web.UI.Components.Controllers;
+﻿using Carrotware.Web.UI.Components.Controllers;
 using Carrotware.Web.UI.Components.SessionData;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Html;
@@ -18,9 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
@@ -73,18 +70,21 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static IConfigurationRoot CreateConfig(this WebApplicationBuilder builder) {
-			var environment = builder.Environment;
+			_webHostEnvironment = builder.Environment;
+			_services = builder.Services;
 
-			var buildCfg = new ConfigurationBuilder()
+			var configBuilder = new ConfigurationBuilder()
 				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{_webHostEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
 				.AddEnvironmentVariables();
 
-			var config = buildCfg.Build();
-			builder.Services.TryAddSingleton(config);
+			_configuration = configBuilder.Build();
 
-			return config;
+			_services.TryAddSingleton(_configuration);
+			_services.TryAddSingleton(_webHostEnvironment);
+
+			return _configuration;
 		}
 
 		public static void ConfigureCarrotWeb(this WebApplicationBuilder builder, IConfigurationRoot configuration) {
@@ -92,13 +92,16 @@ namespace Carrotware.Web.UI.Components {
 			_webHostEnvironment = builder.Environment;
 			_services = builder.Services;
 
-			_services.AddHttpContextAccessor();
-			_services.TryAddSingleton(_webHostEnvironment);
 			_services.TryAddSingleton(_configuration);
+			_services.TryAddSingleton(_webHostEnvironment);
+
+			_httpContextAccessor = new HttpContextAccessor();
+			_services.TryAddSingleton(_httpContextAccessor);
+			_services.AddHttpContextAccessor();
+
 			_services.TryAddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 			_serviceProvider = _services.BuildServiceProvider();
-			_httpContextAccessor = _serviceProvider.GetRequiredService<IHttpContextAccessor>();
 			_memoryCache = _serviceProvider.GetRequiredService<IMemoryCache>();
 
 			_loggerfactory = _serviceProvider.GetRequiredService<ILoggerFactory>();

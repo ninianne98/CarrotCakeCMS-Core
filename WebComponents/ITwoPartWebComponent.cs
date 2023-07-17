@@ -1,4 +1,6 @@
-﻿/*
+﻿using Microsoft.AspNetCore.Html;
+
+/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -7,8 +9,6 @@
 *
 * Date: June 2023
 */
-
-using Microsoft.AspNetCore.Html;
 
 namespace Carrotware.Web.UI.Components {
 

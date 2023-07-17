@@ -65,12 +65,13 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 	There may be some warnings, you can ignore them
 
-1. The SQL Server database should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  
+1. SQL Server should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  Password hashes will not be valid when upgrading  MVC 5 to MVC Core 6, so perform a password recovery to set valid ones.
 
 ### Make a backup FIRST when upgrading!
 
 ```sql
 -- if you plan to use an existing database from the MVC 5 version, you will need to have some entries in the migrations table
+-- password hashes from MVC 5 will be invalid, perform a password recovery to set valid ones
 
 -- to create the migrations table:
 

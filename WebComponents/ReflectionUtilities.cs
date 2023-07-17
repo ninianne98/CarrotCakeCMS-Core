@@ -284,7 +284,6 @@ namespace Carrotware.Web.UI.Components {
 
 		public static IEnumerable<T> SelectPage<T, T2>(this IQueryable<T> list, Func<T, T2> sortFunc,
 				string sortDirection, int page, int pageSize) {
-
 			var isDescending = (sortDirection ?? "").ToUpperInvariant() == "DESC";
 
 			return SelectPage(list, sortFunc, sortDirection, page, pageSize);
@@ -292,7 +291,6 @@ namespace Carrotware.Web.UI.Components {
 
 		public static IEnumerable<T> SelectPage<T, T2>(this IQueryable<T> list, Func<T, T2> sortFunc,
 			bool isDescending, int page, int pageSize) {
-
 			List<T> result = null;
 			page = page < 1 ? 1 : page;
 			pageSize = pageSize < 1 ? 10 : pageSize;

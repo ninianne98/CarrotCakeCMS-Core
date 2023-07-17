@@ -19,7 +19,6 @@ namespace Carrotware.Web.UI.Components {
 	public class MailRequest {
 
 		public MailRequest() {
-			this.EmailTo = new List<string>();
 			this.Subject = string.Empty;
 			this.Body = string.Empty;
 			this.Attachments = new List<IFormFile>();

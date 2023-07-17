@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using System.Reflection;
 using System.Text;
-using System.Xml.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)

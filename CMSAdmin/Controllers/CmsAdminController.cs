@@ -118,7 +118,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> UserProfile(ExtendedUserData model) {
 			if (ModelState.IsValid) {
@@ -152,7 +151,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		[CmsAdminAuthorize]
 		public async Task<ActionResult> UserEdit(UserModel model) {
@@ -1239,7 +1237,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult PageAddEdit(ContentPageModel model) {
 			model.ClearOptionalItems(ModelState);
@@ -1301,7 +1298,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult ContentSnippetAddEdit(ContentSnippet model, string mode) {
 			ViewBag.ContentEditMode = SiteData.EditMode(mode);
@@ -1337,7 +1333,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteContentSnippet(ContentSnippet model) {
 			ContentSnippet item = ContentSnippet.Get(model.Root_ContentSnippetID);
@@ -1347,7 +1342,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult BlogPostAddEdit(ContentPageModel model) {
 			model.ClearOptionalItems(ModelState);
@@ -1373,7 +1367,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteContentPage(ContentPageModel model) {
 			using (ContentPageHelper cph = new ContentPageHelper()) {
@@ -1609,7 +1602,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult PageAddChild(ContentPageModel model) {
 			model.ClearOptionalItems(ModelState);
@@ -2380,7 +2372,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		// [ValidateInput(false)]
 		[ValidateAntiForgeryToken]
 		public ActionResult CommentAddEdit(PostCommentModel model) {
 			PostComment comment = model.Comment;

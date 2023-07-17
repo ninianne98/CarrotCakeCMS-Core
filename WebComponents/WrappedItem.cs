@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing;
 using System.Text;
 
 /*
@@ -19,7 +17,7 @@ namespace Carrotware.Web.UI.Components {
 		protected StringBuilder _stringbldr = null;
 
 		protected string _tag = "li";
-		private string DefaultActionName = "Index";
+		protected string _defaultActionName = "Index";
 
 		public WrappedItem(IHtmlHelper htmlHelper, string tag,
 							string actionName, string controllerName,
@@ -87,13 +85,13 @@ namespace Carrotware.Web.UI.Components {
 			_stringbldr = sb;
 			_tag = string.IsNullOrEmpty(tag) ? "li" : tag;
 
-			actionName = string.IsNullOrEmpty(actionName) ? DefaultActionName : actionName.Replace(" ", "");
+			actionName = string.IsNullOrEmpty(actionName) ? _defaultActionName : actionName.Replace(" ", "");
 
 			string[] actionNames = actionName.Contains(";") ? actionName.Split(';') : new string[] { actionName };
 
 			// shortcut for when using the default action rather than having to hardcode to a string
 			if (actionNames == null || !actionNames.Any()) {
-				actionNames = new string[] { DefaultActionName };
+				actionNames = new string[] { _defaultActionName };
 			}
 			string currentAction = string.Empty;
 			string currentController = string.Empty;
