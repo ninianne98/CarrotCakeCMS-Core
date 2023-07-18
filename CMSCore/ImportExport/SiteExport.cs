@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -148,10 +144,10 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public Guid FindImportUser(SiteExportUser u) {
-			SiteExportUser usr = (from t in this.TheUsers
-								  where t.Login.ToString() == u.Login.ToString()
-										  || t.Email.ToString() == u.Email.ToString()
-								  select t).FirstOrDefault();
+			SiteExportUser? usr = (from t in this.TheUsers
+								   where t.Login.ToString() == u.Login.ToString()
+										   || t.Email.ToString() == u.Email.ToString()
+								   select t).FirstOrDefault();
 
 			if (usr == null || (usr != null && usr.ImportUserID != Guid.Empty)) {
 				return SecurityData.CurrentUserGuid;

@@ -196,13 +196,12 @@ namespace Carrotware.Web.UI.Components {
 					defaults: new { controller = home, action = nameof(HomeController.GetWebResource) });
 		}
 
-		public static void ConfigureErrorHandling(this WebApplication app, IWebHostEnvironment env) {
+		public static void ConfigureErrorHandling(this WebApplication app) {
+			var env = app.Services.GetRequiredService<IWebHostEnvironment>();
 			var errorConfig = CustomErrorConfig.GetConfig();
 			var errorCodes = errorConfig.ErrorCodes;
 
-			if (env.IsDevelopment() || errorConfig.Developer) {
-				app.UseDeveloperExceptionPage();
-			}
+			var showDevException = env.IsDevelopment() || errorConfig.Developer;
 
 			int internalErr = StatusCodes.Status500InternalServerError;
 
@@ -225,38 +224,42 @@ namespace Carrotware.Web.UI.Components {
 						if (!string.IsNullOrEmpty(err.Uri)
 										&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
 							var oldPath = HttpUtility.UrlEncode(errPath);
-							context.HttpContext.Response.Redirect(err.Uri + "?aspxerrorpath=" + oldPath);
+							context.HttpContext.Response.Redirect(err.Uri + "?errorpath=" + oldPath);
 						}
 					}
 				}
 			});
 
-			if (errorConfig.Developer == false && errorCodes.Where(x => x.StatusCode >= internalErr).Any()) {
-				app.UseExceptionHandler(appError => {
-					appError.Run(async context => {
-						var code = context.Response.StatusCode;
-						var errPath = context.Request.Path.ToString() ?? "/";
-						var err = errorCodes.Where(x => x.StatusCode == code).FirstOrDefault();
-						var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
+			if (showDevException) {
+				app.UseDeveloperExceptionPage();
+			} else {
+				if (errorCodes.Where(x => x.StatusCode >= internalErr).Any()) {
+					app.UseExceptionHandler(appError => {
+						appError.Run(async context => {
+							var code = context.Response.StatusCode;
+							var errPath = context.Request.Path.ToString() ?? "/";
+							var err = errorCodes.Where(x => x.StatusCode == code).FirstOrDefault();
+							var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
 
-						if (code >= internalErr) {
-							_logger.LogCritical(exceptionHandler.Error, $"StatusCode: {code} Path: {errPath}");
-						}
-
-						if (exceptionHandler != null && err != null) {
-							context.Items["CarrotErrorFeature"] = exceptionHandler;
-							context.Items["CarrotError"] = exceptionHandler.Error;
-							var errKey = Guid.NewGuid().ToString();
-							CacheInsert(errKey, exceptionHandler, 5);
-
-							if (!string.IsNullOrEmpty(err.Uri)
-										&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
-								var oldPath = HttpUtility.UrlEncode(errPath);
-								context.Response.Redirect(err.Uri + "?aspxerrorpath=" + oldPath + "&err=" + errKey);
+							if (code >= internalErr) {
+								_logger.LogCritical(exceptionHandler.Error, $"StatusCode: {code} Path: {errPath}");
 							}
-						}
+
+							if (exceptionHandler != null && err != null) {
+								context.Items["CarrotErrorFeature"] = exceptionHandler;
+								context.Items["CarrotError"] = exceptionHandler.Error;
+								var errKey = Guid.NewGuid().ToString();
+								CacheInsert(errKey, exceptionHandler, 5);
+
+								if (!string.IsNullOrEmpty(err.Uri)
+											&& err.Uri.ToLowerInvariant() != errPath.ToLowerInvariant()) {
+									var oldPath = HttpUtility.UrlEncode(errPath);
+									context.Response.Redirect(err.Uri + "?errorpath=" + oldPath + "&err=" + errKey);
+								}
+							}
+						});
 					});
-				});
+				}
 			}
 		}
 
@@ -286,7 +289,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static void VaryCacheByQuery(this Controller controller, string[] keys, double minutes) {
-			if (minutes < 0) { minutes = 0.25; }
+			if (minutes < 0) { minutes = 0.1; }
 			if (minutes > 30) { minutes = 30; }
 
 			var responseCachingFeature = controller.HttpContext.Features.Get<IResponseCachingFeature>();
@@ -332,17 +335,26 @@ namespace Carrotware.Web.UI.Components {
 		public static UrlEncoder UrlEncoder { get; set; } = UrlEncoder.Default;
 
 		public static string MapWebPath(string path) {
-			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.WebRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			return Path.Join(root, p).NormalizeFilename();
+			return MapRootPath(path, root);
 		}
 
 		public static string MapPath(string path) {
-			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.ContentRootPath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			return Path.Join(root, p).NormalizeFilename();
+			return MapRootPath(path, root);
+		}
+
+		private static string MapRootPath(string path, string root) {
+			var p = path.NormalizeFilename();
+
+			var newPath = Path.Join(root, p).NormalizeFilename();
+			if (root.StartsWith(Path.DirectorySeparatorChar) || newPath.StartsWith(Path.AltDirectorySeparatorChar)) {
+				newPath = newPath.FixPathSlashes();
+			}
+
+			return newPath;
 		}
 
 		public static string NormalizeFilename(this string path) {
@@ -367,11 +379,20 @@ namespace Carrotware.Web.UI.Components {
 
 		public static string FixPathSlashes(this string path) {
 			path = path.NormalizeFilename();
-			if (!path.StartsWith("/")) {
+			if (path != @"/" && path != "") {
 				path = string.Format("/{0}", path);
+			} else {
+				path = @"/";
 			}
-			if (path.EndsWith("/")) {
-				path = path.Substring(0, path.Length - 1);
+			return path;
+		}
+
+		public static string FixFolderSlashes(this string path) {
+			path = path.NormalizeFilename();
+			if (path != @"/" && path != "") {
+				path = string.Format("/{0}/", path);
+			} else {
+				path = @"/";
 			}
 			return path;
 		}

@@ -649,8 +649,8 @@ namespace Carrotware.CMS.Core {
 							}
 						}
 
-						if (!string.IsNullOrEmpty(redirectPage) && !sQS.ToLowerInvariant().Contains("aspxerrorpath")) {
-							context.Response.Redirect(string.Format("{0}?aspxerrorpath={1}{2}", redirectPage, sReqURL, sQS));
+						if (!string.IsNullOrEmpty(redirectPage) && !sQS.ToLowerInvariant().Contains("errorpath")) {
+							context.Response.Redirect(string.Format("{0}?errorpath={1}{2}", redirectPage, sReqURL, sQS));
 						}
 					}
 				}

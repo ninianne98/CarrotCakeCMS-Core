@@ -15,6 +15,7 @@ using System.Web;
 */
 
 namespace Carrotware.CMS.Security {
+
 	public enum ManageMessageId {
 		AddPhoneSuccess,
 		ChangePasswordSuccess,
@@ -170,6 +171,27 @@ namespace Carrotware.CMS.Security {
 			get {
 				return _controller == null ? _signInManager : _controller.HttpContext.RequestServices.GetService<SignInManager<IdentityUser>>();
 			}
+		}
+
+		public void LogoutSession(HttpContext context) {
+			this.SignInManager.SignOutAsync();
+			context.Session.Clear();
+		}
+
+		public async Task<IdentityUser> FindByNameAsync(string userName) {
+			return await this.UserManager.FindByNameAsync(userName);
+		}
+
+		public async Task<bool> SimpleLogInAsync(string userName, string password, bool rememberMe) {
+			var user = await this.UserManager.FindByNameAsync(userName);
+
+			if (user == null) {
+				return false;
+			}
+
+			var result = await this.SignInManager.PasswordSignInAsync(userName, password, rememberMe, true);
+
+			return result?.Succeeded == true;
 		}
 	}
 }

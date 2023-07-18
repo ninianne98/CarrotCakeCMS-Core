@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginPhotoGallery", "Plugi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoremIpsum", "LoremIpsum\LoremIpsum.csproj", "{77C03036-F0E8-4EDE-A617-FAE3A9EFB518}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginCalendarModule", "PluginCalendarModule\PluginCalendarModule.csproj", "{4D6C0257-7BD1-4FBA-84B2-E4715F51BDAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{77C03036-F0E8-4EDE-A617-FAE3A9EFB518}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77C03036-F0E8-4EDE-A617-FAE3A9EFB518}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77C03036-F0E8-4EDE-A617-FAE3A9EFB518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D6C0257-7BD1-4FBA-84B2-E4715F51BDAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D6C0257-7BD1-4FBA-84B2-E4715F51BDAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D6C0257-7BD1-4FBA-84B2-E4715F51BDAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D6C0257-7BD1-4FBA-84B2-E4715F51BDAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

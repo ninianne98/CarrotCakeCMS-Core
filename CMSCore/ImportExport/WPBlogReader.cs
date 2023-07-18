@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Carrotware.Web.UI.Components;
 using System.Web;
 using System.Xml;
 
@@ -17,7 +15,6 @@ using System.Xml;
 namespace Carrotware.CMS.Core {
 
 	public class WPBlogReader {
-
 		//  https://github.com/WPTT/theme-test-data/blob/master/themeunittestdata.wordpress.xml
 		//  https://codex.wordpress.org/Theme_Unit_Test
 
@@ -172,11 +169,11 @@ namespace Carrotware.CMS.Core {
 					wpp.AttachmentURL = node.SelectSingleNode("wp:attachment_url", rssNamespace).InnerText;
 				}
 
-				wpp.ImportFileSlug = ContentPageHelper.ScrubFilename(wpp.ImportRootID, "/" + wpp.PostName.Trim());
+				wpp.ImportFileSlug = ContentPageHelper.ScrubFilename(wpp.ImportRootID, wpp.PostName.FixPathSlashes().Trim());
 				wpp.ImportFileName = ContentPageHelper.ScrubFilename(wpp.ImportRootID, wpp.ImportFileSlug);
 
 				if (wpp.PostType == WordPressPost.WPPostType.Attachment) {
-					wpp.ImportFileSlug = wpp.AttachmentURL.Substring(wpp.AttachmentURL.LastIndexOf("/")).Replace("//", "/").Trim();
+					wpp.ImportFileSlug = wpp.AttachmentURL.Substring(wpp.AttachmentURL.LastIndexOf("/")).NormalizeFilename().Trim();
 					wpp.ImportFileName = wpp.ImportFileSlug;
 
 					if (node.SelectSingleNode("excerpt:encoded", rssNamespace) != null) {

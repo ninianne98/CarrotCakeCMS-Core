@@ -1,0 +1,98 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<OutputPath>bin\</OutputPath>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultItems>false</EnableDefaultItems>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<RootNamespace>CarrotCake.CMS.Plugins.CalendarModule</RootNamespace>
+		<AssemblyName>CarrotCake.CMS.Plugins.CalendarModule</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Carrotware</Authors>
+		<Company>Carrotware</Company>
+		<Copyright>2023</Copyright>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<Version>6.1.0.0</Version>
+		<VersionPrefix>6.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="Code\CalendarDisplaySettings.cs" />
+		<Compile Include="Code\CalendarModuleRegistration.cs" />
+		<Compile Include="Code\CalendarSimpleSettings.cs" />
+		<Compile Include="Code\CalendarUpcomingSettings.cs" />
+		<Compile Include="Code\CalendarViewSettings.cs" />
+		<Compile Include="Code\ICalendar.cs" />
+		<Compile Include="Code\WebHelper.cs" />
+		<Compile Include="Controllers\AdminController.cs" />
+		<Compile Include="Controllers\BaseController.cs" />
+		<Compile Include="Controllers\HomeController.cs" />
+		<Compile Include="Controllers\TestController.cs" />
+		<Compile Include="Data\CalendarEntry.cs" />
+		<Compile Include="Data\CalendarContext.cs" />
+		<Compile Include="Data\DataHelper.cs" />
+		<Compile Include="Data\Migrations\20230709210325_InitialCalendar.cs" />
+		<Compile Include="Data\Migrations\20230709210325_InitialCalendar.Designer.cs" />
+		<Compile Include="Data\Migrations\CalendarContextModelSnapshot.cs" />
+		<Compile Include="Models\CalendarDetail.cs" />
+		<Compile Include="Models\CalendarViewModel.cs" />
+		<Compile Include="Models\DateModel.cs" />
+		<Compile Include="Models\TestModel.cs" />
+		<Compile Include="Program.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="appsettings.Development.json" />
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Properties\launchSettings.json" />
+		<Content Include="wwwroot\Content\calendar.png" />
+		<Content Include="wwwroot\Content\calendar1.css" />
+		<Content Include="wwwroot\Content\calendar2.css" />
+		<Content Include="wwwroot\Content\calendar3.css" />
+		<Content Include="wwwroot\Content\Site.css" />
+		<Content Include="wwwroot\favicon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Views\Admin.config" />
+		<Content Include="Views\Admin\CalendarAdminAddEdit.cshtml" />
+		<Content Include="Views\Admin\CalendarDatabase.cshtml" />
+		<Content Include="Views\Admin\Index.cshtml" />
+		<Content Include="Views\Home\CalendarDateInfo.cshtml" />
+		<Content Include="Views\Home\CalendarDisplay.cshtml" />
+		<Content Include="Views\Home\CalendarDisplaySimple.cshtml" />
+		<Content Include="Views\Home\CalendarUpcoming.cshtml" />
+		<Content Include="Views\Home\Index.cshtml" />
+		<Content Include="Views\Public.config" />
+		<Content Include="Views\Shared\_Layout.cshtml" />
+		<Content Include="Views\Shared\_LayoutPop.cshtml" />
+		<Content Include="Views\Test\TestView.cshtml" />
+		<Content Include="Views\_ViewImports.cshtml" />
+		<Content Include="Views\_ViewStart.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
+		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="4.0.0" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(ProjectDir)\wwwroot\Content\cal*.css&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Home\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Home\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C" />
+	</Target>
+
+</Project>

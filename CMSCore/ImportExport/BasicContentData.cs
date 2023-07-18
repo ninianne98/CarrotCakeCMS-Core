@@ -1,5 +1,4 @@
 ﻿using Carrotware.CMS.Data.Models;
-using System;
 
 /*
 * CarrotCake CMS (MVC Core)

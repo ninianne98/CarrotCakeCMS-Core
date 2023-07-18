@@ -6,7 +6,6 @@ using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 
 /*
@@ -71,7 +70,7 @@ var app = builder.Build();
 
 app.UseResponseCaching();
 
-app.ConfigureErrorHandling(environment);
+app.ConfigureErrorHandling();
 
 var ccConfig = CarrotCakeConfig.GetConfig();
 

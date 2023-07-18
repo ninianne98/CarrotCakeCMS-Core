@@ -1,0 +1,29 @@
+{
+	"profiles": {
+		"PluginCalendarModule": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			//"applicationUrl": "https://localhost:1120;http://localhost:1122"
+			"applicationUrl": "http://localhost:41122"
+		},
+		"IIS Express": {
+			"commandName": "IISExpress",
+			"launchBrowser": true,
+			//"launchUrl": "",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			}
+		}
+	},
+	"iisSettings": {
+		"windowsAuthentication": false,
+		"anonymousAuthentication": true,
+		"iisExpress": {
+			"applicationUrl": "http://localhost:41222",
+			"sslPort": 0
+		}
+	}
+}

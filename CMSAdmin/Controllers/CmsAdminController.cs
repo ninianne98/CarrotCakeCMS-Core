@@ -38,7 +38,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			var path = context.HttpContext.Request.Path;
 			RouteValueDictionary vals = context.RouteData.Values;
 			string action = vals["action"].ToString().ToLowerInvariant();
-			//string controller = vals["controller"].ToString().ToLowerInvariant();
+			string controller = vals["controller"].ToString().ToLowerInvariant();
 			context.RouteData.Values.Remove("area");
 
 			if (this.HttpContext.User.Identity.IsAuthenticated) {
@@ -46,11 +46,17 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				List<string> lstOKNoSiteActions = (new string[] { "login", "logoff", "about", "siteinfo", "siteindex", "filebrowser", "userindex", "roleindex", "userprofile", "changepassword" }).ToList();
 
 				//carvouts for anon pages
-				List<string> lstInitSiteActions = (new string[] { "login", "logoff", "about", "forgotpassword", "forgotpasswordconfirmation", "resetpassword", "resetpasswordconfirmation",
-								"createfirstadmin", "databasesetup", "notauthorized" }).ToList();
+				List<string> anonMethods = (new string[] { "login", "logoff", "about" }).ToList();
+
+				// use reflection to see if the method/action has an anon permission and honor it
+				anonMethods = (this).GetType().GetMethods()
+							  .Where(m => m.GetCustomAttributes(typeof(AllowAnonymousAttribute), false).Length > 0)
+							  .Select(x => x.Name.ToLowerInvariant())
+							  .Where(x => x == action)
+							  .Distinct().ToList();
 
 				try {
-					if (!lstInitSiteActions.Contains(action)) {
+					if (!anonMethods.Contains(action)) {
 						if (!lstOKNoSiteActions.Contains(action) && !SiteData.CurrentSiteExists) {
 							context.Result = new RedirectResult(SiteFilename.SiteInfoURL);
 							return;
@@ -90,8 +96,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 						};
 		}
 
-		//
-		// POST: /Account/LogOff
 		[HttpPost]
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
@@ -382,11 +386,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public ActionResult ContentImport(FileUpModel model) {
 			string sXML = string.Empty;
 			//TODO: fix stream
-			//if (model.PostedFile != null) {
-			//	using (StreamReader sr = new StreamReader(model.PostedFile.InputStream)) {
-			//		sXML = sr.ReadToEnd();
-			//	}
-			//}
+			if (model.PostedFile != null) {
+				using (var sr = new StreamReader(model.PostedFile.OpenReadStream())) {
+					sXML = sr.ReadToEnd();
+				}
+			}
 
 			string sTest = string.Empty;
 			if (!string.IsNullOrWhiteSpace(sXML) && sXML.Length >= 256) {

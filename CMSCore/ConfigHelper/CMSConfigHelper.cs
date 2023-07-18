@@ -389,22 +389,24 @@ namespace Carrotware.CMS.Core {
 
 		public CMSAdminModuleMenu GetCurrentAdminModuleControl() {
 			string pf = string.Empty;
-			CMSAdminModuleMenu cc = null;
+			CMSAdminModuleMenu? cc = null;
 
 			if (CarrotHttpHelper.QueryString("pf") != null) {
 				pf = CarrotHttpHelper.QueryString("pf").ToString();
 
-				CMSAdminModule mod = (from m in AdminModules
-									  where m.AreaKey == PluginAreaPath
-									  select m).FirstOrDefault();
+				var mod = (from m in AdminModules
+						   where m.AreaKey == PluginAreaPath
+						   select m).FirstOrDefault();
 
-				cc = (from m in mod.PluginMenus
-					  orderby m.Caption, m.SortOrder
-					  where m.Action == pf
-					  select m).FirstOrDefault();
+				if (mod != null) {
+					cc = (from m in mod.PluginMenus
+						  orderby m.Caption, m.SortOrder
+						  where m.Action == pf
+						  select m).FirstOrDefault();
+				}
 			}
 
-			return cc;
+			return cc != null ? cc : new CMSAdminModuleMenu();
 		}
 
 		public static string PluginAreaPath {
@@ -424,18 +426,22 @@ namespace Carrotware.CMS.Core {
 			HttpRequest request = CarrotHttpHelper.HttpContext.Request;
 			string pf = string.Empty;
 
-			CMSAdminModule mod = (from m in AdminModules
-								  where m.AreaKey == PluginAreaPath
-								  select m).FirstOrDefault();
+			var mod = (from m in AdminModules
+					   where m.AreaKey == PluginAreaPath
+					   select m).FirstOrDefault();
 
-			return (from m in mod.PluginMenus
-					orderby m.Caption, m.SortOrder
-					select m).ToList();
+			if (mod != null) {
+				return (from m in mod.PluginMenus
+						orderby m.Caption, m.SortOrder
+						select m).ToList();
+			}
+
+			return new List<CMSAdminModuleMenu>();
 		}
 
 		public void GetFile(string sRemoteFile, string sLocalFile) {
 			Uri remoteFile = new Uri(sRemoteFile);
-			string sServerPath = CarrotHttpHelper.MapPath(sLocalFile);
+			string sServerPath = CarrotHttpHelper.MapWebPath(sLocalFile);
 			bool bExists = File.Exists(sServerPath);
 
 			if (!bExists) {
@@ -790,7 +796,7 @@ namespace Carrotware.CMS.Core {
 
 		public static DynamicSite DynSite {
 			get {
-				DynamicSite _site = new DynamicSite();
+				DynamicSite? _site = new DynamicSite();
 
 				string ModuleKey = keyDynSite + DomainName;
 				bool bCached = false;
@@ -809,7 +815,9 @@ namespace Carrotware.CMS.Core {
 							 where ss.DomainName == DomainName
 							 select ss).FirstOrDefault();
 
-					CarrotHttpHelper.CacheInsert(ModuleKey, _site, 5);
+					if (_site != null) {
+						CarrotHttpHelper.CacheInsert(ModuleKey, _site, 5);
+					}
 				}
 				return _site;
 			}
@@ -837,7 +845,7 @@ namespace Carrotware.CMS.Core {
 		public static bool CheckFileExistence(string templateFileName) {
 			var _tmplts = GetTmplateStatus();
 
-			CMSFilePath tmp = _tmplts.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == Guid.Empty).FirstOrDefault();
+			var tmp = _tmplts.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == Guid.Empty).FirstOrDefault();
 
 			if (tmp == null) {
 				tmp = new CMSFilePath(templateFileName);
@@ -996,7 +1004,7 @@ namespace Carrotware.CMS.Core {
 			return cp;
 		}
 
-		public static PostComment IdentifyLinkAsInactive(PostComment pc) {
+		public static PostComment? IdentifyLinkAsInactive(PostComment? pc) {
 			if (pc != null) {
 				if (!pc.IsApproved) {
 					pc.CommenterName = InactivePagePrefix + pc.CommenterName;
@@ -1033,7 +1041,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		protected ContentPage filePage = null;
+		protected ContentPage? filePage = null;
 
 		protected void LoadGuids() {
 			if (filePage == null) {

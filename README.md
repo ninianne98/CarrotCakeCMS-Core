@@ -65,7 +65,7 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 	There may be some warnings, you can ignore them
 
-1. SQL Server should be running and an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  Password hashes will not be valid when upgrading  MVC 5 to MVC Core 6, so perform a password recovery to set valid ones.
+1. SQL Server should be running with an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  Password hashes will not be valid when upgrading  MVC 5 to MVC Core 6, so perform a password recovery to set valid ones.
 
 ### Make a backup FIRST when upgrading!
 
@@ -99,6 +99,14 @@ IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='202306
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
 		values ('20230625212349_InitialGallery','7.0.0')
 END
+
+-- simple calendar widget - create the ef table (if needed) and execute the insert for 20230709210325_InitialCalendar
+IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230709210325_InitialCalendar')
+			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
+	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
+		values ('20230709210325_InitialCalendar','7.0.0')
+END
+
 
 -- to validate
 select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'

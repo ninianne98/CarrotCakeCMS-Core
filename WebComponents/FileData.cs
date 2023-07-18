@@ -70,10 +70,7 @@ namespace Carrotware.Web.UI.Components {
 		private static string WebPath {
 			get {
 				if (_wwwpath == null) {
-					_wwwpath = CarrotWebHelper.WebHostEnvironment.WebRootPath.NormalizeFilename();
-					if (!_wwwpath.EndsWith(Path.AltDirectorySeparatorChar)) {
-						_wwwpath = _wwwpath + Path.AltDirectorySeparatorChar;
-					}
+					_wwwpath = CarrotWebHelper.MapWebPath("/").NormalizeFilename();
 				}
 				return _wwwpath;
 			}
@@ -84,10 +81,7 @@ namespace Carrotware.Web.UI.Components {
 		private static string ContentPath {
 			get {
 				if (_contentpath == null) {
-					_contentpath = CarrotWebHelper.WebHostEnvironment.ContentRootPath.NormalizeFilename();
-					if (!_contentpath.EndsWith(Path.AltDirectorySeparatorChar)) {
-						_contentpath = _contentpath + Path.AltDirectorySeparatorChar;
-					}
+					_contentpath = CarrotWebHelper.MapPath("/").NormalizeFilename();
 				}
 				return _contentpath;
 			}
@@ -122,19 +116,19 @@ namespace Carrotware.Web.UI.Components {
 				myFileName = myFile;
 				f.FileName = Path.GetFileName(myFileName).Trim();
 				if (myFile.Length >= sPath.Length) {
-					f.FolderPath = string.Format("/{0}/{1}/", sQuery, myFile.Substring(sPath.Length)).FixPathSlashes();
+					f.FolderPath = string.Format("/{0}/{1}/", sQuery, myFile.Substring(sPath.Length)).FixFolderSlashes();
 				}
-				f.FileDate = Convert.ToDateTime(Directory.GetLastWriteTime(myFile));
+				f.FileDate = Directory.GetLastWriteTime(myFile);
 			} else {
 				myFileName = Path.GetFileName(myFile).Trim();
 
 				if (myFileName.Length > 0) {
-					FileInfo MyFile = new FileInfo(sPath + "/" + myFileName);
-					string sP = sQuery + myFileName + "/";
+					var fileInfo = new FileInfo(Path.Join(sPath, myFileName));
+					string path = (sQuery + "/" + myFileName).FixPathSlashes();
 
 					f.FileName = myFileName;
-					f.FolderPath = sP.FixPathSlashes();
-					f.FileDate = File.GetLastWriteTime(MyFile.FullName);
+					f.FolderPath = path;
+					f.FileDate = fileInfo.LastWriteTime;
 				}
 			}
 
@@ -178,7 +172,7 @@ namespace Carrotware.Web.UI.Components {
 
 			if (myFileName.Length > 0 && File.Exists(testFile)) {
 				var fileInfo = new FileInfo(testFile);
-				myFileDate = File.GetLastWriteTime(fileInfo.FullName);
+				myFileDate = fileInfo.LastWriteTime;
 				myFileSize = fileInfo.Length;
 
 				myFileSizeF = myFileSize.ToString() + " B";
@@ -230,12 +224,10 @@ namespace Carrotware.Web.UI.Components {
 
 			if (!string.IsNullOrEmpty(sDirPath)) {
 				sDirPath = sDirPath.NormalizeFilename();
-				sPathPrefix = sDirPath.Replace(WebPath.NormalizeFilename(), @"/");
+				sPathPrefix = sDirPath.Replace(WebPath, @"/", StringComparison.OrdinalIgnoreCase);
 			}
 
-			sPathPrefix = sPathPrefix.NormalizeFilename();
-
-			return sPathPrefix;
+			return sPathPrefix.NormalizeFilename();
 		}
 
 		public static string MakeContentFolderPath(string sDirPath) {
@@ -243,12 +235,10 @@ namespace Carrotware.Web.UI.Components {
 
 			if (!string.IsNullOrEmpty(sDirPath)) {
 				sDirPath = sDirPath.NormalizeFilename();
-				sPathPrefix = sDirPath.Replace(ContentPath.NormalizeFilename(), @"/");
+				sPathPrefix = sDirPath.Replace(ContentPath, @"/", StringComparison.OrdinalIgnoreCase);
 			}
 
-			sPathPrefix = sPathPrefix.NormalizeFilename();
-
-			return sPathPrefix;
+			return sPathPrefix.NormalizeFilename();
 		}
 
 		public List<FileData> GetFiles(string sQuery) {
@@ -258,7 +248,7 @@ namespace Carrotware.Web.UI.Components {
 
 			if (Directory.Exists(sPath)) {
 				foreach (string myFile in Directory.GetFiles(sPath, "*.*")) {
-					string myFileName = Path.GetFileName(myFile).NormalizeFilename();
+					string myFileName = Path.GetFileName(myFile).Trim();
 
 					var f = new FileData();
 					f.FileName = myFileName;

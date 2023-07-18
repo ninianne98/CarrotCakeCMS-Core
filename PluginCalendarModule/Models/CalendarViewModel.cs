@@ -1,0 +1,116 @@
+﻿using CarrotCake.CMS.Plugins.CalendarModule.Data;
+using Carrotware.CMS.Interface;
+
+namespace CarrotCake.CMS.Plugins.CalendarModule.Models {
+
+	public class CalendarViewModel : BaseWidgetModelSettings {
+
+		public CalendarViewModel() : base() {
+			this.EncodedSettings = string.Empty;
+			this.GenerateCss = true;
+			this.MonthSelected = DateTime.Now.Date;
+			this.MonthNext = this.MonthSelected.AddMonths(1);
+			this.MonthPrior = this.MonthSelected.AddMonths(-1);
+			this.MonthDates = new List<CalendarEntry>();
+		}
+
+		public string? StyleSheetPath { get; set; }
+		public bool GenerateCss { get; set; }
+		public DateTime MonthNext { get; set; }
+		public DateTime MonthPrior { get; set; }
+		public DateTime MonthSelected { get; set; }
+		public List<CalendarEntry> MonthDates { get; set; }
+		public List<DateTime>? SelectedDates { get; set; }
+
+		public void LoadData(Guid siteid, bool activeOnly) {
+			DateTime dtStart = this.MonthSelected.AddDays(1 - this.MonthSelected.Day);
+			DateTime dtEnd = dtStart.AddMonths(1);
+
+			this.MonthSelected = dtStart;
+			this.MonthNext = this.MonthSelected.AddMonths(1);
+			this.MonthPrior = this.MonthSelected.AddMonths(-1);
+
+			using (CalendarContext db = CalendarContext.Create()) {
+				var lst = (from c in db.CalendarDates
+						   where c.EventDate >= dtStart
+									&& c.EventDate < dtEnd
+									&& c.SiteID == siteid
+									&& ((c.IsActive ?? false == true) || !activeOnly)
+						   orderby c.EventDate
+						   select c).ToList();
+
+				List<DateTime> dates = (from dd in lst
+										select Convert.ToDateTime(dd.EventDate).Date).Distinct().ToList();
+
+				this.SelectedDates = dates;
+
+				this.MonthDates = lst;
+			}
+		}
+
+		public void SetSettings(CalendarDisplaySettings obj) {
+			if (obj != null) {
+				CalendarViewSettings settings = ConvertSettings(obj);
+				base.Persist(settings);
+			}
+		}
+
+		public void SetSettings(CalendarSimpleSettings obj) {
+			if (obj != null) {
+				CalendarViewSettings settings = ConvertSettings(obj);
+				base.Persist(settings);
+			}
+		}
+
+		public void AssignSettings(CalendarViewSettings settings) {
+			if (settings != null) {
+				this.GenerateCss = settings.GenerateCss;
+				this.StyleSheetPath = settings.SpecifiedCssFile;
+			}
+		}
+
+		public CalendarViewSettings ConvertSettings(CalendarDisplaySettings obj) {
+			var settings = new CalendarViewSettings();
+
+			if (obj != null) {
+				settings.SiteID = obj.SiteID;
+				settings.IsBeingEdited = obj.IsBeingEdited;
+				settings.IsDynamicInserted = obj.IsDynamicInserted;
+				settings.AlternateViewFile = obj.AlternateViewFile;
+				settings.GenerateCss = obj.GenerateCss;
+				settings.SpecifiedCssFile = obj.SpecifiedCssFile;
+			}
+
+			return settings;
+		}
+
+		public CalendarViewSettings ConvertSettings(CalendarSimpleSettings obj) {
+			var settings = new CalendarViewSettings();
+
+			if (obj != null) {
+				settings.SiteID = obj.SiteID;
+				settings.IsBeingEdited = obj.IsBeingEdited;
+				settings.IsDynamicInserted = obj.IsDynamicInserted;
+				settings.AlternateViewFile = obj.AlternateViewFile;
+			}
+
+			settings.GenerateCss = false;
+			settings.SpecifiedCssFile = string.Empty;
+
+			return settings;
+		}
+
+		public CalendarViewSettings GetSettings() {
+			var settings = new CalendarViewSettings();
+			var tmp = base.Restore<CalendarViewSettings>();
+
+			if (tmp is CalendarViewSettings) {
+				settings = (CalendarViewSettings)tmp;
+			}
+
+			this.AssignSettings(settings);
+
+			return settings;
+		}
+	}
+}

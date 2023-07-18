@@ -1,13 +1,7 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
-using Carrotware.CMS.Security.Models;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -56,7 +50,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		protected void BuildFolderList() {
 			List<FileData> lstFolders = new List<FileData>();
 
-			string sRoot = CarrotHttpHelper.MapPath("/");
+			string sRoot = CarrotHttpHelper.MapWebPath("/");
 
 			string[] subdirs;
 			try {
@@ -67,7 +61,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 			if (subdirs != null) {
 				foreach (string theDir in subdirs) {
-					string w = FileDataHelper.MakeWebFolderPath(theDir);
+					string w = FileDataHelper.MakeWebFolderPath(theDir).FixFolderSlashes();
 					lstFolders.Add(new FileData { FileName = w, FolderPath = w, FileDate = DateTime.Now });
 				}
 			}
@@ -251,10 +245,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 						cp.NavOrder = iOrder;
 						cp.TemplateFile = this.PageTemplate;
 
-						WordPressPost parent = (from c in this.Site.Content
-												where c.PostType == WordPressPost.WPPostType.Page
-												  && c.PostID == wpp.ParentPostID
-												select c).FirstOrDefault();
+						var parent = (from c in this.Site.Content
+									  where c.PostType == WordPressPost.WPPostType.Page
+										&& c.PostID == wpp.ParentPostID
+									  select c).FirstOrDefault();
 
 						SiteNav navParent = null;
 

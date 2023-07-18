@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Carrotware.Web.UI.Components;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -95,12 +93,12 @@ namespace Carrotware.CMS.Core {
 										&& a.ParentPostID == iPost
 										select a).Distinct().ToList();
 
-			lstA.ToList().ForEach(q => q.ImportFileSlug = folderName + "/" + q.ImportFileSlug);
-			lstA.ToList().ForEach(q => q.ImportFileSlug = q.ImportFileSlug.Replace("//", "/").Replace("//", "/"));
+			lstA.ToList().ForEach(q => q.ImportFileSlug = Path.Join(folderName, q.ImportFileSlug).NormalizeFilename());
+			lstA.ToList().ForEach(q => q.ImportFileSlug = q.ImportFileSlug.NormalizeFilename());
 
 			using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {
 				foreach (var img in lstA) {
-					img.ImportFileSlug = img.ImportFileSlug.Replace("//", "/").Replace("//", "/");
+					img.ImportFileSlug = img.ImportFileSlug.NormalizeFilename();
 
 					cmsHelper.GetFile(img.AttachmentURL, img.ImportFileSlug);
 					string sURL1 = img.AttachmentURL.Substring(img.AttachmentURL.IndexOf("://") + 3);

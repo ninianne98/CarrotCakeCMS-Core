@@ -45,7 +45,7 @@ namespace Carrotware.CMS.UI.Components.Controllers {
 
 			if (SecurityData.UserPrincipal.Identity.IsAuthenticated) {
 				if (SecurityData.IsAdmin || SecurityData.IsEditor) {
-					sb.Replace("[[ADMIN_PATH]]", adminFolder.FixPathSlashes());
+					sb.Replace("[[ADMIN_PATH]]", adminFolder.FixFolderSlashes());
 					sb.Replace("[[API_PATH]]", ("/api/" + adminFolder).FixPathSlashes());
 					sb.Replace("[[TEMPLATE_PATH]]", SiteData.PreviewTemplateFilePage);
 					sb.Replace("[[TEMPLATE_QS]]", SiteData.TemplatePreviewParameter);
