@@ -2,6 +2,7 @@
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Xml.Serialization;
@@ -20,8 +21,8 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==================================================
 	public class SiteSearch {
-		public SiteSearch() {
 
+		public SiteSearch() {
 		}
 
 		public void RestoreQueryString() {
@@ -168,6 +169,18 @@ namespace Carrotware.CMS.UI.Components {
 		public string EncodedSettings { get; set; }
 		public LogoutInfoSettings Settings { get; set; }
 		public bool IsLoggedIn { get; set; }
+		public string? RedirectUri { get; set; }
+
+		public virtual ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
+			// these child objects are for display only, and their validation is not needed
+			foreach (var ms in modelState.ToArray()) {
+				if (ms.Key.ToLowerInvariant().Contains("settings")) {
+					modelState.Remove(ms.Key);
+				}
+			}
+
+			return modelState;
+		}
 	}
 
 	//==================================================
@@ -207,6 +220,8 @@ namespace Carrotware.CMS.UI.Components {
 		[DataType(DataType.Password)]
 		[Display(Name = "Password")]
 		public string Password { get; set; }
+
+		public string? RedirectUri { get; set; }
 
 		public LoginInfoSettings Settings { get; set; }
 		public SignInResult LogInStatus { get; set; }

@@ -1,11 +1,6 @@
-﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Interface;
+﻿using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Xml.Serialization;
 
 /*
@@ -169,6 +164,17 @@ namespace Carrotware.CMS.UI.Components {
 					}
 				}
 			}
+		}
+
+		public virtual ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
+			// these child objects are for display only, and their validation is not needed
+			foreach (var ms in modelState.ToArray()) {
+				if (ms.Key.ToLowerInvariant().Contains("settings")) {
+					modelState.Remove(ms.Key);
+				}
+			}
+
+			return modelState;
 		}
 	}
 }

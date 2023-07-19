@@ -391,30 +391,37 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public AjaxContactForm BeginContactForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmContact";
 			return new AjaxContactForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
 		public AjaxLoginForm BeginLoginForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmLogin";
 			return new AjaxLoginForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
 		public AjaxLogoutForm BeginLogoutForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmLogout";
 			return new AjaxLogoutForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
 		public AjaxForgotPasswordForm BeginForgotPasswordForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmPassword";
 			return new AjaxForgotPasswordForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
 		public AjaxResetPasswordForm BeginResetPasswordForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmResetPwd";
 			return new AjaxResetPasswordForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
 		public AjaxChangePasswordForm BeginChangePasswordForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmChangePwd";
 			return new AjaxChangePasswordForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 
 		public AjaxChangeProfileForm BeginChangeProfileForm(SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+			ajaxOptions.FormId = "frmProfile";
 			return new AjaxChangeProfileForm(_helper, this.CmsPage, ajaxOptions, formAttributes);
 		}
 

@@ -29,7 +29,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		public CmsContentController(ILogger<CmsContentController> logger)
 			: base() {
-
 			_logger = logger;
 			this.TemplateFile = string.Empty;
 			this.WidgetCount = 0;
@@ -65,7 +64,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[HttpGet]
 		public ActionResult Default() {
-
 			try {
 				return DefaultView();
 			} catch (Exception ex) {
@@ -241,6 +239,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public PartialViewResult Contact(ContactInfo model) {
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[ContactInfo.Key] = model;
 			model.IsSaved = false;
@@ -311,6 +310,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ForgotPassword(ForgotPasswordInfo model) {
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[ForgotPasswordInfo.Key] = model;
 
@@ -355,6 +355,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ResetPassword(ResetPasswordInfo model) {
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[ResetPasswordInfo.Key] = model;
 
@@ -405,6 +406,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangePassword(ChangePasswordInfo model) {
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[ChangePasswordInfo.Key] = model;
 
@@ -454,6 +456,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangeProfile(ChangeProfileInfo model) {
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[ChangeProfileInfo.Key] = model;
 
@@ -500,6 +503,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Logout(LogoutInfo model) {
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[LogoutInfo.Key] = model;
 			LoadPage(model.Settings.Uri);
@@ -519,6 +523,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public async Task<ActionResult> Login(LoginInfo model) {
 			bool rememberme = false;
 
+			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
 			this.ViewData[LoginInfo.Key] = model;
 
