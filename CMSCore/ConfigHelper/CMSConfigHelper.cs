@@ -439,16 +439,15 @@ namespace Carrotware.CMS.Core {
 			return new List<CMSAdminModuleMenu>();
 		}
 
-		public void GetFile(string sRemoteFile, string sLocalFile) {
-			Uri remoteFile = new Uri(sRemoteFile);
-			string sServerPath = CarrotHttpHelper.MapWebPath(sLocalFile);
-			bool bExists = File.Exists(sServerPath);
+		public void GetFile(string remoteFile, string localFile) {
+			Uri remoteUri = new Uri(remoteFile);
+			string serverPath = CarrotHttpHelper.MapWebPath(localFile);
+			bool bExists = File.Exists(serverPath);
 
 			if (!bExists) {
-				using (WebClient webClient = new WebClient()) {
+				using (var webClient = new WebClient()) {
 					try {
-						webClient.DownloadFile(remoteFile, sServerPath);
-						//webClient.DownloadFileAsync(remoteFile, sServerPath);
+						webClient.DownloadFile(remoteUri, serverPath);
 					} catch (Exception ex) {
 						if (ex is WebException) {
 							WebException webException = (WebException)ex;

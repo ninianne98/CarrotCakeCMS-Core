@@ -111,14 +111,14 @@ namespace Carrotware.CMS.Interface {
 			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.WebRootPath.NormalizeFilename();
 
-			return Path.Join(root, p);
+			return Path.Join(root, p).CleanDuplicateSlashes();
 		}
 
 		public static string MapPath(string path) {
 			var p = path.NormalizeFilename();
 			string root = _webHostEnvironment.ContentRootPath.NormalizeFilename();
 
-			return Path.Join(root, p);
+			return Path.Join(root, p).CleanDuplicateSlashes();
 		}
 
 		public static string HttpReferer {

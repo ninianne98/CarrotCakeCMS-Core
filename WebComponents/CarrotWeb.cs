@@ -349,12 +349,21 @@ namespace Carrotware.Web.UI.Components {
 		private static string MapRootPath(string path, string root) {
 			var p = path.NormalizeFilename();
 
-			var newPath = Path.Join(root, p).NormalizeFilename();
+			var newPath = Path.Join(root, p).CleanDuplicateSlashes();
 			if (root.StartsWith(Path.DirectorySeparatorChar) || newPath.StartsWith(Path.AltDirectorySeparatorChar)) {
 				newPath = newPath.FixPathSlashes();
 			}
 
-			return newPath;
+			return newPath.CleanDuplicateSlashes();
+		}
+
+		public static string CleanDuplicateSlashes(this string path) {
+			if (path != null) {
+				path = path.Replace("~/", "/").Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+				path = path.Replace(@"//", @"/").Replace(@"//", @"/").Replace(@"//", @"/");
+				return path;
+			}
+			return string.Empty;
 		}
 
 		public static string NormalizeFilename(this string path) {
