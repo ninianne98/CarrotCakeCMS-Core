@@ -63,7 +63,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public Guid SiteID { get; set; }
+		public Guid SiteID { get; set; } = Guid.Empty;
 		public string? SiteName { get; set; }
 		public string? SiteTagline { get; set; }
 		public string? TimeZoneIdentifier { get; set; }

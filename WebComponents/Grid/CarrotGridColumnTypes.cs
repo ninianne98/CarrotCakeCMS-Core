@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Web;
 
@@ -29,6 +27,7 @@ namespace Carrotware.Web.UI.Components {
 		public CarrotGridColumnType Mode { get; set; }
 		public bool HasHeadingText { get; set; }
 		public string HeaderText { get; set; }
+		public bool PrettifyHeading { get; set; }
 		public object HeadAttributes { get; set; }
 		public object BodyAttributes { get; set; }
 		public Func<T, IHtmlContent> FormatTemplate { get; set; }
@@ -61,6 +60,7 @@ namespace Carrotware.Web.UI.Components {
 		public string ColumnName { get; set; }
 		public bool HasHeadingText { get; set; }
 		public string HeaderText { get; set; }
+		public bool PrettifyHeading { get; set; }
 		public string CellFormatString { get; set; }
 		public object HeadAttributes { get; set; }
 		public object HeadLinkAttributes { get; set; }

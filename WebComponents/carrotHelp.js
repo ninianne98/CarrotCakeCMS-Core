@@ -109,3 +109,50 @@ function __carrotGetDateTimeTemplate() {
 }
 
 //================================================================
+
+function __carrotAlertModalBtns(request, title, buttonsOpts) {
+	__carrotAlertModalHeightWidthBtns(request, title, 400, 550, buttonsOpts);
+}
+function __carrotAlertModalSmallBtns(request, title, buttonsOpts) {
+	__carrotAlertModalHeightWidthBtns(request, title, 250, 400, buttonsOpts);
+}
+function __carrotAlertModalLargeBtns(request, title, buttonsOpts) {
+	__carrotAlertModalHeightWidthBtns(request, title, 550, 700, buttonsOpts);
+}
+
+function __carrotAlertModalClose() {
+	$("#carrot-genericjqmodal").dialog("close");
+	$("#carrot-genericjqmodal-msg").html('');
+}
+
+$(document).ready(function () {
+	if ($('#carrot-genericjqmodal-zone').length === 0) {
+		$("body").append('<div id="carrot-genericjqmodal-zone" style="display:none;"><div id="carrot-genericjqmodal" title="carrot dialog"><div id="carrot-genericjqmodal-msg">&nbsp;</div></div></div>');
+	}
+});
+
+function __carrotAlertModalHeightWidthBtns(request, title, h, w, buttonsOpts) {
+	if (title.length < 1) {
+		title = "General Dialog";
+	}
+	if ($('#carrot-genericjqmodal-zone').length === 0) {
+		$("body").append('<div id="carrot-genericjqmodal-zone" style="display:none;"><div id="carrot-genericjqmodal" title="carrot dialog"><div id="carrot-genericjqmodal-msg">&nbsp;</div></div></div>');
+	} else {
+		$("#carrot-genericjqmodal-msg").html('');
+	}
+
+	$("#carrot-genericjqmodal-msg").html(request);
+
+	$("#carrot-genericjqmodal").dialog({
+		open: function () {
+			$(this).parents('.ui-dialog-buttonpane button:eq(0)').focus();
+		},
+		title: title,
+		height: h,
+		width: w,
+		modal: true,
+		buttons: buttonsOpts
+	});
+}
+
+//================================================================

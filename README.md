@@ -107,6 +107,12 @@ IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='202307
 		values ('20230709210325_InitialCalendar','7.0.0')
 END
 
+-- event calendar widget - create the ef table (if needed) and execute the insert for 20230723225354_InitialEventCalendar
+IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230723225354_InitialEventCalendar')
+			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
+	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
+		values ('20230723225354_InitialEventCalendar','7.0.0')
+END
 
 -- to validate
 select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'

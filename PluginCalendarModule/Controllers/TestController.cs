@@ -4,6 +4,16 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
+/*
+* CarrotCake CMS (MVC Core)
+* http://www.carrotware.com/
+*
+* Copyright 2015, 2023, Samantha Copeland
+* Dual licensed under the MIT or GPL Version 3 licenses.
+*
+* Date: June 2023
+*/
+
 namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 
 	public class TestController : BaseController {
@@ -30,18 +40,19 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 			string controller = vals["controller"].ToString().ToLowerInvariant();
 
 			// since there are different models, set them up as needed to match the test
+
 			if (action.ToLowerInvariant() == "testview1") {
-				var settings = new CalendarDisplaySettings();
+				var settings = new CalendarUpcomingSettings();
 				settings.SiteID = new Guid(siteId);
+				settings.DaysInPast = -21;
+				settings.DaysInFuture = 14;
 
 				this.WidgetPayload = settings;
 			}
 
 			if (action.ToLowerInvariant() == "testview2") {
-				var settings = new CalendarUpcomingSettings();
+				var settings = new CalendarDisplaySettings();
 				settings.SiteID = new Guid(siteId);
-				settings.DaysInPast = -21;
-				settings.DaysInFuture = 14;
 
 				this.WidgetPayload = settings;
 			}
@@ -61,7 +72,7 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 		public ActionResult TestView1() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarDisplay", this.AreaName, this.WidgetPayload);
+			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarUpcoming", this.AreaName, this.WidgetPayload);
 			model.PartialResult = RenderWidgetHelper.ExecuteAction(ctrl);
 			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, model.PartialResult));
 
@@ -73,7 +84,7 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 		public ActionResult TestView2() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarUpcoming", this.AreaName, this.WidgetPayload);
+			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarDisplay", this.AreaName, this.WidgetPayload);
 			model.PartialResult = RenderWidgetHelper.ExecuteAction(ctrl);
 			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, model.PartialResult));
 

@@ -4,6 +4,16 @@ using Carrotware.CMS.Interface;
 using Carrotware.CMS.Interface.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
+/*
+* CarrotCake CMS (MVC Core)
+* http://www.carrotware.com/
+*
+* Copyright 2015, 2023, Samantha Copeland
+* Dual licensed under the MIT or GPL Version 3 licenses.
+*
+* Date: June 2023
+*/
+
 namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 
 	[WidgetController(typeof(AdminController))]
@@ -16,6 +26,10 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 		public AdminController(IWebHostEnvironment environment, ICarrotSite site) {
 			_site = site;
 			_webenv = environment;
+
+			if (_site != null) {
+				this.SiteID = _site.SiteID;
+			}
 		}
 
 		[HttpGet]

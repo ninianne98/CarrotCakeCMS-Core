@@ -40,6 +40,7 @@ namespace Carrotware.Web.UI.Components {
 
 			this.UseDataPage = true;
 			this.PageSizeExternal = false;
+			this.PrettifyHeadings = false;
 
 			this.PagedDataBase = dp;
 		}
@@ -58,6 +59,7 @@ namespace Carrotware.Web.UI.Components {
 		protected string FieldNamePrefix { get; set; }
 
 		public int RowNumber { get; set; }
+		public bool PrettifyHeadings { get; set; }
 
 		public bool UseDataPage { get; set; }
 		public bool PageSizeExternal { get; set; }

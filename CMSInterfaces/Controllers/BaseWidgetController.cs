@@ -28,7 +28,7 @@ namespace Carrotware.CMS.Interface.Controllers {
 			get {
 				return CarrotHttpHelper.Configuration.GetValue<string>("TestSiteID") != null
 					? CarrotHttpHelper.Configuration.GetValue<string>("TestSiteID").ToString()
-					: Guid.NewGuid().ToString();
+					: Guid.Empty.ToString();
 			}
 		}
 
