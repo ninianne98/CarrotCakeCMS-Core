@@ -26,6 +26,9 @@
 						"AdminFolderPath": {
 							"type": "string"
 						},
+						"UseSSL": {
+							"type": "boolean"
+						},
 						"SiteSkin": {
 							"type": "string",
 							"enum": [

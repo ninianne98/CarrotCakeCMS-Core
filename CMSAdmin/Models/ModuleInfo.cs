@@ -1,5 +1,4 @@
 ﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Interface;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 /*
@@ -33,7 +32,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			this.Modules = new List<CMSAdminModule>();
 			this.RouteValues = new RouteValueDictionary();
 
-			using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {
+			using (var cmsHelper = new CMSConfigHelper()) {
 				this.Modules = cmsHelper.AdminModules;
 			}
 		}
@@ -45,6 +44,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public void LoadContext(ViewContext viewContext) {
 			this.RouteValues = viewContext.RouteData.Values;
+			var request = viewContext.HttpContext.Request;
 
 			if (this.RouteValues["action"] != null) {
 				this.CurrentAction = this.RouteValues["action"].ToString();
@@ -55,13 +55,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 			this.CurrentActionFull = string.Format("{0}", this.CurrentAction);
 
-			string currentQueryString = string.Empty;
-			var request = CarrotHttpHelper.HttpContext.Request;
-
 			if (request.QueryString.HasValue) {
-				currentQueryString = request.QueryString.ToString();
-				if (!string.IsNullOrEmpty(currentQueryString)) {
-					this.CurrentActionFull = string.Format("{0}?{1}", this.CurrentAction, currentQueryString);
+				var currentQueryString = request.QueryString.ToString();
+				if (!string.IsNullOrEmpty(currentQueryString) && currentQueryString.Contains("?")) {
+					this.CurrentActionFull = string.Format("{0}{1}", this.CurrentAction, currentQueryString);
 				}
 			}
 		}
@@ -80,8 +77,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public bool EvalPlug(CMSAdminModuleMenu plug) {
 			this.SelectedCssClass = "notSelectedModule";
-			if (plug.AreaKey == this.SelectedArea && plug.Action == this.CurrentActionFull
-						&& plug.Controller == this.CurrentController) {
+			if (plug.AreaKey.ToLowerInvariant() == this.SelectedArea.ToLowerInvariant()
+						&& plug.Action.ToLowerInvariant() == this.CurrentActionFull.ToLowerInvariant()
+						&& plug.Controller.ToLowerInvariant() == this.CurrentController.ToLowerInvariant()) {
+
 				this.SelectedCssClass = "selectedModule";
 				this.SelectedPluginActionName = plug.Caption;
 
@@ -105,10 +104,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			return string.Empty;
 		}
 
-		public CMSAdminModuleMenu GetCurrentPlug() {
-			CMSAdminModuleMenu plug = null;
+		public CMSAdminModuleMenu? GetCurrentPlug() {
+			CMSAdminModuleMenu? plug = null;
 
-			CMSAdminModule mod = this.Modules.Where(x => x.AreaKey.ToLowerInvariant() == this.SelectedArea.ToLowerInvariant()).FirstOrDefault();
+			var mod = this.Modules.Where(x => x.AreaKey.ToLowerInvariant() == this.SelectedArea.ToLowerInvariant()).FirstOrDefault();
 
 			if (mod != null) {
 				plug = mod.PluginMenus.Where(x => x.Action.ToLowerInvariant() == this.CurrentActionFull.ToLowerInvariant()
