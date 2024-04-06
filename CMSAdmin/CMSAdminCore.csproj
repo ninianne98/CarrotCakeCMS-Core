@@ -44,12 +44,15 @@
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Debugger.Contracts" Version="17.2.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
 		<PackageReference Include="MimeKit" Version="4.4.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" GeneratePathProperty="true" />
+		<PackageReference Include="System.Security.Permissions" Version="8.0.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.3" />
+		<PackageReference Include="System.Windows.Extensions" Version="8.0.0" />
 	</ItemGroup>
 
 	<PropertyGroup>
