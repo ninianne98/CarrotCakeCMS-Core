@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<OutputType>Library</OutputType>
@@ -15,8 +15,8 @@
 		<Company>Carrotware</Company>
 		<Copyright>2023</Copyright>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<Version>6.1.0.0</Version>
-		<VersionPrefix>6.1</VersionPrefix>
+		<Version>8.1.0.0</Version>
+		<VersionPrefix>8.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
@@ -24,17 +24,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="MailKit" Version="4.4.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="6.0.28" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.28" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="8.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.17" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.17" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.17" />
-		<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="6.0.28" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.28" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
 		<PackageReference Include="MimeKit" Version="4.4.0" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
+		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

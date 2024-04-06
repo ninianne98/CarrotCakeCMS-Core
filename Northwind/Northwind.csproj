@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<OutputPath>bin\</OutputPath>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -12,8 +12,8 @@
 		<Company>Carrotware</Company>
 		<Copyright>2015</Copyright>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<Version>6.1.0.0</Version>
-		<VersionPrefix>6.1</VersionPrefix>
+		<Version>8.1.0.0</Version>
+		<VersionPrefix>8.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
@@ -28,11 +28,19 @@
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="2.2.4" />
 		<PackageReference Include="jQuery.UI.Combined" Version="1.13.2" />
-		<PackageReference Include="jQuery.Validation" Version="1.19.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.28" />
+		<PackageReference Include="jQuery.Validation" Version="1.20.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.17" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.17">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.17">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="4.0.0" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
 	</ItemGroup>

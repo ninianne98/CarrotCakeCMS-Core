@@ -1,5 +1,5 @@
 # CarrotCakeCMS (MVC Core)
-Source code for CarrotCakeCMS (MVC - Core), .Net Core 6
+Source code for CarrotCakeCMS (MVC - Core), .Net Core 8
 
 [SITE_CT]: http://www.carrotware.com/contact?from=github-core
 [REPO_SF]: http://sourceforge.net/projects/carrotcakecmscore/
@@ -27,15 +27,16 @@ Other features also include date based release and retirement of content - allow
 
 ## CarrotCakeCMS (MVC Core) Developer Quick Start Guide
 
-Copyright (c) 2011, 2015, 2023 Samantha Copeland
+Copyright (c) 2011, 2015, 2023, 2024 Samantha Copeland
 Licensed under the MIT or GPL v3 License
 
 CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 ### Install Development Tools
 
-1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise. 
-1. **[SQL Server Express 2012 (or higher/later)][SQL]** - currently vetted on 2012 Express and 2016 Express.  Entity Framework Core 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
+1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise.  Requires patch version 17.8 or later, for .Net 8 support.
+1. **[SQL Server Express 2016 (or higher/later)][SQL]** - currently vetted on 2012 Express and 2016 Express.  Entity Framework Core 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
+Eventually, the project will use EF 8, which will mean a minimum of SQL 2016, until then, SQL 2012 is supported.
 1. **[SQL Server Management Studio (SSMS)][SSMS]** - required for managing the database
 
 ### Get the Source Code
@@ -65,7 +66,10 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 	There may be some warnings, you can ignore them
 
-1. SQL Server should be running with an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  Password hashes will not be valid when upgrading  MVC 5 to MVC Core 6, so perform a password recovery to set valid ones.
+1. SQL Server should be running with an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  
+	- Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  
+	- If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  
+	- Password hashes will not be valid when upgrading MVC 5 (or MVC Core 6) to MVC Core 8, so perform a password recovery to set valid ones.
 
 ### Make a backup FIRST when upgrading!
 
@@ -85,7 +89,7 @@ CREATE TABLE [dbo].[__EFMigrationsHistory](
 ) ON [PRIMARY]
 GO
 
--- main CMS MVC 5-> MVC Core 6 - create the ef table (if needed) and execute the insert for 00000000000000_Initial
+-- main CMS MVC 5-> MVC Core 8 - create the ef table (if needed) and execute the insert for 00000000000000_Initial
 -- the password hashes will be incorrect, so perform a password reset once the DB has been upgraded
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='00000000000000_Initial')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[membership_User]') AND type in (N'U'))) BEGIN

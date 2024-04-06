@@ -15,6 +15,11 @@ using System.Collections.Generic;
 
 namespace Northwind.Data {
 	/*
+	Install-Package Microsoft.EntityFrameworkCore.Tools
+	Update-Package Microsoft.EntityFrameworkCore.Tools
+
+	Scaffold-DbContext "Server=.\SQL2012EXPRESS;Database=Northwind;Trusted_Connection=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir  Data\Northwind
+
 	dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 	dotnet add package Microsoft.EntityFrameworkCore.Design
 
@@ -22,8 +27,7 @@ namespace Northwind.Data {
 
 	dotnet tool install --global dotnet-ef
 
-	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=Northwind;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -o Data\Northwind
-
+	dotnet ef dbcontext scaffold "Server=.\SQL2012EXPRESS;Database=Northwind;Trusted_Connection=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer -o Data\Northwind
 	*/
 
 	public partial class NorthwindContext : DbContext {
