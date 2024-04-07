@@ -16,12 +16,12 @@ namespace Carrotware.Web.UI.Components {
 
 		public jquery() {
 			this.JQVersion = DefaultJQVersion;
-			this.UseJqueryMigrate = false;
+			this.UseJqueryMigrate = DefaultJQVersion.StartsWith("3") ? true : false;
 		}
 
 		public static string DefaultJQVersion {
 			get {
-				return "1.11";
+				return "3";
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public override string GetHtml() {
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			string sJQFile = string.Empty;
 			string jqVer = JQVersion;
@@ -57,8 +57,9 @@ namespace Carrotware.Web.UI.Components {
 				case "3":
 				case "3.0":
 				case "3.6":
-					jqVer = "3.6.4";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-3-6-4.js");
+				case "3.7":
+					jqVer = "3.7.1";
+					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-3-7-1.js");
 					break;
 
 				case "2":
@@ -85,35 +86,25 @@ namespace Carrotware.Web.UI.Components {
 					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-10-2.js");
 					break;
 
-				case "1.9":
-					jqVer = "1.9.1";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-9-1.js");
-					break;
-
-				case "1.8":
-					jqVer = "1.8.3";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-8-3.js");
-					break;
-
-				case "1.7":
-					jqVer = "1.7.2";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-7-2.js");
-					break;
-
-				// older versions get dumped to 1.6
+				// older versions get dumped to 1.9
+				case "1.1":
 				case "1.2":
 				case "1.3":
 				case "1.4":
 				case "1.5":
 				case "1.6":
-					jqVer = "1.6.4";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-6-4.js");
+				case "1.7":
+				case "1.8":
+				case "1.9":
+					jqVer = "1.9.1";
+					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-9-1.js");
 					break;
+
 
 				// if you didn't provide a version or a meaningful version, this is what you get
 				default:
-					jqVer = "1.11.3";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-11-3.js");
+					jqVer = "3.7.1";
+					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-3-7-1.js");
 					break;
 			}
 
@@ -128,6 +119,10 @@ namespace Carrotware.Web.UI.Components {
 
 				if (jqVer.StartsWith("1.12") || jqVer.StartsWith("1.13")) {
 					sJQFileMig = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-mig-1-3-0.js");
+				}
+
+				if (jqVer.StartsWith("3")) {
+					sJQFileMig = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-mig-3-4-0.js");
 				}
 
 				if (!string.IsNullOrEmpty(sJQFileMig)) {

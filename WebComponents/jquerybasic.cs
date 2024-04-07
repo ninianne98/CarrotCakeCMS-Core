@@ -16,7 +16,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public jquerybasic() {
 			this.JQVersion = jquery.DefaultJQVersion;
-			this.UseJqueryMigrate = false;
+			this.UseJqueryMigrate = this.JQVersion.StartsWith("3") ? true : false;
 			this.StylesheetOnly = false;
 			this.SelectedSkin = jQueryTheme.GlossyBlack;
 		}
@@ -45,7 +45,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public override string GetHtml() {
 			string sJQFile = string.Empty;
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			sb.AppendLine(string.Empty);
 
 			if (!this.StylesheetOnly) {
