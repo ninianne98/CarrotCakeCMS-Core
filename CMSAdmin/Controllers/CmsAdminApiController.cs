@@ -1,5 +1,4 @@
 ﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Core.MVC;
 using Carrotware.CMS.CoreMVC.UI.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -9,10 +8,10 @@ using System.Xml.Serialization;
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, 2023, 2024 Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: June 2023, April 2024
 */
 
 namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {

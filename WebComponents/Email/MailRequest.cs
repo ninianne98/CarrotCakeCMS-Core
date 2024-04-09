@@ -2,6 +2,7 @@
 using MailKit.Security;
 using MimeKit;
 using MimeKit.IO;
+using System.Diagnostics;
 using System.Reflection;
 
 /*
@@ -35,8 +36,42 @@ namespace Carrotware.Web.UI.Components {
 			return new MailRequest(mailSettings);
 		}
 
-		internal static Version CurrentDLLVersion {
-			get { return Assembly.GetExecutingAssembly().GetName().Version; }
+		private static bool? _debug = null;
+		private static FileVersionInfo _fileversion = null;
+		private static Version _version = null;
+
+		private static Version CurrentVersion {
+			get {
+				if (_version == null) {
+					_version = Assembly.GetExecutingAssembly().GetName().Version;
+				}
+				return _version;
+			}
+		}
+
+		private static void LoadFileInfo() {
+			if (_fileversion == null) {
+				_debug = false;
+#if DEBUG
+				_debug = true;
+#endif
+				var assembly = Assembly.GetExecutingAssembly();
+				_fileversion = FileVersionInfo.GetVersionInfo(assembly.Location);
+			}
+		}
+
+		public static string CurrentDLLVersion {
+			get {
+				LoadFileInfo();
+				return _fileversion.FileVersion;
+			}
+		}
+
+		public static string CurrentDLLMajorMinorVersion {
+			get {
+				Version v = CurrentVersion;
+				return v.Major.ToString() + "." + v.Minor.ToString();
+			}
 		}
 
 		public void ConfigureMessage(string email, string subject, string body) {
@@ -77,7 +112,7 @@ namespace Carrotware.Web.UI.Components {
 				head.Add("X-Computer", Environment.MachineName);
 				head.Add("X-Originating-IP", CarrotWebHelper.HttpContext.Connection.RemoteIpAddress.ToString());
 				head.Add("X-Application", "Carrotware Web " + CurrentDLLVersion);
-				head.Add("User-Agent", "Carrotware Web " + CurrentDLLVersion);
+				head.Add("User-Agent", "Carrotware Web " + CurrentDLLMajorMinorVersion);
 				head.Add("Message-ID", "<" + Guid.NewGuid().ToString().ToLowerInvariant() + "@" + _mailSettings.Host + ">");
 				return head;
 			}
@@ -117,10 +152,17 @@ namespace Carrotware.Web.UI.Components {
 			var email = new MimeMessage();
 			var builder = new BodyBuilder();
 
+			// fallback to smtp username in case from is empty
+			var fromEmail = !string.IsNullOrEmpty(_mailSettings.FromEmail) ? _mailSettings.FromEmail : _mailSettings.SmtpUsername;
+
 			if (string.IsNullOrEmpty(_mailSettings.DisplayName)) {
-				email.Sender = MailboxAddress.Parse(_mailSettings.FromEmail);
+				email.Sender = MailboxAddress.Parse(fromEmail);
 			} else {
-				email.Sender = new MailboxAddress(_mailSettings.DisplayName, _mailSettings.FromEmail);
+				email.Sender = new MailboxAddress(_mailSettings.DisplayName, fromEmail);
+			}
+
+			if (email.From.Any() == false) {
+				email.From.Add(email.Sender);
 			}
 
 			foreach (var h in this.DefaultHeaders) {

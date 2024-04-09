@@ -1,6 +1,4 @@
-﻿using System;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -52,21 +50,6 @@ namespace Carrotware.Web.UI.Components {
 				case "1.10":
 					jqVer = "1.10.2";
 					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jqueryui-1-10-2.js");
-					break;
-
-				case "1.9":
-					jqVer = "1.9.2";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jqueryui-1-9-2.js");
-					break;
-
-				case "1.8":
-					jqVer = "1.8.24";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jqueryui-1-8-24.js");
-					break;
-
-				case "1.7":
-					jqVer = "1.7.3";
-					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jqueryui-1-7-3.js");
 					break;
 
 				case "1.11":

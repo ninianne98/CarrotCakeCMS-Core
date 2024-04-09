@@ -39,7 +39,6 @@ namespace Carrotware.Web.UI.Components {
 
 		public bool UseJqueryMigrate { get; set; }
 
-
 		private jquery _jq = new jquery();
 		private jqueryui _jqui = new jqueryui();
 

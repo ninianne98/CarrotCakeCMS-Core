@@ -100,7 +100,6 @@ namespace Carrotware.Web.UI.Components {
 					sJQFile = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-9-1.js");
 					break;
 
-
 				// if you didn't provide a version or a meaningful version, this is what you get
 				default:
 					jqVer = "3.7.1";

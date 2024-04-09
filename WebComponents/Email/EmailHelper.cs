@@ -28,18 +28,21 @@ namespace Carrotware.Web.UI.Components {
 			return SendMail(fromEmail, lstTo, null, subjectLine, bodyText, isHTML, null);
 		}
 
-		public static bool SendMail(string fromEmail, List<string> emailTo, List<string> emailCC,
-				string subjectLine, string bodyText, bool isHTML, List<string> attachments) {
+		public static bool SendMail(string? fromEmail, List<string> emailTo, List<string> emailCC,
+				string? subjectLine, string? bodyText, bool isHTML, List<string> attachments) {
 			var mailSettings = SmtpSettings.GetEMailSettings();
 
 			if (string.IsNullOrEmpty(fromEmail) || !fromEmail.Contains("@")) {
-				fromEmail = mailSettings.FromEmail;
+				fromEmail = mailSettings.FromEmail;  // try from email first
+			}
+			if (string.IsNullOrEmpty(fromEmail) || !fromEmail.Contains("@")) {
+				fromEmail = mailSettings.SmtpUsername; // use smtp user as fallback if not valid
 			}
 
 			if (emailTo != null && emailTo.Any()) {
 				var message = new MailRequest(mailSettings) {
-					Subject = subjectLine,
-					Body = bodyText,
+					Subject = subjectLine ?? string.Empty,
+					Body = bodyText ?? string.Empty,
 					HtmlBody = isHTML
 				};
 
