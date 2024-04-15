@@ -33,10 +33,10 @@ using System.Xml.Linq;
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, 2023, 2024 Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: June 2023, April 2024
 */
 
 namespace Carrotware.Web.UI.Components {
@@ -266,6 +266,43 @@ namespace Carrotware.Web.UI.Components {
 		public static IUrlHelper GetUrlHelper(this IHtmlHelper htmlHelper) {
 			var urlHelperFactory = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService<IUrlHelperFactory>();
 			return urlHelperFactory.GetUrlHelper(htmlHelper.ViewContext);
+		}
+
+		public static IHtmlHelper<T> CarrotHtmlHelper<T>(this IHtmlHelper htmlHelper) where T : class, new() {
+			T model = new T();
+
+			// provide a valid partial, but it doesn't matter what, so long as it has no model
+			return htmlHelper.CarrotHtmlHelper("_CarrotWebBlank", model);
+		}
+
+		public static IHtmlHelper<T> CarrotHtmlHelper<T>(this IHtmlHelper htmlHelper, T model) where T : class {
+			// provide a valid partial, but it doesn't matter what, so long as it has no model
+			return htmlHelper.CarrotHtmlHelper("_CarrotWebBlank", model);
+		}
+
+		public static IHtmlHelper<T> CarrotHtmlHelper<T>(this IHtmlHelper htmlHelper, string partialViewName) where T : class, new() {
+			T model = new T();
+
+			return htmlHelper.CarrotHtmlHelper(partialViewName, model);
+		}
+
+		public static IHtmlHelper<T> CarrotHtmlHelper<T>(this IHtmlHelper htmlHelper, string partialViewName, T model) where T : class {
+			var razoract = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorPageActivator)) as IRazorPageActivator;
+			var razorengine = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+
+			var viewEngineResult = razorengine.FindView(htmlHelper.ViewContext, partialViewName, false);
+			var view = viewEngineResult.View;
+
+			var newViewData = new ViewDataDictionary<T>(htmlHelper.ViewData, model);
+			var viewContext = new ViewContext(htmlHelper.ViewContext, view, newViewData, htmlHelper.ViewContext.Writer);
+
+			var page = new CarrotRazorPage<T>();
+
+			razoract.Activate(page, viewContext);
+
+			var helper = page.Html;
+
+			return helper;
 		}
 
 		public static IWebHostEnvironment WebHostEnvironment { get { return _webHostEnvironment; } }
@@ -1049,22 +1086,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public IHtmlHelper<T> CarrotHtmlHelper<T>(string partialViewName, T model) where T : class {
-			var razoract = _helper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorPageActivator)) as IRazorPageActivator;
-			var razorengine = _helper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
-
-			var page = new CarrotRazorPage<T>();
-
-			var viewEngineResult = razorengine.FindView(_helper.ViewContext, partialViewName, false);
-			var view = viewEngineResult.View;
-
-			var newViewData = new ViewDataDictionary<T>(_helper.ViewData, model);
-			var viewContext = new ViewContext(_helper.ViewContext, view, newViewData, _helper.ViewContext.Writer);
-
-			razoract.Activate(page, viewContext);
-
-			var helper = page.Html;
-
-			return helper;
+			return _helper.CarrotHtmlHelper(partialViewName, model);
 		}
 
 		public HtmlString GetRoot() {

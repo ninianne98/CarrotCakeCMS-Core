@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -10,10 +9,10 @@ using System.Text.RegularExpressions;
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, 2023, 2024 Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: June 2023, April 2024
 */
 
 namespace Carrotware.Web.UI.Components.Controllers {

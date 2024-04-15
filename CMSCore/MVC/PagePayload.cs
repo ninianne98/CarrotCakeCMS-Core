@@ -438,7 +438,7 @@ namespace Carrotware.CMS.Core {
 			return this.ThePage.GetUserInfo();
 		}
 
-		public ExtendedUserData EditUser {
+		public ExtendedUserData? EditUser {
 			get {
 				return this.ThePage.EditUser;
 			}
@@ -448,7 +448,7 @@ namespace Carrotware.CMS.Core {
 			return this.ThePage.GetCreateUserInfo();
 		}
 
-		public ExtendedUserData CreateUser {
+		public ExtendedUserData? CreateUser {
 			get {
 				return this.ThePage.CreateUser;
 			}
@@ -458,13 +458,13 @@ namespace Carrotware.CMS.Core {
 			return this.ThePage.GetCreditUserInfo();
 		}
 
-		public ExtendedUserData CreditUser {
+		public ExtendedUserData? CreditUser {
 			get {
 				return this.ThePage.CreditUser;
 			}
 		}
 
-		public ExtendedUserData BylineUser {
+		public ExtendedUserData? BylineUser {
 			get {
 				return this.ThePage.BylineUser;
 			}

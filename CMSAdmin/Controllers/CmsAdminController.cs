@@ -1109,6 +1109,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult PageEdit(ContentPageModel model) {
+			model.ClearOptionalItems(ModelState);
 			cmsHelper.OverrideKey(model.ContentPage.Root_ContentID);
 
 			ContentPage page = model.ContentPage;
@@ -1186,6 +1187,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult BlogPostEdit(ContentPageModel model) {
+			model.ClearOptionalItems(ModelState);
 			cmsHelper.OverrideKey(model.ContentPage.Root_ContentID);
 
 			ContentPage page = model.ContentPage;

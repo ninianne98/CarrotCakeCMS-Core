@@ -60,7 +60,7 @@ namespace Carrotware.CMS.UI.Components {
 				model.RestoreQueryString();
 			}
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<SiteSearch>();
+			var hlp = _helper.CarrotHtmlHelper<SiteSearch>();
 
 			return hlp;
 		}
@@ -163,7 +163,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<ContactInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<ContactInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
@@ -316,7 +316,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<LoginInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<LoginInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
@@ -451,7 +451,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<LogoutInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<LogoutInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
@@ -582,7 +582,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<ForgotPasswordInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<ForgotPasswordInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
@@ -722,7 +722,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<ResetPasswordInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<ResetPasswordInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
@@ -868,7 +868,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<ChangePasswordInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<ChangePasswordInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
@@ -1019,7 +1019,7 @@ namespace Carrotware.CMS.UI.Components {
 			_model.Settings = _settings;
 			_model.EncodedSettings = sXML;
 
-			var hlp = _helper.CarrotWeb().CarrotHtmlHelper<ChangeProfileInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper<ChangeProfileInfo>(_settings.PostPartialName, _model);
 
 			string frmTag = Environment.NewLine
 						+ hlp.AntiForgeryToken().RenderToString()
