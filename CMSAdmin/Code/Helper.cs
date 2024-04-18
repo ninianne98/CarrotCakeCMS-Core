@@ -4,7 +4,6 @@ using Carrotware.CMS.UI.Components;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using static Carrotware.CMS.UI.Components.CmsSkin;
 
@@ -12,10 +11,10 @@ using static Carrotware.CMS.UI.Components.CmsSkin;
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, 2023, 2024 Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: June 2023, April 2024
 */
 
 namespace Carrotware.CMS.CoreMVC.UI.Admin {
@@ -72,12 +71,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 		}
 
 		public static string MainColorCode {
-
 			get {
 				return CmsSkin.GetPrimaryColorCode(SiteSkin);
 			}
 		}
-
 
 		public static string InsertSpecialView(ViewLocation CtrlKey) {
 			string sViewPath = string.Empty;
@@ -152,13 +149,13 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			return CarrotWebHelper.GetWebResourceUrl(typeof(Controllers.CmsContentController), sResouceName);
 		}
 
-		public static void AddErrors(ModelStateDictionary stateDictionary, IdentityResult result) {
+		public static void AddErrors(this ModelStateDictionary stateDictionary, IdentityResult result) {
 			foreach (var error in result.Errors) {
 				stateDictionary.AddModelError(string.Empty, $"{error.Code}: {error.Description}");
 			}
 		}
 
-		public static void HandleErrorDict(ModelStateDictionary stateDictionary, Dictionary<string, string> validationsDictionary) {
+		public static void HandleErrorDict(this ModelStateDictionary stateDictionary, Dictionary<string, string> validationsDictionary) {
 			if (validationsDictionary.Any()) {
 				stateDictionary.AddModelError(string.Empty, "Please review and correct the noted errors.");
 			}
@@ -168,7 +165,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
-		public static void HandleErrorDict(ModelStateDictionary stateDictionary) {
+		public static void HandleErrorDict(this ModelStateDictionary stateDictionary) {
 			List<string> keys = stateDictionary.Keys.Where(x => !string.IsNullOrEmpty(x)).ToList();
 
 			foreach (string d in keys) {
@@ -178,13 +175,13 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
-		public static void ForceValidation(ModelStateDictionary stateDictionary, object m) {
-			IValidatableObject model = null;
+		public static void ForceValidation(this ModelStateDictionary stateDictionary, object m) {
+			IValidatableObject? model = null;
 
 			if (m is IValidatableObject) {
 				model = m as IValidatableObject;
 
-				IEnumerable<ValidationResult> errors = model.Validate(new ValidationContext(model, null, null));
+				IEnumerable<ValidationResult> errors = model != null ? model.Validate(new ValidationContext(model, null, null)) : new List<ValidationResult>();
 
 				List<string> modelStateKeys = stateDictionary.Keys.ToList();
 				List<ModelStateEntry> modelStateValues = stateDictionary.Values.ToList();
@@ -198,12 +195,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 					foreach (string memberName in errorMemberNames) {
 						int index = modelStateKeys.IndexOf(memberName);
 						if (index < 0 || !modelStateValues[index].Errors.Any(i => i.ErrorMessage == error.ErrorMessage)) {
-							stateDictionary.AddModelError(memberName, error.ErrorMessage);
+							stateDictionary.AddModelError(memberName, error.ErrorMessage ?? string.Empty);
 						}
 					}
 				}
 			}
 		}
-
 	}
 }

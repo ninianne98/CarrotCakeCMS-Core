@@ -561,15 +561,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				ContentSnippet cs = ContentSnippet.GetVersion(guidSnippet);
 
 				if (cs != null) {
-					if (string.IsNullOrEmpty(cs.ContentBody)) {
-						return "No Data";
-					} else {
-						if (cs.ContentBody.Length < 768) {
-							return cs.ContentBody;
-						} else {
-							return cs.ContentBody.Substring(0, 700) + "[.....]";
-						}
-					}
+					return ReturnLongString(cs.ContentBody);
 				}
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -896,15 +888,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				}
 
 				if (ww != null) {
-					if (string.IsNullOrEmpty(ww.ControlProperties)) {
-						return "No Data";
-					} else {
-						if (ww.ControlProperties.Length < 768) {
-							return ww.ControlProperties;
-						} else {
-							return ww.ControlProperties.Substring(0, 700) + "[.....]";
-						}
-					}
+					return ReturnLongString(ww.ControlProperties);
 				}
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -939,15 +923,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				}
 
 				if (ww != null) {
-					if (string.IsNullOrEmpty(ww.ControlProperties)) {
-						return "No Data";
-					} else {
-						if (ww.ControlProperties.Length < 768) {
-							return ww.ControlProperties;
-						} else {
-							return ww.ControlProperties.Substring(0, 700) + "[.....]";
-						}
-					}
+					return ReturnLongString(ww.ControlProperties);
 				}
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -978,15 +954,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				}
 
 				if (ww != null) {
-					if (string.IsNullOrEmpty(ww.ControlProperties)) {
-						return "No Data";
-					} else {
-						if (ww.ControlProperties.Length < 768) {
-							return ww.ControlProperties;
-						} else {
-							return ww.ControlProperties.Substring(0, 700) + "[.....]";
-						}
-					}
+					return ReturnLongString(ww.ControlProperties);
 				}
 
 				return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -1276,6 +1244,18 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				SiteData.WriteDebugException("webservice", ex);
 
 				return JsonSerializer.Serialize(ex.ToString());
+			}
+		}
+
+		protected string ReturnLongString(string jsonText) {
+			if (string.IsNullOrEmpty(jsonText)) {
+				return JsonSerializer.Serialize("No Data");
+			} else {
+				if (jsonText.Length < 768) {
+					return JsonSerializer.Serialize(jsonText);
+				} else {
+					return JsonSerializer.Serialize(jsonText.Substring(0, 700) + "[.....]");
+				}
 			}
 		}
 

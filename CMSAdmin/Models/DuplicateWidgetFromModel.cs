@@ -1,8 +1,6 @@
 ﻿using Carrotware.CMS.Core;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -36,20 +34,20 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		[Display(Name = "Search For")]
 		[Required]
-		public string SearchFor { get; set; }
+		public string SearchFor { get; set; } = string.Empty;
 
 		[Display(Name = "Hide Inactive Results")]
 		public bool HideInactive { get; set; }
 
-		public string PlaceholderName { get; set; }
+		public string PlaceholderName { get; set; } = string.Empty;
 		public Guid Root_ContentID { get; set; }
 
 		public Guid SelectedItem { get; set; }
 
-		public List<SiteNav> Pages { get; set; }
+		public List<SiteNav> Pages { get; set; } = new List<SiteNav>();
 		public int TotalPages { get; set; }
-		public ContentPage SelectedPage { get; set; }
-		public List<Widget> Widgets { get; set; }
+		public ContentPage? SelectedPage { get; set; }
+		public List<Widget> Widgets { get; set; } = new List<Widget>();
 
 		public int StepNumber { get; set; }
 
@@ -57,8 +55,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public void SearchOne() {
 			int iTake = 25;
-			this.SelectedPage = null;
-			this.Widgets = null;
+			this.SelectedPage = new ContentPage();
+			this.Widgets = new List<Widget>();
+			this.Pages = new List<SiteNav>();
 			this.SelectedItem = Guid.Empty;
 			this.TotalPages = 0;
 
@@ -71,8 +70,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		}
 
 		public void SearchTwo() {
-			this.Widgets = null;
-			this.Pages = null;
+			this.SelectedPage = new ContentPage();
+			this.Widgets = new List<Widget>();
+			this.Pages = new List<SiteNav>();
 
 			using (ContentPageHelper pageHelper = new ContentPageHelper()) {
 				this.SelectedPage = pageHelper.FindContentByID(SiteData.CurrentSiteID, this.SelectedItem);
@@ -80,10 +80,21 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			}
 		}
 
+		public ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
+			// these child objects are for display only, and their validation is not needed
+			foreach (var ms in modelState.ToArray()) {
+				if (ms.Key.ToLowerInvariant().Contains("pages[") || ms.Key.ToLowerInvariant().Contains("widgets[")) {
+					modelState.Remove(ms.Key);
+				}
+			}
+
+			return modelState;
+		}
+
 		public void Save() {
 			this.CopyCount = 0;
-			if (this.Widgets != null) {
-				List<Guid> lstSel = this.Widgets.Where(x => x.Selected).Select(x => x.Root_WidgetID).ToList();
+			if (this.Widgets != null && this.Widgets.Any()) {
+				var lstSel = this.Widgets.Where(x => x.Selected).Select(x => x.Root_WidgetID).ToList();
 
 				using (ContentPageHelper pageHelper = new ContentPageHelper()) {
 					this.SelectedPage = pageHelper.FindContentByID(SiteData.CurrentSiteID, this.SelectedItem);
@@ -104,9 +115,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 							this.CopyCount = ww.Count;
 
 							foreach (var w in ww) {
-								Guid newWidget = Guid.NewGuid();
+								var newWidget = Guid.NewGuid();
 
-								Widget wCpy = new Widget {
+								var wCpy = new Widget {
 									Root_ContentID = this.Root_ContentID,
 									Root_WidgetID = newWidget,
 									WidgetDataID = Guid.NewGuid(),

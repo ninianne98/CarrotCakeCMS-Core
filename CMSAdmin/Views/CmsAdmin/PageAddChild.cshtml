@@ -204,10 +204,10 @@
 		}
 
 		function cmsReqContentCallback(data, status) {
-			if (data.d == "FAIL") {
+			if (data == "FAIL") {
 				cmsSetHTMLMessage('<i>An error occurred. Please try again.</i>');
 			} else {
-				cmsSetTextMessage(data.d);
+				cmsSetTextMessage(data);
 			}
 		}
 	</script>

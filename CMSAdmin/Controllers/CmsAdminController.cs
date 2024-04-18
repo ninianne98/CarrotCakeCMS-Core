@@ -2127,6 +2127,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult DuplicateWidgetFrom(DuplicateWidgetFromModel model) {
+			model.ClearOptionalItems(ModelState);
+
 			if (ModelState.IsValid) {
 				if (model.StepNumber == 1) {
 					model.SearchOne();

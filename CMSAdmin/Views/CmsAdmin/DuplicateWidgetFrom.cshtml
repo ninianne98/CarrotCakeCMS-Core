@@ -53,10 +53,10 @@
 	}
 
 	function cmsReqContentCallback(data, status) {
-		if (data.d == "FAIL") {
+		if (data == "FAIL") {
 			cmsSetHTMLMessage('<i>An error occurred. Please try again.</i>');
 		} else {
-			cmsSetTextMessage(data.d);
+			cmsSetTextMessage(data);
 		}
 	}
 </script>
@@ -131,36 +131,35 @@
 						}
 					</text>
 				})
+				.AddColumn(x => x.NavMenuText, new CarrotGridColumn())
+				.AddColumn(x => x.FileName, new CarrotGridColumn())
 
-					.AddColumn(x => x.NavMenuText, new CarrotGridColumn())
-					.AddColumn(x => x.FileName, new CarrotGridColumn())
+				.AddColumn(x => x.EditDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
+				.AddColumn(x => x.CreateDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
+				.AddColumn(x => x.GoLiveDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
 
-					.AddColumn(x => x.EditDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
-					.AddColumn(x => x.CreateDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
-					.AddColumn(x => x.GoLiveDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
+				.AddColumn(x => x.ContentType, new CarrotGridImageColumn {
+					ImagePairs = typeImgs
+				})
+				.AddColumn(x => x.PageActive, new CarrotGridBooleanImageColumn {
+					AlternateTextTrue = "Active",
+					AlternateTextFalse = "Inactive",
+					Sortable = true
+				});
 
-					.AddColumn(x => x.ContentType, new CarrotGridImageColumn {
-						ImagePairs = typeImgs
-					})
-					.AddColumn(x => x.PageActive, new CarrotGridBooleanImageColumn {
-						AlternateTextTrue = "Active",
-						AlternateTextFalse = "Inactive",
-						Sortable = true
-					});
-
-					<div>
-						@if (Model.TotalPages > Model.Pages.Count) {
-							@String.Format("Showing {0} of {1} total results", Model.Pages.Count, Model.TotalPages);
-						} else {
-							@String.Format("Showing {0} results", Model.Pages.Count);
-						}
-					</div>
-					<div>
-						@gridOne.OutputHtmlBody()
-					</div>
+				<div>
+					@if (Model.TotalPages > Model.Pages.Count) {
+						@String.Format("Showing {0} of {1} total results", Model.Pages.Count, Model.TotalPages);
+					} else {
+						@String.Format("Showing {0} results", Model.Pages.Count);
+					}
+				</div>
+				<div>
+					@gridOne.OutputHtmlBody()
+				</div>
 			}
 
-			if (Model.SelectedItem != Guid.Empty && Model.StepNumber == 2) {
+		if (Model.SelectedItem != Guid.Empty && Model.StepNumber == 2 & Model.SelectedPage != null) {
 				// step 2 results
 
 				<h3>
@@ -176,8 +175,7 @@
 					<input type="button" name="btnSave" value="Duplicate" id="btnSave" onclick="DuplicateItems()" /> <br />
 				}
 
-				var gridTwo = Html.CarrotWeb().CarrotWebGrid<Widget>
-						(Model.Widgets);
+				var gridTwo = Html.CarrotWeb().CarrotWebGrid<Widget>(Model.Widgets);
 
 				gridTwo.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
 				gridTwo.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
@@ -194,29 +192,27 @@
 						@gridTwo.FormFieldFor(m => m.Root_ContentID, GridFormFieldType.Hidden)
 					</text>
 				})
+				.AddColumn(new CarrotGridTemplateColumn<Widget> {
+					HasHeadingText = false,
+					BodyAttributes = new { @class = "centerItem" },
+					FormatTemplate = @<text>
+						<a class="dataPopupTrigger" rel="@item.Root_WidgetID" href="javascript:void(0)">
+							<img src="/Assets/Admin/images/doc.png" alt="text" style="margin:0;" />
+						</a>
+					</text>
+				})
+				.AddColumn(x => x.EditDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
+				.AddColumn(x => x.PlaceholderName, new CarrotGridColumn())
+				.AddColumn(x => x.ControlPath, new CarrotGridColumn())
+				.AddColumn(x => x.IsWidgetActive, new CarrotGridBooleanImageColumn {
+					AlternateTextTrue = "Active",
+					AlternateTextFalse = "Inactive",
+					Sortable = true
+				});
 
-							.AddColumn(new CarrotGridTemplateColumn<Widget> {
-								HasHeadingText = false,
-								BodyAttributes = new { @class = "centerItem" },
-								FormatTemplate = @<text>
-									<a class="dataPopupTrigger" rel="@item.Root_WidgetID" href="javascript:void(0)">
-										<img src="/Assets/Admin/images/doc.png" alt="text" style="margin:0;" />
-									</a>
-								</text>
-							})
-
-								.AddColumn(x => x.EditDate, new CarrotGridColumn { CellFormatString = Helper.ShortDateFormatPattern })
-								.AddColumn(x => x.PlaceholderName, new CarrotGridColumn())
-								.AddColumn(x => x.ControlPath, new CarrotGridColumn())
-								.AddColumn(x => x.IsWidgetActive, new CarrotGridBooleanImageColumn {
-									AlternateTextTrue = "Active",
-									AlternateTextFalse = "Inactive",
-									Sortable = true
-								});
-
-								<div>
-									@gridTwo.OutputHtmlBody()
-								</div>
+				<div>
+					@gridTwo.OutputHtmlBody()
+				</div>
 			}
 
 			if (Model.StepNumber >= 3) {
