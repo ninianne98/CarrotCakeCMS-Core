@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
+﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -12,10 +10,10 @@ using System.Runtime.Loader;
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, 2023, 2024 Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: June 2023, April 2024
 */
 
 namespace Carrotware.CMS.Interface {
@@ -23,21 +21,27 @@ namespace Carrotware.CMS.Interface {
 	public static class WidgetLoad {
 		private static ConcurrentBag<Assembly> _assemblies = new ConcurrentBag<Assembly>();
 		private static ConcurrentBag<Type> _types = new ConcurrentBag<Type>();
+		private static WebApplication _webApplication;
+		private static IServiceCollection _servicesn;
 
 		private static string[] GetFiles() {
-			var fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath;
+			string fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath ?? string.Empty;
 
-			var files = Directory.GetFiles(fldr, "*.dll", SearchOption.AllDirectories).ToList();
+			var files = Directory.GetFiles(fldr, "*.dll", SearchOption.AllDirectories).ToList().Select(x => new FileInfo(x)).ToList();
 
-			files.RemoveAll(x => x.Contains("Microsoft.AspNetCore"));
-			files.RemoveAll(x => x.Contains("Microsoft.CodeAnalysis"));
-			files.RemoveAll(x => x.Contains("Microsoft.EntityFrameworkCore"));
-			files.RemoveAll(x => x.Contains("Microsoft.VisualStudio"));
+			files.RemoveAll(x => x.Name.StartsWith("Microsoft."));
+			files.RemoveAll(x => x.Name.StartsWith("System."));
 
-			return files.ToArray();
+			return files.Select(x => x.FullName).ToArray();
 		}
 
 		internal static void DiscoverWidgets() {
+			if (_assemblies.Any()) {
+				// in case it is called again, start over fresh
+				_assemblies = new ConcurrentBag<Assembly>();
+				_types = new ConcurrentBag<Type>();
+			}
+
 			string[] files = GetFiles();
 			string nsp = typeof(WidgetLoad).Namespace.ToLowerInvariant();
 
@@ -86,7 +90,18 @@ namespace Carrotware.CMS.Interface {
 			}
 		}
 
+		public static void ReregisterWidgets() {
+			DiscoverWidgets();
+			_webApplication.RegisterWidgets();
+		}
+
+		public static void ReloadWidgets() {
+			_servicesn.LoadWidgets();
+		}
+
 		public static void RegisterWidgets(this WebApplication app) {
+			_webApplication = app;
+
 			string nsp = typeof(WidgetLoad).Namespace.ToLowerInvariant();
 
 			foreach (var assembly in _assemblies) {
@@ -103,6 +118,8 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public static void LoadWidgets(this IServiceCollection services) {
+			_servicesn = services;
+
 			string nsp = typeof(WidgetLoad).Namespace.ToLowerInvariant();
 			DiscoverWidgets();
 

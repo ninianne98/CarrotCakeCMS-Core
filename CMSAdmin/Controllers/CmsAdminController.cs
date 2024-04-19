@@ -1089,6 +1089,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				cmsHelper.ResetConfigs();
 			}
 
+			WidgetLoad.ReregisterWidgets();
+			//WidgetLoad.ReloadWidgets();
+
 			return RedirectToAction(this.GetActionName(x => x.SiteInfo()));
 		}
 

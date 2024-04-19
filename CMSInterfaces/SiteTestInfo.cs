@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
