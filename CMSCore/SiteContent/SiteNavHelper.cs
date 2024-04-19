@@ -20,6 +20,13 @@ namespace Carrotware.CMS.Core {
 		MockupNav,
 	}
 
+	public enum SearchContentPortion {
+		All,
+		Title,
+		FileName,
+		ContentBody
+	}
+
 	//=============
 	public static class SiteNavFactory {
 

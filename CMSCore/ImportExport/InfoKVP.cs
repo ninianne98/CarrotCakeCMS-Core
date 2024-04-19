@@ -26,9 +26,9 @@ namespace Carrotware.CMS.Core {
 			return InfoKey + " : " + InfoLabel;
 		}
 
-		public override bool Equals(object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || GetType() != obj.GetType()) return false;
+			if (obj == null || this.GetType() != obj.GetType()) return false;
 			if (obj is InfoKVP) {
 				InfoKVP p = (InfoKVP)obj;
 				return (this.InfoKey == p.InfoKey);
@@ -38,7 +38,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public override int GetHashCode() {
-			return InfoLabel.GetHashCode() ^ InfoKey.GetHashCode();
+			return this.InfoLabel.GetHashCode() ^ this.InfoKey.GetHashCode();
 		}
 	}
 }

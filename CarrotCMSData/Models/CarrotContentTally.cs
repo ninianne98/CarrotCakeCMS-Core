@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Carrotware.CMS.Data.Models {
 
@@ -13,6 +11,6 @@ namespace Carrotware.CMS.Data.Models {
 		public DateTime? DateMonth { get; set; }
 
 		[Key]
-		public string DateSlug { get; set; }
+		public string? DateSlug { get; set; }
 	}
 }

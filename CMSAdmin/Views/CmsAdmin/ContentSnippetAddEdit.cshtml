@@ -70,12 +70,12 @@
 		});
 
 		function editSlugCallback(data, status) {
-			if (data.d != "FAIL" && data.d != "OK") {
-				cmsAlertModal(data.d);
+			if (data != "FAIL" && data != "OK") {
+				cmsAlertModal(data);
 			}
 
 			var act = true;
-			if (data.d == "OK") {
+			if (data == "OK") {
 				act = false;
 			}
 
@@ -83,10 +83,10 @@
 		}
 
 		function editSlug(data, status) {
-			if (data.d == "FAIL") {
-				cmsAlertModal(data.d);
+			if (data == "FAIL") {
+				cmsAlertModal(data);
 			} else {
-				$(tValidSlug).val(data.d);
+				$(tValidSlug).val(data);
 			}
 
 			CheckSlug();
@@ -158,7 +158,7 @@
 		function updateHeartbeat(data, status) {
 			var hb = $('#cmsHeartBeat');
 			hb.empty().append('HB:  ');
-			hb.append(data.d);
+			hb.append(data);
 		}
 
 		$(document).ready(function () {

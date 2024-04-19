@@ -71,7 +71,7 @@ namespace Carrotware.CMS.Data {
 			return ExecDataSet(connName, queryText, null);
 		}
 
-		public static DataSet ExecDataSet(string connName, string queryText, List<SqlParameter> parms) {
+		public static DataSet ExecDataSet(string connName, string queryText, List<SqlParameter>? parms) {
 			IConfigurationRoot configuration = GetConfig();
 			var conn = configuration.GetConnectionString(connName);
 

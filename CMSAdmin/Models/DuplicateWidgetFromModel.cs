@@ -39,6 +39,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		[Display(Name = "Hide Inactive Results")]
 		public bool HideInactive { get; set; }
 
+		[Display(Name = "Content Type")]
+		public ContentPageType.PageType ContentType { get; set; } = ContentPageType.PageType.Unknown;
+
 		public string PlaceholderName { get; set; } = string.Empty;
 		public Guid Root_ContentID { get; set; }
 
@@ -54,7 +57,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public int CopyCount { get; set; }
 
 		public void SearchOne() {
-			int iTake = 25;
+			int iTake = 50;
 			this.SelectedPage = new ContentPage();
 			this.Widgets = new List<Widget>();
 			this.Pages = new List<SiteNav>();
@@ -63,8 +66,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 			using (ISiteNavHelper navHelper = SiteNavFactory.GetSiteNavHelper()) {
 				if (!string.IsNullOrEmpty(this.SearchFor)) {
-					this.TotalPages = navHelper.GetSiteSearchCount(SiteData.CurrentSiteID, this.SearchFor, this.HideInactive);
-					this.Pages = navHelper.GetLatestContentSearchList(SiteData.CurrentSiteID, this.SearchFor, this.HideInactive, iTake, 0, "NavMenuText", "ASC");
+					this.TotalPages = navHelper.GetContentSearchListCount(SiteData.CurrentSiteID, this.SearchFor, this.HideInactive, this.ContentType, SearchContentPortion.All);
+					this.Pages = navHelper.GetContentSearchList(SiteData.CurrentSiteID, this.SearchFor, this.HideInactive, iTake, 0, this.ContentType, SearchContentPortion.All, "EditDate", "DESC");
 				}
 			}
 		}
@@ -83,7 +86,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
 			// these child objects are for display only, and their validation is not needed
 			foreach (var ms in modelState.ToArray()) {
-				if (ms.Key.ToLowerInvariant().Contains("pages[") || ms.Key.ToLowerInvariant().Contains("widgets[")) {
+				if (ms.Key.ToLowerInvariant().Length < 1
+							|| ms.Key.ToLowerInvariant().Contains("pages[") || ms.Key.ToLowerInvariant().Contains("widgets[")) {
 					modelState.Remove(ms.Key);
 				}
 			}

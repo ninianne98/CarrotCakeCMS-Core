@@ -12,7 +12,7 @@
 
 namespace Carrotware.CMS.Core {
 
-	static internal class CannedQueries {
+	internal static class CannedQueries {
 
 		internal static IQueryable<vwCarrotContent> GetAllByTypeList(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly, ContentPageType.PageType entryType) {
 			return (from ct in ctx.vwCarrotContents
@@ -128,6 +128,21 @@ namespace Carrotware.CMS.Core {
 					 && (ct.PageActive == true || bActiveOnly == false)
 					 && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 					 && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
+					select ct);
+		}
+
+		internal static IQueryable<vwCarrotContent> GetContentByStatusAndType(CarrotCakeContext ctx, Guid siteID,
+		ContentPageType.PageType pageType, bool bActiveOnly) {
+			Guid contentTypeID = ContentPageType.GetIDByType(pageType);
+
+			return (from ct in ctx.vwCarrotContents
+					orderby ct.ContentTypeValue, ct.NavMenuText
+					where ct.SiteId == siteID
+						&& ct.IsLatestVersion == true
+						&& (ct.ContentTypeId == contentTypeID || pageType == ContentPageType.PageType.Unknown)
+						&& (ct.PageActive == true || bActiveOnly == false)
+						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
+						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 					select ct);
 		}
 

@@ -9,6 +9,7 @@
 	typeImgs.Add(new CarrotImageColumnData(ContentPageType.PageType.ContentEntry, "~/Assets/Admin/Images/page_world.png", "Page"));
 	typeImgs.Add(new CarrotImageColumnData(ContentPageType.PageType.BlogEntry, "~/Assets/Admin/Images/blogger.png", "Post"));
 }
+
 <script type="text/javascript">
 	function RunSearch() {
 		$('#@Html.IdFor(x => x.SelectedItem)').val('@Guid.Empty');
@@ -79,7 +80,6 @@
 		<legend>
 			<label>
 				Search
-
 				@Html.Partial("_displayErrorPopupButton")
 			</label>
 		</legend>
@@ -95,6 +95,21 @@
 			<b class="caption">hide inactive results: </b>
 			@Html.CheckBoxFor(m => m.HideInactive)
 		</div>
+
+		<div>
+			<b class="caption">show content: <br /> </b>
+			<div class="jqradioset">
+				@Html.RadioButtonFor(i => i.ContentType, ContentPageType.PageType.Unknown, new { GroupName = "rdoSelectedSearch", id = "rdoSelectedSearch1" })
+				<label for="rdoSelectedSearch1">Show All</label>
+
+				@Html.RadioButtonFor(i => i.ContentType, ContentPageType.PageType.BlogEntry, new { GroupName = "rdoSelectedSearch", id = "rdoSelectedSearch2" })
+				<label for="rdoSelectedSearch2">Blog</label>
+
+				@Html.RadioButtonFor(i => i.ContentType, ContentPageType.PageType.ContentEntry, new { GroupName = "rdoSelectedSearch", id = "rdoSelectedSearch3" })
+				<label for="rdoSelectedSearch3">Content Page</label>
+			</div>
+		</div>
+
 		<br />
 
 		@if (!String.IsNullOrEmpty(Model.SearchFor) && Model.StepNumber >= 1) {
@@ -102,8 +117,7 @@
 			if (Model.SelectedItem == Guid.Empty && Model.StepNumber == 1) {
 				// step 1 results
 
-				var gridOne = Html.CarrotWeb().CarrotWebGrid<SiteNav>
-					(Model.Pages);
+				var gridOne = Html.CarrotWeb().CarrotWebGrid<SiteNav>(Model.Pages);
 
 				gridOne.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead" }, null);
 				gridOne.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;

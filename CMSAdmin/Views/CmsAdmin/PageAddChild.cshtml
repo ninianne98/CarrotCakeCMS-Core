@@ -49,9 +49,9 @@
 				"Yes": function () { OverwriteFileData(); }
 			};
 
-			if (theTitle.length > 0 ) {
+			if (theTitle.length > 0) {
 				if (theFile.length > 0 || theNav.length > 0) {
-					cmsAlertModalSmallBtns('There is already content title and/or filename, overwrite?', opts );
+					cmsAlertModalSmallBtns('There is already content title and/or filename, overwrite?', opts);
 				} else {
 					GeneratePageFilename2();
 				}
@@ -93,8 +93,8 @@
 
 		function ajaxGeneratePageFilename(data, status) {
 			//debugger;
-			if (data.d == "FAIL") {
-				cmsAlertModal(data.d);
+			if (data == "FAIL") {
+				cmsAlertModal(data);
 			} else {
 				var theTitle = $(tTitle).val();
 				var theFile = $(tValidFile).val();
@@ -102,7 +102,7 @@
 				var theHead = $(tHead).val();
 
 				if (theFile.length < 3) {
-					$(tValidFile).val(data.d);
+					$(tValidFile).val(data);
 				}
 				if (theNav.length < 1) {
 					$(tNav).val(theTitle);
@@ -136,12 +136,12 @@
 		});
 
 		function editFilenameCallback(data, status) {
-			if (data.d != "FAIL" && data.d != "OK") {
-				cmsAlertModal(data.d);
+			if (data != "FAIL" && data != "OK") {
+				cmsAlertModal(data);
 			}
 
 			var act = true;
-			if (data.d == "OK") {
+			if (data == "OK") {
 				act = false;
 			}
 
@@ -330,10 +330,10 @@
 					<!-- parent page plugin-->
 					@{
 						var drill = new SitePageDrillDownModel {
-							FieldName = Html.NameFor(m => m.ContentPage.Parent_ContentID).ToString(),
-							CurrentPageID = Model.ContentPage.Root_ContentID,
-							SelectedPageID = Model.ContentPage.Parent_ContentID
-						};
+						FieldName = Html.NameFor(m => m.ContentPage.Parent_ContentID).ToString(),
+						CurrentPageID = Model.ContentPage.Root_ContentID,
+						SelectedPageID = Model.ContentPage.Parent_ContentID
+					};
 					}
 
 					@Html.Partial("_SitePageDrillDown", drill)
@@ -385,35 +385,33 @@
 
 			<input type="submit" name="btnSave" value="Create" id="btnSave" />
 		</div>
-						}
+	}
 
-						<script type="text/javascript">
-							function SubmitPage() {
-								var ret = cmsPreSaveTrigger();
-								ClickSaveBtn();
-							}
+	<script type="text/javascript">
+		function SubmitPage() {
+			var ret = cmsPreSaveTrigger();
+			ClickSaveBtn();
+		}
 
-							function ClickSaveBtn() {
-								$('#btnSave').click();
-								return true;
-							}
-						</script>
-						} else {
-							<h2>
-								The page
-								<a id="lnkNew" target="_blank" href="@Model.ContentPage.FileName">
-									@Model.ContentPage.FileName
-									<img class="imgNoBorder" src="/Assets/Admin/images/html2.png" title="Visit page" alt="Visit page" />
-								</a>
-								has been created.
-							</h2>
-							<h3>
-								<a href="@Url.Action("PageAddChild", new { @id = Model.ParentID })" id="lnkCreatePage">
-									<img class="imgNoBorder" src="/Assets/Admin/images/add.png" alt="Add" title="Add" />
-									Create Another Page
-								</a>
-							</h3>
-						}
+		function ClickSaveBtn() {
+			$('#btnSave').click();
+			return true;
+		}
+	</script>
+} else {
+	<h2>
+		The page
+		<a id="lnkNew" target="_blank" href="@Model.ContentPage.FileName">
+			@Model.ContentPage.FileName
+			<img class="imgNoBorder" src="/Assets/Admin/images/html2.png" title="Visit page" alt="Visit page" /></a> 
+		has been created.
+	</h2>
+	<h3>
+		<a href="@Url.Action("PageAddChild", new { @id = Model.ParentID })" id="lnkCreatePage">
+			<img class="imgNoBorder" src="/Assets/Admin/images/add.png" alt="Add" title="Add" />
+			Create Another Page</a>
+	</h3>
+}
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>

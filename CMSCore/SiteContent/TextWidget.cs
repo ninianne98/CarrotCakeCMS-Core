@@ -56,9 +56,9 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public override bool Equals(object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || GetType() != obj.GetType()) return false;
+			if (obj == null || this.GetType() != obj.GetType()) return false;
 			if (obj is TextWidget) {
 				TextWidget p = (TextWidget)obj;
 				return (this.SiteID == p.SiteID

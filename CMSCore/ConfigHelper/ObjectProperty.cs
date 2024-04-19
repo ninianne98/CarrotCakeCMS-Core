@@ -56,7 +56,7 @@ namespace Carrotware.CMS.Core {
 		public bool CheckBoxState { get; set; }
 		public string TextValue { get; set; }
 
-		public override bool Equals(object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
 			if (obj == null || this.GetType() != obj.GetType()) return false;
 			if (obj is ObjectProperty) {

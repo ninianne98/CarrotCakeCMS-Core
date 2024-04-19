@@ -445,9 +445,13 @@ namespace Carrotware.CMS.Core {
 			bool bExists = File.Exists(serverPath);
 
 			if (!bExists) {
-				using (var webClient = new WebClient()) {
+				using (var client = new HttpClient()) {
 					try {
-						webClient.DownloadFile(remoteUri, serverPath);
+						using (var stream = client.GetStreamAsync(remoteUri).Result) {
+							using (var fs = new FileStream(serverPath, FileMode.CreateNew)) {
+								stream.CopyTo(fs);
+							}
+						}
 					} catch (Exception ex) {
 						if (ex is WebException) {
 							WebException webException = (WebException)ex;

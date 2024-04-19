@@ -27,9 +27,9 @@ namespace Carrotware.CMS.Core {
 		public bool IsPublic { get; set; }
 		public DateTime? EditDate { get; set; }
 
-		public override bool Equals(object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || GetType() != obj.GetType()) return false;
+			if (obj == null || this.GetType() != obj.GetType()) return false;
 
 			if (obj is ContentEditor) {
 				ContentEditor p = (ContentEditor)obj;
@@ -41,7 +41,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public override int GetHashCode() {
-			return UserName.GetHashCode() ^ SiteID.GetHashCode();
+			return this.UserName.GetHashCode() ^ this.SiteID.GetHashCode();
 		}
 
 		internal ContentEditor(vwCarrotEditorUrl c) {

@@ -178,8 +178,8 @@ function cmsAjaxFailed(request) {
 }
 
 function cmsAjaxGeneralCallback(data, status) {
-	if (data.d != "OK") {
-		cmsAlertModal(data.d);
+	if (data != "OK") {
+		cmsAlertModal(data);
 	}
 }
 
