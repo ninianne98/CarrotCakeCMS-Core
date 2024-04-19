@@ -6,6 +6,16 @@ using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+/*
+* CarrotCake CMS (MVC Core)
+* http://www.carrotware.com/
+*
+* Copyright 2015, 2023, Samantha Copeland
+* Dual licensed under the MIT or GPL Version 3 licenses.
+*
+* Date: June 2023
+*/
+
 namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
 	[WidgetController(typeof(AdminController))]
@@ -17,7 +27,6 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			_site = site;
 			_webenv = environment;
 		}
-
 
 		public ActionResult Index() {
 			PagedData<GalleryGroup> model = new PagedData<GalleryGroup>();
@@ -119,6 +128,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 				return RedirectToAction("EditGalleryPhotos", new { @id = model.GalleryId });
 			}
 		}
+
 		public ActionResult GalleryDatabase() {
 			List<string> lst = new List<string>();
 
@@ -142,15 +152,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 				imageFile = path.DecodeBase64();
 			}
 
-			if (imageFile.Contains("../") || imageFile.Contains(@"..\")) {
-				throw new Exception("Cannot use relative paths.");
-			}
-			if (imageFile.Contains(":")) {
-				throw new Exception("Cannot specify drive letters.");
-			}
-			if (imageFile.Contains("//") || imageFile.Contains(@"\\")) {
-				throw new Exception("Cannot use UNC paths.");
-			}
+			ValidateGalleryImage(imageFile);
 
 			GalleryMetaData model = gh.GalleryMetaDataGetByFilename(imageFile);
 			if (model == null) {
@@ -165,7 +167,6 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		// [ValidateInput(false)]
 		public ActionResult EditImageMetaData(GalleryMetaData model) {
 			GalleryHelper gh = new GalleryHelper(_site.SiteID);
 
@@ -178,11 +179,28 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 				meta.GalleryImageName = model.GalleryImageName.ToLower();
 			}
 
+			meta.ValidateGalleryImage();
+
 			meta.ImageMetaData = model.ImageMetaData;
 			meta.ImageTitle = model.ImageTitle;
 			meta.Save();
 
 			return RedirectToAction("EditImageMetaData", new { @path = meta.GalleryImageName.EncodeBase64() });
+		}
+
+		protected void ValidateGalleryImage(string imageFile) {
+			if (imageFile.Contains("../") || imageFile.Contains(@"..\")) {
+				throw new Exception("Cannot use relative paths.");
+			}
+			if (imageFile.Contains(":")) {
+				throw new Exception("Cannot specify drive letters.");
+			}
+			if (imageFile.Contains("//") || imageFile.Contains(@"\\")) {
+				throw new Exception("Cannot use UNC paths.");
+			}
+			if (imageFile.Contains("<") || imageFile.Contains(">")) {
+				throw new Exception("Cannot include html tags.");
+			}
 		}
 	}
 }

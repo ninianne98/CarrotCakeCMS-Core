@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CarrotCake.CMS.Plugins.PhotoGallery.Code {
 
 	public class GalleryRegistration : BaseWidgetLoader {
+
 		public override void LoadWidgets(IServiceCollection services) {
 			base.LoadWidgets(services);
 

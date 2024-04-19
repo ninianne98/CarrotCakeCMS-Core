@@ -1,8 +1,5 @@
 ﻿using CarrotCake.CMS.Plugins.PhotoGallery.Data;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
@@ -13,12 +10,10 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		internal GalleryGroup(Gallery gal) {
 			if (gal != null) {
 				this.GalleryId = gal.GalleryId;
-				this.SiteID = gal.SiteId.Value;
-
+				this.SiteID = gal.SiteId;
 				this.GalleryTitle = gal.GalleryTitle;
 
-				GalleryHelper gh = new GalleryHelper(SiteID);
-
+				var gh = new GalleryHelper(this.SiteID);
 				this.GalleryImages = gh.GalleryImageEntryListGetByGalleryId(this.GalleryId);
 			}
 		}
@@ -28,20 +23,20 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		public Guid GalleryId { get; set; }
 
 		[Display(Name = "Site ID")]
-		public Guid SiteID { get; set; }
+		public Guid? SiteID { get; set; }
 
 		[Required]
 		[Display(Name = "Gallery Title")]
-		public string GalleryTitle { get; set; }
+		public string? GalleryTitle { get; set; }
 
 		[Display(Name = "Images")]
 		public List<GalleryImageEntry> GalleryImages { get; set; }
 
 		public void Save() {
-			using (GalleryContext db = new GalleryContext()) {
-				Gallery gal = (from c in db.Galleries
-							   where c.GalleryId == this.GalleryId
-							   select c).FirstOrDefault();
+			using (var db = new GalleryContext()) {
+				var gal = (from c in db.Galleries
+						   where c.GalleryId == this.GalleryId
+						   select c).FirstOrDefault();
 
 				if (gal == null || this.GalleryId == Guid.Empty) {
 					gal = new Gallery();
@@ -62,12 +57,12 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		}
 
 		public override string ToString() {
-			return GalleryTitle;
+			return this.GalleryTitle ?? string.Empty;
 		}
 
-		public override bool Equals(Object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || GetType() != obj.GetType()) return false;
+			if (obj == null || this.GetType() != obj.GetType()) return false;
 			if (obj is GalleryGroup) {
 				GalleryGroup p = (GalleryGroup)obj;
 				return (this.GalleryId == p.GalleryId)
@@ -79,7 +74,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		}
 
 		public override int GetHashCode() {
-			return GalleryId.GetHashCode() ^ SiteID.GetHashCode() ^ GalleryTitle.GetHashCode();
+			return this.GalleryId.GetHashCode() ^ this.SiteID.GetHashCode() ^ this.GalleryTitle.GetHashCode();
 		}
 	}
 }

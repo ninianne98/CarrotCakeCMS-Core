@@ -11,8 +11,8 @@
 
 <div class="prettyphotoGallery gallery" id="@Model.InstanceId">
 	@foreach (var item in Model.Images) {
-		<a target="_blank" href="@item.GalleryImage" rel="prettyPhoto[@Model.InstanceId]" title="@item.GalleryImage">
-			@Html.CarrotWeb().ImageSizer(item.GalleryImage, item.GalleryImage, Model.ThumbSize, Model.ScaleImage, null)
+		<a target="_blank" href="@item.GalleryImageName" rel="prettyPhoto[@Model.InstanceId]" title="@item.GalleryImageName">
+			@Html.CarrotWeb().ImageSizer(item.GalleryImageName, item.GalleryImageName, Model.ThumbSize, Model.ScaleImage, null)
 		</a>
 	}
 </div>

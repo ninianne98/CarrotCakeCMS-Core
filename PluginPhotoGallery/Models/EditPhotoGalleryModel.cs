@@ -104,7 +104,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Models {
 			if (gal != null) {
 				this.ImageFiles = (from g in gal.GalleryImages
 								   orderby g.ImageOrder ascending
-								   select fileHelper.GetFileInfo(g.GalleryImage, g.GalleryImage)).ToList();
+								   select fileHelper.GetFileInfo(g.GalleryImageName, g.GalleryImageName)).ToList();
 			}
 
 			SetSourceFiles(null, "/");
@@ -209,8 +209,8 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Models {
 
 						if (theImg == null) {
 							theImg = new GalleryImageEntry();
-							theImg.GalleryImage = img.Value;
-							theImg.GalleryImageID = Guid.NewGuid();
+							theImg.GalleryImageName = img.Value;
+							theImg.GalleryImageId = Guid.NewGuid();
 							theImg.GalleryId = this.GalleryId;
 						}
 

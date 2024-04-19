@@ -1,8 +1,14 @@
 ﻿using CarrotCake.CMS.Plugins.PhotoGallery.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
+/*
+* CarrotCake CMS (MVC Core)
+* http://www.carrotware.com/
+*
+* Copyright 2015, 2023, Samantha Copeland
+* Dual licensed under the MIT or GPL Version 3 licenses.
+*
+* Date: June 2023
+*/
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
@@ -15,9 +21,11 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 				this.GalleryImageMetaID = gal.GalleryImageMetaId;
 				this.SiteID = gal.SiteId.Value;
 
-				this.GalleryImageName = gal.GalleryImageName;
-				this.ImageTitle = gal.ImageTitle;
+				this.GalleryImageName = gal.GalleryImageName ?? string.Empty;
+				this.ImageTitle = gal.ImageTitle ?? string.Empty;
 				this.ImageMetaData = gal.ImageMetaData;
+
+				this.ValidateGalleryImage();
 			}
 		}
 
@@ -26,10 +34,29 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
 		public string GalleryImageName { get; set; }
 		public string ImageTitle { get; set; }
-		public string ImageMetaData { get; set; }
+		public string? ImageMetaData { get; set; }
+
+		public void ValidateGalleryImage() {
+			if (!string.IsNullOrEmpty(this.GalleryImageName)) {
+				if (this.GalleryImageName.Contains("../") || this.GalleryImageName.Contains(@"..\")) {
+					throw new Exception("Cannot use relative paths.");
+				}
+				if (this.GalleryImageName.Contains(":")) {
+					throw new Exception("Cannot specify drive letters.");
+				}
+				if (this.GalleryImageName.Contains("//") || this.GalleryImageName.Contains(@"\\")) {
+					throw new Exception("Cannot use UNC paths.");
+				}
+				if (this.GalleryImageName.Contains("<") || this.GalleryImageName.Contains(">")) {
+					throw new Exception("Cannot include html tags.");
+				}
+			}
+		}
 
 		public void Save() {
-			if (!String.IsNullOrEmpty(this.GalleryImageName)) {
+			if (!string.IsNullOrEmpty(this.GalleryImageName)) {
+				this.ValidateGalleryImage();
+
 				using (GalleryContext db = new GalleryContext()) {
 					var gal = (from c in db.GalleryImageMetaData
 							   where c.GalleryImageName.ToLower() == this.GalleryImageName.ToLower()
@@ -60,9 +87,9 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 			return this.ImageTitle;
 		}
 
-		public override bool Equals(Object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || GetType() != obj.GetType()) return false;
+			if (obj == null || this.GetType() != obj.GetType()) return false;
 			if (obj is GalleryMetaData) {
 				GalleryMetaData p = (GalleryMetaData)obj;
 				return (this.GalleryImageMetaID == p.GalleryImageMetaID)

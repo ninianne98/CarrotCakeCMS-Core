@@ -1,9 +1,5 @@
 ﻿using CarrotCake.CMS.Plugins.PhotoGallery.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery {
@@ -12,17 +8,17 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
 		public GalleryHelper() { }
 
-		public GalleryHelper(Guid siteID) {
-			SiteID = siteID;
+		public GalleryHelper(Guid? siteID) {
+			this.SiteID = siteID ?? Guid.Empty;
 		}
 
 		public Guid SiteID { get; set; }
 
-		public GalleryImageEntry GalleryImageEntryGetByID(Guid galleryImageID) {
+		public GalleryImageEntry? GalleryImageEntryGetByID(Guid galleryImageID) {
 			using (GalleryContext db = new GalleryContext()) {
-				GalleryImageEntry ge = (from c in db.GalleryImages
-										where c.GalleryImageId == galleryImageID
-										select new GalleryImageEntry(c)).FirstOrDefault();
+				var ge = (from c in db.GalleryImages
+						  where c.GalleryImageId == galleryImageID
+						  select new GalleryImageEntry(c)).FirstOrDefault();
 
 				return ge;
 			}
@@ -38,13 +34,13 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 			}
 		}
 
-		public GalleryImageEntry GalleryImageEntryGetByFilename(Guid galleryID, string galleryImage) {
+		public GalleryImageEntry? GalleryImageEntryGetByFilename(Guid galleryID, string galleryImage) {
 			using (GalleryContext db = new GalleryContext()) {
-				GalleryImageEntry ge = (from c in db.GalleryImages
-										where c.GalleryId == galleryID
-										&& c.GalleryImageName.ToLower() == galleryImage.ToLower()
-										orderby c.ImageOrder ascending
-										select new GalleryImageEntry(c)).FirstOrDefault();
+				var ge = (from c in db.GalleryImages
+						  where c.GalleryId == galleryID
+						  && c.GalleryImageName.ToLower() == galleryImage.ToLower()
+						  orderby c.ImageOrder ascending
+						  select new GalleryImageEntry(c)).FirstOrDefault();
 
 				return ge;
 			}
@@ -52,7 +48,6 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
 		public void GalleryImageCleanup(Guid galleryID, List<string> lst) {
 			using (GalleryContext db = new GalleryContext()) {
-
 				db.GalleryImages.Where(g => g.GalleryId == galleryID
 									 && !lst.Contains(g.GalleryImageName.ToLower())).ExecuteDelete();
 
@@ -72,19 +67,19 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 			}
 		}
 
-		public GalleryGroup GalleryGroupGetByID(Guid galleryID) {
+		public GalleryGroup? GalleryGroupGetByID(Guid galleryID) {
 			using (GalleryContext db = new GalleryContext()) {
-				GalleryGroup ge = (from c in db.Galleries
-								   where c.SiteId == this.SiteID
-								   && c.GalleryId == galleryID
-								   select new GalleryGroup(c)).FirstOrDefault();
+				var ge = (from c in db.Galleries
+						  where c.SiteId == this.SiteID
+						  && c.GalleryId == galleryID
+						  select new GalleryGroup(c)).FirstOrDefault();
 
 				return ge;
 			}
 		}
 
-		public GalleryGroup GalleryGroupGetByName(string galleryTitle) {
-			GalleryGroup ge = null;
+		public GalleryGroup? GalleryGroupGetByName(string galleryTitle) {
+			GalleryGroup? ge = null;
 
 			using (GalleryContext db = new GalleryContext()) {
 				if (!string.IsNullOrEmpty(galleryTitle)) {
@@ -108,8 +103,8 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 			}
 		}
 
-		public GalleryMetaData GalleryMetaDataGetByFilename(string galleryImage) {
-			GalleryMetaData ge = null;
+		public GalleryMetaData? GalleryMetaDataGetByFilename(string galleryImage) {
+			GalleryMetaData? ge = null;
 
 			using (GalleryContext db = new GalleryContext()) {
 				if (!string.IsNullOrEmpty(galleryImage)) {
@@ -123,26 +118,26 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 			return ge;
 		}
 
-		public GalleryMetaData GalleryMetaDataGetByID(Guid galleryImageMetaID) {
+		public GalleryMetaData? GalleryMetaDataGetByID(Guid galleryImageMetaID) {
 			using (GalleryContext db = new GalleryContext()) {
-				GalleryMetaData ge = (from c in db.GalleryImageMetaData
-									  where c.SiteId == this.SiteID
-									  && c.GalleryImageMetaId == galleryImageMetaID
-									  select new GalleryMetaData(c)).FirstOrDefault();
+				var ge = (from c in db.GalleryImageMetaData
+						  where c.SiteId == this.SiteID
+						  && c.GalleryImageMetaId == galleryImageMetaID
+						  select new GalleryMetaData(c)).FirstOrDefault();
 
 				return ge;
 			}
 		}
 
-		public static string ReadEmbededScript(string sResouceName) {
-			string sReturn = null;
+		public static string ReadEmbededScript(string resouceName) {
+			string ret = null;
 
 			Assembly _assembly = Assembly.GetExecutingAssembly();
-			using (var stream = new StreamReader(_assembly.GetManifestResourceStream(sResouceName))) {
-				sReturn = stream.ReadToEnd();
+			using (var stream = new StreamReader(_assembly.GetManifestResourceStream(resouceName))) {
+				ret = stream.ReadToEnd();
 			}
 
-			return sReturn;
+			return ret;
 		}
 	}
 }

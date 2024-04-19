@@ -1,8 +1,5 @@
 ﻿using Carrotware.CMS.Interface;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
@@ -42,14 +39,12 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 				//if (SiteID == Guid.Empty) {
 				//	SiteID = SiteData.CurrentSiteID;
 				//}
-				Dictionary<string, string> _dict = null;
-
 				GalleryHelper gh = new GalleryHelper(SiteID);
 
-				_dict = (from c in gh.GalleryGroupListGetBySiteID()
-						 orderby c.GalleryTitle
-						 where c.SiteID == SiteID
-						 select c).ToList().ToDictionary(k => k.GalleryId.ToString(), v => v.GalleryTitle);
+				var _dict = (from c in gh.GalleryGroupListGetBySiteID()
+							 orderby c.GalleryTitle
+							 where c.SiteID == SiteID
+							 select c).ToList().ToDictionary(k => k.GalleryId.ToString(), v => v.GalleryTitle);
 
 				return _dict;
 			}
