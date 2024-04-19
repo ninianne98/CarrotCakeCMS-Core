@@ -62,7 +62,6 @@ namespace Carrotware.Web.UI.Components {
 		private static ILoggerFactory _loggerfactory;
 		private static ILogger _logger;
 
-
 		public static void PrepareSqlSession(this IServiceCollection services, string dbKey) {
 			_services = services;
 
@@ -289,16 +288,19 @@ namespace Carrotware.Web.UI.Components {
 		public static IHtmlHelper<T> CarrotHtmlHelper<T>(this IHtmlHelper htmlHelper, string partialViewName, T model) where T : class {
 			var razoract = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorPageActivator)) as IRazorPageActivator;
 			var razorengine = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
-
-			var viewEngineResult = razorengine.FindView(htmlHelper.ViewContext, partialViewName, false);
-			var view = viewEngineResult.View;
-
-			var newViewData = new ViewDataDictionary<T>(htmlHelper.ViewData, model);
-			var viewContext = new ViewContext(htmlHelper.ViewContext, view, newViewData, htmlHelper.ViewContext.Writer);
-
 			var page = new CarrotRazorPage<T>();
 
-			razoract.Activate(page, viewContext);
+			if (razorengine != null && razoract != null) {
+				var viewEngineResult = razorengine.FindView(htmlHelper.ViewContext, partialViewName, false);
+				var view = viewEngineResult.View;
+
+				if (view != null) {
+					var newViewData = new ViewDataDictionary<T>(htmlHelper.ViewData, model);
+					var viewContext = new ViewContext(htmlHelper.ViewContext, view, newViewData, htmlHelper.ViewContext.Writer);
+
+					razoract.Activate(page, viewContext);
+				}
+			}
 
 			var helper = page.Html;
 
@@ -759,7 +761,7 @@ namespace Carrotware.Web.UI.Components {
 			return new HtmlString(metaTag.RenderSelfClosingTag());
 		}
 
-		public static IDictionary<string, object> ToAttributeDictionary(this object attributes) {
+		public static IDictionary<string, object> ToAttributeDictionary(this object? attributes) {
 			IDictionary<string, object> attribDict = null;
 
 			if (attributes != null) {
@@ -992,7 +994,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static IHtmlContent ValidationMultiMessageFor<T>(this IHtmlHelper<T> htmlHelper,
-			Expression<Func<T, object>> property, object listAttributes = null, bool messageAsSpan = false) {
+			Expression<Func<T, object>> property, object? listAttributes = null, bool messageAsSpan = false) {
 			MemberExpression memberExpression = property.Body as MemberExpression ??
 									((UnaryExpression)property.Body).Operand as MemberExpression;
 
@@ -1110,7 +1112,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public HtmlString GetIP() {
-			return new HtmlString(CarrotWebHelper.HttpContext.Connection.RemoteIpAddress.ToString());
+			return new HtmlString(CarrotWebHelper.HttpContext.Connection.RemoteIpAddress?.ToString());
 		}
 
 		public HtmlString GetHost() {
@@ -1179,11 +1181,11 @@ namespace Carrotware.Web.UI.Components {
 			return urlHelperFactory.GetUrlHelper(_helper.ViewContext);
 		}
 
-		public SimpleAjaxForm BeginSimpleAjaxForm(SimpleAjaxFormOptions options, object route = null, object attributes = null) {
+		public SimpleAjaxForm BeginSimpleAjaxForm(SimpleAjaxFormOptions options, object? route = null, object? attributes = null) {
 			return new SimpleAjaxForm(_helper, options, route, attributes);
 		}
 
-		public SimpleAjaxForm BeginSimpleAjaxForm(SimpleAjaxFormOptions options, object route = null) {
+		public SimpleAjaxForm BeginSimpleAjaxForm(SimpleAjaxFormOptions options, object? route = null) {
 			return new SimpleAjaxForm(_helper, options, route);
 		}
 
@@ -1198,22 +1200,26 @@ namespace Carrotware.Web.UI.Components {
 
 		public IHtmlContent ActionImage(string actionName,
 										string controllerName,
-										object routeValues,
+										object? routeValues,
 										string imagePath,
 										string imageAltText = "",
-										object imageAttributes = null,
-										object linkAttributes = null) {
+										object? imageAttributes = null,
+										object? linkAttributes = null) {
 			var url = GetUrlHelper();
 
 			var anchorBuilder = new HtmlTag("a");
 			anchorBuilder.Uri = url.Action(actionName, controllerName, routeValues);
-			anchorBuilder.MergeAttributes(linkAttributes);
+			if (linkAttributes != null) {
+				anchorBuilder.MergeAttributes(linkAttributes);
+			}
 
 			var imgBuilder = new HtmlTag("img");
 			imgBuilder.Uri = url.Content(imagePath);
 			imgBuilder.MergeAttribute("alt", imageAltText);
 			imgBuilder.MergeAttribute("title", imageAltText);
-			imgBuilder.MergeAttributes(imageAttributes);
+			if (imageAttributes != null) {
+				imgBuilder.MergeAttributes(imageAttributes);
+			}
 
 			string imgHtml = imgBuilder.RenderSelfClosingTag();
 
@@ -1224,21 +1230,21 @@ namespace Carrotware.Web.UI.Components {
 
 		public WrappedItem BeginWrappedItem(string tag,
 					string actionName, string controllerName,
-					object activeAttributes = null, object inactiveAttributes = null) {
+					object? activeAttributes = null, object? inactiveAttributes = null) {
 			return new WrappedItem(_helper, tag, actionName, controllerName, activeAttributes, inactiveAttributes);
 		}
 
 		public WrappedItem BeginWrappedItem(string tag,
 							int currentPage, int selectedPage,
-							object activeAttributes = null, object inactiveAttributes = null) {
+							object? activeAttributes = null, object? inactiveAttributes = null) {
 			return new WrappedItem(_helper, tag, currentPage, selectedPage, activeAttributes, inactiveAttributes);
 		}
 
-		public WrappedItem BeginWrappedItem(string tag, object htmlAttributes = null) {
+		public WrappedItem BeginWrappedItem(string tag, object? htmlAttributes = null) {
 			return new WrappedItem(_helper, tag, htmlAttributes);
 		}
 
-		public IHtmlContent ImageSizer(string ImageUrl, string Title, int ThumbSize, bool ScaleImage, object imageAttributes = null) {
+		public IHtmlContent ImageSizer(string ImageUrl, string Title, int ThumbSize, bool ScaleImage, object? imageAttributes = null) {
 			ImageSizer img = new ImageSizer();
 			img.ImageUrl = ImageUrl;
 			img.Title = Title;

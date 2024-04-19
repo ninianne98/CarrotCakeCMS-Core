@@ -37,15 +37,15 @@ namespace Carrotware.Web.UI.Components {
 			this.BackColor = CarrotWebHelper.DecodeColor(colorCode);
 		}
 
-		public string CaptchaText { get; set; }
+		public string CaptchaText { get; set; } = string.Empty;
 
 		public override string ToString() {
 			return this.CaptchaText;
 		}
 
-		public string ValidationGroup { get; set; }
+		public string ValidationGroup { get; set; } = string.Empty;
 
-		public string ValidationMessage { get; set; }
+		public string ValidationMessage { get; set; } = string.Empty;
 
 		private bool IsValid { get; set; }
 
@@ -71,7 +71,7 @@ namespace Carrotware.Web.UI.Components {
 			return this.IsValid;
 		}
 
-		public object ImageAttributes { get; set; }
+		public object? ImageAttributes { get; set; }
 
 		public override string GetHtml() {
 			var key = CaptchaImage.SessionKeyValue;
@@ -79,7 +79,9 @@ namespace Carrotware.Web.UI.Components {
 			var imgBuilder = new HtmlTag("img", this.GetCaptchaImageURI());
 			imgBuilder.MergeAttribute("alt", key);
 			imgBuilder.MergeAttribute("title", key);
-			imgBuilder.MergeAttributes(this.ImageAttributes);
+			if (this.ImageAttributes != null) {
+				imgBuilder.MergeAttributes(this.ImageAttributes);
+			}
 
 			return imgBuilder.RenderSelfClosingTag();
 		}

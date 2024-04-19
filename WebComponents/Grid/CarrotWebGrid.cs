@@ -97,7 +97,7 @@ namespace Carrotware.Web.UI.Components {
 			return fldName;
 		}
 
-		public HtmlString FormFieldFor(Expression<Func<T, Object>> property, GridFormFieldType fldType, object htmlAttribs = null) {
+		public HtmlString FormFieldFor(Expression<Func<T, Object>> property, GridFormFieldType fldType, object? htmlAttribs = null) {
 			T row = this.DataPage.DataSource[this.RowNumber];
 
 			//PropertyInfo propInfo = row.PropInfoFromExpression<T>(property);
@@ -138,7 +138,7 @@ namespace Carrotware.Web.UI.Components {
 			return formFld;
 		}
 
-		public HtmlString DropDownFor(Expression<Func<T, Object>> property, SelectList selectList, string optionLabel, object htmlAttributes = null) {
+		public HtmlString DropDownFor(Expression<Func<T, Object>> property, SelectList selectList, string optionLabel, object? htmlAttributes = null) {
 			T row = this.DataPage.DataSource[this.RowNumber];
 
 			//PropertyInfo propInfo = row.PropInfoFromExpression<T>(property);
@@ -163,7 +163,7 @@ namespace Carrotware.Web.UI.Components {
 			return formFld;
 		}
 
-		public HtmlString CheckBoxListFor(Expression<Func<T, Object>> property, MultiSelectList selectList, string selectedFieldName, object chkboxAttributes = null, object listAttributes = null) {
+		public HtmlString CheckBoxListFor(Expression<Func<T, Object>> property, MultiSelectList selectList, string selectedFieldName, object? chkboxAttributes = null, object? listAttributes = null) {
 			T row = this.DataPage.DataSource[this.RowNumber];
 			string columnName = string.Empty;
 			selectedFieldName = string.IsNullOrEmpty(selectedFieldName) ? "Selected" : selectedFieldName;
@@ -241,7 +241,7 @@ namespace Carrotware.Web.UI.Components {
 												break;
 
 											case CarrotGridColumnType.ImageEnum:
-												CarrotImageColumnData imgData = null;
+												CarrotImageColumnData? imgData = null;
 
 												CarrotGridImageColumn ic = (CarrotGridImageColumn)col;
 												imgPath = ic.DefaultImagePath;
@@ -262,7 +262,9 @@ namespace Carrotware.Web.UI.Components {
 													imgBuilder.Uri = url.Content(imgPath);
 													imgBuilder.MergeAttribute("alt", imageAltText);
 													imgBuilder.MergeAttribute("title", imageAltText);
-													imgBuilder.MergeAttributes(ic.ImageAttributes);
+													if (ic.ImageAttributes != null) {
+														imgBuilder.MergeAttributes(ic.ImageAttributes);
+													}
 
 													cellContents = imgBuilder.RenderSelfClosingTag();
 												}

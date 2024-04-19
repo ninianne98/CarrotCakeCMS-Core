@@ -29,7 +29,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public Dictionary<string, string> ImageOptions { get; set; }
 
-		public object ImageAttributes { get; set; }
+		public object? ImageAttributes { get; set; }
 
 		public override string GetHtml() {
 			string val = this.SessionKeyValue.Value;
@@ -37,7 +37,9 @@ namespace Carrotware.Web.UI.Components {
 			var imgBuilder = new HtmlTag("img", GetCaptchaImageURI());
 			imgBuilder.MergeAttribute("alt", val);
 			imgBuilder.MergeAttribute("title", val);
-			imgBuilder.MergeAttributes(this.ImageAttributes);
+			if (this.ImageAttributes != null) {
+				imgBuilder.MergeAttributes(this.ImageAttributes);
+			}
 
 			return imgBuilder.RenderSelfClosingTag();
 		}

@@ -136,7 +136,7 @@ namespace Carrotware.Web.UI.Components {
 												break;
 
 											case CarrotGridColumnType.ImageEnum:
-												CarrotImageColumnData imgData = null;
+												CarrotImageColumnData? imgData = null;
 
 												var ic = (CarrotGridImageColumn)col;
 												imgPath = ic.DefaultImagePath;
@@ -157,7 +157,9 @@ namespace Carrotware.Web.UI.Components {
 													imgBuilder.Uri = url.Content(imgPath);
 													imgBuilder.MergeAttribute("alt", imageAltText);
 													imgBuilder.MergeAttribute("title", imageAltText);
-													imgBuilder.MergeAttributes(ic.ImageAttributes);
+													if (ic.ImageAttributes != null) {
+														imgBuilder.MergeAttributes(ic.ImageAttributes);
+													}
 
 													cellContents = imgBuilder.RenderSelfClosingTag();
 												}
@@ -181,7 +183,9 @@ namespace Carrotware.Web.UI.Components {
 													imgBuilder.Uri = url.Content(imgPath);
 													imgBuilder.MergeAttribute("alt", sTxt);
 													imgBuilder.MergeAttribute("title", sTxt);
-													imgBuilder.MergeAttributes(bic.ImageAttributes);
+													if (bic.ImageAttributes != null) {
+														imgBuilder.MergeAttributes(bic.ImageAttributes);
+													}
 
 													cellContents = imgBuilder.RenderSelfClosingTag();
 												}

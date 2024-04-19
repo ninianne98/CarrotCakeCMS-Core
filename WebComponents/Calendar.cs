@@ -93,11 +93,11 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public string HilightDates { get; set; }
+		public string HilightDates { get; set; } = string.Empty;
 
 		public string ElementId { get; set; }
 
-		public List<DateTime> HilightDateList { get; set; }
+		public List<DateTime> HilightDateList { get; set; } = new List<DateTime>();
 
 		public override string GetBody() {
 			StringBuilder sb = new StringBuilder();

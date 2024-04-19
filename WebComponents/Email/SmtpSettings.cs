@@ -11,10 +11,10 @@
 namespace Carrotware.Web.UI.Components {
 
 	public class SmtpSettings {
-		public string FromEmail { get; set; }
-		public string DisplayName { get; set; }
-		public string SmtpUsername { get; set; }
-		public string SmtpPassword { get; set; }
+		public string FromEmail { get; set; } = string.Empty;
+		public string DisplayName { get; set; } = string.Empty;
+		public string SmtpUsername { get; set; } = string.Empty;
+		public string SmtpPassword { get; set; } = string.Empty;
 		public string Host { get; set; } = "localhost";
 		public int Port { get; set; } = 587;
 		public bool UseTls { get; set; } = false;

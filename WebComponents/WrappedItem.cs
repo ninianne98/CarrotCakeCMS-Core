@@ -12,18 +12,18 @@ using System.Text;
 */
 
 namespace Carrotware.Web.UI.Components {
+
 	public class WrappedItem : IDisposable {
-		protected IHtmlHelper _helper = null;
-		protected StringBuilder _stringbldr = null;
+		protected IHtmlHelper _helper;
+		protected StringBuilder _stringbldr = new StringBuilder();
 
 		protected string _tag = "li";
 		protected string _defaultActionName = "Index";
 
 		public WrappedItem(IHtmlHelper htmlHelper, string tag,
 							string actionName, string controllerName,
-							object activeAttributes = null, object inactiveAttributes = null) {
+							object? activeAttributes = null, object? inactiveAttributes = null) {
 			_helper = htmlHelper;
-
 			var sb = new StringBuilder();
 
 			_helper.ViewContext.Writer.Write(OpenTag(htmlHelper, sb, tag,
@@ -34,7 +34,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public WrappedItem(IHtmlHelper htmlHelper, string tag,
 					int currentPage, int selectedPage,
-					object activeAttributes = null, object inactiveAttributes = null) {
+					object? activeAttributes = null, object? inactiveAttributes = null) {
 			_helper = htmlHelper;
 			var sb = new StringBuilder();
 
@@ -44,7 +44,7 @@ namespace Carrotware.Web.UI.Components {
 			sb.Clear();
 		}
 
-		public WrappedItem(IHtmlHelper htmlHelper, string tag, object htmlAttributes = null) {
+		public WrappedItem(IHtmlHelper htmlHelper, string tag, object? htmlAttributes = null) {
 			_helper = htmlHelper;
 			var sb = new StringBuilder();
 
@@ -57,7 +57,8 @@ namespace Carrotware.Web.UI.Components {
 
 		public WrappedItem(IHtmlHelper htmlHelper, StringBuilder sb, string tag,
 						string actionName, string controllerName,
-						object activeAttributes = null, object inactiveAttributes = null) {
+						object? activeAttributes = null, object? inactiveAttributes = null) {
+			_helper = htmlHelper;
 			_stringbldr = sb;
 
 			OpenTag(htmlHelper, sb, tag, actionName, controllerName, activeAttributes, inactiveAttributes);
@@ -65,13 +66,14 @@ namespace Carrotware.Web.UI.Components {
 
 		public WrappedItem(IHtmlHelper htmlHelper, StringBuilder sb, string tag,
 							int currentPage, int selectedPage,
-							object activeAttributes = null, object inactiveAttributes = null) {
+							object? activeAttributes = null, object? inactiveAttributes = null) {
+			_helper = htmlHelper;
 			_stringbldr = sb;
 
 			OpenTag(htmlHelper, sb, tag, currentPage, selectedPage, activeAttributes, inactiveAttributes);
 		}
 
-		public WrappedItem(StringBuilder sb, string tag, object htmlAttributes = null) {
+		public WrappedItem(StringBuilder sb, string tag, object? htmlAttributes = null) {
 			_stringbldr = sb;
 
 			OpenTag(sb, tag, htmlAttributes);
@@ -81,7 +83,7 @@ namespace Carrotware.Web.UI.Components {
 
 		private string OpenTag(IHtmlHelper htmlHelper, StringBuilder sb, string tag,
 				string actionName, string controllerName,
-				object activeAttributes = null, object inactiveAttributes = null) {
+				object? activeAttributes = null, object? inactiveAttributes = null) {
 			_stringbldr = sb;
 			_tag = string.IsNullOrEmpty(tag) ? "li" : tag;
 
@@ -133,12 +135,12 @@ namespace Carrotware.Web.UI.Components {
 
 		private string OpenTag(IHtmlHelper htmlHelper, StringBuilder sb, string tag,
 							int currentPage, int selectedPage,
-							object activeAttributes = null, object inactiveAttributes = null) {
+							object? activeAttributes = null, object? inactiveAttributes = null) {
 			_stringbldr = sb;
 			_tag = string.IsNullOrEmpty(tag) ? "li" : tag;
 
 			var tagBuilder = new HtmlTag(_tag);
-			IDictionary<string, object> tagAttrib = null;
+			IDictionary<string, object>? tagAttrib = null;
 
 			if (currentPage == selectedPage) {
 				tagAttrib = activeAttributes.ToAttributeDictionary();
@@ -154,7 +156,7 @@ namespace Carrotware.Web.UI.Components {
 			return _stringbldr.ToString();
 		}
 
-		private string OpenTag(StringBuilder sb, string tag, object htmlAttributes = null) {
+		private string OpenTag(StringBuilder sb, string tag, object? htmlAttributes = null) {
 			_stringbldr = sb;
 			_tag = string.IsNullOrEmpty(tag) ? "li" : tag;
 

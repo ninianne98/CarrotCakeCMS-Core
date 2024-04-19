@@ -110,7 +110,7 @@ namespace Carrotware.Web.UI.Components {
 		protected void FormHelper(Expression<Func<PagedDataBase, object>> property, StringBuilder sb) {
 			PropertyInfo propInfo = this.PagedDataBase.PropInfoFromExpression<PagedDataBase>(property);
 			string columnName = ReflectionUtilities.BuildProp(property);
-			object val = propInfo.GetValue(this.PagedDataBase, null);
+			object? val = propInfo.GetValue(this.PagedDataBase, null);
 
 			string fldName = string.Format("{0}{1}", this.FieldNamePrefix, columnName);
 			string str = val == null ? string.Empty : val.ToString();

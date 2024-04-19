@@ -37,13 +37,13 @@ namespace Carrotware.Web.UI.Components {
 		private HtmlTag _tag = new HtmlTag();
 		private IHtmlHelper _helper;
 
-		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object routeValues = null, object attributes = null) {
+		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object? routeValues = null, object? attributes = null) {
 			SetAjaxForm(helper, options, routeValues, attributes);
 
 			RenderOpen();
 		}
 
-		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object attributes = null) {
+		public SimpleAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object? attributes = null) {
 			SetAjaxForm(helper, options, null, attributes);
 
 			RenderOpen();
@@ -60,7 +60,7 @@ namespace Carrotware.Web.UI.Components {
 			_helper.PreserveViewPath();
 		}
 
-		public void SetAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object routeValues, object attributes) {
+		public void SetAjaxForm(IHtmlHelper helper, SimpleAjaxFormOptions options, object? routeValues, object? attributes) {
 			_helper = helper;
 			_tag = new HtmlTag(_tagName);
 			_tag.SetAttribute("id", options.FormId);

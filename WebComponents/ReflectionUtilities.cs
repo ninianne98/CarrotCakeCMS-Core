@@ -23,7 +23,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static Type GetTypeFromString(string classString) {
-			Type typ = null;
+			Type? typ = null;
 			if (!string.IsNullOrEmpty(classString)) {
 				typ = Type.GetType(classString);
 
@@ -291,7 +291,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public static IEnumerable<T> SelectPage<T, T2>(this IQueryable<T> list, Func<T, T2> sortFunc,
 			bool isDescending, int page, int pageSize) {
-			List<T> result = null;
+			List<T>? result;
 			page = page < 1 ? 1 : page;
 			pageSize = pageSize < 1 ? 10 : pageSize;
 			var skip = (page - 1) * pageSize;
@@ -329,8 +329,8 @@ namespace Carrotware.Web.UI.Components {
 			Type type = typeof(T);
 			ParameterExpression parameter = Expression.Parameter(type, "source");
 
-			PropertyInfo property = null;
-			Expression propertyAccess = null;
+			PropertyInfo? property;
+			Expression? propertyAccess;
 
 			if (sortByFieldName.Contains('.')) {
 				//handles complex child properties

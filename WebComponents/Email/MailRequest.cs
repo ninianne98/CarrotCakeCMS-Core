@@ -98,8 +98,8 @@ namespace Carrotware.Web.UI.Components {
 
 		public List<string> EmailTo { get; set; } = new List<string>();
 		public List<string> EmailCC { get; set; } = new List<string>();
-		public string Subject { get; set; }
-		public string Body { get; set; }
+		public string Subject { get; set; } = string.Empty;
+		public string Body { get; set; } = string.Empty;
 		public bool HtmlBody { get; set; }
 		public List<IFormFile> Attachments { get; set; } = new List<IFormFile>();
 		public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();

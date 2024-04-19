@@ -14,8 +14,8 @@ namespace Carrotware.Web.UI.Components {
 
 	public interface ICarrotGridColumn {
 		string HeaderText { get; set; }
-		object HeadAttributes { get; set; }
-		object BodyAttributes { get; set; }
+		object? HeadAttributes { get; set; }
+		object? BodyAttributes { get; set; }
 		bool HasHeadingText { get; set; }
 		bool PrettifyHeading { get; set; }
 		int Order { get; set; }
@@ -29,7 +29,7 @@ namespace Carrotware.Web.UI.Components {
 	public interface ICarrotGridColumnExt {
 		string ColumnName { get; set; }
 		bool Sortable { get; set; }
-		object HeadLinkAttributes { get; set; }
+		object? HeadLinkAttributes { get; set; }
 		string CellFormatString { get; set; }
 	}
 }

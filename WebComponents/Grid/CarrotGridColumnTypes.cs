@@ -28,8 +28,8 @@ namespace Carrotware.Web.UI.Components {
 		public bool HasHeadingText { get; set; }
 		public string HeaderText { get; set; }
 		public bool PrettifyHeading { get; set; }
-		public object HeadAttributes { get; set; }
-		public object BodyAttributes { get; set; }
+		public object? HeadAttributes { get; set; }
+		public object? BodyAttributes { get; set; }
 		public Func<T, IHtmlContent> FormatTemplate { get; set; }
 	}
 
@@ -62,9 +62,9 @@ namespace Carrotware.Web.UI.Components {
 		public string HeaderText { get; set; }
 		public bool PrettifyHeading { get; set; }
 		public string CellFormatString { get; set; }
-		public object HeadAttributes { get; set; }
-		public object HeadLinkAttributes { get; set; }
-		public object BodyAttributes { get; set; }
+		public object? HeadAttributes { get; set; }
+		public object? HeadLinkAttributes { get; set; }
+		public object? BodyAttributes { get; set; }
 	}
 
 	//=========================
@@ -81,7 +81,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public string DefaultImagePath { get; set; }
 		public IList<CarrotImageColumnData> ImagePairs { get; set; }
-		public object ImageAttributes { get; set; }
+		public object? ImageAttributes { get; set; }
 	}
 
 	public class CarrotImageColumnData {
@@ -135,7 +135,7 @@ namespace Carrotware.Web.UI.Components {
 
 		public string ImagePathTrue { get; set; }
 		public string ImagePathFalse { get; set; }
-		public object ImageAttributes { get; set; }
+		public object? ImageAttributes { get; set; }
 
 		public string AlternateTextTrue { get; set; }
 		public string AlternateTextFalse { get; set; }

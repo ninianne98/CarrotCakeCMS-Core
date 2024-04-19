@@ -28,8 +28,8 @@ namespace Carrotware.Web.UI.Components {
 			return SendMail(fromEmail, lstTo, null, subjectLine, bodyText, isHTML, null);
 		}
 
-		public static bool SendMail(string? fromEmail, List<string> emailTo, List<string> emailCC,
-				string? subjectLine, string? bodyText, bool isHTML, List<string> attachments) {
+		public static bool SendMail(string? fromEmail, List<string>? emailTo, List<string>? emailCC,
+				string? subjectLine, string? bodyText, bool isHTML, List<string>? attachments) {
 			var mailSettings = SmtpSettings.GetEMailSettings();
 
 			if (string.IsNullOrEmpty(fromEmail) || !fromEmail.Contains("@")) {

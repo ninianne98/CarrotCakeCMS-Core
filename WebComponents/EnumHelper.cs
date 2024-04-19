@@ -22,8 +22,8 @@ namespace Carrotware.Web.UI.Components {
 
 			foreach (var o in Get<T>()) {
 				int v = Convert.ToInt32(o, CultureInfo.InvariantCulture);
-				string s = Enum.GetName(typeof(T), o);
-				string d = GetDescription<T>(s);
+				string? s = Enum.GetName(typeof(T), o);
+				string? d = GetDescription<T>(s);
 
 				lst.Add(new EnumProperty(v, s, d));
 			}
@@ -77,8 +77,8 @@ namespace Carrotware.Web.UI.Components {
 
 		public long Value { get; set; }
 
-		public string Text { get; set; }
+		public string Text { get; set; } = string.Empty;
 
-		public string Description { get; set; }
+		public string Description { get; set; } = string.Empty;
 	}
 }

@@ -34,11 +34,11 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public string OrderBy { get; set; }
+		public string OrderBy { get; set; } = string.Empty;
 
-		public string SortByNew { get; set; }
+		public string SortByNew { get; set; } = string.Empty;
 
-		public string PageNumbParm { get; set; }
+		public string PageNumbParm { get; set; } = string.Empty;
 
 		public int PageSize { get; set; }
 
@@ -146,9 +146,9 @@ namespace Carrotware.Web.UI.Components {
 			this.SortDirection = sortDir.ToUpperInvariant();
 		}
 
-		public string OrderBy { get; set; }
+		public string OrderBy { get; set; } = string.Empty;
 
-		public string SortField { get; set; }
-		public string SortDirection { get; set; }
+		public string SortField { get; set; } = string.Empty;
+		public string SortDirection { get; set; } = string.Empty;
 	}
 }

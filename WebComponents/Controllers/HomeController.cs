@@ -105,7 +105,7 @@ namespace Carrotware.Web.UI.Components.Controllers {
 			}
 
 			if (bmpThumb == null) {
-				return null;
+				return File(new byte[8], "image/png");
 			}
 
 			bmpThumb.Save(_stream, ImageFormat.Png);

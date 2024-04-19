@@ -39,9 +39,9 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public override bool Equals(Object obj) {
+		public override bool Equals(object? obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || GetType() != obj.GetType()) return false;
+			if (obj == null || this.GetType() != obj.GetType()) return false;
 
 			if (obj is FileData) {
 				FileData p = (FileData)obj;
@@ -65,7 +65,7 @@ namespace Carrotware.Web.UI.Components {
 			_blockedTypes = blockedExts;
 		}
 
-		private static string _wwwpath = null;
+		private static string? _wwwpath = null;
 
 		private static string WebPath {
 			get {
@@ -76,7 +76,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		private static string _contentpath = null;
+		private static string? _contentpath = null;
 
 		private static string ContentPath {
 			get {
@@ -87,7 +87,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		private string _blockedTypes = null;
+		private string? _blockedTypes = null;
 
 		public List<string> BlockedTypes {
 			get {
@@ -157,8 +157,18 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public FileData GetFileInfo(string sQuery, string myFile) {
+			string sPath = MakeFileFolderPath(sQuery).NormalizeFilename();
+
+			if (!string.IsNullOrWhiteSpace(sQuery) && !string.IsNullOrWhiteSpace(myFile)
+				&& sQuery.ToLowerInvariant() == myFile.ToLowerInvariant()) {
+				var fileInfo = new FileInfo((_wwwpath + "/" + myFile).NormalizeFilename());
+
+				sQuery = (fileInfo.DirectoryName ?? string.Empty).NormalizeFilename();
+				myFile = fileInfo.Name;
+				sPath = sQuery;
+			}
+
 			sQuery = sQuery.NormalizeFilename();
-			string sPath = MakeFileFolderPath(sQuery);
 
 			string myFileName = Path.GetFileName(myFile).Trim();
 			DateTime myFileDate = Convert.ToDateTime("1899-01-01");
@@ -166,7 +176,7 @@ namespace Carrotware.Web.UI.Components {
 			long myFileSize;
 
 			var f = new FileData();
-			f.FileName = myFile;
+			f.FileName = MakeWebFolderPath(myFile);
 
 			var testFile = Path.Join(sPath, myFileName).NormalizeFilename();
 
@@ -187,7 +197,7 @@ namespace Carrotware.Web.UI.Components {
 				string myPath = sQuery.FixPathSlashes();
 
 				f.FileName = Path.GetFileName(myFileName);
-				f.FolderPath = myPath;
+				f.FolderPath = MakeWebFolderPath(myPath);
 				f.FileDate = myFileDate;
 				f.FileSize = myFileSize;
 				f.FileSizeFriendly = myFileSizeF;
@@ -205,7 +215,7 @@ namespace Carrotware.Web.UI.Components {
 						 select b).Any()) {
 						f.MimeType = (from b in MimeTypes
 									  where b.Key.ToLowerInvariant() == f.FileExtension.ToLowerInvariant()
-									  select b.Value).FirstOrDefault();
+									  select b.Value).FirstOrDefault() ?? "text/plain";
 					}
 				} catch (Exception ex) { }
 			}
@@ -270,10 +280,11 @@ namespace Carrotware.Web.UI.Components {
 			return files;
 		}
 
-		private List<string> _spiderdirs = null;
+		private List<string>? _spiderdirs = null;
 
 		private void SpiderFolders(string sPath) {
-			string[] subdirs;
+			string[]? subdirs;
+
 			try {
 				if (Directory.Exists(sPath)) {
 					subdirs = Directory.GetDirectories(sPath);
@@ -302,12 +313,12 @@ namespace Carrotware.Web.UI.Components {
 			return _spiderdirs;
 		}
 
-		private List<FileData> _spiderFD = null;
+		private List<FileData>? _spiderFD = null;
 
 		private void SpiderFoldersFD(string sQuery) {
 			string sPath = MakeFileFolderPath(sQuery);
 
-			string[] subdirs;
+			string[]? subdirs;
 			try {
 				if (Directory.Exists(sPath)) {
 					subdirs = Directory.GetDirectories(sPath);
@@ -337,7 +348,7 @@ namespace Carrotware.Web.UI.Components {
 			return _spiderFD;
 		}
 
-		private static ConcurrentDictionary<string, string> _dict = null;
+		private static ConcurrentDictionary<string, string>? _dict = null;
 
 		public static Dictionary<string, string> MimeTypes {
 			get {
