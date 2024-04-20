@@ -1,5 +1,4 @@
-﻿
-CREATE PROCEDURE [dbo].[carrot_BlogDateFilenameUpdate]
+﻿CREATE PROCEDURE [dbo].[carrot_BlogDateFilenameUpdate]
     @SiteID uniqueidentifier
     
 /*
@@ -73,7 +72,6 @@ SET NOCOUNT ON
 			join @tblTimeSlugs s on rc.GoLiveDateLocal = s.GoLiveDateLocal
 		where rc.SiteID = @SiteID
 			AND rc.ContentTypeID = @blogType
-
 
     IF ( @@ERROR <> 0 ) BEGIN
         SET @ErrorCode = -1

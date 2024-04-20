@@ -6,6 +6,11 @@
     [UserBio]      NVARCHAR (MAX)   NULL,
     [UserKey]      NVARCHAR (128)   NULL,
     CONSTRAINT [PK_carrot_UserData] PRIMARY KEY NONCLUSTERED ([UserId] ASC),
-    CONSTRAINT [carrot_UserData_UserKey] FOREIGN KEY ([UserKey]) REFERENCES [dbo].[membership_User] ([Id])
+    CONSTRAINT [FK_carrot_UserData_AspNetUsers] FOREIGN KEY ([UserKey]) REFERENCES [dbo].[AspNetUsers] ([Id])
 );
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_carrot_UserData_UserKey]
+    ON [dbo].[carrot_UserData]([UserKey] ASC);
 

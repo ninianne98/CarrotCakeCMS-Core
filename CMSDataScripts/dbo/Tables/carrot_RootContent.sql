@@ -1,17 +1,17 @@
 ﻿CREATE TABLE [dbo].[carrot_RootContent] (
-    [Root_ContentID]   UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_RootContent_Root_ContentID] DEFAULT (newid()) NOT NULL,
+    [Root_ContentID]   UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
     [SiteID]           UNIQUEIDENTIFIER NOT NULL,
     [Heartbeat_UserId] UNIQUEIDENTIFIER NULL,
     [EditHeartbeat]    DATETIME         NULL,
     [FileName]         NVARCHAR (256)   NOT NULL,
     [PageActive]       BIT              NOT NULL,
-    [CreateDate]       DATETIME         CONSTRAINT [DF_carrot_RootContent_CreateDate] DEFAULT (getdate()) NOT NULL,
+    [CreateDate]       DATETIME         DEFAULT (getdate()) NOT NULL,
     [ContentTypeID]    UNIQUEIDENTIFIER NOT NULL,
     [PageSlug]         NVARCHAR (256)   NULL,
     [PageThumbnail]    NVARCHAR (128)   NULL,
-    [GoLiveDate]       DATETIME         CONSTRAINT [DF_carrot_RootContent_GoLiveDate] DEFAULT (getutcdate()) NOT NULL,
-    [RetireDate]       DATETIME         CONSTRAINT [DF_carrot_RootContent_RetireDate] DEFAULT (getutcdate()) NOT NULL,
-    [GoLiveDateLocal]  DATETIME         CONSTRAINT [DF_carrot_RootContent_GoLiveDateLocal] DEFAULT (getutcdate()) NOT NULL,
+    [GoLiveDate]       DATETIME         DEFAULT (getutcdate()) NOT NULL,
+    [RetireDate]       DATETIME         DEFAULT (getutcdate()) NOT NULL,
+    [GoLiveDateLocal]  DATETIME         DEFAULT (getutcdate()) NOT NULL,
     [ShowInSiteNav]    BIT              NOT NULL,
     [CreateUserId]     UNIQUEIDENTIFIER NOT NULL,
     [ShowInSiteMap]    BIT              NOT NULL,
@@ -24,6 +24,11 @@
 
 
 GO
+CREATE NONCLUSTERED INDEX [IDX_carrot_RootContent_SiteID]
+    ON [dbo].[carrot_RootContent]([SiteID] ASC);
+
+
+GO
 CREATE NONCLUSTERED INDEX [IDX_carrot_RootContent_CreateUserId]
     ON [dbo].[carrot_RootContent]([CreateUserId] ASC);
 
@@ -31,9 +36,4 @@ CREATE NONCLUSTERED INDEX [IDX_carrot_RootContent_CreateUserId]
 GO
 CREATE NONCLUSTERED INDEX [IDX_carrot_RootContent_ContentTypeID]
     ON [dbo].[carrot_RootContent]([ContentTypeID] ASC);
-
-
-GO
-CREATE NONCLUSTERED INDEX [IDX_carrot_RootContent_SiteID]
-    ON [dbo].[carrot_RootContent]([SiteID] ASC);
 

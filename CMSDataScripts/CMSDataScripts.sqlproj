@@ -63,23 +63,16 @@
     <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\membership_UserRole.sql" />
-    <Build Include="dbo\Tables\membership_UserLogin.sql" />
-    <Build Include="dbo\Tables\membership_UserClaim.sql" />
-    <Build Include="dbo\Tables\membership_User.sql" />
-    <Build Include="dbo\Tables\membership_Role.sql" />
     <Build Include="dbo\Tables\carrot_WidgetData.sql" />
     <Build Include="dbo\Tables\carrot_Widget.sql" />
     <Build Include="dbo\Tables\carrot_UserSiteMapping.sql" />
     <Build Include="dbo\Tables\carrot_UserData.sql" />
-    <Build Include="dbo\Tables\carrot_TrackbackQueue.sql" />
     <Build Include="dbo\Tables\carrot_TextWidget.sql" />
     <Build Include="dbo\Tables\carrot_TagContentMapping.sql" />
     <Build Include="dbo\Tables\carrot_Sites.sql" />
     <Build Include="dbo\Tables\carrot_SerialCache.sql" />
     <Build Include="dbo\Tables\carrot_RootContentSnippet.sql" />
     <Build Include="dbo\Tables\carrot_RootContent.sql" />
-    <Build Include="dbo\Tables\carrot_DataInfo.sql" />
     <Build Include="dbo\Tables\carrot_ContentType.sql" />
     <Build Include="dbo\Tables\carrot_ContentTag.sql" />
     <Build Include="dbo\Tables\carrot_ContentSnippet.sql" />
@@ -87,9 +80,60 @@
     <Build Include="dbo\Tables\carrot_ContentCategory.sql" />
     <Build Include="dbo\Tables\carrot_Content.sql" />
     <Build Include="dbo\Tables\carrot_CategoryContentMapping.sql" />
+    <Build Include="dbo\Tables\AspNetUserTokens.sql" />
+    <Build Include="dbo\Tables\AspNetUsers.sql" />
+    <Build Include="dbo\Tables\AspNetUserRoles.sql" />
+    <Build Include="dbo\Tables\AspNetUserLogins.sql" />
+    <Build Include="dbo\Tables\AspNetUserClaims.sql" />
+    <Build Include="dbo\Tables\AspNetRoles.sql" />
+    <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
+    <Build Include="dbo\Tables\AspNetCache.sql" />
+    <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
     <Build Include="dbo\Views\vw_carrot_Widget.sql" />
     <Build Include="dbo\Views\vw_carrot_UserData.sql" />
-    <Build Include="dbo\Views\vw_carrot_TrackbackQueue.sql" />
+    <Build Include="dbo\Views\vw_carrot_TagURL.sql" />
+    <Build Include="dbo\Views\vw_carrot_TagCounted.sql" />
+    <Build Include="dbo\Views\vw_carrot_EditorURL.sql" />
+    <Build Include="dbo\Views\vw_carrot_EditHistory.sql" />
+    <Build Include="dbo\Views\vw_carrot_ContentSnippet.sql" />
+    <Build Include="dbo\Views\vw_carrot_ContentChild.sql" />
+    <Build Include="dbo\Views\vw_carrot_Content.sql" />
+    <Build Include="dbo\Views\vw_carrot_Comment.sql" />
+    <Build Include="dbo\Views\vw_carrot_CategoryURL.sql" />
+    <Build Include="dbo\Views\vw_carrot_CategoryCounted.sql" />
+    <Build Include="dbo\Views\vw_carrot_CalendarEventProfile.sql" />
+    <Build Include="dbo\Views\vw_carrot_CalendarEvent.sql" />
+    <Build Include="dbo\Stored Procedures\carrot_UpdateGoLiveLocal.sql" />
+    <Build Include="dbo\Stored Procedures\carrot_BlogMonthlyTallies.sql" />
+    <Build Include="dbo\Stored Procedures\carrot_BlogDateFilenameUpdate.sql" />
+    <Build Include="dbo\Tables\carrot_WidgetData.sql" />
+    <Build Include="dbo\Tables\carrot_Widget.sql" />
+    <Build Include="dbo\Tables\carrot_UserSiteMapping.sql" />
+    <Build Include="dbo\Tables\carrot_UserData.sql" />
+    <Build Include="dbo\Tables\carrot_TextWidget.sql" />
+    <Build Include="dbo\Tables\carrot_TagContentMapping.sql" />
+    <Build Include="dbo\Tables\carrot_Sites.sql" />
+    <Build Include="dbo\Tables\carrot_SerialCache.sql" />
+    <Build Include="dbo\Tables\carrot_RootContentSnippet.sql" />
+    <Build Include="dbo\Tables\carrot_RootContent.sql" />
+    <Build Include="dbo\Tables\carrot_ContentType.sql" />
+    <Build Include="dbo\Tables\carrot_ContentTag.sql" />
+    <Build Include="dbo\Tables\carrot_ContentSnippet.sql" />
+    <Build Include="dbo\Tables\carrot_ContentComment.sql" />
+    <Build Include="dbo\Tables\carrot_ContentCategory.sql" />
+    <Build Include="dbo\Tables\carrot_Content.sql" />
+    <Build Include="dbo\Tables\carrot_CategoryContentMapping.sql" />
+    <Build Include="dbo\Tables\AspNetUserTokens.sql" />
+    <Build Include="dbo\Tables\AspNetUsers.sql" />
+    <Build Include="dbo\Tables\AspNetUserRoles.sql" />
+    <Build Include="dbo\Tables\AspNetUserLogins.sql" />
+    <Build Include="dbo\Tables\AspNetUserClaims.sql" />
+    <Build Include="dbo\Tables\AspNetRoles.sql" />
+    <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
+    <Build Include="dbo\Tables\AspNetCache.sql" />
+    <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
+    <Build Include="dbo\Views\vw_carrot_Widget.sql" />
+    <Build Include="dbo\Views\vw_carrot_UserData.sql" />
     <Build Include="dbo\Views\vw_carrot_TagURL.sql" />
     <Build Include="dbo\Views\vw_carrot_TagCounted.sql" />
     <Build Include="dbo\Views\vw_carrot_EditorURL.sql" />
@@ -101,11 +145,10 @@
     <Build Include="dbo\Views\vw_carrot_CategoryURL.sql" />
     <Build Include="dbo\Views\vw_carrot_CategoryCounted.sql" />
     <Build Include="dbo\Stored Procedures\carrot_UpdateGoLiveLocal.sql" />
-    <Build Include="dbo\Stored Procedures\carrot_BlogMonthlyTallies.sql">
-      <QuotedIdentifier>Off</QuotedIdentifier>
-    </Build>
-    <Build Include="dbo\Stored Procedures\carrot_BlogDateFilenameUpdate.sql">
-      <QuotedIdentifier>Off</QuotedIdentifier>
-    </Build>
+    <Build Include="dbo\Stored Procedures\carrot_BlogMonthlyTallies.sql" />
+    <Build Include="dbo\Stored Procedures\carrot_BlogDateFilenameUpdate.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CarrotSqlSchemaCompare.scmp" />
   </ItemGroup>
 </Project>
