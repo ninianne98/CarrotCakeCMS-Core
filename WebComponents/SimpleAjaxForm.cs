@@ -12,23 +12,27 @@
 
 namespace Carrotware.Web.UI.Components {
 
+	public enum AjaxFormResultMode {
+		Replace,
+		Before,
+		After,
+	}
+
 	public class SimpleAjaxFormOptions {
 
 		public SimpleAjaxFormOptions() {
-			this.Replace = true;
 			this.FormId = "frmAjax";
 			this.UpdateTargetId = "divAjax";
-			this.OnFailure = "__OnAjaxRequestFailure";
-			this.OnSuccess = string.Empty;
-			this.Method = FormMethod.Post;
 		}
 
-		public string FormId { get; set; }
-		public bool Replace { get; set; }
-		public string UpdateTargetId { get; set; }
-		public string OnFailure { get; set; }
-		public string OnSuccess { get; set; }
-		public FormMethod Method { get; set; }
+		public string FormId { get; set; } = "frmAjax";
+		public string UpdateTargetId { get; set; } = "divAjax";
+		public string OnBegin { get; set; } = string.Empty;
+		public string OnComplete { get; set; } = string.Empty;
+		public string OnSuccess { get; set; } = string.Empty;
+		public string OnFailure { get; set; } = "__OnAjaxRequestFailure";
+		public AjaxFormResultMode Mode { get; set; } = AjaxFormResultMode.Replace;
+		public FormMethod Method { get; set; } = FormMethod.Post;
 	}
 
 	//===================
@@ -115,14 +119,19 @@ namespace Carrotware.Web.UI.Components {
 			formInfo.Add("data-ajax-method", options.Method.ToString().ToUpperInvariant());
 			formInfo.Add("data-ajax-update", $"#{options.UpdateTargetId.Replace("#", "")}");
 
-			if (options.Replace) {
-				formInfo.Add("data-ajax-mode", "replace");
+			formInfo.Add("data-ajax-mode", options.Mode.ToString().ToLowerInvariant());
+
+			if (!string.IsNullOrWhiteSpace(options.OnBegin)) {
+				formInfo.Add("data-ajax-begin", options.OnBegin);
 			}
-			if (options.OnFailure.Length > 1) {
-				formInfo.Add("data-ajax-failure", options.OnFailure);
+			if (!string.IsNullOrWhiteSpace(options.OnComplete)) {
+				formInfo.Add("data-ajax-complete", options.OnComplete);
 			}
-			if (options.OnSuccess.Length > 1) {
+			if (!string.IsNullOrWhiteSpace(options.OnSuccess)) {
 				formInfo.Add("data-ajax-success", options.OnSuccess);
+			}
+			if (!string.IsNullOrWhiteSpace(options.OnFailure)) {
+				formInfo.Add("data-ajax-failure", options.OnFailure);
 			}
 
 			_tag.MergeAttributes(formInfo);

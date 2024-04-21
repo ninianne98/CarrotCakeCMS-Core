@@ -22,7 +22,7 @@ namespace Carrotware.CMS.UI.Components {
 	public class SearchForm : IDisposable {
 		protected IHtmlHelper _helper;
 
-		public SearchForm(IHtmlHelper helper, PagePayload page, object formAttributes = null) {
+		public SearchForm(IHtmlHelper helper, PagePayload? page, object? formAttributes = null) {
 			_helper = helper;
 
 			var frmID = new TagBuilder("input");
@@ -78,7 +78,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected ContactInfo _model = null;
 		protected ContactInfoSettings _settings = null;
 
-		public AjaxContactForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxContactForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -87,7 +87,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmContact";
@@ -229,7 +228,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected LoginInfo _model = null;
 		protected LoginInfoSettings _settings = null;
 
-		public AjaxLoginForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxLoginForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -238,7 +237,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmLogin";
@@ -379,7 +377,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected LogoutInfo _model = null;
 		protected LogoutInfoSettings _settings = null;
 
-		public AjaxLogoutForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxLogoutForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -388,7 +386,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmLogout";
@@ -501,7 +498,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected ForgotPasswordInfo _model = null;
 		protected ForgotPasswordInfoSettings _settings = null;
 
-		public AjaxForgotPasswordForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxForgotPasswordForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -510,7 +507,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmForgotPassword";
@@ -638,7 +634,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected ResetPasswordInfo _model = null;
 		protected ResetPasswordInfoSettings _settings = null;
 
-		public AjaxResetPasswordForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxResetPasswordForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -647,7 +643,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmResetPassword";
@@ -787,7 +782,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected ChangePasswordInfo _model = null;
 		protected ChangePasswordInfoSettings _settings = null;
 
-		public AjaxChangePasswordForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxChangePasswordForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -796,7 +791,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmChangePassword";
@@ -929,7 +923,7 @@ namespace Carrotware.CMS.UI.Components {
 		protected ChangeProfileInfo _model = null;
 		protected ChangeProfileInfoSettings _settings = null;
 
-		public AjaxChangeProfileForm(IHtmlHelper ajaxHelper, PagePayload page, SimpleAjaxFormOptions ajaxOptions, object formAttributes = null) {
+		public AjaxChangeProfileForm(IHtmlHelper ajaxHelper, PagePayload? page, SimpleAjaxFormOptions ajaxOptions, object? formAttributes = null) {
 			_helper = ajaxHelper;
 
 			if (page == null) {
@@ -938,7 +932,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (ajaxOptions == null) {
 				ajaxOptions = new SimpleAjaxFormOptions();
-				ajaxOptions.Replace = true;
 			}
 			if (string.IsNullOrEmpty(ajaxOptions.UpdateTargetId)) {
 				ajaxOptions.UpdateTargetId = "frmChangeProfile";

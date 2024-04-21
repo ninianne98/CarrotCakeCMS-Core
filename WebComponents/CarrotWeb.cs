@@ -513,16 +513,17 @@ namespace Carrotware.Web.UI.Components {
 		public static string PartialViewKey { get { return "__ViewPath"; } }
 
 		public static void PreserveViewPath(this IHtmlHelper helper) {
-			string filename;
 			// as partial postbacks may forget where the original view came from, back up the path into a hidden field
+			string filename;
 
 			if (HttpMethods.IsPost(helper.ViewContext.HttpContext.Request.Method)) {
 				filename = helper.ViewContext.HttpContext.Request.Form[PartialViewKey].ToString();
 			} else {
 				filename = helper.ViewContext.ExecutingFilePath ?? string.Empty;
+				filename = filename.EncodeBase64();
 			}
 
-			helper.ViewContext.Writer.Write(helper.Hidden(PartialViewKey, filename.EncodeBase64(), new { @id = PartialViewKey }).RenderToHtmlString());
+			helper.ViewContext.Writer.Write(helper.Hidden(PartialViewKey, filename, new { @id = PartialViewKey }).RenderToHtmlString());
 		}
 
 		public static string RestoreViewPath(this ControllerContext controllerContext) {

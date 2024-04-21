@@ -27,7 +27,7 @@ namespace Carrotware.CMS.Interface {
 				var controller = context.ActionContext as ControllerContext;
 				var filename = controller.RestoreViewPath();
 
-				if (!string.IsNullOrEmpty(filename) && filename.Length > 4) {
+				if (!string.IsNullOrWhiteSpace(filename) && filename.Length > 4) {
 					var folder = Path.GetDirectoryName(filename).FixPathSlashes();
 
 					workingFolder.Add(folder + "/{0}.cshtml");
