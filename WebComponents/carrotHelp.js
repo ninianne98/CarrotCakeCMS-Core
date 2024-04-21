@@ -11,13 +11,13 @@
 
 //==================== rudimentary callback functions
 function __carrotOnAjaxRequestBegin(xhr) {
-	console.log("This is the __carrotOnAjaxRequestBegin Callback");
+	console.log("This is the __carrotOnAjaxRequestBegin Callback: " + xhr);
 }
 function __carrotOnAjaxRequestSuccess(data, status, xhr) {
-	console.log("This is the __carrotOnAjaxRequestSuccess: " + data);
+	console.log("This is the __carrotOnAjaxRequestSuccess Callback: " + status);
 }
 function __carrotOnAjaxRequestFailure(xhr, status, error) {
-	alert("This is the __carrotOnAjaxRequestFailure Callback: \n" + error + "\r\n------------------\r\n" + xhr.responseText);
+	alert("This is the __carrotOnAjaxRequestFailure Callback: \n" + error + "\n------------------\n" + xhr.responseText);
 	console.log(error);
 	console.log(status);
 	console.log(xhr.responseText);
@@ -26,7 +26,6 @@ function __carrotOnAjaxRequestComplete(xhr, status) {
 	console.log("This is the __carrotOnAjaxRequestComplete Callback: " + status);
 }
 
-/* 
 function __carrotUserAjaxFunction(funcName) {
 	//if blank/undefined, create a dummy function
 	if (funcName == undefined || !funcName.length) {
@@ -60,6 +59,15 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 
 	var frm = $(theForm);
 	var postUri = frm.attr('action');
+
+	// check if client side validated, if not present, assume left to server side
+	var validated = (frm.attr('data-ajax-valid') || 'true') == 'true';
+
+	if (!validated) {
+		// client side validation failed
+		return;
+	}
+
 	var formType = frm.attr('data-ajax-method').toUpperCase();
 	var placeholder = frm.attr('data-ajax-update');
 	var fillMode = frm.attr('data-ajax-mode').toUpperCase();
@@ -72,19 +80,53 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 	var frmData = frm.serialize();
 	//console.log(frmData);
 
-	$.ajax({
-		type: formType,
-		url: postUri,
-		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-		data: frmData,
+	// https://api.jquery.com/jQuery.ajax/
+	// The jqXHR.success(), jqXHR.error(), and jqXHR.complete() callbacks are removed as of jQuery 3.0.
+	// You can use jqXHR.done(), jqXHR.fail(), and jqXHR.always() instead.
+	// major version check to avoid the deprecated/obsolete methods
+	var arr = $.fn.jquery.split('.');
 
-		beforeSend: function (xhr) {
-			__carrotUserAjaxFunction(onBegin).apply(frm, arguments);
-		},
-		complete: function () {
-			__carrotUserAjaxFunction(onComplete).apply(frm, arguments);
-		},
-		success: function (result, status, xhr) {
+	if (arr[0] < 3) {
+		$.ajax({
+			type: formType,
+			url: postUri,
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			data: frmData,
+
+			beforeSend: function (xhr) {
+				__carrotUserAjaxFunction(onBegin).apply(frm, arguments);
+			},
+			complete: function () {
+				__carrotUserAjaxFunction(onComplete).apply(frm, arguments);
+			},
+			success: function (result, status, xhr) {
+				switch (fillMode) {
+					case "BEFORE":
+						$(placeholder).prepend(result);
+						break;
+					case "AFTER":
+						$(placeholder).append(result);
+						break;
+					default:
+						$(placeholder).html(result);
+						break;
+				};
+
+				__carrotUserAjaxFunction(onSuccess).apply(frm, arguments);
+			},
+			error: function (xhr, status, error) {
+				console.log('Failed Carrot Form Post: ' + error);
+				__carrotUserAjaxFunction(onFailure).apply(frm, arguments);
+			}
+		});
+	} else {
+		$.ajax({
+			type: formType,
+			url: postUri,
+			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			data: frmData,
+		}).done(function (result, status, xhr) {
+			//console.log("done/success");
 			switch (fillMode) {
 				case "BEFORE":
 					$(placeholder).prepend(result);
@@ -95,19 +137,19 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 				default:
 					$(placeholder).html(result);
 					break;
-			}
-
+			};
 			__carrotUserAjaxFunction(onSuccess).apply(frm, arguments);
-		},
-		error: function (xhr, status, error) {
-			console.log('Failed Carrot Form Post: ' + error);
+		}).fail(function (xhr, status, errorThrown) {
+			//console.log("fail/error");
 			__carrotUserAjaxFunction(onFailure).apply(frm, arguments);
-		}
-	})
+		}).always(function (parm1, status, parm3) {
+			//console.log("always/complete");
+			__carrotUserAjaxFunction(onComplete).apply(frm, arguments);
+		});
+	}
 });
 
-$("form[data-ajax=true]").on("submit", false);
-*/
+//$("form[data-ajax=true]").on("submit", false);
 
 function __carrotAjaxPostForm(formid, div, postUri, replace) {
 	var data = $("#" + formid).serialize();
