@@ -62,7 +62,9 @@
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="global.json" />
+		<Content Include="global.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Properties\launchSettings.json" />
 	</ItemGroup>
 

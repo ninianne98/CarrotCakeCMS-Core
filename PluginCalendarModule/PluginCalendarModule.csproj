@@ -52,6 +52,9 @@
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="global.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="wwwroot\Content\calendar.png" />
 		<Content Include="wwwroot\Content\calendar1.css" />

@@ -42,7 +42,9 @@
 		<Compile Include="Program.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="global.json" />
+		<Content Include="global.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Properties\C3ConfigSchema.json" />
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="Views\_ViewStart.cshtml" />

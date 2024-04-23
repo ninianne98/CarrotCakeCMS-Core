@@ -68,6 +68,9 @@
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="global.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="Views\_ViewImports.cshtml" />
 		<Content Include="Views\_ViewStart.cshtml" />

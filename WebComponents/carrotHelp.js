@@ -10,16 +10,23 @@
 */
 
 //==================== rudimentary callback functions
-function __carrotOnAjaxRequestBegin(xhr) {
-	console.log("This is the __carrotOnAjaxRequestBegin Callback: " + xhr);
+function __carrotOnAjaxRequestBegin() {
+	console.log("This is the __carrotOnAjaxRequestBegin Callback.");
 }
 function __carrotOnAjaxRequestSuccess(data, status, xhr) {
 	console.log("This is the __carrotOnAjaxRequestSuccess Callback: " + status);
 }
 function __carrotOnAjaxRequestFailure(xhr, status, error) {
-	alert("This is the __carrotOnAjaxRequestFailure Callback: \n" + error + "\n------------------\n" + xhr.responseText);
+	console.log("This is the __carrotOnAjaxRequestFailure Callback: " + status);
 	console.log(error);
-	console.log(status);
+	console.log(xhr.responseText);
+}
+function __carrotOnAjaxRequestFailureAlert(xhr, status, error) {
+	//alert("This is the __carrotOnAjaxRequestFailure Callback: \n" + error + "\n------------------\n" + xhr.responseText);
+	__carrotSimpleOkAlert("<div style='font-size:12pt;'>This is the __carrotOnAjaxRequestFailureAlert Callback: \n <br />" + error + "<br />\n <hr /> \n <pre>" + xhr.responseText + "</pre></div>");
+
+	console.log("This is the __carrotOnAjaxRequestFailureAlert Callback: " + status);
+	console.log(error);
 	console.log(xhr.responseText);
 }
 function __carrotOnAjaxRequestComplete(xhr, status) {
@@ -87,6 +94,7 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 	var arr = $.fn.jquery.split('.');
 
 	if (arr[0] < 3) {
+		//console.log("jQuery < 3");
 		$.ajax({
 			type: formType,
 			url: postUri,
@@ -120,11 +128,16 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 			}
 		});
 	} else {
+		//console.log("jQuery >= 3");
 		$.ajax({
 			type: formType,
 			url: postUri,
 			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 			data: frmData,
+
+			beforeSend: function (xhr) {
+				__carrotUserAjaxFunction(onBegin).apply(frm, arguments);
+			}
 		}).done(function (result, status, xhr) {
 			//console.log("done/success");
 			switch (fillMode) {
@@ -139,7 +152,7 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 					break;
 			};
 			__carrotUserAjaxFunction(onSuccess).apply(frm, arguments);
-		}).fail(function (xhr, status, errorThrown) {
+		}).fail(function (xhr, status, error) {
 			//console.log("fail/error");
 			__carrotUserAjaxFunction(onFailure).apply(frm, arguments);
 		}).always(function (parm1, status, parm3) {
@@ -148,8 +161,6 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 		});
 	}
 });
-
-//$("form[data-ajax=true]").on("submit", false);
 
 function __carrotAjaxPostForm(formid, div, postUri, replace) {
 	var data = $("#" + formid).serialize();
@@ -196,8 +207,8 @@ function __carrotAjaxPostFormData(data, div, postUri, replace) {
 	})
 }
 
-function __OnAjaxRequestBegin(xhr) {
-	__carrotOnAjaxRequestBegin(xhr);
+function __OnAjaxRequestBegin() {
+	__carrotOnAjaxRequestBegin();
 }
 function __OnAjaxRequestSuccess(data, status, xhr) {
 	__carrotOnAjaxRequestSuccess(data, status, xhr);
@@ -244,6 +255,16 @@ function __carrotAlertModalSmallBtns(request, title, buttonsOpts) {
 }
 function __carrotAlertModalLargeBtns(request, title, buttonsOpts) {
 	__carrotAlertModalHeightWidthBtns(request, title, 550, 700, buttonsOpts);
+}
+
+function __carrotSimpleOkAlert(message) {
+	var opts = {
+		"OK": function () { __carrotAlertModalClose(); }
+	};
+
+	__carrotAlertModalBtns(message, 'Alert', opts);
+
+	return false;
 }
 
 function __carrotAlertModalClose() {

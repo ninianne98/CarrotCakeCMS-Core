@@ -124,5 +124,8 @@
 	  <Content Update="appsettings.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	  <Content Update="global.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 </Project>
