@@ -129,12 +129,6 @@ namespace Carrotware.Web.UI.Components {
 				}
 			}
 
-			//string sVAjax = CarrotWebHelper.GetWebResourceUrl("jquery.validate-unobtrusive.min.js");
-			//sb.AppendLine(UrlPaths.CreateJavascriptTag("Unobtrusive Validate", sVAjax));
-
-			string sJqAjax = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-unobtrusive-ajax.min.js");
-			sb.AppendLine(UrlPaths.CreateJavascriptTag("Unobtrusive Ajax", sJqAjax));
-
 			string key = CarrotWebHelper.DateKey();
 
 			sb.AppendLine(UrlPaths.CreateJavascriptTag("Carrot Helpers", string.Format("{0}?ts={1}", UrlPaths.HelperPath, key)));

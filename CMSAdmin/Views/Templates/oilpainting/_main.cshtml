@@ -21,16 +21,16 @@
 	ViewBag.SiteName = CmsPage.TheSite.SiteName;
 
 	var nav = new TwoLevelNavigation() {
-		FontSize = new SizeUnit("16px"),
-		ForeColor = CarrotWebHelper.DecodeColor("#ffffff"),
-		BackColor = CarrotWebHelper.DecodeColor("#453E37"),
-		SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
-		SelBGColor = CarrotWebHelper.DecodeColor("#2E2925"),
-		SubBGColor = CarrotWebHelper.DecodeColor("#DA802A"),
-		SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
-		CssSelected = "current_page_item",
-		ElementId = "navigation"
-	};
+				FontSize = new SizeUnit("16px"),
+				ForeColor = CarrotWebHelper.DecodeColor("#ffffff"),
+				BackColor = CarrotWebHelper.DecodeColor("#453E37"),
+				SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+				SelBGColor = CarrotWebHelper.DecodeColor("#2E2925"),
+				SubBGColor = CarrotWebHelper.DecodeColor("#DA802A"),
+				SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+				CssSelected = "current_page_item",
+				ElementId = "navigation"
+			};
 }
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -113,6 +113,8 @@
 						</div>
 
 						<div style="clear: both;">&nbsp;</div>
+
+						@RenderSection("SubContent", required: false)
 					</div>
 					<!-- end #content -->
 					<div id="sidebar">

@@ -28,7 +28,6 @@
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="3.7.1" />
 		<PackageReference Include="jQuery.UI.Combined" Version="1.13.2" />
-		<PackageReference Include="jQuery.Validation" Version="1.20.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.18" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
@@ -41,7 +40,6 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="4.0.0" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -110,11 +108,6 @@
 		<None Include="wwwroot\Scripts\jquery-ui-1.11.4.js" />
 		<None Include="wwwroot\Scripts\jquery-ui-1.11.4.min.js" />
 		<None Include="wwwroot\Scripts\jquery.ui.timepicker.js" />
-		<None Include="wwwroot\Scripts\jquery.validate-vsdoc.js" />
-		<None Include="wwwroot\Scripts\jquery.validate.js" />
-		<None Include="wwwroot\Scripts\jquery.validate.min.js" />
-		<None Include="wwwroot\Scripts\jquery.validate.unobtrusive.js" />
-		<None Include="wwwroot\Scripts\jquery.validate.unobtrusive.min.js" />
 		<None Include="wwwroot\Scripts\respond.js" />
 		<None Include="wwwroot\Scripts\respond.matchmedia.addListener.js" />
 		<None Include="wwwroot\Scripts\respond.matchmedia.addListener.min.js" />
