@@ -10,12 +10,13 @@
 	<PropertyGroup>
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
-		<Copyright>2015</Copyright>
+		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
+		<Product>Carrot Cake CMS Widget</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<Version>8.1.0.0</Version>
 		<VersionPrefix>8.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<Version>$(VersionPrefix).0.0</Version>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 

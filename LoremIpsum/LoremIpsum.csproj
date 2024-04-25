@@ -13,12 +13,13 @@
 	<PropertyGroup>
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
-		<Copyright>2015</Copyright>
+		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
+		<Product>Carrot Cake CMS Widget</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<Version>8.1.0.0</Version>
 		<VersionPrefix>8.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<Version>$(VersionPrefix).0.0</Version>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
@@ -43,7 +44,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="global.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Properties\C3ConfigSchema.json" />
 		<Content Include="Properties\launchSettings.json" />
@@ -65,11 +66,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Views\Admin.config" />
-	  <None Include="Views\Admin\Index.cshtml" />
-	  <None Include="Views\Admin\View.cshtml" />
-	  <None Include="Views\Admin\Login.cshtml" />
-	  <None Include="Views\Shared\_LayoutModule.cshtml" />
+		<None Include="Views\Admin.config" />
+		<None Include="Views\Admin\Index.cshtml" />
+		<None Include="Views\Admin\View.cshtml" />
+		<None Include="Views\Admin\Login.cshtml" />
+		<None Include="Views\Shared\_LayoutModule.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -79,6 +80,6 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;" />
+		<Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;" />
 	</Target>
 </Project>

@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Web;
-using System.Xml;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -808,9 +807,10 @@ namespace Carrotware.CMS.Core {
 
 		private static void LoadFileInfo() {
 			if (_fileversion == null) {
-				_debug = false;
 #if DEBUG
 				_debug = true;
+#else
+				_debug = false;
 #endif
 				var assembly = Assembly.GetExecutingAssembly();
 				_fileversion = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -820,7 +820,16 @@ namespace Carrotware.CMS.Core {
 		public static string CurrentDLLVersion {
 			get {
 				LoadFileInfo();
-				return _fileversion.FileVersion;
+				return _fileversion != null ? _fileversion.FileVersion : "1.1.0.0";
+			}
+		}
+
+		public static string CarrotCakeCMSVersionShort {
+			get {
+				LoadFileInfo();
+				var releaseMask = _debug.Value ? "MVC Core {0} (debug)" : "MVC Core {0}";
+
+				return string.Format(releaseMask, CurrentDLLVersion);
 			}
 		}
 

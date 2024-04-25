@@ -13,12 +13,16 @@
 	<PropertyGroup>
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
-		<Copyright>2023</Copyright>
+		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
+		<Product Condition="'$(Configuration)' == 'Release'">Carrotware UI Components, built @ $([System.DateTime]::UtcNow.ToString("yyMMdd")) $([System.DateTime]::UtcNow.ToString("HH:mm"))</Product>
+		<Product Condition="'$(Configuration)' == 'Debug'">Carrotware UI Components, debug built @ $([System.DateTime]::UtcNow.ToString("yyMMdd")) $([System.DateTime]::UtcNow.ToString("HH:mm")) DEBUG</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<Version>8.1.0.0</Version>
 		<VersionPrefix>8.1</VersionPrefix>
-		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
+		<Build>$([System.DateTime]::op_Subtraction($([System.DateTime]::get_Now().get_Date()),$([System.DateTime]::new(2000,1,1))).get_TotalDays())</Build>
+		<Revision>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</Revision>
+		<VersionSuffix>$(Build).$(Revision)</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<Version>$(VersionPrefix).0.0</Version>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 

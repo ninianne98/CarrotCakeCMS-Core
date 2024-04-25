@@ -13,12 +13,13 @@
 	<PropertyGroup>
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
-		<Copyright>2023</Copyright>
+		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
+		<Product>Carrot Cake CMS Widget</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<Version>8.1.0.0</Version>
 		<VersionPrefix>8.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
+		<Version>$(VersionPrefix).0.0</Version>
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
@@ -30,13 +31,13 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
@@ -69,7 +70,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="global.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="Views\_ViewImports.cshtml" />
