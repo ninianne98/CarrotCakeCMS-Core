@@ -100,7 +100,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public ActionResult LogOff() {
-			SignOut();
+			ClearUserSession();
 
 			SessionContext.CleanExpiredSession();
 
@@ -587,7 +587,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[AllowAnonymous]
 		public ActionResult DatabaseSetup(string signout) {
 			if (!string.IsNullOrEmpty(signout)) {
-				SignOut();
+				ClearUserSession();
 				Response.Redirect(SiteFilename.DatabaseSetupURL);
 			}
 
@@ -603,7 +603,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			RedirectIfUsersExist();
 
 			if (SecurityData.IsAuthenticated) {
-				SignOut();
+				ClearUserSession();
 
 				return RedirectToAction(SiteActions.CreateFirstAdmin, new { @signout = true });
 			}
@@ -620,7 +620,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			RedirectIfUsersExist();
 
 			if (ModelState.IsValid) {
-				SignOut();
+				ClearUserSession();
 
 				SecurityData sd = new SecurityData();
 				IdentityUser user = new IdentityUser { UserName = model.UserName, Email = model.Email };
@@ -838,7 +838,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			if (id.HasValue) {
 				model = ContentCategory.Get(id.Value);
-			} else {
+			}
+			if (model == null) {
 				model = new ContentCategory();
 				model.ContentCategoryID = Guid.Empty;
 			}
@@ -850,6 +851,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[ValidateAntiForgeryToken]
 		public ActionResult CategoryAddEdit(ContentCategory model) {
 			Helper.ForceValidation(ModelState, model);
+			model.ClearOptionalItems(ModelState);
 
 			if (ModelState.IsValid) {
 				ContentCategory item = ContentCategory.Get(model.ContentCategoryID);
@@ -877,6 +879,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult CategoryDelete(ContentCategory model) {
+			model.ClearOptionalItems(ModelState);
 			ContentCategory item = ContentCategory.Get(model.ContentCategoryID);
 			item.Delete();
 
@@ -889,7 +892,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			if (id.HasValue) {
 				model = ContentTag.Get(id.Value);
-			} else {
+			}
+			if (model == null) {
 				model = new ContentTag();
 				model.ContentTagID = Guid.Empty;
 			}
@@ -901,6 +905,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[ValidateAntiForgeryToken]
 		public ActionResult TagAddEdit(ContentTag model) {
 			Helper.ForceValidation(ModelState, model);
+			model.ClearOptionalItems(ModelState);
 
 			if (ModelState.IsValid) {
 				ContentTag item = ContentTag.Get(model.ContentTagID);
@@ -928,6 +933,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult TagDelete(ContentTag model) {
+			model.ClearOptionalItems(ModelState);
 			ContentTag item = ContentTag.Get(model.ContentTagID);
 			item.Delete();
 
@@ -1161,7 +1167,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult PageAddEdit(Guid? id, Guid? versionid, Guid? importid, string mode) {
+		public ActionResult PageAddEdit(Guid? id, Guid? versionid, Guid? importid, string? mode) {
 			ContentPageModel model = new ContentPageModel();
 			ContentPage pageContents = model.GetPage(id, versionid, importid, mode);
 			ViewBag.ContentEditMode = SiteData.EditMode(model.Mode);
@@ -1271,7 +1277,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult BlogPostAddEdit(Guid? id, Guid? versionid, Guid? importid, string mode) {
+		public ActionResult BlogPostAddEdit(Guid? id, Guid? versionid, Guid? importid, string? mode) {
 			ContentPageModel model = new ContentPageModel();
 			ContentPage pageContents = model.GetPost(id, versionid, importid, mode);
 			ViewBag.ContentEditMode = SiteData.EditMode(model.Mode);
@@ -1284,7 +1290,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult ContentSnippetAddEdit(Guid? id, Guid? versionid, string mode) {
+		public ActionResult ContentSnippetAddEdit(Guid? id, Guid? versionid, string? mode) {
 			ViewBag.ContentEditMode = SiteData.EditMode(mode);
 
 			ContentSnippet model = null;
@@ -1308,7 +1314,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult ContentSnippetAddEdit(ContentSnippet model, string mode) {
+		public ActionResult ContentSnippetAddEdit(ContentSnippet model, string? mode) {
 			ViewBag.ContentEditMode = SiteData.EditMode(mode);
 			Helper.ForceValidation(ModelState, model);
 
@@ -1393,10 +1399,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public ActionResult ControlPropertiesEdit(Guid id, Guid pageid) {
 			cmsHelper.OverrideKey(pageid);
 
-			Widget w = (from aw in cmsHelper.cmsAdminWidget
-						where aw.Root_WidgetID == id
-						orderby aw.WidgetOrder, aw.EditDate
-						select aw).FirstOrDefault();
+			var w = (from aw in cmsHelper.cmsAdminWidget
+					 where aw.Root_WidgetID == id
+					 orderby aw.WidgetOrder, aw.EditDate
+					 select aw).FirstOrDefault();
 
 			List<ObjectProperty> lstProps = ObjectProperty.GetWidgetProperties(w);
 
@@ -1412,10 +1418,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public ActionResult ControlPropertiesEdit(WidgetProperties model) {
 			cmsHelper.OverrideKey(model.Widget.Root_ContentID);
 
-			Widget w = (from aw in cmsHelper.cmsAdminWidget
-						where aw.Root_WidgetID == model.Widget.Root_WidgetID
-						orderby aw.WidgetOrder, aw.EditDate
-						select aw).FirstOrDefault();
+			var w = (from aw in cmsHelper.cmsAdminWidget
+					 where aw.Root_WidgetID == model.Widget.Root_WidgetID
+					 orderby aw.WidgetOrder, aw.EditDate
+					 select aw).FirstOrDefault();
 
 			var props = new List<WidgetProps>();
 
@@ -1659,7 +1665,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpGet]
-		public ActionResult ContentEdit(Guid id, Guid? widgetid, string field, string mode) {
+		public ActionResult ContentEdit(Guid id, Guid? widgetid, string field, string? mode) {
 			ContentSingleModel model = new ContentSingleModel();
 			model.Mode = mode;
 			model.Field = field;
@@ -1669,9 +1675,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			cmsHelper.OverrideKey(model.PageId);
 
 			if (widgetid.HasValue) {
-				Widget pageWidget = (from w in cmsHelper.cmsAdminWidget
-									 where w.Root_WidgetID == widgetid.Value
-									 select w).FirstOrDefault();
+				var pageWidget = (from w in cmsHelper.cmsAdminWidget
+								  where w.Root_WidgetID == widgetid.Value
+								  select w).FirstOrDefault();
 
 				model.PageText = pageWidget.ControlProperties;
 			} else {
@@ -1707,9 +1713,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				if (model.WidgetId.HasValue && model.WidgetId.Value != Guid.Empty) {
 					List<Widget> lstWidgets = cmsHelper.cmsAdminWidget;
 
-					Widget pageWidget = (from w in lstWidgets
-										 where w.Root_WidgetID == model.WidgetId.Value
-										 select w).FirstOrDefault();
+					var pageWidget = (from w in lstWidgets
+									  where w.Root_WidgetID == model.WidgetId.Value
+									  select w).FirstOrDefault();
 
 					pageWidget.ControlProperties = model.PageText;
 					pageWidget.WidgetDataID = Guid.NewGuid();
@@ -2916,7 +2922,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			return View();
 		}
 
-		protected void SignOut() {
+		protected void ClearUserSession() {
 			securityHelper.SignInManager.SignOutAsync();
 			this.HttpContext.Session.Clear();
 		}

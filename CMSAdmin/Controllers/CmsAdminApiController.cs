@@ -431,10 +431,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public string ValidateUniqueCategory(string TheSlug, string ItemID) {
 			try {
 				Guid CurrentItemGuid = new Guid(ItemID);
-				TheSlug = CMSConfigHelper.DecodeBase64(TheSlug);
-				TheSlug = ContentPageHelper.ScrubSlug(TheSlug);
+				var theSlug = CMSConfigHelper.DecodeBase64(TheSlug);
+				theSlug = ContentPageHelper.ScrubSlug(theSlug);
 
-				int iCount = ContentCategory.GetSimilar(SiteData.CurrentSite.SiteID, CurrentItemGuid, TheSlug);
+				int iCount = ContentCategory.GetSimilar(SiteData.CurrentSite.SiteID, CurrentItemGuid, theSlug);
 
 				if (iCount < 1) {
 					return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -453,10 +453,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public string ValidateUniqueTag(string TheSlug, string ItemID) {
 			try {
 				Guid CurrentItemGuid = new Guid(ItemID);
-				TheSlug = CMSConfigHelper.DecodeBase64(TheSlug);
-				TheSlug = ContentPageHelper.ScrubSlug(TheSlug);
+				var theSlug = CMSConfigHelper.DecodeBase64(TheSlug);
+				theSlug = ContentPageHelper.ScrubSlug(theSlug);
 
-				int iCount = ContentTag.GetSimilar(SiteData.CurrentSite.SiteID, CurrentItemGuid, TheSlug);
+				int iCount = ContentTag.GetSimilar(SiteData.CurrentSite.SiteID, CurrentItemGuid, theSlug);
 
 				if (iCount < 1) {
 					return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -472,18 +472,18 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		public string RecordSnippetHeartbeat(string ItemID) {
+		public string RecordSnippetHeartbeat([FromBody] ApiModel model) {
 			try {
-				Guid CurrentItemGuid = new Guid(ItemID);
+				Guid CurrentItemGuid = new Guid(model.ItemID);
 
 				ContentSnippet item = GetSnippet(CurrentItemGuid);
-				bool bRet = false;
+				bool ret = false;
 
 				if (item != null && !item.IsLocked) {
-					bRet = item.RecordSnippetLock(SecurityData.CurrentUserGuid);
+					ret = item.RecordSnippetLock(SecurityData.CurrentUserGuid);
 				}
 
-				if (bRet) {
+				if (ret) {
 					return JsonSerializer.Serialize(SiteData.CurrentSite.Now.ToString());
 				} else {
 					return JsonSerializer.Serialize(Convert.ToDateTime("12/31/1899").ToString());
@@ -497,9 +497,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		public string CancelSnippetEditing(string ItemID) {
+		public string CancelSnippetEditing([FromBody] ApiModel model) {
 			try {
-				Guid currentItemGuid = new Guid(ItemID);
+				Guid currentItemGuid = new Guid(model.ItemID);
 				ContentSnippet item = GetSnippet(currentItemGuid);
 
 				if (item != null && !item.IsLocked) {
@@ -525,12 +525,12 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			return item;
 		}
 
-		[HttpPost]
+		[HttpGet]
 		public string ValidateUniqueSnippet(string TheSlug, string ItemID) {
 			try {
 				Guid currentItemGuid = new Guid(ItemID);
-				TheSlug = CMSConfigHelper.DecodeBase64(TheSlug);
-				TheSlug = ContentPageHelper.ScrubSlug(TheSlug);
+				var theSlug = CMSConfigHelper.DecodeBase64(TheSlug);
+				theSlug = ContentPageHelper.ScrubSlug(theSlug);
 
 				ContentSnippet item = GetSnippet(currentItemGuid);
 
@@ -538,7 +538,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					currentItemGuid = item.Root_ContentSnippetID;
 				}
 
-				int count = ContentSnippet.GetSimilar(SiteData.CurrentSite.SiteID, currentItemGuid, TheSlug);
+				int count = ContentSnippet.GetSimilar(SiteData.CurrentSite.SiteID, currentItemGuid, theSlug);
 
 				if (count < 1) {
 					return JsonSerializer.Serialize(ServiceResponse.OK);
@@ -670,34 +670,34 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public string GenerateCategoryTagSlug(string TheSlug, string ItemID, string Mode) {
 			try {
 				Guid currentItemGuid = new Guid(ItemID);
-				TheSlug = CMSConfigHelper.DecodeBase64(TheSlug);
-				TheSlug = ContentPageHelper.ScrubSlug(TheSlug).ToLowerInvariant();
+				var theSlug = CMSConfigHelper.DecodeBase64(TheSlug);
+				theSlug = ContentPageHelper.ScrubSlug(theSlug).ToLowerInvariant();
 				var matches = 0;
 				var count = 0;
 				var siteid = SiteData.CurrentSite.SiteID;
 
 				if (Mode.ToLowerInvariant() == "category") {
-					matches = ContentCategory.GetSimilar(siteid, currentItemGuid, TheSlug);
+					matches = ContentCategory.GetSimilar(siteid, currentItemGuid, theSlug);
 					if (matches > 0) {
 						count = 1;
 						while (count < 2000 && matches > 0) {
-							TheSlug = string.Format("{0}-{1}", TheSlug, count);
-							matches = ContentCategory.GetSimilar(siteid, currentItemGuid, TheSlug);
+							theSlug = string.Format("{0}-{1}", theSlug, count);
+							matches = ContentCategory.GetSimilar(siteid, currentItemGuid, theSlug);
 						}
 					}
 				}
 				if (Mode.ToLowerInvariant() == "tag") {
-					matches = ContentTag.GetSimilar(siteid, currentItemGuid, TheSlug);
+					matches = ContentTag.GetSimilar(siteid, currentItemGuid, theSlug);
 					if (matches > 0) {
 						count = 1;
 						while (count < 2000 && matches > 0) {
-							TheSlug = string.Format("{0}-{1}", TheSlug, count);
-							matches = ContentTag.GetSimilar(siteid, currentItemGuid, TheSlug);
+							theSlug = string.Format("{0}-{1}", theSlug, count);
+							matches = ContentTag.GetSimilar(siteid, currentItemGuid, theSlug);
 						}
 					}
 				}
 
-				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(TheSlug));
+				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(theSlug));
 			} catch (Exception ex) {
 				_logger.LogError(ex, "GenerateCategoryTagSlug");
 				SiteData.WriteDebugException("webservice", ex);
@@ -707,11 +707,12 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		[HttpPost]
-		public string GenerateSnippetSlug(string TheSlug) {
+		public string GenerateSnippetSlug([FromBody] ApiModel model) {
 			try {
-				TheSlug = CMSConfigHelper.DecodeBase64(TheSlug).ToLowerInvariant().Trim();
+				var theSlug = model.TheSlug;
+				theSlug = CMSConfigHelper.DecodeBase64(theSlug).ToLowerInvariant().Trim();
 
-				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(TheSlug));
+				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(theSlug));
 			} catch (Exception ex) {
 				_logger.LogError(ex, "GenerateSnippetSlug");
 				SiteData.WriteDebugException("webservice", ex);

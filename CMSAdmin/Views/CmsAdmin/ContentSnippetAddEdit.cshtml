@@ -12,7 +12,7 @@
 	bool bLocked = Model.IsLocked && Model.Heartbeat_UserId.HasValue;
 }
 
-@section scripts{
+@section scripts {
 
 	<script type="text/javascript">
 		var webSvc = cmsGetServiceAddress();
@@ -31,9 +31,8 @@
 			var myPage = MakeStringSafe(thePage);
 
 			$.ajax({
-				type: "POST",
-				url: webMthd,
-				data: JSON.stringify({ TheSlug: myPage, ItemID: thePageID }),
+				type: "GET",
+				url: webMthd + "?TheSlug=" + encodeURIComponent(myPage) + "&ItemID=" + encodeURIComponent(thePageID),
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				success: editSlugCallback,
@@ -131,45 +130,16 @@
 		}
 
 		@if (bLocked) {
-		<text>
+			<text>
+			function EditHB() { }
 
-		function EditHB() { }
-
-		function cmsRecordCancellation() { }
-		</text>
+			function cmsRecordCancellation() { }
+			</text>
 		} else {
 			<text>
-
-		function EditHB() {
-			var webMthd = webSvc + "/RecordSnippetHeartbeat";
-			setTimeout("EditHB();", 25 * 1000);
-
-			$.ajax({
-				type: "POST",
-				url: webMthd,
-				data: JSON.stringify({ ItemID: thePageID }),
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: updateHeartbeat,
-				error: cmsAjaxFailedSwallow
-			});
-		}
-
-		function updateHeartbeat(data, status) {
-			var hb = $('#cmsHeartBeat');
-			hb.empty().append('HB:  ');
-			hb.append(data);
-		}
-
-		$(document).ready(function () {
-			setTimeout("EditHB();", 1500);
-		});
-
-		function cmsRecordCancellation() {
-
-			if (thePageID != '@Guid.Empty') {
-
-				var webMthd = webSvc + "/CancelSnippetEditing";
+			function EditHB() {
+				var webMthd = webSvc + "/RecordSnippetHeartbeat";
+				setTimeout("EditHB();", 25 * 1000);
 
 				$.ajax({
 					type: "POST",
@@ -177,12 +147,39 @@
 					data: JSON.stringify({ ItemID: thePageID }),
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
-					success: cmsAjaxGeneralCallback,
-					error: cmsAjaxFailed
+					success: updateHeartbeat,
+					error: cmsAjaxFailedSwallow
 				});
 			}
-		}
-		</text>
+
+			function updateHeartbeat(data, status) {
+				var hb = $('#cmsHeartBeat');
+				hb.empty().append('HB:  ');
+				hb.append(data);
+			}
+
+			$(document).ready(function () {
+				setTimeout("EditHB();", 1500);
+			});
+
+			function cmsRecordCancellation() {
+
+				if (thePageID != '@Guid.Empty') {
+
+					var webMthd = webSvc + "/CancelSnippetEditing";
+
+					$.ajax({
+						type: "POST",
+						url: webMthd,
+						data: JSON.stringify({ ItemID: thePageID }),
+						contentType: "application/json; charset=utf-8",
+						dataType: "json",
+						success: cmsAjaxGeneralCallback,
+						error: cmsAjaxFailed
+					});
+				}
+			}
+			</text>
 		}
 
 		var cmsIsPageLocked = @bLocked.ToString().ToLowerInvariant();
@@ -342,7 +339,7 @@
 		</div>
 	</div>
 
-					}
+}
 
 @if (!bLocked) {
 	<div style="display: none">
@@ -376,7 +373,6 @@
 		};
 
 		cmsAlertModalSmallBtns('Are you sure you want to delete this item?', opts);
-
 	}
 
 	function SubmitPage() {

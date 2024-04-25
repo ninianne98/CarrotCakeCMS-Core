@@ -14,7 +14,10 @@
 		<Authors>Carrotware</Authors>
 		<Company>Carrotware</Company>
 		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
-		<Product>Carrot Cake CMS, built @ $([System.DateTime]::UtcNow.ToString("yyMMdd")) $([System.DateTime]::UtcNow.ToString("HH:mm"))</Product>
+		<AppName>Carrot Cake CMS</AppName>
+		<BuildDateTime>$([System.DateTime]::UtcNow.ToString("yyyy.MM.dd")) $([System.DateTime]::UtcNow.ToString("HH:mm")) UTC</BuildDateTime>
+		<Product Condition="'$(Configuration)' == 'Release'">$(AppName), built @ $(BuildDateTime)</Product>
+		<Product Condition="'$(Configuration)' == 'Debug'">$(AppName), debug built @ $(BuildDateTime)</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<VersionPrefix>8.1</VersionPrefix>
 		<Build>$([System.DateTime]::op_Subtraction($([System.DateTime]::get_Now().get_Date()),$([System.DateTime]::new(2000,1,1))).get_TotalDays())</Build>
@@ -52,7 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		
+
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.18" />

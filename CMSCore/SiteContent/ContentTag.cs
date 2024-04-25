@@ -1,5 +1,6 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -89,6 +90,17 @@ namespace Carrotware.CMS.Core {
 			}
 
 			return errors;
+		}
+
+		public ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
+			// these child objects are for display only, and their validation is not needed
+			foreach (var ms in modelState.ToArray()) {
+				if (ms.Key.ToLowerInvariant().Contains("uri") || ms.Key.ToLowerInvariant().Contains("tagurl")) {
+					modelState.Remove(ms.Key);
+				}
+			}
+
+			return modelState;
 		}
 
 		internal ContentTag(vwCarrotTagCounted c) {
@@ -231,7 +243,6 @@ namespace Carrotware.CMS.Core {
 				if (s != null) {
 					_db.CarrotContentTags.Where(x => x.ContentTagId == this.ContentTagID).ExecuteDelete();
 					_db.CarrotContentTags.Remove(s);
-					_db.SaveChanges();
 				}
 			}
 		}

@@ -60,7 +60,7 @@ namespace Carrotware.CMS.Core {
 		[Display(Name = "Edit Date")]
 		public DateTime EditDate { get; set; }
 
-		public string ContentBody { get; set; }
+		public string? ContentBody { get; set; }
 
 		[Display(Name = "Go Live Date")]
 		public DateTime GoLiveDate { get; set; }
