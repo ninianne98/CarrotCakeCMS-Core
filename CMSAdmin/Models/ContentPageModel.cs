@@ -37,6 +37,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public Guid? VersionID { get; set; }
 		public Guid? ParentID { get; set; }
 		public string Mode { get; set; }
+		public string? SerialCache { get; set; } = string.Empty;
 		public bool VisitPage { get; set; }
 
 		public Dictionary<string, string> VersionHistory { get; set; }

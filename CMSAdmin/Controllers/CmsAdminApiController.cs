@@ -671,6 +671,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			try {
 				Guid currentItemGuid = new Guid(ItemID);
 				var theSlug = CMSConfigHelper.DecodeBase64(TheSlug);
+				var originalSlug = theSlug;
 				theSlug = ContentPageHelper.ScrubSlug(theSlug).ToLowerInvariant();
 				var matches = 0;
 				var count = 0;
@@ -681,8 +682,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					if (matches > 0) {
 						count = 1;
 						while (count < 2000 && matches > 0) {
-							theSlug = string.Format("{0}-{1}", theSlug, count);
+							theSlug = string.Format("{0}-{1}", originalSlug, count);
+							theSlug = ContentPageHelper.ScrubSlug(theSlug).ToLowerInvariant();
 							matches = ContentCategory.GetSimilar(siteid, currentItemGuid, theSlug);
+							count++;
 						}
 					}
 				}
@@ -691,8 +694,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					if (matches > 0) {
 						count = 1;
 						while (count < 2000 && matches > 0) {
-							theSlug = string.Format("{0}-{1}", theSlug, count);
+							theSlug = string.Format("{0}-{1}", originalSlug, count);
+							theSlug = ContentPageHelper.ScrubSlug(theSlug).ToLowerInvariant();
 							matches = ContentTag.GetSimilar(siteid, currentItemGuid, theSlug);
+							count++;
 						}
 					}
 				}

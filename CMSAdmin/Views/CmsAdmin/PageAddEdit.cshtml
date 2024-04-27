@@ -12,7 +12,7 @@
 	bool bLocked = Model.ContentPage.IsPageLocked && Model.ContentPage.Heartbeat_UserId.HasValue;
 }
 
-@section scripts{
+@section scripts {
 
 	<script type="text/javascript">
 		var webSvc = cmsGetServiceAddress();
@@ -151,7 +151,7 @@
 
 		@if (Model.ContentPage.IsPageLocked) {
 			<text>
-				function EditHB() { }
+			function EditHB() { }
 
 			function cancelEditing() { }
 
@@ -173,10 +173,10 @@
 		} else {
 
 			<text>
-				function openPage() {
-					var theURL = $('#OriginalFileName').val();
-					cmsOpenPage(theURL);
-				}
+			function openPage() {
+				var theURL = $('#OriginalFileName').val();
+				cmsOpenPage(theURL);
+			}
 
 			function EditHB() {
 				var dataObj = {};
@@ -259,7 +259,7 @@
 			</text>
 		}
 
-								var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
+		var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
 
 		$(window).bind('beforeunload', function () {
 			//cmsConfirmLeavingPage = false;
@@ -351,8 +351,9 @@
 	<br />
 	<br />
 </div>
-@using (Html.BeginForm()) {
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contentForm" })) {
 	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.SerialCache, new { @class = "non-serial-data" })
 
 	<div id="PageContents">
 		<table class="table-lg">

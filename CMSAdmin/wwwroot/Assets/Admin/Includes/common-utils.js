@@ -747,8 +747,43 @@ function cmsSetFileNameReturn(v) {
 //===========================
 
 var cmsConfirmLeavingPage = true;
+var cmsContentFormSerial = '';
+
+function cmsSerializeForm(frmName) {
+	if (tinymce) {
+		tinymce.triggerSave();
+	}
+	return '' + $(frmName + ' input:not(.non-serial-data)').serialize() + '&'
+		+ $(frmName + ' textarea:not(.non-serial-data)').serialize() + '';
+}
+
+$(document).ready(function () {
+	setTimeout(function () {
+
+		if ($('#contentForm').length > 0) {
+			if ($('#SerialCache').val().length < 10) {
+				cmsContentFormSerial = cmsSerializeForm('#contentForm');
+				$('#SerialCache').val(cmsContentFormSerial);
+			} else {
+				cmsContentFormSerial = $('#SerialCache').val();
+			}
+		}
+	}, 500);
+});
 
 function cmsGetPageStatus() {
+	if (cmsConfirmLeavingPage == true) {
+		var currentSerial = '';
+		if (cmsContentFormSerial.length > 0) {
+			currentSerial = cmsSerializeForm('#contentForm');
+			//console.log((currentSerial == cmsContentFormSerial));
+			//console.log(currentSerial);
+			//console.log(cmsContentFormSerial);
+
+			return !(currentSerial == cmsContentFormSerial);
+		}
+	}
+
 	return cmsConfirmLeavingPage;
 }
 

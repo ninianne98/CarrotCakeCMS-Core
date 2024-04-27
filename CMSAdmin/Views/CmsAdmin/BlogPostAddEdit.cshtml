@@ -12,7 +12,7 @@
 	bool bLocked = Model.ContentPage.IsPageLocked && Model.ContentPage.Heartbeat_UserId.HasValue;
 }
 
-@section scripts{
+@section scripts {
 
 	<script type="text/javascript">
 		var webSvc = cmsGetServiceAddress();
@@ -79,7 +79,7 @@
 				"Yes": function () { OverwriteFileData(); }
 			};
 
-			if (theTitle.length > 0 ) {
+			if (theTitle.length > 0) {
 				if (theFile.length > 0 || theNav.length > 0) {
 					cmsAlertModalSmallBtns('There is already content title and/or filename, overwrite?', opts);
 				} else {
@@ -188,109 +188,109 @@
 
 		@if (Model.ContentPage.IsPageLocked) {
 			<text>
-		function EditHB() { }
+			function EditHB() { }
 
-		function cancelEditing() { }
+			function cancelEditing() { }
 
-		function deleteContent() { }
+			function deleteContent() { }
 
-		function cmsRecordCancellation() { }
+			function cmsRecordCancellation() { }
 
-		function openPage() {
-			var theURL = $('#OriginalFileName').val();
+			function openPage() {
+				var theURL = $('#OriginalFileName').val();
 
-			if (theURL.length > 1) {
-				window.setTimeout("location.href = '" + theURL + "';", 250);
-			} else {
-				cmsAlertModalSmall("No saved page to show.");
+				if (theURL.length > 1) {
+					window.setTimeout("location.href = '" + theURL + "';", 250);
+				} else {
+					cmsAlertModalSmall("No saved page to show.");
+				}
 			}
-		}
-		</text>
+			</text>
 
 		} else {
 
-		<text>
-		function openPage() {
-			var theURL = $('#OriginalFileName').val();
-			cmsOpenPage(theURL);
-		}
+			<text>
+			function openPage() {
+				var theURL = $('#OriginalFileName').val();
+				cmsOpenPage(theURL);
+			}
 
-		function EditHB() {
-			var dataObj = {};
-			dataObj["PageID"] = thisPageID;
+			function EditHB() {
+				var dataObj = {};
+				dataObj["PageID"] = thisPageID;
 
-			var webMthd = webSvc + "/RecordHeartbeat";
-			setTimeout("EditHB();", 25 * 1000);
-
-			$.ajax({
-				type: "POST",
-				url: webMthd,
-				data: JSON.stringify(dataObj),
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: updateHeartbeat,
-				error: cmsAjaxFailedSwallow
-			});
-		}
-
-		function updateHeartbeat(data, status) {
-			var hb = $('#cmsHeartBeat');
-			hb.empty().append('HB:  ');
-			hb.append(data);
-		}
-
-		$(document).ready(function () {
-			setTimeout("EditHB();", 1500);
-		});
-
-		function cancelEditing() {
-
-			var opts = {
-				"No": function () { cmsAlertModalClose(); },
-				"Yes": function () {
-					cmsMakeOKToLeave();
-					cmsRecordCancellation();
-					window.setTimeout("location.href = '@SiteFilename.BlogPostIndexURL';", 500);
-					cmsAlertModalClose();
-				}
-			};
-
-			cmsAlertModalSmallBtns('Are you sure you want to leave the editor? All changes will be lost!', opts);
-
-		}
-
-		function deleteContent() {
-
-			var opts = {
-				"No": function () { cmsAlertModalClose(); },
-				"Yes": function () {
-					cmsMakeOKToLeave();
-					$('#btnDelete').click();
-					cmsAlertModalClose();
-				}
-			};
-
-			cmsAlertModalSmallBtns('Are you sure you want to delete this content? All version history and widget data will be lost!', opts);
-		}
-
-		function cmsRecordCancellation() {
-
-			if (thePageID != '@Guid.Empty') {
-
-				var webMthd = webSvc + "/CancelEditing";
+				var webMthd = webSvc + "/RecordHeartbeat";
+				setTimeout("EditHB();", 25 * 1000);
 
 				$.ajax({
 					type: "POST",
 					url: webMthd,
-					data: JSON.stringify({ ThisPage: thePageID }),
+					data: JSON.stringify(dataObj),
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
-					success: cmsAjaxGeneralCallback,
-					error: cmsAjaxFailed
+					success: updateHeartbeat,
+					error: cmsAjaxFailedSwallow
 				});
 			}
-		}
-		</text>
+
+			function updateHeartbeat(data, status) {
+				var hb = $('#cmsHeartBeat');
+				hb.empty().append('HB:  ');
+				hb.append(data);
+			}
+
+			$(document).ready(function () {
+				setTimeout("EditHB();", 1500);
+			});
+
+			function cancelEditing() {
+
+				var opts = {
+					"No": function () { cmsAlertModalClose(); },
+					"Yes": function () {
+						cmsMakeOKToLeave();
+						cmsRecordCancellation();
+						window.setTimeout("location.href = '@SiteFilename.BlogPostIndexURL';", 500);
+						cmsAlertModalClose();
+					}
+				};
+
+				cmsAlertModalSmallBtns('Are you sure you want to leave the editor? All changes will be lost!', opts);
+
+			}
+
+			function deleteContent() {
+
+				var opts = {
+					"No": function () { cmsAlertModalClose(); },
+					"Yes": function () {
+						cmsMakeOKToLeave();
+						$('#btnDelete').click();
+						cmsAlertModalClose();
+					}
+				};
+
+				cmsAlertModalSmallBtns('Are you sure you want to delete this content? All version history and widget data will be lost!', opts);
+			}
+
+			function cmsRecordCancellation() {
+
+				if (thePageID != '@Guid.Empty') {
+
+					var webMthd = webSvc + "/CancelEditing";
+
+					$.ajax({
+						type: "POST",
+						url: webMthd,
+						data: JSON.stringify({ ThisPage: thePageID }),
+						contentType: "application/json; charset=utf-8",
+						dataType: "json",
+						success: cmsAjaxGeneralCallback,
+						error: cmsAjaxFailed
+					});
+				}
+			}
+			</text>
 		}
 
 		var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
@@ -385,8 +385,9 @@
 	<br />
 	<br />
 </div>
-@using (Html.BeginForm()) {
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "contentForm" })) {
 	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.SerialCache, new { @class = "non-serial-data" })
 
 	<div id="PageContents">
 		<table class="table-lg">
@@ -547,8 +548,8 @@
 						<div class="picker-area ui-widget-content ui-corner-bottom">
 							<div>
 								@Html.ListBoxFor(m => m.SelectedCategories,
-									new MultiSelectList(Model.CategoryOptions, "Value", "Text", Model.SelectedCategories),
-									new { @class = "chosen-select", size = 2, @data_placeholder = "select categories" })
+																	new MultiSelectList(Model.CategoryOptions, "Value", "Text", Model.SelectedCategories),
+																	new { @class = "chosen-select", size = 2, @data_placeholder = "select categories" })
 							</div>
 						</div>
 					</div>
@@ -565,8 +566,8 @@
 						<div class="picker-area ui-widget-content ui-corner-bottom">
 							<div>
 								@Html.ListBoxFor(m => m.SelectedTags,
-									new MultiSelectList(Model.TagOptions, "Value", "Text", Model.SelectedTags),
-									new { @class = "chosen-select", size = 2, @data_placeholder = "select tags" })
+																	new MultiSelectList(Model.TagOptions, "Value", "Text", Model.SelectedTags),
+																	new { @class = "chosen-select", size = 2, @data_placeholder = "select tags" })
 							</div>
 						</div>
 					</div>
@@ -668,22 +669,22 @@
 						<input type="button" id="btnCancel" value="Cancel" onclick="cancelEditing();" />
 						&nbsp;&nbsp;
 						@if (Model.ContentPage.Root_ContentID != Guid.Empty) {
-						<input type="button" id="btnDeleteButton" value="Delete" onclick="return deleteContent();" />
+							<input type="button" id="btnDeleteButton" value="Delete" onclick="return deleteContent();" />
 						}
 					</td>
 					@if (Model.ContentPage.Root_ContentID != Guid.Empty) {
-					<td>
-						&nbsp;&nbsp;
-					</td>
-					<td align="right">
-						@Html.DropDownList("ddlVersions", new SelectList(Model.VersionHistory, "Key", "Value"), "[Select Version]")
-					</td>
-					<td>
-						&nbsp;&nbsp;
-					</td>
-					<td align="left">
-						<input type="button" onclick="javascript:cmsPageVersionNav();" name="btnReview" value="Review / Revert" />
-					</td>
+						<td>
+							&nbsp;&nbsp;
+						</td>
+						<td align="right">
+							@Html.DropDownList("ddlVersions", new SelectList(Model.VersionHistory, "Key", "Value"), "[Select Version]")
+						</td>
+						<td>
+							&nbsp;&nbsp;
+						</td>
+						<td align="left">
+							<input type="button" onclick="javascript:cmsPageVersionNav();" name="btnReview" value="Review / Revert" />
+						</td>
 					}
 				</tr>
 			</table>
@@ -708,7 +709,7 @@
 		</div>
 	</div>
 
-						}
+}
 
 <div style="display: none">
 	@using (Html.BeginForm("DeleteContentPage", CmsRouteConstants.CmsController.Admin)) {
@@ -787,7 +788,7 @@
 </script>
 <script type="text/javascript">
 	$(document).ready(function () {
-		$(".chosen-select").chosen({width: "695px"});
+		$(".chosen-select").chosen({ width: "695px" });
 
 		setTimeout("$('#jqtabs').tabs('option', 'active', 1);", 500);
 	});
