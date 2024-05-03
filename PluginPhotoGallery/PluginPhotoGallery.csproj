@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<OutputPath>bin\</OutputPath>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -16,7 +16,7 @@
 		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
 		<Product>Carrot Cake CMS Widget</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<VersionPrefix>8.1</VersionPrefix>
+		<VersionPrefix>6.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
 		<Version>$(VersionPrefix).0.0</Version>
