@@ -76,7 +76,7 @@
 		<EmbeddedResource Include="jquery\jqueryui-1-10-2.js" />
 		<EmbeddedResource Include="jquery\jqueryui-1-11-4.js" />
 		<EmbeddedResource Include="jquery\jqueryui-1-12-1.js" />
-		<EmbeddedResource Include="jquery\jqueryui-1-13-2.js" />
+		<EmbeddedResource Include="jquery\jqueryui-1-13-3.js" />
 		<EmbeddedResource Include="jquerybasic\black\ui-bg_glass_100_aaaaaa_1x400.png" />
 		<EmbeddedResource Include="jquerybasic\black\ui-bg_glass_100_efefef_1x400.png" />
 		<EmbeddedResource Include="jquerybasic\black\ui-bg_glass_80_111111_1x400.png" />
