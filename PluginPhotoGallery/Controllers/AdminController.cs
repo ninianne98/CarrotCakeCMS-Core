@@ -22,14 +22,17 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 	public class AdminController : BaseAdminWidgetController {
 		protected readonly IWebHostEnvironment _webenv;
 		protected readonly ICarrotSite _site;
+		private GalleryHelper _helper;
 
 		public AdminController(IWebHostEnvironment environment, ICarrotSite site) {
 			_site = site;
 			_webenv = environment;
+
+			_helper = new GalleryHelper(_site.SiteID);
 		}
 
 		public ActionResult Index() {
-			PagedData<GalleryGroup> model = new PagedData<GalleryGroup>();
+			var model = new PagedData<GalleryGroup>();
 			model.InitOrderBy(x => x.GalleryTitle, true);
 			model.PageSize = 25;
 			model.PageNumber = 1;
@@ -40,19 +43,16 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Index(PagedData<GalleryGroup> model) {
-			GalleryHelper gh = new GalleryHelper(_site.SiteID);
-
 			model.ToggleSort();
 			var srt = model.ParseSort();
 
-			List<GalleryGroup> lst = gh.GalleryGroupListGetBySiteID();
+			model.TotalRecords = _helper.GalleryGroupListGetBySiteIDCount();
 
-			IQueryable<GalleryGroup> query = lst.AsQueryable();
+			var query = _helper.GalleryGroupListGetBySiteID();
 			query = query.SortByParm(srt.SortField, srt.SortDirection);
 
-			model.DataSource = query.Skip(model.PageSize * model.PageNumberZeroIndex).Take(model.PageSize).ToList();
-
-			model.TotalRecords = lst.Count();
+			model.DataSource = query.Skip(model.PageSize * model.PageNumberZeroIndex)
+						.Take(model.PageSize).Select(x => new GalleryGroup(x)).ToList();
 
 			ModelState.Clear();
 
@@ -60,9 +60,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		}
 
 		public ActionResult EditGallery(Guid id) {
-			GalleryHelper gh = new GalleryHelper(_site.SiteID);
-
-			return View("EditGallery", gh.GalleryGroupGetByID(id));
+			return View("EditGallery", _helper.GalleryGroupGetByID(id));
 		}
 
 		public ModelStateDictionary ClearChildGalleryValid(ModelStateDictionary modelState) {
@@ -82,8 +80,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			ClearChildGalleryValid(ModelState);
 
 			if (ModelState.IsValid) {
-				GalleryHelper gh = new GalleryHelper(_site.SiteID);
-				GalleryGroup m = gh.GalleryGroupGetByID(model.GalleryId);
+				GalleryGroup m = _helper.GalleryGroupGetByID(model.GalleryId);
 				if (m == null) {
 					m = new GalleryGroup();
 					m.SiteID = _site.SiteID;
@@ -136,6 +133,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 				try {
 					ctx.Database.Initialize();
 				} catch (Exception ex) {
+					lst.Add(ex.ToString());
 					throw;
 				}
 			}
@@ -145,7 +143,6 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
 		[HttpGet]
 		public ActionResult EditImageMetaData(string path) {
-			GalleryHelper gh = new GalleryHelper(_site.SiteID);
 			string imageFile = string.Empty;
 
 			if (!string.IsNullOrEmpty(path)) {
@@ -154,7 +151,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
 			ValidateGalleryImage(imageFile);
 
-			GalleryMetaData model = gh.GalleryMetaDataGetByFilename(imageFile);
+			GalleryMetaData model = _helper.GalleryMetaDataGetByFilename(imageFile);
 			if (model == null) {
 				model = new GalleryMetaData();
 				model.SiteID = _site.SiteID;
@@ -168,9 +165,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult EditImageMetaData(GalleryMetaData model) {
-			GalleryHelper gh = new GalleryHelper(_site.SiteID);
-
-			GalleryMetaData meta = gh.GalleryMetaDataGetByFilename(model.GalleryImageName);
+			GalleryMetaData meta = _helper.GalleryMetaDataGetByFilename(model.GalleryImageName);
 
 			if (meta == null) {
 				meta = new GalleryMetaData();

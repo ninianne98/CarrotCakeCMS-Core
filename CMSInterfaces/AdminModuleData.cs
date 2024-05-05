@@ -15,7 +15,7 @@ namespace Carrotware.CMS.Interface {
 
 		public Guid ModuleID { get; set; }
 
-		public string ModuleName { get; set; }
+		public string ModuleName { get; set; } = string.Empty;
 
 		public virtual void LoadData(IAdminModule data) { }
 	}

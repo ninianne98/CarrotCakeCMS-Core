@@ -51,7 +51,6 @@ namespace CarrotCake.CMS.Plugins.CalendarModule {
 
 		public static string ShortDateFormatPattern {
 			get {
-
 				return "{0:" + ShortDatePattern + "}";
 			}
 		}

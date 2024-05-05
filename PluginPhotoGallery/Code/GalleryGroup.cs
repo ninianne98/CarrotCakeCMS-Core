@@ -13,8 +13,9 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 				this.SiteID = gal.SiteId;
 				this.GalleryTitle = gal.GalleryTitle;
 
-				var gh = new GalleryHelper(this.SiteID);
-				this.GalleryImages = gh.GalleryImageEntryListGetByGalleryId(this.GalleryId);
+				using (var gh = new GalleryHelper(this.SiteID)) {
+					this.GalleryImages = gh.GalleryImageEntryListGetByGalleryId(this.GalleryId);
+				}
 			}
 		}
 

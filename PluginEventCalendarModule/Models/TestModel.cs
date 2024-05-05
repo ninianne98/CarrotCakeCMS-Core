@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using System.Web;
 
 namespace CarrotCake.CMS.Plugins.EventCalendarModule.Models {
 

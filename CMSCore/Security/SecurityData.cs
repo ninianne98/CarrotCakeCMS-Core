@@ -34,7 +34,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static bool CheckUserExistance() {
-			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				return (from u in db.AspNetUsers
 						select u.UserName).Take(10).Any();
 			}
@@ -55,10 +55,10 @@ namespace Carrotware.CMS.Core {
 			return lst;
 		}
 
-		public static IdentityRole FindRole(string RoleName) {
+		public static IdentityRole FindRole(string roleName) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from r in db.AspNetRoles
-						where r.Name == RoleName
+						where r.Name == roleName
 						select NewIdentityRole(r)).FirstOrDefault();
 			}
 		}
@@ -104,7 +104,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static List<IdentityUser> GetUserSearch(string searchTerm) {
-			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				return (from u in db.AspNetUsers
 						where u.UserName.Contains(searchTerm)
 								|| u.Email.Contains(searchTerm)
@@ -209,10 +209,10 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static List<IdentityUser> GetUserListByName(string usrName) {
+		public static List<IdentityUser> GetUserListByName(string userName) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from u in db.AspNetUsers
-						where (u.UserName.Contains(usrName))
+						where (u.UserName.Contains(userName))
 						select NewIdentityUser(u)).Take(50).ToList();
 			}
 		}

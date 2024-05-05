@@ -17,9 +17,9 @@ namespace Carrotware.CMS.Interface.Controllers {
 	public class BaseWidgetController : Controller, IWidgetController {
 		public static bool WidgetStandaloneMode { get; set; } = true;
 
-		public string AssemblyName { get; set; }
+		public string AssemblyName { get; set; } = string.Empty;
 
-		public string AreaName { get; set; }
+		public string AreaName { get; set; } = string.Empty;
 
 		public bool UseStdWidgetLayout { get; set; } = true;
 		public bool UseArea { get; set; } = !WidgetStandaloneMode;
@@ -42,8 +42,7 @@ namespace Carrotware.CMS.Interface.Controllers {
 
 			if (this.UseArea) {
 				if (string.IsNullOrEmpty(this.AreaName)
-									|| ViewData["WidgetAreaName"] == null) {
-
+						|| ViewData["WidgetAreaName"] == null) {
 					this.AreaName = assemblyName;
 					ViewData["WidgetAreaName"] = assemblyName;
 					ViewBag.WidgetAreaName = assemblyName;

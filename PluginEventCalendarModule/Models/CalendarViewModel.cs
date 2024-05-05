@@ -1,10 +1,6 @@
-﻿using Carrotware.CMS.Core;
+﻿using CarrotCake.CMS.Plugins.EventCalendarModule.Data;
+using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
-using CarrotCake.CMS.Plugins.EventCalendarModule.Code;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using CarrotCake.CMS.Plugins.EventCalendarModule.Data;
 
 namespace CarrotCake.CMS.Plugins.EventCalendarModule.Models {
 

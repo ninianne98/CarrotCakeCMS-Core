@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 namespace Carrotware.CMS.Interface {
 
 	public static class CarrotLayout {
-
 		public static string LayoutKey { get { return "UseStdWidgetLayout"; } }
 
 		public static string ToggleLayout(IHtmlHelper helper, ViewDataDictionary viewData, string viewName) {

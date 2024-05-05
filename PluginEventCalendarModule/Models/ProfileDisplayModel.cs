@@ -2,7 +2,9 @@
 using Carrotware.Web.UI.Components;
 
 namespace CarrotCake.CMS.Plugins.EventCalendarModule.Models {
+
 	public class ProfileDisplayModel {
+
 		public ProfileDisplayModel() {
 			this.SelectedValue = -2;
 		}
@@ -34,6 +36,5 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Models {
 		public int SelectedValue { get; set; }
 		public Dictionary<int, string> Years { get; set; }
 		public PagedData<ViewCalendarEventProfile> Profiles { get; set; }
-
 	}
 }
