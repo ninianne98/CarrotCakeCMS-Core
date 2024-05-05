@@ -1,0 +1,41 @@
+﻿@model PagedData<CarrotFaqCategory>
+
+@{
+	Layout = Carrotware.CMS.Interface.CarrotLayout.Main;
+	ViewBag.Title = "FAQ Index";
+}
+
+<h3>@ViewBag.Title</h3>
+
+<p>
+	@Html.CarrotWeb().ActionImage("CreateFaq", "Admin", null, "~/assets/admin/images/add.png", "Add FAQ", null, null)
+	@Html.ActionLink("Create New", "CreateFaq")
+</p>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "sortTable" })) {
+	@Html.AntiForgeryToken()
+
+	var grid = Html.CarrotWeb().CarrotWebGrid<CarrotFaqCategory>(Model);
+
+	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead thead" }, null);
+	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
+	grid.ConfigName(Html.NameFor(x => x));
+
+	grid.AddColumn(new CarrotGridTemplateColumn<CarrotFaqCategory> {
+								HasHeadingText = false,
+								FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("EditFAQ", "Admin", new { @id = @item.FaqCategoryId }, "~/assets/admin/images/pencil.png", @item.FaqTitle, null, null) </text>
+	})
+	.AddColumn(new CarrotGridTemplateColumn<CarrotFaqCategory> {
+		HasHeadingText = false,
+		FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("ListFaqItems", "Admin", new { @id = @item.FaqCategoryId }, "~/assets/admin/images/table.png", @item.FaqTitle, null, null) </text>
+	})
+	.AddColumn(new CarrotGridTemplateColumn<CarrotFaqCategory> {
+		HasHeadingText = false,
+		FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("CreateFaqItem", "Admin", new { @parent = @item.FaqCategoryId }, "~/assets/admin/images/table_go.png", @item.FaqTitle, null, null) </text>
+	})
+	.AddColumn(x => x.FaqTitle, new CarrotGridColumn { Sortable = true });
+
+	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix ui-widget-content ui-corner-all" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
+
+	@grid.RenderHtmlString()
+}
