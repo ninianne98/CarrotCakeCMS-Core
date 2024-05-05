@@ -1,0 +1,29 @@
+{
+	"profiles": {
+		"PluginFAQ2Module": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			//"applicationUrl": "https://localhost:14120;http://localhost:14122"
+			"applicationUrl": "http://localhost:44120"
+		},
+		"IIS Express": {
+			"commandName": "IISExpress",
+			"launchBrowser": true,
+			//"launchUrl": "",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			}
+		}
+	},
+	"iisSettings": {
+		"windowsAuthentication": false,
+		"anonymousAuthentication": true,
+		"iisExpress": {
+			"applicationUrl": "http://localhost:44120",
+			"sslPort": 0
+		}
+	}
+}

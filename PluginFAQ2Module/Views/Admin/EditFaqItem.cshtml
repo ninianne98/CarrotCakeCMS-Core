@@ -1,0 +1,134 @@
+﻿@model CarrotFaqItem
+
+@{
+	ViewBag.Title = "Edit FAQ Item";
+
+	if (Model.FaqItemId == Guid.Empty) {
+		ViewBag.Title = "Add FAQ Item";
+	}
+}
+
+<h3>@ViewBag.Title</h3>
+
+<p>
+	@Html.CarrotWeb().ActionImage("ListFaqItems", "Admin", new { @id = Model.FaqCategoryId }, "~/assets/admin/images/back.png", "Return to List", null, null)
+	@Html.ActionLink("Return to List", "ListFaqItems", new { @id = Model.FaqCategoryId })
+</p>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+		<div class="form-group">
+			@Html.LabelFor(m => m.Caption, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.TextBoxFor(m => m.Caption, new { @class = "form-control form-control-lg" })
+				@Html.ValidationMessageFor(m => m.Caption, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(m => m.Question, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.ValidationMessageFor(m => m.Question, "", new { @class = "text-danger" })
+				@Html.TextAreaFor(m => m.Question, new { @class = "mceEditor", rows = "8", cols = "70", @style = "height: 150px; width: 640px;" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(m => m.Answer, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.ValidationMessageFor(m => m.Answer, "", new { @class = "text-danger" })
+				@Html.TextAreaFor(m => m.Answer, new { @class = "mceEditor", rows = "8", cols = "70", @style = "height: 150px; width: 640px;" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(m => m.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-2">
+				@Html.EditorFor(m => m.IsActive)
+				@Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger" })
+			</div>
+
+			@Html.LabelFor(m => m.ItemOrder, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-2">
+				@Html.TextBoxFor(m => m.ItemOrder, new { @class = "form-control form-control-sm" })
+				@Html.ValidationMessageFor(m => m.ItemOrder, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-8">
+				<input type="button" value="Save" class="btn btn-default" onclick="SaveItem()" />
+				<text>
+					&nbsp; &nbsp; &nbsp;
+				</text>
+
+				<input type="button" value="Cancel" class="btn btn-default" onclick="CancelItem()" />
+				<text>
+					&nbsp; &nbsp; &nbsp;
+				</text>
+
+				@if (Model.FaqItemId != Guid.Empty) {
+					<input type="button" value="Delete" class="btn btn-default" onclick="DeleteItem()" />
+				}
+
+				<div style="display:none">
+					<input type="submit" value="Save" id="btnSaveFaq" class="btn btn-default" />
+
+					@Html.HiddenFor(m => m.FaqItemId)
+					@Html.HiddenFor(m => m.FaqCategoryId)
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@using (Html.BeginForm("DeleteFaqItem", "Admin")) {
+	@Html.AntiForgeryToken()
+
+	<div style="display:none">
+		<input type="submit" value="Save" id="btnDeleteFaq" class="btn btn-default" />
+		@Html.TextBoxFor(m => m.Caption)
+		@Html.HiddenFor(m => m.FaqItemId)
+		@Html.HiddenFor(m => m.FaqCategoryId)
+	</div>
+
+}
+
+<script type="text/javascript">
+
+	function DeleteItem() {
+		if (confirm("You sure you want to delete?")) {
+			$('#btnDeleteFaq').click();
+		}
+
+		return false;
+	}
+
+	function faqAutoSynchMCE() {
+		if (saving != 1) {
+			var ret = cmsPreSaveTrigger();
+			setTimeout("faqAutoSynchMCE();", 1250);
+		}
+	}
+
+	faqAutoSynchMCE();
+
+	var saving = 0;
+
+	function SaveItem() {
+		faqAutoSynchMCE();
+		saving = 1;
+		setTimeout("ClickSub();", 500);
+	}
+	function ClickSub() {
+		$('#btnSaveFaq').click();
+	}
+
+	function CancelItem() {
+		window.setTimeout("location.href = '@Url.Action("ListFaqItems", "Admin", new { @id = Model.FaqCategoryId })'", 500);
+	}
+</script>

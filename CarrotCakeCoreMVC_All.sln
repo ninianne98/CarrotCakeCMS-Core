@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginCalendarModule", "Plu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginEventCalendarModule", "PluginEventCalendarModule\PluginEventCalendarModule.csproj", "{FAE2EA4A-771E-49B4-BA88-7B230254CFBA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginFAQ2Module", "PluginFAQ2Module\PluginFAQ2Module.csproj", "{370ABBD0-0DFB-4D30-AB0E-FA3370158E84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{FAE2EA4A-771E-49B4-BA88-7B230254CFBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAE2EA4A-771E-49B4-BA88-7B230254CFBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAE2EA4A-771E-49B4-BA88-7B230254CFBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{370ABBD0-0DFB-4D30-AB0E-FA3370158E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{370ABBD0-0DFB-4D30-AB0E-FA3370158E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{370ABBD0-0DFB-4D30-AB0E-FA3370158E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{370ABBD0-0DFB-4D30-AB0E-FA3370158E84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
