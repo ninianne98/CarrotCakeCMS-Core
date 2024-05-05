@@ -11,6 +11,6 @@
 namespace Carrotware.CMS.Interface.Controllers {
 
 	public class BaseDataWidgetController : BaseWidgetController, IWidgetDataObject {
-		public virtual object WidgetPayload { get; set; }
+		public virtual object WidgetPayload { get; set; } = new object();
 	}
 }

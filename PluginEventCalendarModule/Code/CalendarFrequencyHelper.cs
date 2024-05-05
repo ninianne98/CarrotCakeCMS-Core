@@ -164,8 +164,6 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 		}
 
 		protected static List<DateTime> GetSequenceDates(DateTime testDate, bool createRecentOnly, CalendarEvent eventProfile) {
-			SiteData site = SiteData.CurrentSite;
-
 			List<DateTime> eventDates = new List<DateTime>();
 			DateTime backportDate = testDate.AddMonths(-6).Date;
 			DateTime endDateRange = testDate.AddYears(5).Date;
@@ -173,7 +171,6 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 			DateTime dateToAdd = GetStartDateTimeFromItem(eventProfile).Date;
 
 			DateTime oldDate = eventProfile.EventStartDate;
-			int iOldDaysInMonth = DateTime.DaysInMonth(oldDate.Year, oldDate.Month);
 			int iDayOfMonth = oldDate.Day;
 
 			switch (eventProfile.Frequency) {
@@ -332,7 +329,7 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 		}
 
 		public static List<CalendarFrequency> GetCalendarFrequencies() {
-			using (CalendarContext db = CalendarContext.GetDataContext()) {
+			using (var db = CalendarContext.GetDataContext()) {
 				return (from c in db.CalendarFrequencies
 						orderby c.FrequencySortOrder
 						select c).ToList();

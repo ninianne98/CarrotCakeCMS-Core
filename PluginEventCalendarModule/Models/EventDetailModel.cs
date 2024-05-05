@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace CarrotCake.CMS.Plugins.EventCalendarModule.Models {
+
 	public class EventDetailModel : IValidatableObject {
+
 		public EventDetailModel() {
 			this.SiteID = Guid.Empty;
 			this.ItemID = Guid.Empty;

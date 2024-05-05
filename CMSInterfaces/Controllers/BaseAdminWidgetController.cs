@@ -14,13 +14,12 @@ namespace Carrotware.CMS.Interface.Controllers {
 
 		protected override void Dispose(bool disposing) {
 			base.Dispose(disposing);
-
 		}
 
 		public Guid SiteID { get; set; }
 
 		public Guid ModuleID { get; set; }
 
-		public string ModuleName { get; set; }
+		public string ModuleName { get; set; } = string.Empty;
 	}
 }

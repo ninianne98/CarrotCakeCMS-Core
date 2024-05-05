@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CarrotCake.CMS.Plugins.CalendarModule {
 
 	public class CalendarModuleRegistration : BaseWidgetLoader {
+
 		public override void LoadWidgets(IServiceCollection services) {
 			base.LoadWidgets(services);
 

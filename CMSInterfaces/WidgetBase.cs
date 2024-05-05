@@ -28,9 +28,9 @@ namespace Carrotware.CMS.Interface {
 
 		public bool IsDynamicInserted { get; set; }
 
-		public string WidgetClientID { get; set; }
+		public string WidgetClientID { get; set; } = string.Empty;
 
-		public virtual Dictionary<string, string> PublicParmValues { get; set; }
+		public virtual Dictionary<string, string> PublicParmValues { get; set; } = new Dictionary<string, string>();
 
 		public virtual Dictionary<string, string> JSEditFunctions {
 			get { return new Dictionary<string, string>(); }

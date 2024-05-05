@@ -44,7 +44,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 
 		[WidgetActionSettingModel("CarrotCake.CMS.Plugins.PhotoGallery.GallerySettings, CarrotCake.CMS.Plugins.PhotoGallery")]
 		public PartialViewResult ShowPrettyPhotoGallery() {
-			GallerySettings settings = new GallerySettings();
+			var settings = new GallerySettings();
 
 			if (WidgetPayload is GallerySettings) {
 				settings = (GallerySettings)WidgetPayload;

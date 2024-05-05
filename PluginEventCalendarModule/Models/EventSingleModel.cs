@@ -1,7 +1,9 @@
 ﻿using CarrotCake.CMS.Plugins.EventCalendarModule.Data;
 
 namespace CarrotCake.CMS.Plugins.EventCalendarModule.Models {
+
 	public class EventSingleModel {
+
 		public EventSingleModel() {
 			this.SiteID = Guid.Empty;
 			this.ItemID = Guid.Empty;

@@ -18,7 +18,7 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 
 	[WidgetController(typeof(HomeController))]
 	public class HomeController : BaseController {
-		private CalendarContext db = CalendarContext.GetDataContext();
+		private CalendarContext _db = CalendarContext.GetDataContext();
 
 		protected readonly IWebHostEnvironment _webenv;
 		protected readonly ICarrotSite _site;
@@ -31,8 +31,8 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 		protected override void Dispose(bool disposing) {
 			base.Dispose(disposing);
 
-			if (db != null) {
-				db.Dispose();
+			if (_db != null) {
+				_db.Dispose();
 			}
 		}
 

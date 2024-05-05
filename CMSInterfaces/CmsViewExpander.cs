@@ -19,7 +19,6 @@ namespace Carrotware.CMS.Interface {
 
 		public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context,
 					IEnumerable<string> viewLocations) {
-
 			var workingFolder = new List<string>();
 
 			if (context.ActionContext is ControllerContext) {
@@ -76,7 +75,6 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public void PopulateValues(ViewLocationExpanderContext context) {
-
 		}
 	}
 }

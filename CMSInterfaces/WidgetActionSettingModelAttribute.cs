@@ -11,27 +11,26 @@
 namespace Carrotware.CMS.Interface {
 
 	public class WidgetActionSettingModelAttribute : Attribute {
+		private string _field;
 
 		public WidgetActionSettingModelAttribute(string className) {
-			this._field = className;
+			_field = className;
 		}
 
 		public WidgetActionSettingModelAttribute(Type dataType) {
-			this._field = dataType.AssemblyQualifiedName;
+			_field = dataType.AssemblyQualifiedName;
 		}
-
-		private string _field;
 
 		public string ClassName {
 			get {
-				return this._field;
+				return _field;
 			}
 		}
 
-		public Object SettingsModel {
+		public object SettingsModel {
 			get {
 				Type typ = null;
-				if (!String.IsNullOrEmpty(this.ClassName)) {
+				if (!string.IsNullOrWhiteSpace(this.ClassName)) {
 					typ = Type.GetType(this.ClassName);
 
 					//if (typ == null && this.ClassName.IndexOf(",") < 1) {
