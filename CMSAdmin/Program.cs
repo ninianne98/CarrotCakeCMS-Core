@@ -77,10 +77,9 @@ var ccConfig = CarrotCakeConfig.GetConfig();
 app.MigrateDatabase();
 
 if (ccConfig.MainConfig.UseSSL) {
+	app.UseHttpsRedirection();
 	app.UseHsts();
 }
-
-app.UseHttpsRedirection();
 
 app.UseRouting();
 

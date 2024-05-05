@@ -1,5 +1,4 @@
-﻿
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -15,6 +14,6 @@ namespace Carrotware.Web.UI.Components {
 
 		string GetHtml();
 
-        Microsoft.AspNetCore.Html.HtmlString RenderHtml();
+		Microsoft.AspNetCore.Html.HtmlString RenderHtml();
 	}
 }

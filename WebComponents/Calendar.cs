@@ -44,7 +44,6 @@ namespace Carrotware.Web.UI.Components {
 		public Calendar(string wc, string wb, string cc, string cb,
 							string tc, string tb, string tsb, string tl,
 							string nc, string nb, string nsb, string nl) : this() {
-
 			this.WeekdayColor = CarrotWebHelper.DecodeColor(wc);
 			this.WeekdayBackground = CarrotWebHelper.DecodeColor(wb);
 			this.CellColor = CarrotWebHelper.DecodeColor(cc);

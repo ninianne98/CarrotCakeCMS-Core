@@ -1,10 +1,6 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Drawing;
-using System.IO;
-using System;
-using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Http;
 
 /*
 * CarrotCake CMS (MVC Core)

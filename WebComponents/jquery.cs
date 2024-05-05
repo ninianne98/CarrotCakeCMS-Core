@@ -34,7 +34,7 @@ namespace Carrotware.Web.UI.Components {
 		public static string GeneralUri {
 			get {
 				if (string.IsNullOrEmpty(_generalUri)) {
-					_generalUri = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-1-11-3.js");
+					_generalUri = CarrotWebHelper.GetWebResourceUrl("jquery.jquery-2-2-4.js");
 				}
 
 				return _generalUri;
