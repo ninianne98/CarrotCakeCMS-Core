@@ -24,40 +24,40 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="Faq2Registration.cs" />
-	  <Compile Include="Data\FaqHelper.cs" />
-	  <Compile Include="Controllers\AdminController.cs" />
-	  <Compile Include="Controllers\BaseController.cs" />
-	  <Compile Include="Controllers\HomeController.cs" />
-	  <Compile Include="Controllers\TestController.cs" />
-	  <Compile Include="Data\CarrotFaqCategory.cs" />
-	  <Compile Include="Data\CarrotFaqItem.cs" />
-	  <Compile Include="Data\DataHelper.cs" />
-	  <Compile Include="Data\FaqContext.cs" />
-	  <Compile Include="Data\Migrations\20240421191144_InitialFaq2.cs" />
-	  <Compile Include="Data\Migrations\20240421191144_InitialFaq2.Designer.cs" />
-	  <Compile Include="Data\Migrations\FaqContextModelSnapshot.cs" />
-	  <Compile Include="Models\FaqItems.cs" />
-	  <Compile Include="Models\FaqListing.cs" />
-	  <Compile Include="Models\FaqPublic.cs" />
-	  <Compile Include="Models\FaqPublicTop.cs" />
-	  <Compile Include="Models\TestModel.cs" />
-	  <Compile Include="Program.cs" />
+		<Compile Include="Faq2Registration.cs" />
+		<Compile Include="Data\FaqHelper.cs" />
+		<Compile Include="Controllers\AdminController.cs" />
+		<Compile Include="Controllers\BaseController.cs" />
+		<Compile Include="Controllers\HomeController.cs" />
+		<Compile Include="Controllers\TestController.cs" />
+		<Compile Include="Data\CarrotFaqCategory.cs" />
+		<Compile Include="Data\CarrotFaqItem.cs" />
+		<Compile Include="Data\DataHelper.cs" />
+		<Compile Include="Data\FaqContext.cs" />
+		<Compile Include="Data\Migrations\20240421191144_InitialFaq2.cs" />
+		<Compile Include="Data\Migrations\20240421191144_InitialFaq2.Designer.cs" />
+		<Compile Include="Data\Migrations\FaqContextModelSnapshot.cs" />
+		<Compile Include="Models\FaqItems.cs" />
+		<Compile Include="Models\FaqListing.cs" />
+		<Compile Include="Models\FaqPublic.cs" />
+		<Compile Include="Models\FaqPublicTop.cs" />
+		<Compile Include="Models\TestModel.cs" />
+		<Compile Include="Program.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="appsettings.Development.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="global.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Properties\launchSettings.json" />
-	  <Content Include="wwwroot\Content\Site.css" />
-	  <Content Include="wwwroot\favicon.ico" />
+		<Content Include="appsettings.Development.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="global.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Properties\launchSettings.json" />
+		<Content Include="wwwroot\Content\Site.css" />
+		<Content Include="wwwroot\favicon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -84,7 +84,6 @@
 		<None Include="Views\Public.config" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\CMSCore\CMSCore.csproj" />
 		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
 		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
@@ -101,10 +100,10 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="wwwroot\Scripts\" />
+		<Folder Include="wwwroot\Scripts\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Home\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Home\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C" />
+		<Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Home\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Home\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C" />
 	</Target>
 </Project>

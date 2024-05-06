@@ -1,5 +1,4 @@
 using CarrotCake.CMS.Plugins.FAQ2;
-using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
 using Carrotware.CMS.Interface.Controllers;
 using Carrotware.Web.UI.Components;
@@ -47,7 +46,7 @@ builder.ConfigureCarrotHttpHelper(config);
 
 widget.LoadWidgets(services);
 
-services.AddTransient<ICarrotSite, SiteBasicInfo>();
+services.AddTransient<ICarrotSite, SiteTestInfo>();
 services.AddTransient<IControllerActivator, CmsTestActivator>();
 
 BaseWidgetController.WidgetStandaloneMode = true;

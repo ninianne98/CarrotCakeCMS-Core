@@ -2,7 +2,8 @@
 @{
 	Layout = null;
 
-	string areaName = ViewBag.WidgetAssemblyName; // "CarrotCake.CMS.Plugins.FAQ2";
+	string areaName = ViewBag.WidgetAreaName;
+	string assemblyName = ViewBag.WidgetAssemblyName;
 	string areaAlias = string.Format("{0}_Default", areaName);
 }
 
@@ -10,7 +11,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>@ViewBag.Title - @ViewBag.WidgetAssemblyName</title>
+	<title>@ViewBag.Title - @assemblyName</title>
 	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.Silver })
 	@(new Bootstrap() { SelectedSkin = Bootstrap.BootstrapColorScheme.DarkRed })
 
@@ -92,12 +93,12 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				@Html.ActionLink("Widget: FAQ 2", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+				@Html.ActionLink(string.Format("{0}  (Core)", assemblyName), "Index", "Home", null, new { @class = "navbar-brand" })
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Test", new { @class = "active" }, null)) {
-						@Html.RouteLink("Test", areaAlias, new { action = "Index", controller = "Test" })
+						@Html.ActionLink("Show Faq List", "Index", "Test")
 					}
 
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active dropdown" }, new { @id = "tabAdmin", @class = "dropdown" })) {
@@ -116,7 +117,7 @@
 		@RenderBody()
 		<hr />
 		<footer>
-			<p>&copy; @DateTime.Now.Year - @ViewBag.WidgetAssemblyName</p>
+			<p>&copy; @DateTime.Now.Year - @assemblyName</p>
 		</footer>
 	</div>
 </body>

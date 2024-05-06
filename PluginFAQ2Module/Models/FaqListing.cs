@@ -13,8 +13,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Models {
 			this.Items.PageSize = 20;
 		}
 
-		public CarrotFaqCategory Faq { get; set; }
+		public CarrotFaqCategory Faq { get; set; } = new CarrotFaqCategory();
 
-		public PagedData<CarrotFaqItem> Items { get; set; }
+		public PagedData<CarrotFaqItem> Items { get; set; } = new PagedData<CarrotFaqItem>();
 	}
 }

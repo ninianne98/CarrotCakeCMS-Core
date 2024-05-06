@@ -24,8 +24,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 
 		[WidgetActionSettingModel(typeof(FaqPublic))]
 		public ActionResult ShowFaqList() {
-			FaqItems model = new FaqItems();
-			FaqPublic payload = new FaqPublic();
+			var model = new FaqItems();
+			var payload = new FaqPublic();
 
 			if (this.WidgetPayload is FaqPublic) {
 				payload = (FaqPublic)this.WidgetPayload;
@@ -39,7 +39,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 				model.Items = payload.GetList();
 			}
 
-			if (String.IsNullOrEmpty(payload.AlternateViewFile)) {
+			if (string.IsNullOrWhiteSpace(payload.AlternateViewFile)) {
 				return PartialView("FaqList", model);
 			} else {
 				return PartialView(payload.AlternateViewFile, model);
@@ -48,8 +48,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 
 		[WidgetActionSettingModel(typeof(FaqPublic))]
 		public ActionResult ShowRandomFaq() {
-			CarrotFaqItem model = new CarrotFaqItem();
-			FaqPublic payload = new FaqPublic();
+			var model = new CarrotFaqItem();
+			var payload = new FaqPublic();
 
 			if (this.WidgetPayload is FaqPublic) {
 				payload = (FaqPublic)this.WidgetPayload;
@@ -62,7 +62,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 				model = payload.GetRandomItem();
 			}
 
-			if (String.IsNullOrEmpty(payload.AlternateViewFile)) {
+			if (string.IsNullOrWhiteSpace(payload.AlternateViewFile)) {
 				return PartialView("FaqItem", model);
 			} else {
 				return PartialView(payload.AlternateViewFile, model);
@@ -71,8 +71,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 
 		[WidgetActionSettingModel(typeof(FaqPublicTop))]
 		public ActionResult ShowFaqTopList() {
-			FaqItems model = new FaqItems();
-			FaqPublicTop payload = new FaqPublicTop();
+			var model = new FaqItems();
+			var payload = new FaqPublicTop();
 
 			if (this.WidgetPayload is FaqPublicTop) {
 				payload = (FaqPublicTop)this.WidgetPayload;
@@ -86,7 +86,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 				model.Items = payload.GetListTop(payload.TakeTop);
 			}
 
-			if (String.IsNullOrEmpty(payload.AlternateViewFile)) {
+			if (string.IsNullOrWhiteSpace(payload.AlternateViewFile)) {
 				return PartialView("FaqList", model);
 			} else {
 				return PartialView(payload.AlternateViewFile, model);
