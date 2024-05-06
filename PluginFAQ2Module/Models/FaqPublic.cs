@@ -10,6 +10,10 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Models {
 			this.FaqCategoryID = Guid.Empty;
 		}
 
+		//public FaqPublic(Guid faqCategoryID) {
+		//	this.FaqCategoryID = faqCategoryID;
+		//}
+
 		public override bool EnableEdit {
 			get {
 				return true;
@@ -25,8 +29,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Models {
 			get {
 				Dictionary<string, string> _dict = null;
 
-				using (FaqHelper fh = new FaqHelper(this.SiteID)) {
-					_dict = (from c in fh.CategoryListGetBySiteID(this.SiteID)
+				using (var fh = new FaqHelper(this.SiteID)) {
+					_dict = (from c in fh.CategoryListGetBySiteID()
 							 orderby c.FaqTitle
 							 select c).ToList().ToDictionary(k => k.FaqCategoryId.ToString(), v => v.FaqTitle);
 				}
@@ -50,26 +54,26 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Models {
 		}
 
 		public List<CarrotFaqItem> GetList() {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
-				return fh.FaqItemListPublicGetByFaqCategoryID(this.FaqCategoryID, this.SiteID);
+			using (var fh = new FaqHelper(this.SiteID)) {
+				return fh.FaqItemListPublicGetByFaqCategoryID(this.FaqCategoryID);
 			}
 		}
 
 		public List<CarrotFaqItem> GetListTop(int takeTop) {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
-				return fh.FaqItemListPublicTopGetByFaqCategoryID(this.FaqCategoryID, this.SiteID, takeTop);
+			using (var fh = new FaqHelper(this.SiteID)) {
+				return fh.FaqItemListPublicTopGetByFaqCategoryID(this.FaqCategoryID, takeTop);
 			}
 		}
 
 		public CarrotFaqCategory GetFaq() {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+			using (var fh = new FaqHelper(this.SiteID)) {
 				return fh.CategoryGetByID(this.FaqCategoryID);
 			}
 		}
 
 		public CarrotFaqItem GetRandomItem() {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
-				return fh.FaqItemListPublicRandGetByFaqCategoryID(this.FaqCategoryID, this.SiteID);
+			using (var fh = new FaqHelper(this.SiteID)) {
+				return fh.FaqItemListPublicRandGetByFaqCategoryID(this.FaqCategoryID);
 			}
 		}
 	}

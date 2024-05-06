@@ -27,8 +27,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Models {
 			return this.FaqCount.ToString();
 		}
 
-		public CarrotFaqCategory Faq { get; set; }
+		public CarrotFaqCategory Faq { get; set; } = new CarrotFaqCategory();
 
-		public List<CarrotFaqItem> Items { get; set; }
+		public List<CarrotFaqItem> Items { get; set; } = new List<CarrotFaqItem>();
 	}
 }

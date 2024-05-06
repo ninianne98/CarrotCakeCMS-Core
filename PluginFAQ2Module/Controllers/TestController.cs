@@ -37,10 +37,14 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 			string action = vals["action"].ToString().ToLowerInvariant();
 			string controller = vals["controller"].ToString().ToLowerInvariant();
 
+			if (this.TestSiteID != Guid.Empty.ToString()) {
+				_siteId = new Guid(this.TestSiteID);
+			}
+
 			// since there are different models, set them up as needed to match the test
 			if (action.ToLowerInvariant() == "testview1" || action.ToLowerInvariant() == "testview2") {
 				var settings = new FaqPublic();
-				settings.SiteID = new Guid(this.TestSiteID);
+				settings.SiteID = _siteId;
 
 				if (vals.ContainsKey("id")) {
 					string id = vals["id"].ToString().ToLowerInvariant();
@@ -53,7 +57,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 
 			if (action.ToLowerInvariant() == "testview3") {
 				var settings = new FaqPublicTop();
-				settings.SiteID = new Guid(this.TestSiteID);
+				settings.SiteID = _siteId;
 
 				if (vals.ContainsKey("id")) {
 					string id = vals["id"].ToString().ToLowerInvariant();
@@ -82,8 +86,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		public ActionResult Index() {
 			List<CarrotFaqCategory> lst = null;
 
-			using (FaqHelper fh = new FaqHelper(new Guid(this.TestSiteID))) {
-				lst = fh.CategoryListGetBySiteID();
+			using (var fh = new FaqHelper(_siteId)) {
+				lst = fh.CategoryListGetBySiteID().OrderBy(x => x.FaqTitle).ToList();
 			}
 
 			return View(lst);

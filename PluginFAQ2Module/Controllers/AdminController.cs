@@ -22,7 +22,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 	public class AdminController : BaseAdminWidgetController {
 
 		public IActionResult Index() {
-			PagedData<CarrotFaqCategory> model = new PagedData<CarrotFaqCategory>();
+			var model = new PagedData<CarrotFaqCategory>();
 			model.InitOrderBy(x => x.FaqTitle, true);
 			model.PageSize = 25;
 			model.PageNumber = 1;
@@ -36,18 +36,14 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 			model.ToggleSort();
 			var srt = model.ParseSort();
 
-			List<CarrotFaqCategory> lst = null;
+			using (var fh = new FaqHelper(this.SiteID)) {
+				var query = fh.CategoryListGetBySiteID();
+				query = query.SortByParm(srt.SortField, srt.SortDirection);
 
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
-				lst = fh.CategoryListGetBySiteID();
+				model.TotalRecords = fh.CategoryListGetBySiteIDCount();
+
+				model.DataSource = query.Skip(model.PageSize * model.PageNumberZeroIndex).Take(model.PageSize).ToList();
 			}
-
-			IQueryable<CarrotFaqCategory> query = lst.AsQueryable();
-			query = query.SortByParm(srt.SortField, srt.SortDirection);
-
-			model.DataSource = query.Skip(model.PageSize * model.PageNumberZeroIndex).Take(model.PageSize).ToList();
-
-			model.TotalRecords = lst.Count();
 
 			ModelState.Clear();
 
@@ -55,7 +51,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		}
 
 		public IActionResult CreateFaq() {
-			CarrotFaqCategory model = new CarrotFaqCategory();
+			var model = new CarrotFaqCategory();
 			model.SiteId = this.SiteID;
 
 			return View("EditFaq", model);
@@ -68,7 +64,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		}
 
 		public IActionResult EditFaq(Guid id) {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+			using (var fh = new FaqHelper(this.SiteID)) {
 				return View("EditFaq", fh.CategoryGetByID(id));
 			}
 		}
@@ -77,7 +73,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		[ValidateAntiForgeryToken]
 		public IActionResult EditFaq(CarrotFaqCategory model) {
 			if (ModelState.IsValid) {
-				using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+				using (var fh = new FaqHelper(this.SiteID)) {
 					var fc = fh.CategoryGetByID(model.FaqCategoryId);
 
 					if (fc == null || model.FaqCategoryId == Guid.Empty) {
@@ -99,7 +95,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		}
 
 		public IActionResult ListFaqItems(Guid id) {
-			FaqListing model = new FaqListing();
+			var model = new FaqListing();
 			model.Faq.FaqCategoryId = id;
 			model.Faq.SiteId = this.SiteID;
 
@@ -112,19 +108,16 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 			model.Items.ToggleSort();
 			var srt = model.Items.ParseSort();
 
-			List<CarrotFaqItem> lst = null;
-
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+			using (var fh = new FaqHelper(this.SiteID)) {
 				model.Faq = fh.CategoryGetByID(model.Faq.FaqCategoryId);
-				lst = fh.FaqItemListGetByFaqCategoryID(model.Faq.FaqCategoryId);
+
+				var query = fh.FaqItemListGetByFaqCategoryID(model.Faq.FaqCategoryId);
+				query = query.SortByParm<CarrotFaqItem>(srt.SortField, srt.SortDirection);
+
+				model.Items.TotalRecords = fh.FaqItemListGetByFaqCategoryIDCount(model.Faq.FaqCategoryId);
+
+				model.Items.DataSource = query.Skip(model.Items.PageSize * model.Items.PageNumberZeroIndex).Take(model.Items.PageSize).ToList();
 			}
-
-			IQueryable<CarrotFaqItem> query = lst.AsQueryable();
-			query = query.SortByParm<CarrotFaqItem>(srt.SortField, srt.SortDirection);
-
-			model.Items.DataSource = query.Skip(model.Items.PageSize * model.Items.PageNumberZeroIndex).Take(model.Items.PageSize).ToList();
-
-			model.Items.TotalRecords = lst.Count();
 
 			ModelState.Clear();
 
@@ -132,7 +125,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		}
 
 		public IActionResult CreateFaqItem(Guid parent) {
-			CarrotFaqItem model = new CarrotFaqItem();
+			var model = new CarrotFaqItem();
 			model.FaqCategoryId = parent;
 
 			return View("EditFaqItem", model);
@@ -147,7 +140,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult DeleteFaqItem(CarrotFaqItem model) {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+			using (var fh = new FaqHelper(this.SiteID)) {
 				fh.DeleteItem(model.FaqItemId);
 			}
 
@@ -155,7 +148,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		}
 
 		public IActionResult EditFaqItem(Guid id) {
-			using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+			using (var fh = new FaqHelper(this.SiteID)) {
 				return View("EditFaqItem", fh.FaqItemGetByID(id));
 			}
 		}
@@ -175,8 +168,9 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		[ValidateAntiForgeryToken]
 		public IActionResult EditFaqItem(CarrotFaqItem model) {
 			ClearOptionalItemProperties(ModelState);
+
 			if (ModelState.IsValid) {
-				using (FaqHelper fh = new FaqHelper(this.SiteID)) {
+				using (var fh = new FaqHelper(this.SiteID)) {
 					var fc = fh.FaqItemGetByID(model.FaqItemId);
 
 					if (fc == null || model.FaqCategoryId == Guid.Empty) {
