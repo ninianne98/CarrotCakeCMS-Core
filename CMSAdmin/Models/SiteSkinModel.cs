@@ -40,7 +40,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			this.TemplateFile = encodedPath.DecodeBase64();
 			this.FullFilePath = CarrotHttpHelper.MapPath(this.TemplateFile);
 
-			using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {
+			using (var cmsHelper = new CMSConfigHelper()) {
 				this.Template = cmsHelper.Templates.Where(x => x.TemplatePath.ToLowerInvariant() == this.TemplateFile.ToLowerInvariant()).FirstOrDefault();
 			}
 
@@ -136,7 +136,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			}
 
 			if (File.Exists(realPath)) {
-				using (StreamReader sr = new StreamReader(realPath)) {
+				using (var sr = new StreamReader(realPath)) {
 					this.FileContents = sr.ReadToEnd();
 				}
 

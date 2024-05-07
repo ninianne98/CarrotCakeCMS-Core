@@ -156,32 +156,32 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static ContentTag Get(Guid TagID) {
-			ContentTag _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentTagByID(_db, TagID);
+			ContentTag item = null;
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentTagByID(db, TagID);
 				if (query != null) {
-					_item = new ContentTag(query);
+					item = new ContentTag(query);
 				}
 			}
 
-			return _item;
+			return item;
 		}
 
 		public static ContentTag GetByURL(Guid SiteID, string requestedURL) {
-			ContentTag _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentTagByURL(_db, SiteID, requestedURL);
+			ContentTag item = null;
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentTagByURL(db, SiteID, requestedURL);
 				if (query != null) {
-					_item = new ContentTag(query);
+					item = new ContentTag(query);
 				}
 			}
 
-			return _item;
+			return item;
 		}
 
 		public static int GetSimilar(Guid SiteID, Guid TagID, string tagSlug) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentTagNoMatch(_db, SiteID, TagID, tagSlug);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentTagNoMatch(db, SiteID, TagID, tagSlug);
 
 				return query.Count();
 			}
@@ -190,30 +190,30 @@ namespace Carrotware.CMS.Core {
 		public static int GetSiteCount(Guid siteID) {
 			int iCt = -1;
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				iCt = CompiledQueries.cqGetContentTagCountBySiteID(_db, siteID);
+			using (var db = CarrotCakeContext.Create()) {
+				iCt = CompiledQueries.cqGetContentTagCountBySiteID(db, siteID);
 			}
 
 			return iCt;
 		}
 
 		public static List<ContentTag> BuildTagList(Guid rootContentID) {
-			List<ContentTag> _types = null;
+			List<ContentTag> types = null;
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentTagByContentID(_db, rootContentID);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentTagByContentID(db, rootContentID);
 
-				_types = (from d in query.ToList()
-						  select new ContentTag(d)).ToList();
+				types = (from d in query.ToList()
+						 select new ContentTag(d)).ToList();
 			}
 
-			return _types;
+			return types;
 		}
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				bool bNew = false;
-				var s = CompiledQueries.cqGetContentTagByID(_db, this.ContentTagID);
+				var s = CompiledQueries.cqGetContentTagByID(db, this.ContentTagID);
 
 				if (s == null || (s != null && s.ContentTagId == Guid.Empty)) {
 					s = new CarrotContentTag();
@@ -227,22 +227,22 @@ namespace Carrotware.CMS.Core {
 				s.IsPublic = this.IsPublic;
 
 				if (bNew) {
-					_db.CarrotContentTags.Add(s);
+					db.CarrotContentTags.Add(s);
 				}
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.ContentTagID = s.ContentTagId;
 			}
 		}
 
 		public void Delete() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var s = CompiledQueries.cqGetContentTagByID(_db, this.ContentTagID);
+			using (var db = CarrotCakeContext.Create()) {
+				var s = CompiledQueries.cqGetContentTagByID(db, this.ContentTagID);
 
 				if (s != null) {
-					_db.CarrotContentTags.Where(x => x.ContentTagId == this.ContentTagID).ExecuteDelete();
-					_db.CarrotContentTags.Remove(s);
+					db.CarrotContentTags.Where(x => x.ContentTagId == this.ContentTagID).ExecuteDelete();
+					db.CarrotContentTags.Remove(s);
 				}
 			}
 		}

@@ -113,20 +113,20 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void Delete() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var c = CompiledQueries.cqGetContentCommentsTblByID(_db, this.ContentCommentID);
+			using (var db = CarrotCakeContext.Create()) {
+				var c = CompiledQueries.cqGetContentCommentsTblByID(db, this.ContentCommentID);
 
 				if (c != null) {
-					_db.CarrotContentComments.Remove(c);
-					_db.SaveChanges();
+					db.CarrotContentComments.Remove(c);
+					db.SaveChanges();
 				}
 			}
 		}
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				bool bNew = false;
-				var c = CompiledQueries.cqGetContentCommentsTblByID(_db, this.ContentCommentID);
+				var c = CompiledQueries.cqGetContentCommentsTblByID(db, this.ContentCommentID);
 
 				if (c == null) {
 					c = new CarrotContentComment();
@@ -153,10 +153,10 @@ namespace Carrotware.CMS.Core {
 				c.IsSpam = this.IsSpam;
 
 				if (bNew) {
-					_db.CarrotContentComments.Add(c);
+					db.CarrotContentComments.Add(c);
 				}
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.ContentCommentID = c.ContentCommentId;
 				this.CreateDate = c.CreateDate;
@@ -164,8 +164,8 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static List<PostComment> GetCommentsByContentPage(Guid rootContentID, bool bActiveOnly) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetContentPageComments(_db, rootContentID, bActiveOnly)
+			using (var db = CarrotCakeContext.Create()) {
+				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetContentPageComments(db, rootContentID, bActiveOnly)
 														   select c);
 
 				return lstComments.Select(x => new PostComment(x)).ToList();
@@ -174,8 +174,8 @@ namespace Carrotware.CMS.Core {
 
 		public static List<PostComment> GetCommentsBySitePageNumber(Guid siteID, int iPageNbr, int iPageSize, string SortBy, ContentPageType.PageType pageType) {
 			int startRec = iPageNbr * iPageSize;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetSiteContentCommentsByPostType(_db, siteID, pageType)
+			using (var db = CarrotCakeContext.Create()) {
+				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetSiteContentCommentsByPostType(db, siteID, pageType)
 														   select c);
 
 				return PaginateComments(lstComments, iPageNbr, iPageSize, SortBy).ToList();
@@ -184,8 +184,8 @@ namespace Carrotware.CMS.Core {
 
 		public static List<PostComment> GetCommentsByContentPageNumber(Guid rootContentID, int iPageNbr, int iPageSize, string SortBy, bool bActiveOnly) {
 			int startRec = iPageNbr * iPageSize;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetContentPageComments(_db, rootContentID, bActiveOnly)
+			using (var db = CarrotCakeContext.Create()) {
+				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetContentPageComments(db, rootContentID, bActiveOnly)
 														   select c);
 
 				return PaginateComments(lstComments, iPageNbr, iPageSize, SortBy).ToList();
@@ -194,8 +194,8 @@ namespace Carrotware.CMS.Core {
 
 		public static List<PostComment> GetCommentsBySitePageNumber(Guid siteID, int iPageNbr, int iPageSize, string SortBy, ContentPageType.PageType pageType, bool? approved, bool? spam) {
 			int startRec = iPageNbr * iPageSize;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetSiteContentCommentsByPostType(_db, siteID, pageType, approved, spam)
+			using (var db = CarrotCakeContext.Create()) {
+				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetSiteContentCommentsByPostType(db, siteID, pageType, approved, spam)
 														   select c);
 
 				return PaginateComments(lstComments, iPageNbr, iPageSize, SortBy).ToList();
@@ -204,8 +204,8 @@ namespace Carrotware.CMS.Core {
 
 		public static List<PostComment> GetCommentsByContentPageNumber(Guid rootContentID, int iPageNbr, int iPageSize, string SortBy, bool? approved, bool? spam) {
 			int startRec = iPageNbr * iPageSize;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetContentPageComments(_db, rootContentID, approved, spam)
+			using (var db = CarrotCakeContext.Create()) {
+				IQueryable<vwCarrotComment> lstComments = (from c in CannedQueries.GetContentPageComments(db, rootContentID, approved, spam)
 														   select c);
 
 				return PaginateComments(lstComments, iPageNbr, iPageSize, SortBy).ToList();
@@ -231,63 +231,63 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static int GetCommentCountBySiteAndType(Guid siteID, ContentPageType.PageType pageType) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.GetSiteContentCommentsByPostType(_db, siteID, pageType)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.GetSiteContentCommentsByPostType(db, siteID, pageType)
 						select c).Count();
 			}
 		}
 
 		public static int GetCommentCountBySiteAndType(Guid siteID, ContentPageType.PageType pageType, bool? approved, bool? spam) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.GetSiteContentCommentsByPostType(_db, siteID, pageType, approved, spam)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.GetSiteContentCommentsByPostType(db, siteID, pageType, approved, spam)
 						select c).Count();
 			}
 		}
 
 		public static int GetCommentCountByContent(Guid rootContentID, bool bActiveOnly) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.GetContentPageComments(_db, rootContentID, bActiveOnly)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.GetContentPageComments(db, rootContentID, bActiveOnly)
 						select c).Count();
 			}
 		}
 
 		public static int GetCommentCountByContent(Guid rootContentID, bool? approved, bool? spam) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.GetContentPageComments(_db, rootContentID, approved, spam)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.GetContentPageComments(db, rootContentID, approved, spam)
 						select c).Count();
 			}
 		}
 
 		public static int GetCommentCountByContent(Guid siteID, Guid rootContentID, DateTime postDate, string postIP, string sCommentText) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.FindCommentsByDate(_db, siteID, rootContentID, postDate, postIP, sCommentText)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.FindCommentsByDate(db, siteID, rootContentID, postDate, postIP, sCommentText)
 						select c).Count();
 			}
 		}
 
 		public static int GetCommentCountByContent(Guid siteID, Guid rootContentID, DateTime postDate, string postIP) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.FindCommentsByDate(_db, siteID, rootContentID, postDate, postIP)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.FindCommentsByDate(db, siteID, rootContentID, postDate, postIP)
 						select c).Count();
 			}
 		}
 
 		public static PostComment GetContentCommentByID(Guid contentCommentID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return new PostComment(CompiledQueries.cqGetContentCommentByID(_db, contentCommentID));
+			using (var db = CarrotCakeContext.Create()) {
+				return new PostComment(CompiledQueries.cqGetContentCommentByID(db, contentCommentID));
 			}
 		}
 
 		public static int GetAllCommentCountBySite(Guid siteID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from c in CannedQueries.GetSiteContentComments(_db, siteID)
+			using (var db = CarrotCakeContext.Create()) {
+				return (from c in CannedQueries.GetSiteContentComments(db, siteID)
 						select c).Count();
 			}
 		}
 
 		public static List<PostComment> GetAllCommentsBySite(Guid siteID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				IQueryable<PostComment> s = (from c in CannedQueries.GetSiteContentComments(_db, siteID)
+			using (var db = CarrotCakeContext.Create()) {
+				IQueryable<PostComment> s = (from c in CannedQueries.GetSiteContentComments(db, siteID)
 											 select new PostComment(c));
 
 				return s.ToList();

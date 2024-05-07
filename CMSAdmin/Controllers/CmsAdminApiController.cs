@@ -56,9 +56,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				ContentPage c = null;
 				try {
 					string xml = GetSerialized(CMSConfigHelper.keyAdminContent);
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(ContentPage));
+					var xmlSerializer = new XmlSerializer(typeof(ContentPage));
 					object genpref = null;
-					using (StringReader stringReader = new StringReader(xml)) {
+					using (var stringReader = new StringReader(xml)) {
 						genpref = xmlSerializer.Deserialize(stringReader);
 					}
 					c = genpref as ContentPage;
@@ -70,10 +70,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					ClearSerialized(CMSConfigHelper.keyAdminContent);
 				} else {
 					string xml = string.Empty;
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(ContentPage));
-					using (StringWriter stringWriter = new StringWriter()) {
-						xmlSerializer.Serialize(stringWriter, value);
-						xml = stringWriter.ToString();
+					var xmlSerializer = new XmlSerializer(typeof(ContentPage));
+					using (var sw = new StringWriter()) {
+						xmlSerializer.Serialize(sw, value);
+						xml = sw.ToString();
 					}
 					SaveSerialized(CMSConfigHelper.keyAdminContent, xml);
 				}
@@ -86,9 +86,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				string xml = GetSerialized(CMSConfigHelper.keyAdminWidget);
 				//since a page may not have any widgets, initialize it and skip deserializing
 				if (!string.IsNullOrEmpty(xml)) {
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Widget>));
+					var xmlSerializer = new XmlSerializer(typeof(List<Widget>));
 					object genpref = null;
-					using (StringReader stringReader = new StringReader(xml)) {
+					using (var stringReader = new StringReader(xml)) {
 						genpref = xmlSerializer.Deserialize(stringReader);
 					}
 					c = genpref as List<Widget>;
@@ -102,10 +102,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					ClearSerialized(CMSConfigHelper.keyAdminWidget);
 				} else {
 					string xml = string.Empty;
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Widget>));
-					using (StringWriter stringWriter = new StringWriter()) {
-						xmlSerializer.Serialize(stringWriter, value);
-						xml = stringWriter.ToString();
+					var xmlSerializer = new XmlSerializer(typeof(List<Widget>));
+					using (var sw = new StringWriter()) {
+						xmlSerializer.Serialize(sw, value);
+						xml = sw.ToString();
 					}
 					SaveSerialized(CMSConfigHelper.keyAdminWidget, xml);
 				}
@@ -135,8 +135,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		private void LoadGuids() {
 			using (var pageHelper = new ContentPageHelper()) {
-				if (!string.IsNullOrEmpty(CurrentEditPage)) {
-					filePage = pageHelper.FindByFilename(SiteData.CurrentSite.SiteID, CurrentEditPage);
+				if (!string.IsNullOrEmpty(_currentEditPage)) {
+					filePage = pageHelper.FindByFilename(SiteData.CurrentSite.SiteID, _currentEditPage);
 					if (filePage != null) {
 						currentPageGuid = filePage.Root_ContentID;
 					}
@@ -144,7 +144,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 					if (currentPageGuid != Guid.Empty) {
 						filePage = pageHelper.FindContentByID(SiteData.CurrentSite.SiteID, currentPageGuid);
 						if (filePage != null) {
-							CurrentEditPage = filePage.FileName;
+							_currentEditPage = filePage.FileName;
 						}
 					} else {
 						filePage = new ContentPage();
@@ -158,7 +158,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			return JsonSerializer.Serialize(SiteData.AdminFolderPath);
 		}
 
-		private string CurrentEditPage = string.Empty;
+		private string _currentEditPage = string.Empty;
 
 		[HttpPost]
 		public string RecordHeartbeat([FromBody] ApiModel model) {
@@ -1172,7 +1172,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				zone = CMSConfigHelper.DecodeBase64(zone);
 				currentPageGuid = new Guid(thisPage);
 				LoadGuids();
-				CurrentEditPage = filePage.FileName.ToLowerInvariant();
+				_currentEditPage = filePage.FileName.ToLowerInvariant();
 
 				var c = cmsAdminContent;
 				c.EditDate = SiteData.CurrentSite.Now;
@@ -1206,7 +1206,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				currentPageGuid = new Guid(thisPage);
 				LoadGuids();
-				CurrentEditPage = filePage.FileName.ToLowerInvariant();
+				_currentEditPage = filePage.FileName.ToLowerInvariant();
 
 				bool isLocked = pageHelper.IsPageLocked(currentPageGuid, SiteData.CurrentSite.SiteID, SecurityData.CurrentUserGuid);
 				Guid guidUser = pageHelper.GetCurrentEditUser(currentPageGuid, SiteData.CurrentSite.SiteID);

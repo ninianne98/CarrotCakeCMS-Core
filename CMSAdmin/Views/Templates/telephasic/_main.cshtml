@@ -16,10 +16,10 @@
 	ViewBag.SiteName = CmsPage.TheSite.SiteName;
 
 	var nav = new TwoLevelNavigation() {
-		AutoStylingDisabled = true,
-		CssSelected = "selected",
-		ElementId = "nav"
-	};
+				AutoStylingDisabled = true,
+				CssSelected = "selected",
+				ElementId = "nav"
+			};
 
 	bool specialThemed = ViewBag.TelephasicThemed ?? false;
 }
@@ -57,14 +57,14 @@
 		//var mainRot = CmsSkin.RotateColor(mainDk, 90);
 
 		<style type="text/css">
-		#header-wrapper {
-			background-image: url(@svg);
-			background-image: url(@img), url(@svg), -moz-linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
-			background-image: url(@img), url(@svg), -webkit-linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
-			background-image: url(@img), url(@svg), -ms-linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
-			background-image: url(@img), url(@svg), linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
-			background-color: @main;
-		}
+			#header-wrapper {
+				background-image: url(@svg);
+				background-image: url(@img), url(@svg), -moz-linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
+				background-image: url(@img), url(@svg), -webkit-linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
+				background-image: url(@img), url(@svg), -ms-linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
+				background-image: url(@img), url(@svg), linear-gradient(75deg, @mainDk 15%, @mainLt 55%);
+				background-color: @main;
+			}
 		</style>
 	}
 
@@ -73,7 +73,7 @@
 
 	<title>@CmsPage.Titlebar</title>
 
-	@Html.CarrotCakeHtml().IncludeHead()
+	@Html.CarrotCakeHtml().IncludeHeader()
 </head>
 <body class="@bodyCssClass">
 	<div id="page-wrapper">

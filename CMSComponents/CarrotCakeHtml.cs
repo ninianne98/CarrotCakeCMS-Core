@@ -287,6 +287,14 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public HtmlString IncludeHead() {
+			return IncludeHeader();
+		}
+
+		public HtmlString IncludeFoot() {
+			return IncludeFooter();
+		}
+
+		public HtmlString IncludeHeader() {
 			var sb = new StringBuilder();
 			sb.AppendLine(string.Empty);
 
@@ -602,7 +610,7 @@ namespace Carrotware.CMS.UI.Components {
 				var sb = new StringBuilder();
 				sb.Append(ControlUtilities.ReadEmbededScript("Carrotware.CMS.UI.Components._TextZone.cshtml"));
 
-				sb.Replace("[[CONTENT]]", m.Content);
+				sb.Replace("[[WIDGET_CONTENT]]", m.Content);
 				sb.Replace("[[AREA_NAME]]", m.AreaName.ToString());
 				sb.Replace("[[zone]]", m.Zone);
 				sb.Replace("[[htmltext]]", SiteData.HtmlMode);
@@ -629,14 +637,26 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		internal string RenderPartialToString(string partialViewName) {
-			return _helper.Partial(partialViewName).RenderToString();
+			return RenderPartialToString(partialViewName, null);
 		}
 
-		internal string RenderPartialToString(string partialViewName, object model) {
+		internal string RenderPartialToString(string partialViewName, object? model) {
 			if (model != null) {
 				return _helper.Partial(partialViewName, model).RenderToString();
 			} else {
 				return _helper.Partial(partialViewName).RenderToString();
+			}
+		}
+
+		internal Task<string> RenderPartialToStringAsync(string partialViewName) {
+			return RenderPartialToStringAsync(partialViewName, null);
+		}
+
+		internal async Task<string> RenderPartialToStringAsync(string partialViewName, object? model) {
+			if (model != null) {
+				return (await _helper.PartialAsync(partialViewName, model)).RenderToString();
+			} else {
+				return (await _helper.PartialAsync(partialViewName)).RenderToString();
 			}
 		}
 
@@ -883,10 +903,10 @@ namespace Carrotware.CMS.UI.Components {
 						}
 					}
 
-					sbWidget.Replace("[[MENU_ITEMS]]", sbMenu.ToString().Trim());
+					sbWidget.Replace("[[WIDGET_MENU_ITEMS]]", sbMenu.ToString().Trim());
 					sbWidget.Replace("[[WIDGET_CAPTION]]", widget.ControlPath + captionPrefix);
 
-					sbWidget.Replace("[[CONTENT]]", widgetText);
+					sbWidget.Replace("[[WIDGET_CONTENT]]", widgetText);
 
 					widgetWrapper = sbWidget.ToString();
 				} else {
@@ -901,7 +921,7 @@ namespace Carrotware.CMS.UI.Components {
 			string bodyText = string.Empty;
 
 			if (SecurityData.AdvancedEditMode) {
-				bodyText = sbWidgetZone.Replace("[[CONTENT]]", sbWidgetbBody.ToString()).ToString();
+				bodyText = sbWidgetZone.Replace("[[WIDGET_CONTENT]]", sbWidgetbBody.ToString()).ToString();
 			} else {
 				bodyText = sbWidgetbBody.ToString();
 			}

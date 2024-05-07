@@ -156,9 +156,9 @@ namespace Carrotware.CMS.UI.Components {
 			this.Settings = null;
 
 			if (!string.IsNullOrEmpty(this.EncodedSettings)) {
-				string sXML = this.EncodedSettings.DecodeBase64();
-				XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogoutInfoSettings));
-				using (StringReader stringReader = new StringReader(sXML)) {
+				string xml = this.EncodedSettings.DecodeBase64();
+				var xmlSerializer = new XmlSerializer(typeof(LogoutInfoSettings));
+				using (var stringReader = new StringReader(xml)) {
 					this.Settings = (LogoutInfoSettings)xmlSerializer.Deserialize(stringReader);
 				}
 			}

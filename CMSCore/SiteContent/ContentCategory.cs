@@ -157,8 +157,8 @@ namespace Carrotware.CMS.Core {
 
 		public static ContentCategory Get(Guid CategoryID) {
 			ContentCategory _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentCategoryByID(_db, CategoryID);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentCategoryByID(db, CategoryID);
 				if (query != null) {
 					_item = new ContentCategory(query);
 				}
@@ -169,8 +169,8 @@ namespace Carrotware.CMS.Core {
 
 		public static ContentCategory GetByURL(Guid SiteID, string requestedURL) {
 			ContentCategory _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentCategoryByURL(_db, SiteID, requestedURL);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentCategoryByURL(db, SiteID, requestedURL);
 				if (query != null) {
 					_item = new ContentCategory(query);
 				}
@@ -180,8 +180,8 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static int GetSimilar(Guid SiteID, Guid CategoryID, string categorySlug) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentCategoryNoMatch(_db, SiteID, CategoryID, categorySlug);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentCategoryNoMatch(db, SiteID, CategoryID, categorySlug);
 
 				return query.Count();
 			}
@@ -190,8 +190,8 @@ namespace Carrotware.CMS.Core {
 		public static int GetSiteCount(Guid siteID) {
 			int iCt = -1;
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				iCt = CompiledQueries.cqGetContentCategoryCountBySiteID(_db, siteID);
+			using (var db = CarrotCakeContext.Create()) {
+				iCt = CompiledQueries.cqGetContentCategoryCountBySiteID(db, siteID);
 			}
 
 			return iCt;
@@ -200,8 +200,8 @@ namespace Carrotware.CMS.Core {
 		public static List<ContentCategory> BuildCategoryList(Guid rootContentID) {
 			List<ContentCategory> _types = null;
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentCategoryByContentID(_db, rootContentID);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentCategoryByContentID(db, rootContentID);
 
 				_types = (from d in query.ToList()
 						  select new ContentCategory(d)).ToList();
@@ -211,9 +211,9 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				bool bNew = false;
-				var s = CompiledQueries.cqGetContentCategoryByID(_db, this.ContentCategoryID);
+				var s = CompiledQueries.cqGetContentCategoryByID(db, this.ContentCategoryID);
 
 				if (s == null || (s != null && s.ContentCategoryId == Guid.Empty)) {
 					s = new CarrotContentCategory();
@@ -227,22 +227,22 @@ namespace Carrotware.CMS.Core {
 				s.IsPublic = this.IsPublic;
 
 				if (bNew) {
-					_db.CarrotContentCategories.Add(s);
+					db.CarrotContentCategories.Add(s);
 				}
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.ContentCategoryID = s.ContentCategoryId;
 			}
 		}
 
 		public void Delete() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var s = CompiledQueries.cqGetContentCategoryByID(_db, this.ContentCategoryID);
+			using (var db = CarrotCakeContext.Create()) {
+				var s = CompiledQueries.cqGetContentCategoryByID(db, this.ContentCategoryID);
 
 				if (s != null) {
-					_db.CarrotCategoryContentMappings.Where(x => x.ContentCategoryId == this.ContentCategoryID).ExecuteDelete();
-					_db.CarrotContentCategories.Remove(s);
+					db.CarrotCategoryContentMappings.Where(x => x.ContentCategoryId == this.ContentCategoryID).ExecuteDelete();
+					db.CarrotContentCategories.Remove(s);
 				}
 			}
 		}

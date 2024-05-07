@@ -48,20 +48,20 @@ namespace Carrotware.CMS.Core {
 		public string LoweredRoleName { get { return (this.RoleName ?? string.Empty).ToLowerInvariant(); } }
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				AspNetRole role = (from r in _db.AspNetRoles
+			using (var db = CarrotCakeContext.Create()) {
+				AspNetRole role = (from r in db.AspNetRoles
 								   where r.Name == this.RoleName || r.Id == this.RoleId
 								   select r).FirstOrDefault();
 
 				if (role == null) {
 					role = new AspNetRole();
 					role.Id = Guid.NewGuid().ToString().ToLowerInvariant();
-					_db.AspNetRoles.Add(role);
+					db.AspNetRoles.Add(role);
 				}
 
 				role.Name = this.RoleName.Trim();
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.RoleName = role.Name;
 				this.RoleId = role.Id;
@@ -69,10 +69,10 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ExtendedUserData> GetMembers() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from ur in _db.AspNetUserRoles
-						join r in _db.AspNetRoles on ur.RoleId equals r.Id
-						join ud in _db.vwCarrotUserData on ur.UserId equals ud.UserKey
+			using (var db = CarrotCakeContext.Create()) {
+				return (from ur in db.AspNetUserRoles
+						join r in db.AspNetRoles on ur.RoleId equals r.Id
+						join ud in db.vwCarrotUserData on ur.UserId equals ud.UserKey
 						where r.Id == this.RoleId
 						orderby ud.UserName
 						select new ExtendedUserData(ud)).ToList();

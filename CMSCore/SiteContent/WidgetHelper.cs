@@ -1,8 +1,5 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -17,8 +14,8 @@ using System.Linq;
 namespace Carrotware.CMS.Core {
 
 	public class WidgetHelper : IDisposable {
-		private CarrotCakeContext db = CarrotCakeContext.Create();
-		//private CarrotCakeContext db = CompiledQueries.dbConn;
+		private CarrotCakeContext _db = CarrotCakeContext.Create();
+		//private CarrotCakeContext _db = CompiledQueries.dbConn;
 
 		public WidgetHelper() { }
 
@@ -27,83 +24,83 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<Widget> GetWidgets(Guid rootContentID, bool bActiveOnly) {
-			List<Widget> w = (from r in CompiledQueries.cqGetLatestWidgets(db, rootContentID, bActiveOnly)
+			List<Widget> w = (from r in CompiledQueries.cqGetLatestWidgets(_db, rootContentID, bActiveOnly)
 							  select new Widget(r)).ToList();
 
 			return w;
 		}
 
 		public List<Widget> GetWidgetVersionHistory(Guid rootWidgetID) {
-			List<Widget> w = (from r in CompiledQueries.cqGetWidgetVersionHistory_VW(db, rootWidgetID)
+			List<Widget> w = (from r in CompiledQueries.cqGetWidgetVersionHistory_VW(_db, rootWidgetID)
 							  select new Widget(r)).ToList();
 
 			return w;
 		}
 
 		public Widget GetWidgetVersion(Guid widgetDataID) {
-			Widget w = new Widget(CompiledQueries.cqGetWidgetDataByID_VW(db, widgetDataID));
+			Widget w = new Widget(CompiledQueries.cqGetWidgetDataByID_VW(_db, widgetDataID));
 
 			return w;
 		}
 
 		public void RemoveVersions(List<Guid> lstDel) {
-			db.CarrotWidgetData.Where(w => lstDel.Contains(w.WidgetDataId)
+			_db.CarrotWidgetData.Where(w => lstDel.Contains(w.WidgetDataId)
 											&& w.IsLatestVersion != true).ExecuteDelete();
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void Delete(Guid widgetDataID) {
-			CarrotWidgetData w = CompiledQueries.cqGetWidgetDataByID_TBL(db, widgetDataID);
+			CarrotWidgetData w = CompiledQueries.cqGetWidgetDataByID_TBL(_db, widgetDataID);
 
 			if (w != null) {
-				db.CarrotWidgetData.Remove(w);
-				db.SaveChanges();
+				_db.CarrotWidgetData.Remove(w);
+				_db.SaveChanges();
 			}
 		}
 
 		public void Disable(Guid rootWidgetID) {
-			CarrotWidget w = CompiledQueries.cqGetRootWidget(db, rootWidgetID);
+			CarrotWidget w = CompiledQueries.cqGetRootWidget(_db, rootWidgetID);
 
 			if (w != null) {
 				w.WidgetActive = false;
-				db.SaveChanges();
+				_db.SaveChanges();
 			}
 		}
 
 		public void SetStatusList(Guid rootContentID, List<Guid> lstWidgetIDs, bool widgetStatus) {
-			var query = (from w in CannedQueries.GetWidgetsByRootContent(db, rootContentID)
+			var query = (from w in CannedQueries.GetWidgetsByRootContent(_db, rootContentID)
 						 where lstWidgetIDs.Contains(w.RootWidgetId)
 							   && w.WidgetActive != widgetStatus
 						 select w);
 
-			db.CarrotWidgets.Where(x => query.Select(x => x.RootWidgetId).Contains(x.RootWidgetId))
+			_db.CarrotWidgets.Where(x => query.Select(x => x.RootWidgetId).Contains(x.RootWidgetId))
 					.ExecuteUpdate(y => y.SetProperty(z => z.WidgetActive, widgetStatus));
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void DeleteAll(Guid rootWidgetID) {
-			var w = CompiledQueries.cqGetRootWidget(db, rootWidgetID);
+			var w = CompiledQueries.cqGetRootWidget(_db, rootWidgetID);
 
 			bool bPendingDel = false;
 
 			if (w != null) {
-				db.CarrotWidgetData.Where(x => x.RootWidgetId == rootWidgetID).ExecuteDelete();
+				_db.CarrotWidgetData.Where(x => x.RootWidgetId == rootWidgetID).ExecuteDelete();
 
-				db.CarrotWidgets.Remove(w);
+				_db.CarrotWidgets.Remove(w);
 				bPendingDel = true;
 			}
 
 			if (bPendingDel) {
-				db.SaveChanges();
+				_db.SaveChanges();
 			}
 		}
 
 		#region IDisposable Members
 
 		public void Dispose() {
-			if (db != null) {
-				db.Dispose();
+			if (_db != null) {
+				_db.Dispose();
 			}
 		}
 

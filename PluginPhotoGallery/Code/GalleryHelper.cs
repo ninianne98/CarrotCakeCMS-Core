@@ -75,9 +75,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		}
 
 		public int GalleryGroupListGetBySiteIDCount() {
-			return (from c in _db.Galleries
-					where c.SiteId == this.SiteID
-					select c).Count();
+			return GalleryGroupListGetBySiteID().Count();
 		}
 
 		public GalleryMetaData? GalleryMetaDataGetByFilename(string galleryImage) {
@@ -109,8 +107,8 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		public static string ReadEmbededScript(string resouceName) {
 			string ret = null;
 
-			Assembly _assembly = Assembly.GetExecutingAssembly();
-			using (var stream = new StreamReader(_assembly.GetManifestResourceStream(resouceName))) {
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			using (var stream = new StreamReader(assembly.GetManifestResourceStream(resouceName))) {
 				ret = stream.ReadToEnd();
 			}
 

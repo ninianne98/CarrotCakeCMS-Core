@@ -18,17 +18,18 @@ using System.Xml.Serialization;
 namespace Carrotware.CMS.Core {
 
 	public class Widget : IDisposable {
-		private CarrotCakeContext db = CarrotCakeContext.Create();
+		private CarrotCakeContext _db = CarrotCakeContext.Create();
+
 		public Widget() { }
 
 		public Widget(Guid rootWidgetID) {
-			var item = CompiledQueries.cqGetLatestWidget(db, rootWidgetID);
+			var item = CompiledQueries.cqGetLatestWidget(_db, rootWidgetID);
 
 			SetVals(item);
 		}
 
 		public void LoadPageWidgetVersion(Guid widgetDataID) {
-			var item = CompiledQueries.cqGetWidgetDataByID_VW(db, widgetDataID);
+			var item = CompiledQueries.cqGetWidgetDataByID_VW(_db, widgetDataID);
 
 			SetVals(item);
 		}
@@ -124,9 +125,9 @@ namespace Carrotware.CMS.Core {
 
 		public void Save() {
 			if (!this.IsWidgetPendingDelete) {
-				SiteData site = new SiteData(CompiledQueries.cqGetSiteFromRootContentID(db, this.Root_ContentID));
+				SiteData site = new SiteData(CompiledQueries.cqGetSiteFromRootContentID(_db, this.Root_ContentID));
 
-				var w = CompiledQueries.cqGetRootWidget(db, this.Root_WidgetID);
+				var w = CompiledQueries.cqGetRootWidget(_db, this.Root_WidgetID);
 
 				bool bAdd = false;
 				if (w == null) {
@@ -162,63 +163,63 @@ namespace Carrotware.CMS.Core {
 				wd.ControlProperties = this.ControlProperties;
 				wd.EditDate = DateTime.UtcNow;
 
-				var oldWD = CompiledQueries.cqGetWidgetDataByRootID(db, this.Root_WidgetID);
+				var oldWD = CompiledQueries.cqGetWidgetDataByRootID(_db, this.Root_WidgetID);
 
 				//only add a new entry if the widget has some sort of change in the data stored.
 				if (oldWD != null) {
 					if (oldWD.ControlProperties != wd.ControlProperties) {
 						oldWD.IsLatestVersion = false;
-						db.CarrotWidgetData.Add(wd);
+						_db.CarrotWidgetData.Add(wd);
 					}
 				} else {
-					db.CarrotWidgetData.Add(wd);
+					_db.CarrotWidgetData.Add(wd);
 				}
 
 				if (bAdd) {
-					db.CarrotWidgets.Add(w);
+					_db.CarrotWidgets.Add(w);
 				}
 
-				db.SaveChanges();
+				_db.SaveChanges();
 			} else {
 				DeleteAll();
 			}
 		}
 
 		public void DeleteAll() {
-			var w = CompiledQueries.cqGetRootWidget(db, this.Root_WidgetID);
+			var w = CompiledQueries.cqGetRootWidget(_db, this.Root_WidgetID);
 
 			bool bPendingDel = false;
 
 			if (w != null) {
-				db.CarrotWidgetData.Where(x => x.RootWidgetId == this.Root_WidgetID).ExecuteDelete();
-				db.CarrotWidgets.Remove(w);
+				_db.CarrotWidgetData.Where(x => x.RootWidgetId == this.Root_WidgetID).ExecuteDelete();
+				_db.CarrotWidgets.Remove(w);
 				bPendingDel = true;
 			}
 
 			if (bPendingDel) {
-				db.SaveChanges();
+				_db.SaveChanges();
 			}
 		}
 
 		public void Disable() {
-			var w = CompiledQueries.cqGetRootWidget(db, this.Root_WidgetID);
+			var w = CompiledQueries.cqGetRootWidget(_db, this.Root_WidgetID);
 
 			if (w != null) {
 				w.WidgetActive = false;
-				db.SaveChanges();
+				_db.SaveChanges();
 			}
 		}
 
 		public List<WidgetProps> ParseDefaultControlProperties() {
-			List<WidgetProps> props = new List<WidgetProps>();
+			var props = new List<WidgetProps>();
 			string sProps = this.ControlProperties;
 
 			if (!string.IsNullOrEmpty(sProps) && sProps.StartsWith("<?xml version=\"1.0\"")
 					&& sProps.Contains("<KeyName") && sProps.Contains("<KeyValue")) {
 				if (sProps.Contains("<ArrayOfWidgetProps")) {
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<WidgetProps>));
-					Object genpref = null;
-					using (StringReader stringReader = new StringReader(sProps)) {
+					var xmlSerializer = new XmlSerializer(typeof(List<WidgetProps>));
+					object genpref = null;
+					using (var stringReader = new StringReader(sProps)) {
 						genpref = xmlSerializer.Deserialize(stringReader);
 					}
 					props = genpref as List<WidgetProps>;
@@ -232,22 +233,22 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void SaveDefaultControlProperties(List<WidgetProps> props) {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<WidgetProps>));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
+			var xmlSerializer = new XmlSerializer(typeof(List<WidgetProps>));
+			string xml = string.Empty;
+			using (var stringWriter = new StringWriter()) {
 				xmlSerializer.Serialize(stringWriter, props);
-				sXML = stringWriter.ToString();
+				xml = stringWriter.ToString();
 			}
 
-			this.ControlProperties = sXML;
+			this.ControlProperties = xml;
 		}
 
 		private List<WidgetProps> ParseDefaultControlPropertiesOld(string sProps) {
-			List<WidgetProps> props = new List<WidgetProps>();
+			var props = new List<WidgetProps>();
 
 			if (!string.IsNullOrEmpty(sProps) && sProps.StartsWith("<?xml")) {
-				DataSet ds = new DataSet();
-				using (StringReader stream = new StringReader(sProps)) {
+				var ds = new DataSet();
+				using (var stream = new StringReader(sProps)) {
 					ds.ReadXml(stream);
 				}
 
@@ -285,13 +286,15 @@ namespace Carrotware.CMS.Core {
 		#region IDisposable Members
 
 		public void Dispose() {
-			if (db != null) {
-				db.Dispose();
+			if (_db != null) {
+				_db.Dispose();
 			}
 		}
 
 		#endregion IDisposable Members
 	}
+
+	//===========================
 
 	public class WidgetProps {
 

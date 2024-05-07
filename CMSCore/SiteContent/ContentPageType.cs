@@ -14,7 +14,7 @@ using Carrotware.CMS.Interface;
 namespace Carrotware.CMS.Core {
 
 	public class ContentPageType : IDisposable {
-		private CarrotCakeContext db = CarrotCakeContext.Create();
+		private CarrotCakeContext _db = CarrotCakeContext.Create();
 
 		public enum PageType {
 			Unknown,
@@ -29,13 +29,13 @@ namespace Carrotware.CMS.Core {
 
 		public static List<ContentPageType> ContentPageTypeList {
 			get {
-				List<ContentPageType> _types = new List<ContentPageType>();
+				List<ContentPageType> types = new List<ContentPageType>();
 
 				bool bCached = false;
 
 				try {
-					_types = (List<ContentPageType>)CarrotHttpHelper.CacheGet(keyContentPageType);
-					if (_types != null) {
+					types = (List<ContentPageType>)CarrotHttpHelper.CacheGet(keyContentPageType);
+					if (types != null) {
 						bCached = true;
 					}
 				} catch {
@@ -43,25 +43,25 @@ namespace Carrotware.CMS.Core {
 				}
 
 				if (!bCached) {
-					using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-						var query = CompiledQueries.cqGetContentTypes(_db);
+					using (var db = CarrotCakeContext.Create()) {
+						var query = CompiledQueries.cqGetContentTypes(db);
 
-						_types = (from d in query.ToList()
-								  select new ContentPageType {
-									  ContentTypeID = d.ContentTypeId,
-									  ContentTypeValue = d.ContentTypeValue
-								  }).ToList();
+						types = (from d in query.ToList()
+								 select new ContentPageType {
+									 ContentTypeID = d.ContentTypeId,
+									 ContentTypeValue = d.ContentTypeValue
+								 }).ToList();
 					}
 
-					_types.Add(new ContentPageType {
+					types.Add(new ContentPageType {
 						ContentTypeID = Guid.Empty,
 						ContentTypeValue = "Unknown"
 					});
 
-					CarrotHttpHelper.CacheInsert(keyContentPageType, _types, 5);
+					CarrotHttpHelper.CacheInsert(keyContentPageType, types, 5);
 				}
 
-				return _types;
+				return types;
 			}
 		}
 
@@ -92,8 +92,8 @@ namespace Carrotware.CMS.Core {
 		#region IDisposable Members
 
 		public void Dispose() {
-			if (db != null) {
-				db.Dispose();
+			if (_db != null) {
+				_db.Dispose();
 			}
 		}
 
