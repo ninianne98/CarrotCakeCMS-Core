@@ -28,6 +28,8 @@ namespace CarrotCake.CMS.Plugins.FAQ2 {
 
 		public override void RegisterWidgets(WebApplication app) {
 			base.RegisterWidgets(app);
+
+			app.MigrateDatabase();
 		}
 	}
 }
