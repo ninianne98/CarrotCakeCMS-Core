@@ -147,7 +147,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void ResetHeartbeatLock() {
-			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				var rc = CompiledQueries.cqGetRootContentTbl(db, this.SiteID, this.Root_ContentID);
 
 				if (rc != null) {
@@ -159,7 +159,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void RecordHeartbeatLock(Guid currentUserID) {
-			using (CarrotCakeContext db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				var rc = CompiledQueries.cqGetRootContentTbl(db, this.SiteID, this.Root_ContentID);
 
 				if (rc != null) {
@@ -204,10 +204,10 @@ namespace Carrotware.CMS.Core {
 			this.MetaDescription = string.IsNullOrEmpty(this.MetaDescription) ? string.Empty : this.MetaDescription;
 		}
 
-		private void SaveKeywordsAndTags(CarrotCakeContext _db) {
+		private void SaveKeywordsAndTags(CarrotCakeContext db) {
 			if (this.ContentType == ContentPageType.PageType.BlogEntry) {
-				_db.CarrotTagContentMappings.Where(c => this.Root_ContentID == c.RootContentId).ExecuteDelete();
-				_db.CarrotCategoryContentMappings.Where(c => this.Root_ContentID == c.RootContentId).ExecuteDelete();
+				db.CarrotTagContentMappings.Where(c => this.Root_ContentID == c.RootContentId).ExecuteDelete();
+				db.CarrotCategoryContentMappings.Where(c => this.Root_ContentID == c.RootContentId).ExecuteDelete();
 
 				List<CarrotTagContentMapping> newContentTags = (from x in this.ContentTags
 																select new CarrotTagContentMapping {
@@ -224,13 +224,13 @@ namespace Carrotware.CMS.Core {
 																		   }).ToList();
 
 				foreach (CarrotTagContentMapping s in newContentTags) {
-					_db.CarrotTagContentMappings.Add(s);
+					db.CarrotTagContentMappings.Add(s);
 				}
 				foreach (CarrotCategoryContentMapping s in newContentCategories) {
-					_db.CarrotCategoryContentMappings.Add(s);
+					db.CarrotCategoryContentMappings.Add(s);
 				}
 
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
@@ -316,19 +316,19 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void ApplyTemplate() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var c = CompiledQueries.cqGetLatestContentTbl(_db, this.SiteID, this.Root_ContentID);
+			using (var db = CarrotCakeContext.Create()) {
+				var c = CompiledQueries.cqGetLatestContentTbl(db, this.SiteID, this.Root_ContentID);
 
 				if (c != null) {
 					c.TemplateFile = this.TemplateFile;
 
-					_db.SaveChanges();
+					db.SaveChanges();
 				}
 			}
 		}
 
 		public void SavePageEdit() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				SiteData site = SiteData.GetSiteFromCache(this.SiteID);
 
 				if (this.Root_ContentID == Guid.Empty) {
@@ -341,9 +341,9 @@ namespace Carrotware.CMS.Core {
 					this.Parent_ContentID = null;
 				}
 
-				var rc = CompiledQueries.cqGetRootContentTbl(_db, this.SiteID, this.Root_ContentID);
+				var rc = CompiledQueries.cqGetRootContentTbl(db, this.SiteID, this.Root_ContentID);
 
-				var oldC = CompiledQueries.cqGetLatestContentTbl(_db, this.SiteID, this.Root_ContentID);
+				var oldC = CompiledQueries.cqGetLatestContentTbl(db, this.SiteID, this.Root_ContentID);
 
 				bool bNew = false;
 
@@ -352,7 +352,7 @@ namespace Carrotware.CMS.Core {
 
 					PerformCommonSaveRoot(site, rc);
 
-					_db.CarrotRootContents.Add(rc);
+					db.CarrotRootContents.Add(rc);
 					bNew = true;
 				}
 
@@ -364,16 +364,16 @@ namespace Carrotware.CMS.Core {
 
 				PerformCommonSave(site, rc, c);
 
-				_db.CarrotContents.Add(c);
+				db.CarrotContents.Add(c);
 
-				SaveKeywordsAndTags(_db);
+				SaveKeywordsAndTags(db);
 
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
 		public void SavePageAsDraft() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				SiteData site = SiteData.GetSiteFromCache(this.SiteID);
 
 				if (this.Root_ContentID == Guid.Empty) {
@@ -383,14 +383,14 @@ namespace Carrotware.CMS.Core {
 					this.ContentID = Guid.NewGuid();
 				}
 
-				CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(_db, this.SiteID, this.Root_ContentID);
+				CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(db, this.SiteID, this.Root_ContentID);
 
 				if (rc == null) {
 					rc = new CarrotRootContent();
 
 					PerformCommonSaveRoot(site, rc);
 
-					_db.CarrotRootContents.Add(rc);
+					db.CarrotRootContents.Add(rc);
 				}
 
 				CarrotContent c = new CarrotContent();
@@ -400,11 +400,11 @@ namespace Carrotware.CMS.Core {
 
 				c.IsLatestVersion = false; // draft, leave existing version latest
 
-				_db.CarrotContents.Add(c);
+				db.CarrotContents.Add(c);
 
-				SaveKeywordsAndTags(_db);
+				SaveKeywordsAndTags(db);
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.IsLatestVersion = c.IsLatestVersion;
 			}
@@ -753,7 +753,7 @@ namespace Carrotware.CMS.Core {
 
 			string theFileName = thePageSlug;
 
-			using (ContentPageHelper pageHelper = new ContentPageHelper()) {
+			using (var pageHelper = new ContentPageHelper()) {
 				ContentPage cp = pageHelper.FindContentByID(SiteData.CurrentSite.SiteID, this.Root_ContentID);
 
 				if (cp != null) {

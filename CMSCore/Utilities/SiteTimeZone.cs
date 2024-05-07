@@ -83,13 +83,13 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public string GetXml() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(TimeZoneContent));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, this);
-				sXML = stringWriter.ToString();
+			var xmlSerializer = new XmlSerializer(typeof(TimeZoneContent));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, this);
+				xml = sw.ToString();
 			}
-			return sXML;
+			return xml;
 		}
 	}
 }

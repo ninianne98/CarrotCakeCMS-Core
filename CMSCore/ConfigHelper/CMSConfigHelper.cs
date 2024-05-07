@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 namespace Carrotware.CMS.Core {
 
 	public class CMSConfigHelper : IDisposable {
-		private CarrotCakeContext db = CarrotCakeContext.Create();
+		private CarrotCakeContext _db = CarrotCakeContext.Create();
 
 		public CMSConfigHelper() { }
 
@@ -35,8 +35,8 @@ namespace Carrotware.CMS.Core {
 		#region IDisposable Members
 
 		public void Dispose() {
-			if (db != null) {
-				db.Dispose();
+			if (_db != null) {
+				_db.Dispose();
 			}
 		}
 
@@ -103,7 +103,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static bool HasAdminModules() {
-			using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {
+			using (var cmsHelper = new CMSConfigHelper()) {
 				return cmsHelper.AdminModules.Any();
 			}
 		}
@@ -150,7 +150,7 @@ namespace Carrotware.CMS.Core {
 					break;
 			}
 
-			DataSet ds = new DataSet();
+			var ds = new DataSet();
 			if (File.Exists(sPlugCfg) && iExpectedTblCount > 0) {
 				ds.ReadXml(sPlugCfg);
 			}
@@ -273,13 +273,13 @@ namespace Carrotware.CMS.Core {
 
 		public List<CMSAdminModule> AdminModules {
 			get {
-				var _modules = new List<CMSAdminModule>();
+				var modules = new List<CMSAdminModule>();
 
 				bool bCached = false;
 
 				try {
-					_modules = (List<CMSAdminModule>)CarrotHttpHelper.CacheGet(keyAdminMenuModules);
-					if (_modules != null) {
+					modules = (List<CMSAdminModule>)CarrotHttpHelper.CacheGet(keyAdminMenuModules);
+					if (modules != null) {
 						bCached = true;
 					}
 				} catch {
@@ -288,26 +288,26 @@ namespace Carrotware.CMS.Core {
 
 				if (!bCached) {
 					List<CMSAdminModuleMenu> _ctrls = new List<CMSAdminModuleMenu>();
-					_modules = new List<CMSAdminModule>();
+					modules = new List<CMSAdminModule>();
 
-					foreach (var p in _modules) {
+					foreach (var p in modules) {
 						p.PluginMenus = (from c in _ctrls
 										 where c.AreaKey == p.AreaKey
 										 orderby c.Caption, c.SortOrder
 										 select c).ToList();
 					}
 
-					_modules = _modules.Union(GetModulesByDirectory()).ToList();
+					modules = modules.Union(GetModulesByDirectory()).ToList();
 
-					CarrotHttpHelper.CacheInsert(keyAdminMenuModules, _modules, 5);
+					CarrotHttpHelper.CacheInsert(keyAdminMenuModules, modules, 5);
 				}
 
-				return _modules.OrderBy(m => m.PluginName).ToList();
+				return modules.OrderBy(m => m.PluginName).ToList();
 			}
 		}
 
 		private List<CMSPlugin> GetPluginsByDirectory() {
-			var _plugins = new List<CMSPlugin>();
+			var plugins = new List<CMSPlugin>();
 
 			CarrotCakeConfig config = CarrotCakeConfig.GetConfig();
 
@@ -329,14 +329,14 @@ namespace Carrotware.CMS.Core {
 							string sPathPrefix = GetContentFolderPrefix(theDir);
 							DataSet ds = ReadDataSetConfig(CMSConfigFileType.PublicCtrl, sPathPrefix);
 
-							var _p2 = (from d in ds.Tables[0].AsEnumerable()
-									   select new CMSPlugin {
-										   SortOrder = 100,
-										   FilePath = d.Field<string>("filepath").NormalizeFilename(),
-										   Caption = d.Field<string>("crtldesc")
-									   }).Where(x => x.FilePath.Contains(":")).ToList();
+							var p2 = (from d in ds.Tables[0].AsEnumerable()
+									  select new CMSPlugin {
+										  SortOrder = 100,
+										  FilePath = d.Field<string>("filepath").NormalizeFilename(),
+										  Caption = d.Field<string>("crtldesc")
+									  }).Where(x => x.FilePath.Contains(":")).ToList();
 
-							foreach (var p in _p2.Where(x => x.FilePath.ToLowerInvariant().EndsWith("html")).Select(x => x)) {
+							foreach (var p in p2.Where(x => x.FilePath.ToLowerInvariant().EndsWith("html")).Select(x => x)) {
 								string[] path = p.FilePath.Split(':');
 								if (path.Length > 2 && !string.IsNullOrEmpty(path[2])
 											&& (path[2].ToLowerInvariant().EndsWith(".cshtml") || path[2].ToLowerInvariant().EndsWith(".vbhtml"))) {
@@ -345,46 +345,46 @@ namespace Carrotware.CMS.Core {
 								}
 							}
 
-							var _p3 = (from d in ds.Tables[0].AsEnumerable()
-									   select new CMSPlugin {
-										   SortOrder = 100,
-										   FilePath = Path.Join(sPathPrefix, d.Field<string>("filepath")).NormalizeFilename(),
-										   Caption = d.Field<string>("crtldesc")
-									   }).Where(x => !x.FilePath.Contains(":")).ToList();
+							var p3 = (from d in ds.Tables[0].AsEnumerable()
+									  select new CMSPlugin {
+										  SortOrder = 100,
+										  FilePath = Path.Join(sPathPrefix, d.Field<string>("filepath")).NormalizeFilename(),
+										  Caption = d.Field<string>("crtldesc")
+									  }).Where(x => !x.FilePath.Contains(":")).ToList();
 
-							_plugins = _plugins.Union(_p2).Union(_p3).ToList();
+							plugins = plugins.Union(p2).Union(p3).ToList();
 						}
 					}
 				}
 			}
 
-			_plugins.Where(x => x.FilePath.StartsWith("~~/")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~~/", "/"));
-			_plugins.Where(x => x.FilePath.Contains("//")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("//", "/"));
-			_plugins.Where(x => x.FilePath.StartsWith("~")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~", ""));
+			plugins.Where(x => x.FilePath.StartsWith("~~/")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~~/", "/"));
+			plugins.Where(x => x.FilePath.Contains("//")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("//", "/"));
+			plugins.Where(x => x.FilePath.StartsWith("~")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~", ""));
 
-			return _plugins;
+			return plugins;
 		}
 
 		public List<CMSPlugin> GetPluginsInFolder(string sPathPrefix) {
-			var _plugins = new List<CMSPlugin>();
+			var plugins = new List<CMSPlugin>();
 
 			sPathPrefix = sPathPrefix.FixPathSlashes();
 
 			if (!string.IsNullOrEmpty(sPathPrefix)) {
 				DataSet ds = ReadDataSetConfig(CMSConfigFileType.PublicCtrl, sPathPrefix);
 
-				_plugins = (from d in ds.Tables[0].AsEnumerable()
-							select new CMSPlugin {
-								SortOrder = 100,
-								FilePath = Path.Join(sPathPrefix, d.Field<string>("filepath")).NormalizeFilename(),
-								Caption = d.Field<string>("crtldesc")
-							}).ToList();
+				plugins = (from d in ds.Tables[0].AsEnumerable()
+						   select new CMSPlugin {
+							   SortOrder = 100,
+							   FilePath = Path.Join(sPathPrefix, d.Field<string>("filepath")).NormalizeFilename(),
+							   Caption = d.Field<string>("crtldesc")
+						   }).ToList();
 			}
 
-			_plugins.Where(x => x.FilePath.StartsWith("~~/")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~~/", "/"));
-			_plugins.Where(x => x.FilePath.StartsWith("~")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~", ""));
+			plugins.Where(x => x.FilePath.StartsWith("~~/")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~~/", "/"));
+			plugins.Where(x => x.FilePath.StartsWith("~")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~", ""));
 
-			return _plugins;
+			return plugins;
 		}
 
 		public CMSAdminModuleMenu GetCurrentAdminModuleControl() {
@@ -468,7 +468,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		private List<CMSAdminModule> GetModulesByDirectory() {
-			var _plugins = new List<CMSAdminModule>();
+			var plugins = new List<CMSAdminModule>();
 
 			CarrotCakeConfig config = CarrotCakeConfig.GetConfig();
 
@@ -490,37 +490,37 @@ namespace Carrotware.CMS.Core {
 							string sPathPrefix = GetContentFolderPrefix(theDir);
 							DataSet ds = ReadDataSetConfig(CMSConfigFileType.AdminMod, sPathPrefix);
 
-							var _modules = (from d in ds.Tables[0].AsEnumerable()
-											select new CMSAdminModule {
-												PluginName = d.Field<string>("caption"),
-												AreaKey = d.Field<string>("area")
-											}).OrderBy(x => x.PluginName).ToList();
+							var modules = (from d in ds.Tables[0].AsEnumerable()
+										   select new CMSAdminModule {
+											   PluginName = d.Field<string>("caption"),
+											   AreaKey = d.Field<string>("area")
+										   }).OrderBy(x => x.PluginName).ToList();
 
-							var _ctrls = (from d in ds.Tables[1].AsEnumerable()
-										  select new CMSAdminModuleMenu {
-											  Caption = d.Field<string>("pluginlabel"),
-											  SortOrder = string.IsNullOrEmpty(d.Field<string>("menuorder")) ? -1 : int.Parse(d.Field<string>("menuorder")),
-											  Action = d.Field<string>("action"),
-											  Controller = d.Field<string>("controller"),
-											  UsePopup = string.IsNullOrEmpty(d.Field<string>("usepopup")) ? false : Convert.ToBoolean(d.Field<string>("usepopup")),
-											  IsVisible = string.IsNullOrEmpty(d.Field<string>("visible")) ? false : Convert.ToBoolean(d.Field<string>("visible")),
-											  AreaKey = d.Field<string>("area")
-										  }).OrderBy(x => x.Caption).OrderBy(x => x.SortOrder).ToList();
+							var ctrls = (from d in ds.Tables[1].AsEnumerable()
+										 select new CMSAdminModuleMenu {
+											 Caption = d.Field<string>("pluginlabel"),
+											 SortOrder = string.IsNullOrEmpty(d.Field<string>("menuorder")) ? -1 : int.Parse(d.Field<string>("menuorder")),
+											 Action = d.Field<string>("action"),
+											 Controller = d.Field<string>("controller"),
+											 UsePopup = string.IsNullOrEmpty(d.Field<string>("usepopup")) ? false : Convert.ToBoolean(d.Field<string>("usepopup")),
+											 IsVisible = string.IsNullOrEmpty(d.Field<string>("visible")) ? false : Convert.ToBoolean(d.Field<string>("visible")),
+											 AreaKey = d.Field<string>("area")
+										 }).OrderBy(x => x.Caption).OrderBy(x => x.SortOrder).ToList();
 
-							foreach (var p in _modules) {
-								p.PluginMenus = (from c in _ctrls
+							foreach (var p in modules) {
+								p.PluginMenus = (from c in ctrls
 												 where c.AreaKey == p.AreaKey
 												 orderby c.Caption, c.SortOrder
 												 select c).ToList();
 							}
 
-							_plugins = _plugins.Union(_modules).ToList();
+							plugins = plugins.Union(modules).ToList();
 						}
 					}
 				}
 			}
 
-			return _plugins;
+			return plugins;
 		}
 
 		public List<CMSTextWidgetPicker> GetAllWidgetSettings(Guid siteID) {
@@ -578,13 +578,13 @@ namespace Carrotware.CMS.Core {
 
 		public List<CMSPlugin> ToolboxPlugins {
 			get {
-				var _plugins = new List<CMSPlugin>();
+				var plugins = new List<CMSPlugin>();
 
 				bool bCached = false;
 
 				try {
-					_plugins = (List<CMSPlugin>)CarrotHttpHelper.CacheGet(keyAdminToolboxModules);
-					if (_plugins != null) {
+					plugins = (List<CMSPlugin>)CarrotHttpHelper.CacheGet(keyAdminToolboxModules);
+					if (plugins != null) {
 						bCached = true;
 					}
 				} catch {
@@ -594,37 +594,37 @@ namespace Carrotware.CMS.Core {
 				if (!bCached) {
 					int iSortOrder = 0;
 
-					List<CMSPlugin> _p1 = new List<CMSPlugin>();
+					List<CMSPlugin> p1 = new List<CMSPlugin>();
 
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Generic HTML", FilePath = "CLASS:Carrotware.CMS.UI.Components.ContentRichText, Carrotware.CMS.UI.Components" });
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Plain Text", FilePath = "CLASS:Carrotware.CMS.UI.Components.ContentPlainText, Carrotware.CMS.UI.Components" });
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Content Snippet", FilePath = "CLASS:Carrotware.CMS.UI.Components.ContentSnippetText, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Generic HTML", FilePath = "CLASS:Carrotware.CMS.UI.Components.ContentRichText, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Plain Text", FilePath = "CLASS:Carrotware.CMS.UI.Components.ContentPlainText, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Content Snippet", FilePath = "CLASS:Carrotware.CMS.UI.Components.ContentSnippetText, Carrotware.CMS.UI.Components" });
 
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Top Level Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.TopLevelNavigation, Carrotware.CMS.UI.Components" });
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Two Level Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.TwoLevelNavigation, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Top Level Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.TopLevelNavigation, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Two Level Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.TwoLevelNavigation, Carrotware.CMS.UI.Components" });
 
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Child Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.ChildNavigation, Carrotware.CMS.UI.Components" });
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Second Level/ Sibling Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.SecondLevelNavigation, Carrotware.CMS.UI.Components" });
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Most Recent Updated", FilePath = "CLASS:Carrotware.CMS.UI.Components.MostRecentUpdated, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Child Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.ChildNavigation, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Second Level/ Sibling Navigation", FilePath = "CLASS:Carrotware.CMS.UI.Components.SecondLevelNavigation, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Most Recent Updated", FilePath = "CLASS:Carrotware.CMS.UI.Components.MostRecentUpdated, Carrotware.CMS.UI.Components" });
 
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Multi Level Nav List", FilePath = "CLASS:Carrotware.CMS.UI.Components.MultiLevelNavigation, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Multi Level Nav List", FilePath = "CLASS:Carrotware.CMS.UI.Components.MultiLevelNavigation, Carrotware.CMS.UI.Components" });
 
-					_p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "IFRAME content wrapper", FilePath = "CLASS:Carrotware.CMS.UI.Components.IFrameWidgetWrapper, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "IFRAME content wrapper", FilePath = "CLASS:Carrotware.CMS.UI.Components.IFrameWidgetWrapper, Carrotware.CMS.UI.Components" });
 
-					_plugins = _p1.Union(GetPluginsByDirectory()).ToList();
+					plugins = p1.Union(GetPluginsByDirectory()).ToList();
 
-					_plugins.Where(x => x.FilePath.StartsWith("~~/")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~~/", "/"));
-					_plugins.Where(x => x.FilePath.StartsWith("~")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~", ""));
+					plugins.Where(x => x.FilePath.StartsWith("~~/")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~~/", "/"));
+					plugins.Where(x => x.FilePath.StartsWith("~")).ToList().ForEach(r => r.FilePath = r.FilePath.Replace("~", ""));
 
-					CarrotHttpHelper.CacheInsert(keyAdminToolboxModules, _plugins, 5);
+					CarrotHttpHelper.CacheInsert(keyAdminToolboxModules, plugins, 5);
 				}
 
-				return _plugins.OrderBy(p => p.SystemPlugin).OrderBy(p => p.Caption).OrderBy(p => p.SortOrder).ToList();
+				return plugins.OrderBy(p => p.SystemPlugin).OrderBy(p => p.Caption).OrderBy(p => p.SortOrder).ToList();
 			}
 		}
 
 		private List<CMSTemplate> GetTemplatesByDirectory() {
-			var _plugins = new List<CMSTemplate>();
+			var plugins = new List<CMSTemplate>();
 
 			CarrotCakeConfig config = CarrotCakeConfig.GetConfig();
 
@@ -646,39 +646,39 @@ namespace Carrotware.CMS.Core {
 							string sPathPrefix = GetContentFolderPrefix(theDir);
 							DataSet ds = ReadDataSetConfig(CMSConfigFileType.SkinDef, sPathPrefix);
 
-							var _p2 = (from d in ds.Tables[0].AsEnumerable()
-									   select new CMSTemplate {
-										   TemplatePath = sPathPrefix + d.Field<string>("templatefile").ToLowerInvariant().FixPathSlashes().ToLowerInvariant(),
-										   EncodedPath = string.Empty,
-										   Caption = d.Field<string>("filedesc")
-									   }).ToList();
+							var p2 = (from d in ds.Tables[0].AsEnumerable()
+									  select new CMSTemplate {
+										  TemplatePath = sPathPrefix + d.Field<string>("templatefile").ToLowerInvariant().FixPathSlashes().ToLowerInvariant(),
+										  EncodedPath = string.Empty,
+										  Caption = d.Field<string>("filedesc")
+									  }).ToList();
 
-							_plugins = _plugins.Union(_p2).ToList();
+							plugins = plugins.Union(p2).ToList();
 
-							_plugins.Where(x => x.TemplatePath.StartsWith("~~/")).ToList()
+							plugins.Where(x => x.TemplatePath.StartsWith("~~/")).ToList()
 								.ForEach(r => r.TemplatePath = r.TemplatePath.Replace("~~/", "/"));
-							_plugins.Where(x => x.TemplatePath.Contains("//")).ToList()
+							plugins.Where(x => x.TemplatePath.Contains("//")).ToList()
 								.ForEach(r => r.TemplatePath = r.TemplatePath.Replace("//", "/"));
-							_plugins.Where(x => x.TemplatePath.StartsWith("~")).ToList()
+							plugins.Where(x => x.TemplatePath.StartsWith("~")).ToList()
 								.ForEach(r => r.TemplatePath = r.TemplatePath.Replace("~", ""));
 
-							_plugins.ForEach(r => r.EncodedPath = EncodeBase64(r.TemplatePath));
+							plugins.ForEach(r => r.EncodedPath = EncodeBase64(r.TemplatePath));
 						}
 					}
 				}
 			}
 
-			return _plugins;
+			return plugins;
 		}
 
 		public List<CMSTemplate> Templates {
 			get {
-				List<CMSTemplate> _plugins = null;
+				List<CMSTemplate> plugins = null;
 				bool bCached = false;
 
 				try {
-					_plugins = (List<CMSTemplate>)CarrotHttpHelper.CacheGet(keyTemplates);
-					if (_plugins != null) {
+					plugins = (List<CMSTemplate>)CarrotHttpHelper.CacheGet(keyTemplates);
+					if (plugins != null) {
 						bCached = true;
 					}
 				} catch {
@@ -687,41 +687,41 @@ namespace Carrotware.CMS.Core {
 
 				if (!bCached) {
 					var site = SiteData.CurrentSite;
-					_plugins = new List<CMSTemplate>();
+					plugins = new List<CMSTemplate>();
 
 					var t1 = new CMSTemplate();
 					t1.TemplatePath = site.TemplateFilename;
 					t1.EncodedPath = EncodeBase64(site.TemplateFilename);
 					t1.Caption = string.Format("    {0} [*]  ", CarrotWebHelper.DisplayNameFor<SiteData>(x => x.TemplateFilename));
-					_plugins.Add(t1);
+					plugins.Add(t1);
 
 					var t2 = new CMSTemplate();
 					t2.TemplatePath = site.TemplateBWFilename;
 					t2.EncodedPath = EncodeBase64(site.TemplateBWFilename);
 					t2.Caption = string.Format("   {0} [*]  ", CarrotWebHelper.DisplayNameFor<SiteData>(x => x.TemplateBWFilename));
-					_plugins.Add(t2);
+					plugins.Add(t2);
 				}
 
 				if (!bCached) {
-					var _p2 = GetTemplatesByDirectory();
+					var p2 = GetTemplatesByDirectory();
 
-					_plugins = _plugins.Union(_p2.Where(t => !SiteData.DefaultTemplates.Contains(t.TemplatePath.ToLowerInvariant()))).ToList();
+					plugins = plugins.Union(p2.Where(t => !SiteData.DefaultTemplates.Contains(t.TemplatePath.ToLowerInvariant()))).ToList();
 
-					CarrotHttpHelper.CacheInsert(keyTemplates, _plugins, 3);
+					CarrotHttpHelper.CacheInsert(keyTemplates, plugins, 3);
 				}
 
-				return _plugins.OrderBy(t => t.Caption).ToList();
+				return plugins.OrderBy(t => t.Caption).ToList();
 			}
 		}
 
 		public List<CMSTextWidget> TextWidgets {
 			get {
-				List<CMSTextWidget> _plugins = null;
+				List<CMSTextWidget> plugins = null;
 				bool bCached = false;
 
 				try {
-					_plugins = (List<CMSTextWidget>)CarrotHttpHelper.CacheGet(keyTxtWidgets);
-					if (_plugins != null) {
+					plugins = (List<CMSTextWidget>)CarrotHttpHelper.CacheGet(keyTxtWidgets);
+					if (plugins != null) {
 						bCached = true;
 					}
 				} catch {
@@ -729,34 +729,34 @@ namespace Carrotware.CMS.Core {
 				}
 
 				if (!bCached) {
-					_plugins = new List<CMSTextWidget>();
+					plugins = new List<CMSTextWidget>();
 				}
 
 				if (!bCached) {
 					DataSet ds = ReadDataSetConfig(CMSConfigFileType.SiteTextWidgets, "~/");
 
-					_plugins = (from d in ds.Tables[0].AsEnumerable()
-								select new CMSTextWidget {
-									AssemblyString = d.Field<string>("pluginassembly"),
-									DisplayName = d.Field<string>("pluginname")
-								}).ToList();
+					plugins = (from d in ds.Tables[0].AsEnumerable()
+							   select new CMSTextWidget {
+								   AssemblyString = d.Field<string>("pluginassembly"),
+								   DisplayName = d.Field<string>("pluginname")
+							   }).ToList();
 
-					CarrotHttpHelper.CacheInsert(keyTxtWidgets, _plugins, 5);
+					CarrotHttpHelper.CacheInsert(keyTxtWidgets, plugins, 5);
 				}
 
-				return _plugins.OrderBy(t => t.DisplayName).ToList();
+				return plugins.OrderBy(t => t.DisplayName).ToList();
 			}
 		}
 
 		public static List<DynamicSite> SiteList {
 			get {
-				var _sites = new List<DynamicSite>();
+				var sites = new List<DynamicSite>();
 
 				bool bCached = false;
 
 				try {
-					_sites = (List<DynamicSite>)CarrotHttpHelper.CacheGet(keyDynamicSite);
-					if (_sites != null) {
+					sites = (List<DynamicSite>)CarrotHttpHelper.CacheGet(keyDynamicSite);
+					if (sites != null) {
 						bCached = true;
 					}
 				} catch {
@@ -764,11 +764,11 @@ namespace Carrotware.CMS.Core {
 				}
 
 				if (!bCached) {
-					_sites = CarrotCakeConfig.GetConfig().SiteMapping;
+					sites = CarrotCakeConfig.GetConfig().SiteMapping;
 
-					CarrotHttpHelper.CacheInsert(keyDynamicSite, _sites, 5);
+					CarrotHttpHelper.CacheInsert(keyDynamicSite, sites, 5);
 				}
-				return _sites;
+				return sites;
 			}
 		}
 
@@ -799,14 +799,14 @@ namespace Carrotware.CMS.Core {
 
 		public static DynamicSite DynSite {
 			get {
-				DynamicSite? _site = new DynamicSite();
+				DynamicSite? site = new DynamicSite();
 
 				string ModuleKey = keyDynSite + DomainName;
 				bool bCached = false;
 
 				try {
-					_site = (DynamicSite)CarrotHttpHelper.CacheGet(ModuleKey);
-					if (_site != null) {
+					site = (DynamicSite)CarrotHttpHelper.CacheGet(ModuleKey);
+					if (site != null) {
 						bCached = true;
 					}
 				} catch {
@@ -814,52 +814,52 @@ namespace Carrotware.CMS.Core {
 				}
 
 				if ((SiteList.Any()) && !bCached) {
-					_site = (from ss in SiteList
-							 where ss.DomainName == DomainName
-							 select ss).FirstOrDefault();
+					site = (from ss in SiteList
+							where ss.DomainName == DomainName
+							select ss).FirstOrDefault();
 
-					if (_site != null) {
-						CarrotHttpHelper.CacheInsert(ModuleKey, _site, 5);
+					if (site != null) {
+						CarrotHttpHelper.CacheInsert(ModuleKey, site, 5);
 					}
 				}
-				return _site;
+				return site;
 			}
 		}
 
 		public static bool CheckRequestedFileExistence(string templateFileName, Guid siteID) {
-			var _tmplts = GetTmplateStatus();
+			var templates = GetTmplateStatus();
 
-			CMSFilePath tmp = _tmplts.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == siteID).FirstOrDefault();
+			CMSFilePath tmp = templates.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == siteID).FirstOrDefault();
 
 			if (tmp == null) {
 				tmp = new CMSFilePath(templateFileName, siteID);
-				_tmplts.Add(tmp);
+				templates.Add(tmp);
 #if DEBUG
 				Debug.WriteLine(" ================ " + DateTime.UtcNow.ToString() + " ================");
 				Debug.WriteLine("Grabbed file : CheckRequestedFileExistence(string templateFileName, Guid siteID) " + templateFileName);
 #endif
 			}
 
-			SaveTmplateStatus(_tmplts);
+			SaveTmplateStatus(templates);
 
 			return tmp.FileExists;
 		}
 
 		public static bool CheckFileExistence(string templateFileName) {
-			var _tmplts = GetTmplateStatus();
+			var templates = GetTmplateStatus();
 
-			var tmp = _tmplts.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == Guid.Empty).FirstOrDefault();
+			var tmp = templates.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == Guid.Empty).FirstOrDefault();
 
 			if (tmp == null) {
 				tmp = new CMSFilePath(templateFileName);
-				_tmplts.Add(tmp);
+				templates.Add(tmp);
 #if DEBUG
 				Debug.WriteLine(" ================ " + DateTime.UtcNow.ToString() + " ================");
 				Debug.WriteLine("Grabbed file : CheckFileExistence(string templateFileName) " + templateFileName);
 #endif
 			}
 
-			SaveTmplateStatus(_tmplts);
+			SaveTmplateStatus(templates);
 
 			return tmp.FileExists;
 		}
@@ -869,19 +869,19 @@ namespace Carrotware.CMS.Core {
 		}
 
 		private static List<CMSFilePath> GetTmplateStatus() {
-			var _tmplts = new List<CMSFilePath>();
+			var templates = new List<CMSFilePath>();
 
-			try { _tmplts = (List<CMSFilePath>)CarrotHttpHelper.CacheGet(keyTemplateFiles); } catch { }
+			try { templates = (List<CMSFilePath>)CarrotHttpHelper.CacheGet(keyTemplateFiles); } catch { }
 
-			if (_tmplts == null) {
-				_tmplts = new List<CMSFilePath>();
+			if (templates == null) {
+				templates = new List<CMSFilePath>();
 			}
 
-			_tmplts.RemoveAll(x => x.DateChecked < DateTime.UtcNow.AddSeconds(-30));
+			templates.RemoveAll(x => x.DateChecked < DateTime.UtcNow.AddSeconds(-30));
 
-			_tmplts.RemoveAll(x => x.DateChecked < DateTime.UtcNow.AddSeconds(-10) && x.SiteID != Guid.Empty);
+			templates.RemoveAll(x => x.DateChecked < DateTime.UtcNow.AddSeconds(-10) && x.SiteID != Guid.Empty);
 
-			return _tmplts;
+			return templates;
 		}
 
 		//=========================
@@ -1032,14 +1032,14 @@ namespace Carrotware.CMS.Core {
 
 		public void OverrideKey(Guid guidContentID) {
 			filePage = null;
-			using (ContentPageHelper pageHelper = new ContentPageHelper()) {
+			using (var pageHelper = new ContentPageHelper()) {
 				filePage = pageHelper.FindContentByID(SiteData.CurrentSiteID, guidContentID);
 			}
 		}
 
 		public void OverrideKey(string sPageName) {
 			filePage = null;
-			using (ContentPageHelper pageHelper = new ContentPageHelper()) {
+			using (var pageHelper = new ContentPageHelper()) {
 				filePage = pageHelper.FindByFilename(SiteData.CurrentSiteID, sPageName);
 			}
 		}
@@ -1048,7 +1048,7 @@ namespace Carrotware.CMS.Core {
 
 		protected void LoadGuids() {
 			if (filePage == null) {
-				using (ContentPageHelper pageHelper = new ContentPageHelper()) {
+				using (var pageHelper = new ContentPageHelper()) {
 					if (SiteData.IsPageSampler && filePage == null) {
 						filePage = ContentPageHelper.GetSamplerView();
 					} else {
@@ -1070,11 +1070,11 @@ namespace Carrotware.CMS.Core {
 			get {
 				ContentPage c = null;
 				try {
-					string sXML = GetSerialized(keyAdminContent);
-					if (!string.IsNullOrEmpty(sXML)) {
-						XmlSerializer xmlSerializer = new XmlSerializer(typeof(ContentPage));
-						Object genpref = null;
-						using (StringReader stringReader = new StringReader(sXML)) {
+					string xml = GetSerialized(keyAdminContent);
+					if (!string.IsNullOrEmpty(xml)) {
+						var xmlSerializer = new XmlSerializer(typeof(ContentPage));
+						object genpref = null;
+						using (var stringReader = new StringReader(xml)) {
 							genpref = xmlSerializer.Deserialize(stringReader);
 						}
 						c = genpref as ContentPage;
@@ -1086,13 +1086,13 @@ namespace Carrotware.CMS.Core {
 				if (value == null) {
 					ClearSerialized(keyAdminContent);
 				} else {
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(ContentPage));
-					string sXML = string.Empty;
-					using (StringWriter stringWriter = new StringWriter()) {
+					var xmlSerializer = new XmlSerializer(typeof(ContentPage));
+					string xml = string.Empty;
+					using (var stringWriter = new StringWriter()) {
 						xmlSerializer.Serialize(stringWriter, value);
-						sXML = stringWriter.ToString();
+						xml = stringWriter.ToString();
 					}
-					SaveSerialized(keyAdminContent, sXML);
+					SaveSerialized(keyAdminContent, xml);
 				}
 			}
 		}
@@ -1100,11 +1100,11 @@ namespace Carrotware.CMS.Core {
 		public List<Widget> cmsAdminWidget {
 			get {
 				List<Widget> c = null;
-				string sXML = GetSerialized(keyAdminWidget);
-				if (!string.IsNullOrEmpty(sXML)) {
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Widget>));
-					Object genpref = null;
-					using (StringReader stringReader = new StringReader(sXML)) {
+				string xml = GetSerialized(keyAdminWidget);
+				if (!string.IsNullOrEmpty(xml)) {
+					var xmlSerializer = new XmlSerializer(typeof(List<Widget>));
+					object genpref = null;
+					using (StringReader stringReader = new StringReader(xml)) {
 						genpref = xmlSerializer.Deserialize(stringReader);
 					}
 					c = genpref as List<Widget>;
@@ -1115,22 +1115,22 @@ namespace Carrotware.CMS.Core {
 				if (value == null) {
 					ClearSerialized(keyAdminWidget);
 				} else {
-					XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Widget>));
-					string sXML = string.Empty;
-					using (StringWriter stringWriter = new StringWriter()) {
+					var xmlSerializer = new XmlSerializer(typeof(List<Widget>));
+					string xml = string.Empty;
+					using (var stringWriter = new StringWriter()) {
 						xmlSerializer.Serialize(stringWriter, value);
-						sXML = stringWriter.ToString();
+						xml = stringWriter.ToString();
 					}
-					SaveSerialized(keyAdminWidget, sXML);
+					SaveSerialized(keyAdminWidget, xml);
 				}
 			}
 		}
 
 		public static void SaveSerialized(Guid itemID, string sKey, string sData) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				bool bAdd = false;
 
-				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(_db, itemID, sKey);
+				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, sKey);
 
 				if (itm == null) {
 					bAdd = true;
@@ -1146,16 +1146,16 @@ namespace Carrotware.CMS.Core {
 				itm.EditDate = DateTime.UtcNow;
 
 				if (bAdd) {
-					_db.CarrotSerialCache.Add(itm);
+					db.CarrotSerialCache.Add(itm);
 				}
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
 		public static string GetSerialized(Guid itemID, string sKey) {
 			string sData = string.Empty;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(_db, itemID, sKey);
+			using (var db = CarrotCakeContext.Create()) {
+				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, sKey);
 
 				if (itm != null) {
 					sData = itm.SerializedData;
@@ -1167,12 +1167,12 @@ namespace Carrotware.CMS.Core {
 
 		public static bool ClearSerialized(Guid itemID, string sKey) {
 			bool bRet = false;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(_db, itemID, sKey);
+			using (var db = CarrotCakeContext.Create()) {
+				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, sKey);
 
 				if (itm != null) {
-					_db.CarrotSerialCache.Remove(itm);
-					_db.SaveChanges();
+					db.CarrotSerialCache.Remove(itm);
+					db.SaveChanges();
 					bRet = true;
 				}
 			}
@@ -1206,8 +1206,8 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static void CleanUpSerialData() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				_db.CarrotSerialCache.Where(c => c.EditDate < DateTime.UtcNow.AddHours(-6)).ExecuteDelete();
+			using (var db = CarrotCakeContext.Create()) {
+				db.CarrotSerialCache.Where(c => c.EditDate < DateTime.UtcNow.AddHours(-6)).ExecuteDelete();
 			}
 		}
 	}

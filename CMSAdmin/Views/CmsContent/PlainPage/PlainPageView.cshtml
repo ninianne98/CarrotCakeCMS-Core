@@ -56,16 +56,18 @@
 		a {
 			color: @string.Format("{0}", mainDk);
 		}
-		a:hover {
-			color: @string.Format("{0}", mainLt);
-		}
+
+			a:hover {
+				color: @string.Format("{0}", mainLt);
+			}
 
 		#logo a {
 			color: @string.Format("{0}", mainXDk);
 		}
-		#logo a:hover {
-			color: @string.Format("{0}", mainDk);
-		}
+
+			#logo a:hover {
+				color: @string.Format("{0}", mainDk);
+			}
 
 		h1, h2, h3, h4 {
 			color: @string.Format("{0}", mainXDk);
@@ -127,17 +129,17 @@
 								}
 							</li>
 							<li id="calendar_wrap">
-								@( new PostCalendar("calendar") )
+								@(new PostCalendar("calendar"))
 							</li>
 							<li>
 								@Html.Partial("_plainloginout")
 							</li>
 							@*<li>
-									@Html.Partial("_plainforgot")
-								</li>*@
+							@Html.Partial("_plainforgot")
+							</li>*@
 							@*<li>
-									@Html.Partial("_plainreset")
-								</li>*@
+							@Html.Partial("_plainreset")
+							</li>*@
 							<li>
 								<div>
 									@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phLeftTop)
@@ -307,8 +309,8 @@
 											@string.Format("  Comments ({0})  ", item.CommentCount)
 										</span>
 										@*<span class="date">
-												@string.Format("{0:MMMM d, yyyy}", item.GoLiveDate)
-											</span>*@
+								@string.Format("{0:MMMM d, yyyy}", item.GoLiveDate)
+								</span>*@
 									</p>
 								</div>
 							}
@@ -352,6 +354,6 @@
 	</div>
 
 	<!-- end #footer -->
-	@Html.CarrotCakeHtml().IncludeFooter()
+	@Html.CarrotCakeHtml().IncludeFoot()
 </body>
 </html>

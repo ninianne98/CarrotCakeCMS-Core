@@ -126,23 +126,23 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void ResetHeartbeatLock() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var rc = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var rc = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				rc.EditHeartbeat = DateTime.UtcNow.AddHours(-2);
 				rc.HeartbeatUserId = null;
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
 		public void RecordHeartbeatLock(Guid currentUserID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var rc = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var rc = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				rc.HeartbeatUserId = currentUserID;
 				rc.EditHeartbeat = DateTime.UtcNow;
 
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
@@ -196,8 +196,8 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public Guid GetCurrentEditUser() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var rc = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var rc = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				if (rc != null) {
 					return rc.HeartbeatUserId.Value;
@@ -208,8 +208,8 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public ExtendedUserData GetCurrentEditUserData() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var rc = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var rc = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				if (rc != null) {
 					return new ExtendedUserData(rc.HeartbeatUserId.Value);
@@ -220,46 +220,46 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ContentSnippet> GetHistory() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				List<ContentSnippet> _types = (from d in CompiledQueries.cqGetSnippetVersionHistory(_db, this.Root_ContentSnippetID)
-											   select new ContentSnippet(d)).ToList();
+			using (var db = CarrotCakeContext.Create()) {
+				List<ContentSnippet> types = (from d in CompiledQueries.cqGetSnippetVersionHistory(db, this.Root_ContentSnippetID)
+											  select new ContentSnippet(d)).ToList();
 
-				return _types;
+				return types;
 			}
 		}
 
 		public void Delete() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var s = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var s = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				if (s != null) {
-					_db.CarrotContentSnippets.Where(x => x.RootContentSnippetId == this.Root_ContentSnippetID).ExecuteDelete();
-					_db.CarrotRootContentSnippets.Remove(s);
-					_db.SaveChanges();
+					db.CarrotContentSnippets.Where(x => x.RootContentSnippetId == this.Root_ContentSnippetID).ExecuteDelete();
+					db.CarrotRootContentSnippets.Remove(s);
+					db.SaveChanges();
 				}
 			}
 		}
 
 		public void DeleteThisVersion() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				CarrotRootContentSnippet s = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+			using (var db = CarrotCakeContext.Create()) {
+				CarrotRootContentSnippet s = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				if (s != null) {
-					_db.CarrotContentSnippets.Where(m => m.ContentSnippetId == this.ContentSnippetID
+					db.CarrotContentSnippets.Where(m => m.ContentSnippetId == this.ContentSnippetID
 												&& m.RootContentSnippetId == s.RootContentSnippetId
 												&& m.IsLatestVersion != true).ExecuteDelete();
-					_db.SaveChanges();
+					db.SaveChanges();
 				}
 			}
 		}
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				SiteData site = SiteData.GetSiteFromCache(this.SiteID);
 
-				CarrotRootContentSnippet rc = CompiledQueries.cqGetSnippetDataTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+				CarrotRootContentSnippet rc = CompiledQueries.cqGetSnippetDataTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
-				var oldC = CompiledQueries.cqGetLatestSnippetContentTbl(_db, this.SiteID, this.Root_ContentSnippetID);
+				var oldC = CompiledQueries.cqGetLatestSnippetContentTbl(db, this.SiteID, this.Root_ContentSnippetID);
 
 				bool bNew = false;
 
@@ -275,7 +275,7 @@ namespace Carrotware.CMS.Core {
 						rc.CreateUserId = SecurityData.CurrentUserGuid;
 					}
 
-					_db.CarrotRootContentSnippets.Add(rc);
+					db.CarrotRootContentSnippets.Add(rc);
 					bNew = true;
 				}
 
@@ -309,9 +309,9 @@ namespace Carrotware.CMS.Core {
 				rc.HeartbeatUserId = c.EditUserId;
 				rc.EditHeartbeat = DateTime.UtcNow;
 
-				_db.CarrotContentSnippets.Add(c);
+				db.CarrotContentSnippets.Add(c);
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.ContentSnippetID = c.ContentSnippetId;
 				this.Root_ContentSnippetID = rc.RootContentSnippetId;
@@ -319,67 +319,67 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static int GetSimilar(Guid siteID, Guid rootSnippetID, string categorySlug) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentSnippetNoMatch(_db, siteID, rootSnippetID, categorySlug);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentSnippetNoMatch(db, siteID, rootSnippetID, categorySlug);
 
 				return query.Count();
 			}
 		}
 
 		public static ContentSnippet Get(Guid rootSnippetID) {
-			ContentSnippet _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				vwCarrotContentSnippet query = CompiledQueries.cqGetLatestSnippetVersion(_db, rootSnippetID);
+			ContentSnippet ìtem = null;
+			using (var db = CarrotCakeContext.Create()) {
+				vwCarrotContentSnippet query = CompiledQueries.cqGetLatestSnippetVersion(db, rootSnippetID);
 				if (query != null) {
-					_item = new ContentSnippet(query);
+					ìtem = new ContentSnippet(query);
 				}
 			}
 
-			return _item;
+			return ìtem;
 		}
 
 		public static ContentSnippet GetSnippetByID(Guid siteID, Guid rootSnippetID, bool bActiveOnly) {
-			ContentSnippet _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				vwCarrotContentSnippet query = CompiledQueries.GetLatestContentSnippetByID(_db, siteID, bActiveOnly, rootSnippetID);
+			ContentSnippet ìtem = null;
+			using (var db = CarrotCakeContext.Create()) {
+				vwCarrotContentSnippet query = CompiledQueries.GetLatestContentSnippetByID(db, siteID, bActiveOnly, rootSnippetID);
 				if (query != null) {
-					_item = new ContentSnippet(query);
+					ìtem = new ContentSnippet(query);
 				}
 			}
 
-			return _item;
+			return ìtem;
 		}
 
 		public static ContentSnippet GetSnippetBySlug(Guid siteID, string categorySlug, bool bActiveOnly) {
-			ContentSnippet _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				vwCarrotContentSnippet query = CompiledQueries.GetLatestContentSnippetBySlug(_db, siteID, bActiveOnly, categorySlug);
+			ContentSnippet ìtem = null;
+			using (var db = CarrotCakeContext.Create()) {
+				vwCarrotContentSnippet query = CompiledQueries.GetLatestContentSnippetBySlug(db, siteID, bActiveOnly, categorySlug);
 				if (query != null) {
-					_item = new ContentSnippet(query);
+					ìtem = new ContentSnippet(query);
 				}
 			}
 
-			return _item;
+			return ìtem;
 		}
 
 		public static ContentSnippet GetVersion(Guid snippetDataID) {
-			ContentSnippet _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				vwCarrotContentSnippet query = CompiledQueries.cqGetSnippetVersionByID(_db, snippetDataID);
+			ContentSnippet ìtem = null;
+			using (var db = CarrotCakeContext.Create()) {
+				vwCarrotContentSnippet query = CompiledQueries.cqGetSnippetVersionByID(db, snippetDataID);
 				if (query != null) {
-					_item = new ContentSnippet(query);
+					ìtem = new ContentSnippet(query);
 				}
 			}
 
-			return _item;
+			return ìtem;
 		}
 
 		public static List<ContentSnippet> GetHistory(Guid rootSnippetID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				List<ContentSnippet> _types = (from d in CompiledQueries.cqGetSnippetVersionHistory(_db, rootSnippetID)
-											   select new ContentSnippet(d)).ToList();
+			using (var db = CarrotCakeContext.Create()) {
+				List<ContentSnippet> types = (from d in CompiledQueries.cqGetSnippetVersionHistory(db, rootSnippetID)
+											  select new ContentSnippet(d)).ToList();
 
-				return _types;
+				return types;
 			}
 		}
 

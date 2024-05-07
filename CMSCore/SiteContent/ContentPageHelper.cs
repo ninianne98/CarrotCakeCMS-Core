@@ -20,22 +20,22 @@ using System.Transactions;
 namespace Carrotware.CMS.Core {
 
 	public class ContentPageHelper : IDisposable {
-		private CarrotCakeContext db = CarrotCakeContext.Create();
+		private CarrotCakeContext _db = CarrotCakeContext.Create();
 
 		public ContentPageHelper() { }
 
 		public void BulkUpdateTemplate(Guid siteID, List<Guid> lstUpd, string sTemplateFile) {
-			var queryCont = (from ct in db.CarrotContents
-							 join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+			var queryCont = (from ct in _db.CarrotContents
+							 join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
 							 where r.SiteId == siteID
 									&& lstUpd.Contains(r.RootContentId)
 									&& ct.IsLatestVersion == true
 							 select ct.ContentId);
 
-			db.CarrotContents.Where(x => queryCont.Contains(x.ContentId) && x.IsLatestVersion == true)
+			_db.CarrotContents.Where(x => queryCont.Contains(x.ContentId) && x.IsLatestVersion == true)
 				.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void UpdateAllContentTemplates(Guid siteID, string sTemplateFile) {
@@ -45,39 +45,39 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void UpdateAllBlogTemplates(Guid siteID, string sTemplateFile) {
-			var query = CannedQueries.GetBlogAllContentTbl(db, siteID);
+			var query = CannedQueries.GetBlogAllContentTbl(_db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
+			_db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void UpdateAllPageTemplates(Guid siteID, string sTemplateFile) {
-			var query = CannedQueries.GetContentAllContentTbl(db, siteID);
+			var query = CannedQueries.GetContentAllContentTbl(_db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
+			_db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void UpdateTopPageTemplates(Guid siteID, string sTemplateFile) {
-			var query = CannedQueries.GetContentTopContentTbl(db, siteID);
+			var query = CannedQueries.GetContentTopContentTbl(_db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
+			_db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void UpdateSubPageTemplates(Guid siteID, string sTemplateFile) {
-			var query = CannedQueries.GetContentSubContentTbl(db, siteID);
+			var query = CannedQueries.GetContentSubContentTbl(_db, siteID);
 
-			db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
+			_db.CarrotContents.Where(x => query.Select(x => x.ContentId).Contains(x.ContentId) && x.IsLatestVersion == true)
 						.ExecuteUpdate(y => y.SetProperty(z => z.TemplateFile, sTemplateFile));
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public List<Guid> GetPageHierarchy(Guid siteID, Guid rootContentID) {
@@ -88,7 +88,7 @@ namespace Carrotware.CMS.Core {
 			lstFoundIDs.Add(rootContentID);
 
 			while (iDepth > 1) {
-				lstSub = (from ct in CannedQueries.GetLatestContentList(db, siteID, false)
+				lstSub = (from ct in CannedQueries.GetLatestContentList(_db, siteID, false)
 						  where ct.SiteId == siteID
 								&& (!lstFoundIDs.Contains(ct.RootContentId) && lstFoundIDs.Contains(ct.ParentContentId.Value))
 						  select ct.RootContentId).Distinct().ToList();
@@ -145,40 +145,40 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void FixBlogNavOrder(Guid siteID) {
-			var query = CannedQueries.GetBlogAllRootTbl(db, siteID);
+			var query = CannedQueries.GetBlogAllRootTbl(_db, siteID);
 
-			db.CarrotContents.Where(x => x.IsLatestVersion == true && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+			_db.CarrotContents.Where(x => x.IsLatestVersion == true && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 						.ExecuteUpdate(y => y.SetProperty(z => z.NavOrder, SiteData.BlogSortOrderNumber)
 											.SetProperty(z => z.ParentContentId, (Guid?)null));
 
-			db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+			_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 						.ExecuteUpdate(y => y.SetProperty(z => z.ShowInSiteMap, false)
 											.SetProperty(z => z.ShowInSiteNav, false));
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public void ResolveDuplicateBlogURLs(Guid siteID) {
 			SiteData site = SiteData.GetSiteFromCache(siteID);
-			var queryFindDups = CompiledQueries.cqBlogDupFileNames(db, siteID);
+			var queryFindDups = CompiledQueries.cqBlogDupFileNames(_db, siteID);
 
 			Guid contentTypeID = ContentPageType.GetIDByType(ContentPageType.PageType.BlogEntry);
 
 			foreach (string fileName in queryFindDups) {
 				int iDupCtr = 1;
-				var queryContentShareFilename = CompiledQueries.cqGetRootContentListByURLTbl(db, siteID, contentTypeID, fileName);
+				var queryContentShareFilename = CompiledQueries.cqGetRootContentListByURLTbl(_db, siteID, contentTypeID, fileName);
 
 				foreach (CarrotRootContent item in queryContentShareFilename) {
 					int c = -1;
 					string newFilename = ScrubFilename(item.RootContentId, CreateFileNameFromSlug(site, item.GoLiveDate, item.PageSlug));
 					string slug = item.PageSlug;
 
-					c = CompiledQueries.cqGetRootContentListNoMatchByURL(db, siteID, item.RootContentId, newFilename).Count();
+					c = CompiledQueries.cqGetRootContentListNoMatchByURL(_db, siteID, item.RootContentId, newFilename).Count();
 
 					if (c > 0) {
 						newFilename = newFilename.Substring(0, newFilename.Length - 5) + "-" + item.CreateDate.ToString("yyyy-MM-dd");
 						slug = slug.Substring(0, slug.Length - 5) + "-" + item.CreateDate.ToString("yyyy-MM-dd");
 
-						c = CompiledQueries.cqGetRootContentListNoMatchByURL(db, siteID, item.RootContentId, newFilename).Count();
+						c = CompiledQueries.cqGetRootContentListNoMatchByURL(_db, siteID, item.RootContentId, newFilename).Count();
 
 						if (c > 0) {
 							newFilename = newFilename.Substring(0, newFilename.Length - 5) + "-" + iDupCtr.ToString();
@@ -189,7 +189,7 @@ namespace Carrotware.CMS.Core {
 					item.PageSlug = slug;
 					item.FileName = newFilename;
 					iDupCtr++;
-					db.SaveChanges();
+					_db.SaveChanges();
 				}
 			}
 		}
@@ -214,12 +214,12 @@ namespace Carrotware.CMS.Core {
 				|| selField == UpdateField.MarkAsIndexable
 				|| selField == UpdateField.MarkInactive
 				|| selField == UpdateField.MarkAsIndexableNo) {
-				query = (from r in db.CarrotRootContents
+				query = (from r in _db.CarrotRootContents
 						 where r.SiteId == siteID
 							&& lstUpd.Contains(r.RootContentId)
 						 select r);
 			} else {
-				query = (from r in db.CarrotRootContents
+				query = (from r in _db.CarrotRootContents
 						 where r.SiteId == siteID
 							&& r.ContentTypeId == gContent
 							&& lstUpd.Contains(r.RootContentId)
@@ -228,47 +228,47 @@ namespace Carrotware.CMS.Core {
 
 			switch (selField) {
 				case UpdateField.MarkActive:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 							.ExecuteUpdate(y => y.SetProperty(z => z.PageActive, true));
 					break;
 
 				case UpdateField.MarkInactive:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 							.ExecuteUpdate(y => y.SetProperty(z => z.PageActive, false));
 					break;
 
 				case UpdateField.MarkAsIndexable:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 							.ExecuteUpdate(y => y.SetProperty(z => z.BlockIndex, false));
 					break;
 
 				case UpdateField.MarkAsIndexableNo:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 							.ExecuteUpdate(y => y.SetProperty(z => z.BlockIndex, true));
 					break;
 
 				case UpdateField.MarkIncludeInSiteMap:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 							.ExecuteUpdate(y => y.SetProperty(z => z.ShowInSiteMap, true));
 					break;
 
 				case UpdateField.MarkIncludeInSiteMapNo:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 							.ExecuteUpdate(y => y.SetProperty(z => z.ShowInSiteMap, false));
 					break;
 
 				case UpdateField.MarkIncludeInSiteNav:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 						.ExecuteUpdate(y => y.SetProperty(z => z.ShowInSiteNav, true));
 					break;
 
 				case UpdateField.MarkIncludeInSiteNavNo:
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && query.Select(x => x.RootContentId).Contains(x.RootContentId))
 						.ExecuteUpdate(y => y.SetProperty(z => z.ShowInSiteNav, false));
 					break;
 			}
 
-			db.SaveChanges();
+			_db.SaveChanges();
 		}
 
 		public static string ScrubFilename(string fileName) {
@@ -395,7 +395,7 @@ namespace Carrotware.CMS.Core {
 
 			if (currentSite.CheckIsBlogCategoryPath(sFilterPath)) {
 				pvt.CurrentViewType = PageViewType.ViewType.CategoryIndex;
-				var query = CompiledQueries.cqGetCategoryByURL(db, siteID, sFilterPath);
+				var query = CompiledQueries.cqGetCategoryByURL(_db, siteID, sFilterPath);
 				if (query != null) {
 					sTitle = query.CategoryText;
 					pvt.RawValue = query.CategoryText;
@@ -403,7 +403,7 @@ namespace Carrotware.CMS.Core {
 			}
 			if (currentSite.CheckIsBlogTagPath(sFilterPath)) {
 				pvt.CurrentViewType = PageViewType.ViewType.TagIndex;
-				var query = CompiledQueries.cqGetTagByURL(db, siteID, sFilterPath);
+				var query = CompiledQueries.cqGetTagByURL(_db, siteID, sFilterPath);
 				if (query != null) {
 					sTitle = query.TagText;
 					pvt.RawValue = query.TagText;
@@ -411,7 +411,7 @@ namespace Carrotware.CMS.Core {
 			}
 			if (currentSite.CheckIsBlogEditorFolderPath(sFilterPath)) {
 				pvt.CurrentViewType = PageViewType.ViewType.AuthorIndex;
-				var query = CompiledQueries.cqGetEditorByURL(db, siteID, sFilterPath);
+				var query = CompiledQueries.cqGetEditorByURL(_db, siteID, sFilterPath);
 				if (query != null) {
 					ExtendedUserData usr = new ExtendedUserData(query.UserId.Value);
 					sTitle = usr.ToString();
@@ -459,19 +459,19 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public Dictionary<string, float> GetPopularTemplateList(Guid siteID, ContentPageType.PageType pageType) {
-			Dictionary<string, float> lstTemps = CannedQueries.GetTemplateCounts(db, siteID, pageType);
+			Dictionary<string, float> lstTemps = CannedQueries.GetTemplateCounts(_db, siteID, pageType);
 
 			return lstTemps;
 		}
 
 		public List<ContentPage> GetAllLatestContentList(Guid siteID) {
-			List<ContentPage> lstContent = CannedQueries.GetAllContentList(db, siteID).Select(ct => new ContentPage(ct)).ToList();
+			List<ContentPage> lstContent = CannedQueries.GetAllContentList(_db, siteID).Select(ct => new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
 
 		public List<ContentPage> GetAllLatestBlogList(Guid siteID) {
-			List<ContentPage> lstContent = CannedQueries.GetAllBlogList(db, siteID).Select(ct => new ContentPage(ct)).ToList();
+			List<ContentPage> lstContent = CannedQueries.GetAllBlogList(_db, siteID).Select(ct => new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
@@ -479,39 +479,39 @@ namespace Carrotware.CMS.Core {
 		public List<ContentPage> GetPagedSortedContent(Guid siteID, ContentPageType.PageType entryType, bool bActiveOnly, int pageSize, int pageNumber, string sSortParm) {
 			SortParm srt = new SortParm(sSortParm);
 
-			IQueryable<vwCarrotContent> query1 = CannedQueries.GetAllByTypeList(db, siteID, bActiveOnly, entryType);
+			IQueryable<vwCarrotContent> query1 = CannedQueries.GetAllByTypeList(_db, siteID, bActiveOnly, entryType);
 
 			return PerformDataPagingQueryableContent(siteID, bActiveOnly, pageSize, pageNumber, srt.SortField, srt.SortDirection, query1);
 		}
 
 		public int GetSitePageCount(Guid siteID, ContentPageType.PageType entryType, bool bActiveOnly) {
-			int iCount = CannedQueries.GetAllByTypeList(db, siteID, bActiveOnly, entryType).Count();
+			int iCount = CannedQueries.GetAllByTypeList(_db, siteID, bActiveOnly, entryType).Count();
 			return iCount;
 		}
 
 		public int GetSitePageCount(Guid siteID, ContentPageType.PageType entryType) {
-			int iCount = CannedQueries.GetAllByTypeList(db, siteID, false, entryType).Count();
+			int iCount = CannedQueries.GetAllByTypeList(_db, siteID, false, entryType).Count();
 			return iCount;
 		}
 
 		public int GetSiteSnippetCount(Guid siteID) {
-			int iCount = CompiledQueries.cqGetSnippetsBySiteID(db, siteID).Count();
+			int iCount = CompiledQueries.cqGetSnippetsBySiteID(_db, siteID).Count();
 			return iCount;
 		}
 
 		public int GetSiteContentCount(Guid siteID) {
-			int iCount = CannedQueries.GetLatestContentList(db, siteID, false).Count();
+			int iCount = CannedQueries.GetLatestContentList(_db, siteID, false).Count();
 			return iCount;
 		}
 
 		public int GetMaxNavOrder(Guid siteID) {
-			int iCount = CompiledQueries.cqGetMaxOrderID(db, siteID);
+			int iCount = CompiledQueries.cqGetMaxOrderID(_db, siteID);
 
 			return iCount;
 		}
 
 		public List<ContentPage> GetLatest(Guid siteID, int iUpdates, bool bActiveOnly) {
-			List<ContentPage> lstContent = (from ct in CannedQueries.GetLatestContentList(db, siteID, bActiveOnly)
+			List<ContentPage> lstContent = (from ct in CannedQueries.GetLatestContentList(_db, siteID, bActiveOnly)
 											orderby ct.GoLiveDate descending
 											select new ContentPage(ct)).Take(iUpdates).ToList();
 
@@ -519,7 +519,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ContentPage> GetLatestPosts(Guid siteID, int iUpdates, bool bActiveOnly) {
-			List<ContentPage> lstContent = (from ct in CannedQueries.GetLatestBlogList(db, siteID, bActiveOnly)
+			List<ContentPage> lstContent = (from ct in CannedQueries.GetLatestBlogList(_db, siteID, bActiveOnly)
 											orderby ct.GoLiveDate descending
 											select new ContentPage(ct)).Take(iUpdates).ToList();
 
@@ -559,9 +559,9 @@ namespace Carrotware.CMS.Core {
 			IQueryable<vwCarrotContent> query1 = null;
 
 			if (postType == ContentPageType.PageType.ContentEntry) {
-				query1 = CannedQueries.GetLatestContentList(db, siteID, bActiveOnly);
+				query1 = CannedQueries.GetLatestContentList(_db, siteID, bActiveOnly);
 			} else {
-				query1 = CannedQueries.GetLatestBlogList(db, siteID, bActiveOnly);
+				query1 = CannedQueries.GetLatestBlogList(_db, siteID, bActiveOnly);
 			}
 
 			return PerformDataPagingQueryableContent(siteID, bActiveOnly, pageSize, pageNumber, sortField, sortDir, query1);
@@ -573,24 +573,24 @@ namespace Carrotware.CMS.Core {
 			bool bFound = false;
 
 			if (currentSite.CheckIsBlogCategoryPath(sFilterPath)) {
-				query1 = CannedQueries.GetContentByCategoryURL(db, siteID, bActiveOnly, sFilterPath);
+				query1 = CannedQueries.GetContentByCategoryURL(_db, siteID, bActiveOnly, sFilterPath);
 				bFound = true;
 			}
 			if (currentSite.CheckIsBlogTagPath(sFilterPath)) {
-				query1 = CannedQueries.GetContentByTagURL(db, siteID, bActiveOnly, sFilterPath);
+				query1 = CannedQueries.GetContentByTagURL(_db, siteID, bActiveOnly, sFilterPath);
 				bFound = true;
 			}
 			if (currentSite.CheckIsBlogEditorFolderPath(sFilterPath)) {
-				query1 = CannedQueries.GetContentByUserURL(db, siteID, bActiveOnly, sFilterPath);
+				query1 = CannedQueries.GetContentByUserURL(_db, siteID, bActiveOnly, sFilterPath);
 				bFound = true;
 			}
 			if (currentSite.CheckIsBlogDateFolderPath(sFilterPath)) {
 				BlogDatePathParser p = new BlogDatePathParser(currentSite, sFilterPath);
-				query1 = CannedQueries.GetLatestBlogListDateRange(db, siteID, p.DateBeginUTC, p.DateEndUTC, bActiveOnly);
+				query1 = CannedQueries.GetLatestBlogListDateRange(_db, siteID, p.DateBeginUTC, p.DateEndUTC, bActiveOnly);
 				bFound = true;
 			}
 			if (!bFound) {
-				query1 = CannedQueries.GetLatestBlogList(db, siteID, bActiveOnly);
+				query1 = CannedQueries.GetLatestBlogList(_db, siteID, bActiveOnly);
 			}
 
 			return query1.Count();
@@ -603,25 +603,25 @@ namespace Carrotware.CMS.Core {
 			bool bFound = false;
 
 			if (currentSite.CheckIsBlogCategoryPath(sFilterPath)) {
-				query1 = CannedQueries.GetContentByCategoryURL(db, siteID, bActiveOnly, sFilterPath);
+				query1 = CannedQueries.GetContentByCategoryURL(_db, siteID, bActiveOnly, sFilterPath);
 				bFound = true;
 			}
 			if (currentSite.CheckIsBlogTagPath(sFilterPath)) {
-				query1 = CannedQueries.GetContentByTagURL(db, siteID, bActiveOnly, sFilterPath);
+				query1 = CannedQueries.GetContentByTagURL(_db, siteID, bActiveOnly, sFilterPath);
 				bFound = true;
 			}
 			if (currentSite.CheckIsBlogEditorFolderPath(sFilterPath)) {
-				query1 = CannedQueries.GetContentByUserURL(db, siteID, bActiveOnly, sFilterPath);
+				query1 = CannedQueries.GetContentByUserURL(_db, siteID, bActiveOnly, sFilterPath);
 				bFound = true;
 			}
 			if (currentSite.CheckIsBlogDateFolderPath(sFilterPath)) {
 				BlogDatePathParser p = new BlogDatePathParser(currentSite, sFilterPath);
-				query1 = CannedQueries.GetLatestBlogListDateRange(db, siteID, p.DateBeginUTC, p.DateEndUTC, bActiveOnly);
+				query1 = CannedQueries.GetLatestBlogListDateRange(_db, siteID, p.DateBeginUTC, p.DateEndUTC, bActiveOnly);
 				bFound = true;
 			}
 
 			if (!bFound) {
-				query1 = CannedQueries.GetLatestBlogList(db, siteID, bActiveOnly);
+				query1 = CannedQueries.GetLatestBlogList(_db, siteID, bActiveOnly);
 			}
 
 			return PerformDataPagingQueryableContent(siteID, bActiveOnly, pageSize, pageNumber, sortField, sortDir, query1);
@@ -678,30 +678,30 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void ResetHeartbeatLock(Guid rootContentID, Guid siteID, Guid currentUserID) {
-			CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(db, siteID, rootContentID);
+			CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(_db, siteID, rootContentID);
 
 			if (rc != null) {
 				if (rc.HeartbeatUserId.HasValue && rc.HeartbeatUserId.Value == currentUserID) {
 					rc.EditHeartbeat = DateTime.UtcNow.AddHours(-2);
 					rc.HeartbeatUserId = null;
-					db.SaveChanges();
+					_db.SaveChanges();
 				} else {
 					if (!rc.HeartbeatUserId.HasValue) {
 						rc.EditHeartbeat = DateTime.UtcNow.AddHours(-4);
 						rc.HeartbeatUserId = null;
-						db.SaveChanges();
+						_db.SaveChanges();
 					}
 				}
 			}
 		}
 
 		public bool RecordHeartbeatLock(Guid rootContentID, Guid siteID, Guid currentUserID) {
-			CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(db, siteID, rootContentID);
+			CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(_db, siteID, rootContentID);
 
 			if (rc != null) {
 				rc.HeartbeatUserId = currentUserID;
 				rc.EditHeartbeat = DateTime.UtcNow == rc.EditHeartbeat ? DateTime.UtcNow.AddSeconds(-3) : DateTime.UtcNow;
-				db.SaveChanges();
+				_db.SaveChanges();
 				return true;
 			}
 
@@ -709,7 +709,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public bool IsPageLocked(Guid rootContentID, Guid siteID, Guid currentUserID) {
-			CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(db, siteID, rootContentID);
+			CarrotRootContent rc = CompiledQueries.cqGetRootContentTbl(_db, siteID, rootContentID);
 
 			bool bLock = false;
 			if (rc != null && rc.HeartbeatUserId != null) {
@@ -726,7 +726,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public bool IsPageLocked(Guid rootContentID, Guid siteID) {
-			CarrotRootContent cp = CompiledQueries.cqGetRootContentTbl(db, siteID, rootContentID);
+			CarrotRootContent cp = CompiledQueries.cqGetRootContentTbl(_db, siteID, rootContentID);
 
 			bool bLock = false;
 			if (cp != null && cp.HeartbeatUserId != null) {
@@ -774,7 +774,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public Guid GetCurrentEditUser(Guid rootContentID, Guid siteID) {
-			var rc = CompiledQueries.cqGetRootContentTbl(db, siteID, rootContentID);
+			var rc = CompiledQueries.cqGetRootContentTbl(_db, siteID, rootContentID);
 
 			if (rc != null) {
 				return rc.HeartbeatUserId.Value;
@@ -915,14 +915,14 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ContentPage> GetVersionHistory(Guid siteID, Guid rootContentID) {
-			var content = CompiledQueries.cqGetVersionHistory(db, siteID, rootContentID).Select(ct => new ContentPage(ct)).ToList();
+			var content = CompiledQueries.cqGetVersionHistory(_db, siteID, rootContentID).Select(ct => new ContentPage(ct)).ToList();
 
 			return content;
 		}
 
 		public ContentPage GetVersion(Guid siteID, Guid contentID) {
 			ContentPage content = null;
-			var cont = CompiledQueries.cqGetContentByContentID(db, siteID, contentID);
+			var cont = CompiledQueries.cqGetContentByContentID(_db, siteID, contentID);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -930,14 +930,14 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ContentPage> GetLatestContentList(Guid siteID, bool bActiveOnly) {
-			var lstContent = CompiledQueries.GetLatestContentList(db, siteID, bActiveOnly).Select(ct => new ContentPage(ct)).ToList();
+			var lstContent = CompiledQueries.GetLatestContentList(_db, siteID, bActiveOnly).Select(ct => new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
 
 		public void RemoveVersions(Guid siteID, List<Guid> lstDel) {
-			var queryCont = (from ct in db.CarrotContents
-							 join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+			var queryCont = (from ct in _db.CarrotContents
+							 join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
 							 orderby ct.EditDate descending
 							 where r.SiteId == siteID
 								  && lstDel.Contains(ct.ContentId)
@@ -945,46 +945,46 @@ namespace Carrotware.CMS.Core {
 							 select ct.ContentId);
 
 			if (lstDel.Any()) {
-				db.CarrotContents.Where(x => queryCont.Contains(x.ContentId)).ExecuteDelete();
-				db.SaveChanges();
+				_db.CarrotContents.Where(x => queryCont.Contains(x.ContentId)).ExecuteDelete();
+				_db.SaveChanges();
 			}
 		}
 
 		public void RemoveContent(Guid siteID, Guid rootContentID) {
 			using (var transaction = new TransactionScope()) {
 				try {
-					var queryWidget = (from r in db.CarrotWidgets
+					var queryWidget = (from r in _db.CarrotWidgets
 									   where r.RootContentId == rootContentID
 									   select r);
 
 					List<Guid> widgIDs = queryWidget.Select(x => x.RootWidgetId).Distinct().ToList();
 
-					var queryWidgetData = (from r in db.CarrotWidgetData
+					var queryWidgetData = (from r in _db.CarrotWidgetData
 										   where widgIDs.Contains(r.RootWidgetId)
 										   select r);
 
-					var queryChildPages = (from ct in db.CarrotContents
-										   join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+					var queryChildPages = (from ct in _db.CarrotContents
+										   join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
 										   where r.SiteId == siteID
 												 && ct.RootContentId == rootContentID
 										   select ct);
 
-					db.CarrotContents.Where(x => queryChildPages.Select(x => x.ContentId).Contains(x.ContentId))
+					_db.CarrotContents.Where(x => queryChildPages.Select(x => x.ContentId).Contains(x.ContentId))
 								.ExecuteUpdate(y => y.SetProperty(z => z.ParentContentId, (Guid?)null));
 
-					db.CarrotTagContentMappings.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
-					db.CarrotCategoryContentMappings.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
+					_db.CarrotTagContentMappings.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
+					_db.CarrotCategoryContentMappings.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
 
-					db.CarrotWidgetData.Where(x => queryWidgetData.Select(y => x.RootWidgetId).Contains(x.RootWidgetId)).ExecuteDelete();
-					db.CarrotWidgets.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
+					_db.CarrotWidgetData.Where(x => queryWidgetData.Select(y => x.RootWidgetId).Contains(x.RootWidgetId)).ExecuteDelete();
+					_db.CarrotWidgets.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
 
-					db.CarrotContentComments.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
+					_db.CarrotContentComments.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
 
-					db.CarrotContents.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
-					db.CarrotRootContents.Where(x => x.SiteId == siteID && x.RootContentId == rootContentID).ExecuteDelete();
+					_db.CarrotContents.Where(x => x.RootContentId == rootContentID).ExecuteDelete();
+					_db.CarrotRootContents.Where(x => x.SiteId == siteID && x.RootContentId == rootContentID).ExecuteDelete();
 
-					Guid? newHomeID = (from ct in db.CarrotContents
-									   join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+					Guid? newHomeID = (from ct in _db.CarrotContents
+									   join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
 									   orderby ct.NavOrder ascending
 									   where r.SiteId == siteID
 											 && ct.RootContentId != rootContentID
@@ -994,8 +994,8 @@ namespace Carrotware.CMS.Core {
 									   select ct.RootContentId).FirstOrDefault();
 
 					if (newHomeID == null) {
-						newHomeID = (from ct in db.CarrotContents
-									 join r in db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+						newHomeID = (from ct in _db.CarrotContents
+									 join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
 									 orderby ct.NavOrder ascending
 									 where r.SiteId == siteID
 											&& ct.RootContentId != rootContentID
@@ -1005,16 +1005,16 @@ namespace Carrotware.CMS.Core {
 					}
 
 					if (newHomeID.HasValue) {
-						var queryContNH = (from ct in db.CarrotContents
+						var queryContNH = (from ct in _db.CarrotContents
 										   where ct.RootContentId == newHomeID.Value
 												 && ct.IsLatestVersion == true
 										   select ct);
 
-						db.CarrotContents.Where(x => queryContNH.Select(x => x.ContentId).Contains(x.ContentId))
+						_db.CarrotContents.Where(x => queryContNH.Select(x => x.ContentId).Contains(x.ContentId))
 								.ExecuteUpdate(y => y.SetProperty(z => z.NavOrder, 0));
 					}
 
-					db.SaveChanges();
+					_db.SaveChanges();
 
 					transaction.Complete();
 				} catch (Exception ex) {
@@ -1027,7 +1027,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage FindContentByID(Guid siteID, Guid rootContentID) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.GetLatestContentByID(db, siteID, false, rootContentID);
+			vwCarrotContent cont = CompiledQueries.GetLatestContentByID(_db, siteID, false, rootContentID);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -1036,7 +1036,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage FindContentByID(Guid siteID, bool bActiveOnly, Guid rootContentID) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.GetLatestContentByID(db, siteID, bActiveOnly, rootContentID);
+			vwCarrotContent cont = CompiledQueries.GetLatestContentByID(_db, siteID, bActiveOnly, rootContentID);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -1045,7 +1045,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage GetLatestContentByURL(Guid siteID, bool bActiveOnly, string sPage) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.GetLatestContentByURL(db, siteID, bActiveOnly, sPage);
+			vwCarrotContent cont = CompiledQueries.GetLatestContentByURL(_db, siteID, bActiveOnly, sPage);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -1057,7 +1057,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage FindByFilename(Guid siteID, string urlFileName) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.GetLatestContentByURL(db, siteID, false, urlFileName);
+			vwCarrotContent cont = CompiledQueries.GetLatestContentByURL(_db, siteID, false, urlFileName);
 
 			if (cont != null) {
 				content = new ContentPage(cont);
@@ -1071,7 +1071,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage FindByPageSlug(Guid siteID, DateTime datePublished, string urlPageSlug) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.cqGetLatestContentBySlug(db, siteID, datePublished, urlPageSlug);
+			vwCarrotContent cont = CompiledQueries.cqGetLatestContentBySlug(_db, siteID, datePublished, urlPageSlug);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -1131,7 +1131,7 @@ namespace Carrotware.CMS.Core {
 		private IQueryable<vwCarrotContent> GetPagesBeginingWith(Guid siteID, string sFolderPath) {
 			sFolderPath = sFolderPath.ToLowerInvariant().Trim().Replace("//", "/");
 
-			IQueryable<vwCarrotContent> query = (from ct in db.vwCarrotContents
+			IQueryable<vwCarrotContent> query = (from ct in _db.vwCarrotContents
 												 where ct.SiteId == siteID
 													  && ct.FileName.StartsWith(sFolderPath)
 													  && ct.IsLatestVersion == true
@@ -1143,7 +1143,7 @@ namespace Carrotware.CMS.Core {
 		private IQueryable<vwCarrotContent> GetPagesEquals(Guid siteID, string sFolderPath) {
 			sFolderPath = sFolderPath.ToLowerInvariant().Trim().Replace("//", "/");
 
-			IQueryable<vwCarrotContent> query = (from ct in db.vwCarrotContents
+			IQueryable<vwCarrotContent> query = (from ct in _db.vwCarrotContents
 												 where ct.SiteId == siteID
 													  && ct.FileName == sFolderPath
 													  && ct.IsLatestVersion == true
@@ -1154,7 +1154,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage FindHome(Guid siteID) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.FindHome(db, siteID, true);
+			vwCarrotContent cont = CompiledQueries.FindHome(_db, siteID, true);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -1163,7 +1163,7 @@ namespace Carrotware.CMS.Core {
 
 		public ContentPage FindHome(Guid siteID, bool bActiveOnly) {
 			ContentPage content = null;
-			vwCarrotContent cont = CompiledQueries.FindHome(db, siteID, bActiveOnly);
+			vwCarrotContent cont = CompiledQueries.FindHome(_db, siteID, bActiveOnly);
 			if (cont != null) {
 				content = new ContentPage(cont);
 			}
@@ -1175,35 +1175,35 @@ namespace Carrotware.CMS.Core {
 
 			//DateTime dateUTC = site.ConvertSiteTimeToUTC(dateCreate);
 
-			List<ContentPage> lstContent = (from ct in CannedQueries.FindPageByTitleAndDate(db, siteID, sTitle, sFileNameFrag, dateCreate).ToList()
+			List<ContentPage> lstContent = (from ct in CannedQueries.FindPageByTitleAndDate(_db, siteID, sTitle, sFileNameFrag, dateCreate).ToList()
 											select new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
 
 		public List<ContentPage> GetChildNavigation(Guid siteID, string sParentPage, bool bActiveOnly) {
-			List<ContentPage> lstContent = (from ct in CompiledQueries.GetLatestContentByParent(db, siteID, sParentPage, bActiveOnly).ToList()
+			List<ContentPage> lstContent = (from ct in CompiledQueries.GetLatestContentByParent(_db, siteID, sParentPage, bActiveOnly).ToList()
 											select new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
 
 		public List<ContentPage> GetChildNavigation(Guid siteID, Guid? ParentID, bool bActiveOnly) {
-			List<ContentPage> lstContent = (from ct in CompiledQueries.GetLatestContentByParent(db, siteID, ParentID, bActiveOnly).ToList()
+			List<ContentPage> lstContent = (from ct in CompiledQueries.GetLatestContentByParent(_db, siteID, ParentID, bActiveOnly).ToList()
 											select new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
 
 		public List<ContentPage> GetParentWithChildNavigation(Guid siteID, Guid? ParentID, bool bActiveOnly) {
-			List<ContentPage> lstContent = (from ct in CompiledQueries.GetLatestContentWithParent(db, siteID, ParentID, bActiveOnly).ToList()
+			List<ContentPage> lstContent = (from ct in CompiledQueries.GetLatestContentWithParent(_db, siteID, ParentID, bActiveOnly).ToList()
 											select new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
 
 		public List<ContentPage> GetTopNavigation(Guid siteID, bool bActiveOnly) {
-			List<ContentPage> lstContent = CompiledQueries.TopLevelPages(db, siteID, bActiveOnly).Select(ct => new ContentPage(ct)).ToList();
+			List<ContentPage> lstContent = CompiledQueries.TopLevelPages(_db, siteID, bActiveOnly).Select(ct => new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
@@ -1212,7 +1212,7 @@ namespace Carrotware.CMS.Core {
 			DateTime dateBegin = dateMidpoint.AddDays(0 - iDayRange);
 			DateTime dateEnd = dateMidpoint.AddDays(iDayRange);
 
-			List<ContentPage> lstContent = CompiledQueries.PostsByDateRange(db, siteID, dateBegin, dateEnd, bActiveOnly).Select(ct => new ContentPage(ct)).ToList();
+			List<ContentPage> lstContent = CompiledQueries.PostsByDateRange(_db, siteID, dateBegin, dateEnd, bActiveOnly).Select(ct => new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
@@ -1227,7 +1227,7 @@ namespace Carrotware.CMS.Core {
 				dateEnd = dateMidpoint.AddDays(iDayRange);
 			}
 
-			List<ContentPage> lstContent = CannedQueries.GetContentByStatusAndDateRange(db, siteID, pageType, dateBegin, dateEnd, bActive, bSiteMap, bSiteNav, bBlock).Select(ct => new ContentPage(ct)).ToList();
+			List<ContentPage> lstContent = CannedQueries.GetContentByStatusAndDateRange(_db, siteID, pageType, dateBegin, dateEnd, bActive, bSiteMap, bSiteNav, bBlock).Select(ct => new ContentPage(ct)).ToList();
 
 			return lstContent;
 		}
@@ -1235,8 +1235,8 @@ namespace Carrotware.CMS.Core {
 		#region IDisposable Members
 
 		public void Dispose() {
-			if (db != null) {
-				db.Dispose();
+			if (_db != null) {
+				_db.Dispose();
 			}
 		}
 

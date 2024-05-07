@@ -74,7 +74,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxContactForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected ContactInfo _model = null;
 		protected ContactInfoSettings _settings = null;
 
@@ -98,9 +98,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "Contact.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -151,16 +151,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ContactInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ContactInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(ContactInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<ContactInfo>(_settings.PostPartialName, _model);
 
@@ -176,8 +176,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}
@@ -224,7 +224,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxLoginForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected LoginInfo _model = null;
 		protected LoginInfoSettings _settings = null;
 
@@ -248,9 +248,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "Login.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -303,16 +303,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<LoginInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(LoginInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(LoginInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<LoginInfo>(_settings.PostPartialName, _model);
 
@@ -328,8 +328,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}
@@ -373,7 +373,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxLogoutForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected LogoutInfo _model = null;
 		protected LogoutInfoSettings _settings = null;
 
@@ -397,9 +397,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "Logout.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -437,16 +437,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<LogoutInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogoutInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(LogoutInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<LogoutInfo>(_settings.PostPartialName, _model);
 
@@ -462,8 +462,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}
@@ -494,7 +494,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxForgotPasswordForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected ForgotPasswordInfo _model = null;
 		protected ForgotPasswordInfoSettings _settings = null;
 
@@ -518,9 +518,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "ForgotPassword.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -567,16 +567,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ForgotPasswordInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ForgotPasswordInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(ForgotPasswordInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<ForgotPasswordInfo>(_settings.PostPartialName, _model);
 
@@ -592,8 +592,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}
@@ -630,7 +630,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxResetPasswordForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected ResetPasswordInfo _model = null;
 		protected ResetPasswordInfoSettings _settings = null;
 
@@ -656,9 +656,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "ResetPassword.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -706,16 +706,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ResetPasswordInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ResetPasswordInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(ResetPasswordInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<ResetPasswordInfo>(_settings.PostPartialName, _model);
 
@@ -731,8 +731,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}
@@ -778,7 +778,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxChangePasswordForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected ChangePasswordInfo _model = null;
 		protected ChangePasswordInfoSettings _settings = null;
 
@@ -802,9 +802,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "ChangePassword.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -851,16 +851,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ChangePasswordInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ChangePasswordInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(ChangePasswordInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<ChangePasswordInfo>(_settings.PostPartialName, _model);
 
@@ -876,8 +876,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}
@@ -919,7 +919,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	public class AjaxChangeProfileForm : IDisposable {
 		protected IHtmlHelper _helper;
-		protected SimpleAjaxForm frm = null;
+		protected SimpleAjaxForm _form = null;
 		protected ChangeProfileInfo _model = null;
 		protected ChangeProfileInfoSettings _settings = null;
 
@@ -943,9 +943,9 @@ namespace Carrotware.CMS.UI.Components {
 			string formAction = "ChangeProfile.ashx";
 
 			if (SecurityData.AdvancedEditMode) {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction, carrotedit = true }, formAttributes);
 			} else {
-				frm = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
+				_form = ajaxHelper.CarrotWeb().BeginSimpleAjaxForm(ajaxOptions, new { controller = CmsRouteConstants.CmsController.AjaxForms, action = formAction }, formAttributes);
 			}
 		}
 
@@ -1001,16 +1001,16 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ChangeProfileInfo> InitHelp() {
-			XmlSerializer xmlSerializer = new XmlSerializer(typeof(ChangeProfileInfoSettings));
-			string sXML = string.Empty;
-			using (StringWriter stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, _settings);
-				sXML = stringWriter.ToString();
-				sXML = sXML.EncodeBase64();
+			var xmlSerializer = new XmlSerializer(typeof(ChangeProfileInfoSettings));
+			string xml = string.Empty;
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, _settings);
+				xml = sw.ToString();
+				xml = xml.EncodeBase64();
 			}
 
 			_model.Settings = _settings;
-			_model.EncodedSettings = sXML;
+			_model.EncodedSettings = xml;
 
 			var hlp = _helper.CarrotHtmlHelper<ChangeProfileInfo>(_settings.PostPartialName, _model);
 
@@ -1026,8 +1026,8 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void Dispose() {
-			if (frm != null) {
-				frm.Dispose();
+			if (_form != null) {
+				_form.Dispose();
 			}
 		}
 	}

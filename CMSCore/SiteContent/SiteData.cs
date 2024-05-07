@@ -107,29 +107,29 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ContentCategory> GetCategoryList() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				List<ContentCategory> _types = (from d in CompiledQueries.cqGetContentCategoryBySiteID(_db, this.SiteID)
-												select new ContentCategory(d)).ToList();
+			using (var db = CarrotCakeContext.Create()) {
+				List<ContentCategory> types = (from d in CompiledQueries.cqGetContentCategoryBySiteID(db, this.SiteID)
+											   select new ContentCategory(d)).ToList();
 
-				return _types;
+				return types;
 			}
 		}
 
 		public List<ContentTag> GetTagList() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				List<ContentTag> _types = (from d in CompiledQueries.cqGetContentTagBySiteID(_db, this.SiteID)
-										   select new ContentTag(d)).ToList();
+			using (var db = CarrotCakeContext.Create()) {
+				List<ContentTag> types = (from d in CompiledQueries.cqGetContentTagBySiteID(db, this.SiteID)
+										  select new ContentTag(d)).ToList();
 
-				return _types;
+				return types;
 			}
 		}
 
 		public List<ContentSnippet> GetContentSnippetList() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				List<ContentSnippet> _types = (from d in CompiledQueries.cqGetSnippetsBySiteID(_db, this.SiteID)
-											   select new ContentSnippet(d)).ToList();
+			using (var db = CarrotCakeContext.Create()) {
+				List<ContentSnippet> types = (from d in CompiledQueries.cqGetSnippetsBySiteID(db, this.SiteID)
+											  select new ContentSnippet(d)).ToList();
 
-				return _types;
+				return types;
 			}
 		}
 
@@ -139,8 +139,8 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var s = CompiledQueries.cqGetSiteByID(_db, this.SiteID);
+			using (var db = CarrotCakeContext.Create()) {
+				var s = CompiledQueries.cqGetSiteByID(db, this.SiteID);
 
 				bool bNew = false;
 				if (s == null) {
@@ -180,9 +180,9 @@ namespace Carrotware.CMS.Core {
 				s.BlogDatePattern = string.IsNullOrEmpty(this.Blog_DatePattern) ? "yyyy/MM/dd" : this.Blog_DatePattern;
 
 				if (bNew) {
-					_db.CarrotSites.Add(s);
+					db.CarrotSites.Add(s);
 				}
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
@@ -192,9 +192,9 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public List<ExtendedUserData> GetMappedUsers() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				return (from l in _db.CarrotUserSiteMappings
-						join u in _db.vwCarrotUserData on l.UserId equals u.UserId
+			using (var db = CarrotCakeContext.Create()) {
+				return (from l in db.CarrotUserSiteMappings
+						join u in db.vwCarrotUserData on l.UserId equals u.UserId
 						where l.SiteId == this.SiteID
 						select new ExtendedUserData(u)).ToList();
 			}
@@ -211,9 +211,9 @@ namespace Carrotware.CMS.Core {
 				return false;
 			}
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				// by this point, the user is probably an editor, make sure they have rights to this site
-				IQueryable<Guid> lstSiteIDs = (from l in _db.CarrotUserSiteMappings
+				IQueryable<Guid> lstSiteIDs = (from l in db.CarrotUserSiteMappings
 											   where l.UserId == userID
 													&& l.SiteId == siteID
 											   select l.SiteId);
@@ -225,38 +225,38 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void CleanUpSerialData() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				_db.CarrotSerialCache.Where(c => c.EditDate < DateTime.UtcNow.AddHours(-6)
+			using (var db = CarrotCakeContext.Create()) {
+				db.CarrotSerialCache.Where(c => c.EditDate < DateTime.UtcNow.AddHours(-6)
 													 && c.SiteId == CurrentSiteID).ExecuteDelete();
 
-				_db.SaveChanges();
+				db.SaveChanges();
 			}
 		}
 
 		public int GetSitePageCount(ContentPageType.PageType entryType) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				int iCount = CannedQueries.GetAllByTypeList(_db, this.SiteID, false, entryType).Count();
+			using (var db = CarrotCakeContext.Create()) {
+				int iCount = CannedQueries.GetAllByTypeList(db, this.SiteID, false, entryType).Count();
 				return iCount;
 			}
 		}
 
 		public void MapUserToSite(Guid siteID, Guid userID) {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
+			using (var db = CarrotCakeContext.Create()) {
 				CarrotUserSiteMapping map = new CarrotUserSiteMapping();
 				map.UserSiteMappingId = Guid.NewGuid();
 				map.SiteId = siteID;
 				map.UserId = userID;
 
-				_db.CarrotUserSiteMappings.Add(map);
-				_db.SaveChanges();
+				db.CarrotUserSiteMappings.Add(map);
+				db.SaveChanges();
 			}
 		}
 
 		public List<BasicContentData> GetFullSiteFileList() {
 			List<BasicContentData> map = new List<BasicContentData>();
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var queryAllFiles = CompiledQueries.cqGetAllContent(_db, this.SiteID);
+			using (var db = CarrotCakeContext.Create()) {
+				var queryAllFiles = CompiledQueries.cqGetAllContent(db, this.SiteID);
 				map = queryAllFiles.Select(x => new BasicContentData(x)).ToList();
 			}
 

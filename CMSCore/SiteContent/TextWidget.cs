@@ -1,9 +1,6 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -86,15 +83,15 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void Save() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var s = CompiledQueries.cqTextWidgetByID(_db, this.TextWidgetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var s = CompiledQueries.cqTextWidgetByID(db, this.TextWidgetID);
 
 				if (s == null) {
 					s = new CarrotTextWidget();
 					s.TextWidgetId = Guid.NewGuid();
 					s.SiteId = this.SiteID;
 					s.TextWidgetAssembly = this.TextWidgetAssembly;
-					_db.CarrotTextWidgets.Add(s);
+					db.CarrotTextWidgets.Add(s);
 				}
 
 				s.ProcessBody = this.ProcessBody;
@@ -103,27 +100,27 @@ namespace Carrotware.CMS.Core {
 				s.ProcessComment = this.ProcessComment;
 				s.ProcessSnippet = this.ProcessSnippet;
 
-				_db.SaveChanges();
+				db.SaveChanges();
 
 				this.TextWidgetID = s.TextWidgetId;
 			}
 		}
 
 		public void Delete() {
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var s = CompiledQueries.cqTextWidgetByID(_db, this.TextWidgetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var s = CompiledQueries.cqTextWidgetByID(db, this.TextWidgetID);
 
 				if (s != null) {
-					_db.CarrotTextWidgets.Remove(s);
-					_db.SaveChanges();
+					db.CarrotTextWidgets.Remove(s);
+					db.SaveChanges();
 				}
 			}
 		}
 
 		public static TextWidget Get(Guid textWidgetID) {
 			TextWidget _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqTextWidgetByID(_db, textWidgetID);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqTextWidgetByID(db, textWidgetID);
 
 				if (query != null) {
 					_item = new TextWidget(query);
@@ -136,8 +133,8 @@ namespace Carrotware.CMS.Core {
 		public static List<TextWidget> GetSiteTextWidgets(Guid siteID) {
 			List<TextWidget> _lst = null;
 
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqTextWidgetBySiteID(_db, siteID);
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqTextWidgetBySiteID(db, siteID);
 
 				_lst = (from d in query.ToList()
 						select new TextWidget(d)).ToList();

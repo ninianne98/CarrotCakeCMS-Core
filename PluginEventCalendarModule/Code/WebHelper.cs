@@ -16,11 +16,11 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 
 	public static class WebHelper {
 
-		public static string ReadEmbededScript(string sResouceName) {
+		public static string ReadEmbededScript(string resouceName) {
 			string sReturn = null;
 
-			Assembly _assembly = Assembly.GetExecutingAssembly();
-			using (var stream = new StreamReader(_assembly.GetManifestResourceStream(sResouceName))) {
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			using (var stream = new StreamReader(assembly.GetManifestResourceStream(resouceName))) {
 				sReturn = stream.ReadToEnd();
 			}
 

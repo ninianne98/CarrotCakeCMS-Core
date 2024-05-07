@@ -147,8 +147,8 @@ namespace Carrotware.CMS.UI.Components {
 
 			if (!string.IsNullOrEmpty(this.EncodedSettings)) {
 				string sXML = this.EncodedSettings.DecodeBase64();
-				XmlSerializer xmlSerializer = new XmlSerializer(type);
-				using (StringReader stringReader = new StringReader(sXML)) {
+				var xmlSerializer = new XmlSerializer(type);
+				using (var stringReader = new StringReader(sXML)) {
 					this.ValidateSettings = xmlSerializer.Deserialize(stringReader);
 				}
 

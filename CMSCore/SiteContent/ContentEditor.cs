@@ -63,27 +63,27 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static ContentEditor Get(Guid SiteID, Guid UserID) {
-			ContentEditor _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentEditorByID(_db, SiteID, UserID);
+			ContentEditor item = null;
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentEditorByID(db, SiteID, UserID);
 				if (query != null) {
-					_item = new ContentEditor(query);
+					item = new ContentEditor(query);
 				}
 			}
 
-			return _item;
+			return item;
 		}
 
 		public static ContentEditor GetByURL(Guid SiteID, string requestedURL) {
-			ContentEditor _item = null;
-			using (CarrotCakeContext _db = CarrotCakeContext.Create()) {
-				var query = CompiledQueries.cqGetContentEditorURL(_db, SiteID, requestedURL);
+			ContentEditor item = null;
+			using (var db = CarrotCakeContext.Create()) {
+				var query = CompiledQueries.cqGetContentEditorURL(db, SiteID, requestedURL);
 				if (query != null) {
-					_item = new ContentEditor(query);
+					item = new ContentEditor(query);
 				}
 			}
 
-			return _item;
+			return item;
 		}
 
 		#region IContentMetaInfo Members

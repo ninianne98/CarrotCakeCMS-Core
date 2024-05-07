@@ -29,15 +29,15 @@
 	ViewBag.SiteName = CmsPage.TheSite.SiteName;
 
 	var nav = new TwoLevelNavigation() {
-		FontSize = new SizeUnit("15px"),
-		ElementId = "sitenav",
-		ForeColor = CarrotWebHelper.DecodeColor("#424242"),
-		SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
-		SubBGColor = CarrotWebHelper.DecodeColor("#787878"),
-		SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
-		UnSelBGColor = CarrotWebHelper.DecodeColor("#808080"),
-		UnSelFGColor = CarrotWebHelper.DecodeColor("#eeeeee"),
-	};
+				FontSize = new SizeUnit("15px"),
+				ElementId = "sitenav",
+				ForeColor = CarrotWebHelper.DecodeColor("#424242"),
+				SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+				SubBGColor = CarrotWebHelper.DecodeColor("#787878"),
+				SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+				UnSelBGColor = CarrotWebHelper.DecodeColor("#808080"),
+				UnSelFGColor = CarrotWebHelper.DecodeColor("#eeeeee"),
+			};
 
 	var cssUri = Helper.GetWebResourceUrl("Views.CmsContent.PlainPage.plain.css");
 
@@ -74,7 +74,7 @@
 		});
 	</script>
 
-	@Html.CarrotCakeHtml().IncludeHead()
+	@Html.CarrotCakeHtml().IncludeHeader()
 </head>
 <body>
 	<div id="wrapper">
@@ -111,17 +111,17 @@
 								}
 							</li>
 							<li id="calendar_wrap">
-								@( new PostCalendar("calendar") )
+								@(new PostCalendar("calendar"))
 							</li>
 							<li>
 								@Html.Partial("_plainloginout")
 							</li>
 							@*<li>
-									@Html.Partial("_plainforgot")
-								</li>*@
+							@Html.Partial("_plainforgot")
+							</li>*@
 							@*<li>
-									@Html.Partial("_plainreset")
-								</li>*@
+							@Html.Partial("_plainreset")
+							</li>*@
 							<li>
 								<div>
 									@Html.CarrotCakeHtml().RenderWidget(CommonWidgetZone.phLeftTop)
@@ -291,8 +291,8 @@
 											@string.Format("  Comments ({0})  ", item.CommentCount)
 										</span>
 										@*<span class="date">
-												@string.Format("{0:MMMM d, yyyy}", item.GoLiveDate)
-											</span>*@
+								@string.Format("{0:MMMM d, yyyy}", item.GoLiveDate)
+								</span>*@
 									</p>
 								</div>
 							}
