@@ -35,8 +35,7 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 ### Install Development Tools
 
 1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise.  Requires patch version 17.8 or later, for .Net 8 support.
-1. **[SQL Server Express 2016 (or higher/later)][SQL]** - currently vetted on 2012 Express and 2016 Express.  Entity Framework Core 7 does not work with older versions of  SQL Server, such as 2008/2008R2 and earlier.
-Eventually, the project will use EF 8, which will mean a minimum of SQL 2016, until then, SQL 2012 is supported.
+1. **[SQL Server Express 2016 (or higher/later)][SQL]** - currently vetted on 2016 Express.  Entity Framework Core 8 does not work with older versions of  SQL Server, such as 2014/2012/2008R2 and earlier.
 1. **[SQL Server Management Studio (SSMS)][SSMS]** - required for managing the database
 
 ### Get the Source Code
@@ -74,6 +73,14 @@ Eventually, the project will use EF 8, which will mean a minimum of SQL 2016, un
 ### Make a backup FIRST when upgrading!
 
 ```sql
+-- if you are coming from a database older than SQL 2016 as an upgrade from an earlier CMS version and are upgrading to SQL 2016 or later, run a compatibility update
+-- https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-database-transact-sql-compatibility-level?view=sql-server-ver16
+-- COMPATIBILITY_LEVEL { 160 | 150 | 140 | 130 | 120 | 110 | 100 | 90 | 80 }
+-- *REQUIRED* if seeing "SqlException: Incorrect syntax near the keyword 'WITH'. Incorrect syntax near the keyword 'with'. "
+
+ALTER DATABASE [CarrotCoreMVC]
+	SET COMPATIBILITY_LEVEL =  130        -- SQL 2016
+
 -- if you plan to use an existing database from the MVC 5 version, you will need to have some entries in the migrations table
 -- password hashes from MVC 5 will be invalid, perform a password recovery to set valid ones
 
@@ -94,28 +101,35 @@ GO
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='00000000000000_Initial')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[membership_User]') AND type in (N'U'))) BEGIN
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
-		values ('00000000000000_Initial','7.0.0')
+		values ('00000000000000_Initial','8.0.0')
 END
 
 -- photo gallery widget - create the ef table (if needed) and execute the insert for 20230625212349_InitialGallery
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230625212349_InitialGallery')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
-		values ('20230625212349_InitialGallery','7.0.0')
+		values ('20230625212349_InitialGallery','8.0.0')
 END
 
 -- simple calendar widget - create the ef table (if needed) and execute the insert for 20230709210325_InitialCalendar
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230709210325_InitialCalendar')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
-		values ('20230709210325_InitialCalendar','7.0.0')
+		values ('20230709210325_InitialCalendar','8.0.0')
 END
 
 -- event calendar widget - create the ef table (if needed) and execute the insert for 20230723225354_InitialEventCalendar
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230723225354_InitialEventCalendar')
 			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tblGallery]') AND type in (N'U'))) BEGIN
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
-		values ('20230723225354_InitialEventCalendar','7.0.0')
+		values ('20230723225354_InitialEventCalendar','8.0.0')
+END
+
+-- faq widget - create the ef table (if needed) and execute the insert for 20240421191144_InitialFaq2
+IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20240421191144_InitialFaq2')
+			AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[carrot_FaqCategory]') AND type in (N'U'))) BEGIN
+	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
+		values ('20240421191144_InitialFaq2','8.0.0')
 END
 
 -- to validate

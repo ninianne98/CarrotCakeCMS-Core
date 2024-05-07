@@ -21,6 +21,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="wwwroot\lib\**" />
+		<Content Remove="wwwroot\lib\**" />
+		<EmbeddedResource Remove="wwwroot\lib\**" />
+		<None Remove="wwwroot\lib\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
 		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
@@ -29,19 +36,20 @@
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="3.7.1" />
 		<PackageReference Include="jQuery.UI.Combined" Version="1.13.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.18" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.4" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+		<PackageReference Include="TinyMCE" Version="6.8.3" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy &quot;$(ProjectDir)\bin\$(TargetName).*&quot; &quot;$(SolutionDir)\CMSAdmin\bin\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\*.config&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\_ViewImports.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\&quot; /F /R /Y /I&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Home\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Home\&quot; /F/R/Y/I/S/C&#xD;&#xA;xcopy &quot;$(ProjectDir)\Views\Admin\*.cshtml&quot; &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM (ProjectName) $(ProjectName)&#xD;&#xA;REM (ProjectDir) $(ProjectDir)&#xD;&#xA;REM (SolutionDir) $(SolutionDir)&#xD;&#xA;" />
@@ -122,11 +130,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="global.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="global.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 </Project>

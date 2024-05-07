@@ -27,7 +27,11 @@ namespace Carrotware.CMS.Data.Models {
 
 	Add-Migration Initial -Context CarrotCakeContext -OutputDir Migrations
 	Add-Migration AddNewAuth -Context CarrotCakeContext -OutputDir Migrations
-	*/
+
+	ALTER DATABASE [CarrotCoreMVC]
+	SET COMPATIBILITY_LEVEL =  130 
+
+	 */
 
 	public partial class CarrotCakeContext : DbContext {
 
