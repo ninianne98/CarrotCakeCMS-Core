@@ -42,6 +42,8 @@ namespace Carrotware.CMS.Core {
 		[Required]
 		public string ContentSnippetSlug { get; set; }
 
+		public string? SerialCache { get; set; } = string.Empty;
+
 		public Guid CreateUserId { get; set; }
 
 		[Display(Name = "Date Created")]
