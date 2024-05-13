@@ -370,9 +370,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public SiteCanonicalURL GetSiteCanonicalURL() {
-			return new SiteCanonicalURL {
-				ContentPage = this.CmsPage.ThePage
-			};
+			return new SiteCanonicalURL(this.CmsPage.ThePage);
 		}
 
 		public SiteCanonicalURL GetSiteCanonicalURL(bool enable301) {
