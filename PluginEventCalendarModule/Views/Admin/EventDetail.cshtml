@@ -25,7 +25,7 @@
 	@Html.HiddenFor(m => m.ItemData.CalendarEventProfileId)
 	@Html.HiddenFor(m => m.Operation)
 
-	<fieldset style="width: 750px;">
+	<fieldset style="width: 750px;" class="fieldset-free">
 		<legend>
 			<label>
 				Event
@@ -74,11 +74,11 @@
 							<tbody>
 								<tr>
 									@for (int d = 0; d < Model.DaysOfTheWeek.Count; d++) {
-									<td>
-										@Html.CheckBoxFor(m => Model.DaysOfTheWeek[d].Selected)
-										@Html.HiddenFor(m => Model.DaysOfTheWeek[d].Value)
-										@Model.DaysOfTheWeek[d].Text
-									</td>
+										<td>
+											@Html.CheckBoxFor(m => Model.DaysOfTheWeek[d].Selected)
+											@Html.HiddenFor(m => Model.DaysOfTheWeek[d].Value)
+											@Model.DaysOfTheWeek[d].Text
+										</td>
 									}
 								</tr>
 							</tbody>
@@ -151,7 +151,7 @@
 			</tbody>
 		</table>
 	</fieldset>
-	<fieldset style="width: 700px;">
+	<fieldset style="width: 700px;" class="fieldset-free">
 		<legend>
 			<label>
 				Details
@@ -223,7 +223,7 @@
 		window.setTimeout("location.href = '@Url.Action("ProfileList", "Admin")';", 250);
 	}
 
-	var recurrFldId = '#' + '@Html.IdFor(m=>m.ItemData.RecursEvery)';
+	var recurrFldId = '#' + '@Html.IdFor(m => m.ItemData.RecursEvery)';
 
 	function setDayPickerVis(pat) {
 		if (pat == 2) {
@@ -243,7 +243,7 @@
 		}
 	}
 
-	var freqFldId = '#' + '@Html.IdFor(m=>m.ItemData.CalendarFrequencyId)';
+	var freqFldId = '#' + '@Html.IdFor(m => m.ItemData.CalendarFrequencyId)';
 
 	function initDays() {
 		var val = $(freqFldId + ' option:selected').index();
@@ -269,7 +269,7 @@
 		$('#ColorTextSample').css('background-color', catColor[0]);
 	}
 
-	var catFldId = '#' + '@Html.IdFor(m=>m.ItemData.CalendarEventCategoryId)';
+	var catFldId = '#' + '@Html.IdFor(m => m.ItemData.CalendarEventCategoryId)';
 
 	function initCatColor() {
 		var val = $(catFldId).val();

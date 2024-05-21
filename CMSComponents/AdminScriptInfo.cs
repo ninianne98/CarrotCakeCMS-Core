@@ -24,9 +24,11 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public string ToHtmlString() {
+			var versionKey = string.Format("cms={0}", SiteData.CurrentDLLVersion);
 			var tag = new HtmlTag(HtmlTag.EasyTag.JavaScript);
 			var key = SecurityData.IsAuthenticated ? DateTime.UtcNow.Ticks.ToString().Substring(0, 8) : CarrotWebHelper.DateKey();
-			tag.Uri = CarrotCakeCmsHelper.AdminScriptValues + "?ts=" + key;
+
+			tag.Uri = CarrotCakeCmsHelper.AdminScriptValues + "?ts=" + key + (SecurityData.IsAuthenticated ? ("&a=true&" + versionKey) : string.Empty);
 
 			return tag.ToString();
 		}

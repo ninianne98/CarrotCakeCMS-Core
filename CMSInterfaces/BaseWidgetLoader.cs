@@ -59,15 +59,9 @@ namespace Carrotware.CMS.Interface {
 			if (!string.IsNullOrEmpty(this.AreaName) && this.AreaName.ToLowerInvariant() != nsp.ToLowerInvariant()) {
 				try {
 					app.MapControllerRoute(
-								name: this.AreaName + "_Area",
+								name: string.Format("{0}_Area", this.AreaName),
 								pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 				} catch (Exception ex) { }
-
-				//try {
-				//	app.MapControllerRoute(
-				//				name: this.AreaName + "_Default",
-				//				pattern: this.AreaName + "/{controller=Home}/{action=Index}/{id?}");
-				//} catch (Exception ex) { }
 			}
 		}
 	}

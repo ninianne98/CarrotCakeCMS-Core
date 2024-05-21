@@ -33,7 +33,7 @@ namespace Carrotware.CMS.UI.Components.Controllers {
 			if (this.User.Identity.IsAuthenticated) {
 				time = 1;
 			}
-			this.VaryCacheByQuery(new string[] { "ts" }, time);
+			this.VaryCacheByQuery(new string[] { "ts", "cms", "a" }, time);
 			DoCacheMagic(time);
 
 			var adminFolder = SiteData.AdminFolderPath;

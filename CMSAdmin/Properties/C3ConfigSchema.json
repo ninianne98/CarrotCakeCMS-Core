@@ -29,6 +29,9 @@
 						"UseSSL": {
 							"type": "boolean"
 						},
+						"UseBootstrap": {
+							"type": "boolean"
+						},
 						"SiteSkin": {
 							"type": "string",
 							"enum": [
@@ -243,15 +246,6 @@
 						},
 						"UserLockoutEnabledByDefault": {
 							"type": "boolean"
-						},
-						"LoginPath": {
-							"type": "string"
-						},
-						"Unauthorized": {
-							"type": "string"
-						},
-						"ResetPath": {
-							"type": "string"
 						},
 						"MaxFailedAccessAttempts": {
 							"type": "integer"

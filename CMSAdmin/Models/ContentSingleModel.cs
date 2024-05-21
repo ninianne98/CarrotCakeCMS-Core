@@ -23,10 +23,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public Guid? WidgetId { get; set; }
 
-		public string Mode { get; set; }
+		public string Mode { get; set; } = SiteData.RawMode;
 
-		public string Field { get; set; }
+		public string? Field { get; set; }
 
-		public string PageText { get; set; }
+		public string? PageText { get; set; }
 	}
 }

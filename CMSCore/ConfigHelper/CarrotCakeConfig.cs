@@ -59,6 +59,9 @@ namespace Carrotware.CMS.Core {
 		[Description("Override parameter for site skin")]
 		public string SiteSkin { get; set; } = "Classic";
 
+		[Description("Override parameter to apply a bootstrap CSS for admin area")]
+		public bool UseBootstrap { get; set; } = false;
+
 		[Description("Indicates if site should encourage SSL (Strict-Transport-Security)")]
 		public bool UseSSL { get; set; } = false;
 	}

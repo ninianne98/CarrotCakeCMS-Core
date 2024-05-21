@@ -38,7 +38,9 @@ namespace Carrotware.CMS.Interface.Controllers {
 
 			this.AssemblyName = assemblyName;
 			ViewData["WidgetAssemblyName"] = assemblyName;
+
 			ViewBag.WidgetAssemblyName = assemblyName;
+			ViewBag.WidgetAreaAlias = string.Format("{0}_Area", assemblyName);
 
 			if (this.UseArea) {
 				if (string.IsNullOrEmpty(this.AreaName)
