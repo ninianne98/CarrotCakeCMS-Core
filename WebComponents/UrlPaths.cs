@@ -22,25 +22,25 @@ namespace Carrotware.Web.UI.Components {
 
 		public static string CaptchaPath {
 			get {
-				return "/carrotwarecaptcha.ashx";
+				return "/carrotwarecaptcha.axd";
 			}
 		}
 
 		public static string ThumbnailPath {
 			get {
-				return "/carrotwarethumb.ashx";
+				return "/carrotwarethumb.axd";
 			}
 		}
 
 		public static string CalendarStylePath {
 			get {
-				return "/carrotwarecalendarstyle.ashx";
+				return "/carrotwarecalendarstyle.axd";
 			}
 		}
 
 		public static string HelperPath {
 			get {
-				return "/carrotwarehelper.ashx";
+				return "/carrotwarehelper.axd";
 			}
 		}
 

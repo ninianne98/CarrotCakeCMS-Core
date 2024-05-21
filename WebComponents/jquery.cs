@@ -129,9 +129,7 @@ namespace Carrotware.Web.UI.Components {
 				}
 			}
 
-			string key = CarrotWebHelper.DateKey();
-
-			sb.AppendLine(UrlPaths.CreateJavascriptTag("Carrot Helpers", string.Format("{0}?ts={1}", UrlPaths.HelperPath, key)));
+			sb.AppendLine(UrlPaths.CreateJavascriptTag("Carrot Helpers", string.Format("{0}?ts={1}&v={2}", UrlPaths.HelperPath, CarrotWebHelper.DateKey(), CarrotWebHelper.FileVersion.Replace(".", string.Empty))));
 
 			return sb.ToString().Trim();
 		}
