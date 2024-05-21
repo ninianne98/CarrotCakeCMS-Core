@@ -24,16 +24,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="Code\lorem.txt" />
 		<Content Include="appsettings.Development.json" />
 		<Content Include="appsettings.json" />
-		<Content Include="Content\Site.css" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Code\LoremRegistration.cs" />
@@ -50,6 +49,8 @@
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="Views\_ViewStart.cshtml" />
 		<Content Include="Views\Shared\_Layout.cshtml" />
+		<Content Include="wwwroot\Content\calendar.png" />
+		<Content Include="wwwroot\Content\Site.css" />
 		<Content Include="wwwroot\favicon.ico" />
 	</ItemGroup>
 	<ItemGroup>

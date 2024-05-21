@@ -1,10 +1,7 @@
-﻿body {
-	padding-top: 50px;
-	padding-bottom: 20px;
-}
-
-/* Set padding to keep content from hitting the edges */
+﻿/* Set padding to keep content from hitting the edges */
 .body-content {
+	padding-top: 20px;
+	padding-bottom: 20px;
 	padding-left: 15px;
 	padding-right: 15px;
 }
@@ -14,4 +11,8 @@ input,
 select,
 textarea {
 	max-width: 280px;
+}
+
+textarea {
+	font-family: Courier New, Courier, monospace;
 }

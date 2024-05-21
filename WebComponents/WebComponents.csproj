@@ -29,23 +29,130 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.5.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="8.0.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.4" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.4" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.4" />
+	  <None Remove="bootstrap5\amethystorchid.min.css" />
+	  <None Remove="bootstrap5\blue.min.css" />
+	  <None Remove="bootstrap5\blueizis.min.css" />
+	  <None Remove="bootstrap5\bootstrap.min.css" />
+	  <None Remove="bootstrap5\bootstrap.min.css.map" />
+	  <None Remove="bootstrap5\bootstrap.min.js" />
+	  <None Remove="bootstrap5\burntcoral.min.css" />
+	  <None Remove="bootstrap5\buttercream.min.css" />
+	  <None Remove="bootstrap5\cerulean.min.css" />
+	  <None Remove="bootstrap5\classic.min.css" />
+	  <None Remove="bootstrap5\classicblue.min.css" />
+	  <None Remove="bootstrap5\classicgreen.min.css" />
+	  <None Remove="bootstrap5\classicorange.min.css" />
+	  <None Remove="bootstrap5\classicplum.min.css" />
+	  <None Remove="bootstrap5\classicpurple.min.css" />
+	  <None Remove="bootstrap5\classicred.min.css" />
+	  <None Remove="bootstrap5\classicteal.min.css" />
+	  <None Remove="bootstrap5\classicviolet.min.css" />
+	  <None Remove="bootstrap5\darkblue.min.css" />
+	  <None Remove="bootstrap5\darkgreen.css" />
+	  <None Remove="bootstrap5\darkgreen.min.css" />
+	  <None Remove="bootstrap5\darkorange.min.css" />
+	  <None Remove="bootstrap5\darkpurple.min.css" />
+	  <None Remove="bootstrap5\darkred.min.css" />
+	  <None Remove="bootstrap5\desertmist.min.css" />
+	  <None Remove="bootstrap5\frenchblue.min.css" />
+	  <None Remove="bootstrap5\green.min.css" />
+	  <None Remove="bootstrap5\greenash.min.css" />
+	  <None Remove="bootstrap5\grey.min.css" />
+	  <None Remove="bootstrap5\illuminating.min.css" />
+	  <None Remove="bootstrap5\inkwell.min.css" />
+	  <None Remove="bootstrap5\lightblue.min.css" />
+	  <None Remove="bootstrap5\lightgreen.min.css" />
+	  <None Remove="bootstrap5\lightpurple.min.css" />
+	  <None Remove="bootstrap5\magenta.min.css" />
+	  <None Remove="bootstrap5\marigold.min.css" />
+	  <None Remove="bootstrap5\mauve.min.css" />
+	  <None Remove="bootstrap5\mint.min.css" />
+	  <None Remove="bootstrap5\mosaicblue.min.css" />
+	  <None Remove="bootstrap5\orange.min.css" />
+	  <None Remove="bootstrap5\plum.min.css" />
+	  <None Remove="bootstrap5\purple.min.css" />
+	  <None Remove="bootstrap5\quetzalgreen.min.css" />
+	  <None Remove="bootstrap5\raspberrysorbet.min.css" />
+	  <None Remove="bootstrap5\red.min.css" />
+	  <None Remove="bootstrap5\rust.min.css" />
+	  <None Remove="bootstrap5\sandstone.min.css" />
+	  <None Remove="bootstrap5\sugaralmond.min.css" />
+	  <None Remove="bootstrap5\teal.min.css" />
+	  <None Remove="bootstrap5\ultimategray.min.css" />
+	  <None Remove="bootstrap5\willow.min.css" />
+	  <None Remove="bootstrap5\yellow.min.css" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.6.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common" Version="8.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.5" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
-		<PackageReference Include="MimeKit" Version="4.5.0" />
-		<PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+		<PackageReference Include="MimeKit" Version="4.6.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="bootstrap5\amethystorchid.min.css" />
+		<EmbeddedResource Include="bootstrap5\blue.min.css" />
+		<EmbeddedResource Include="bootstrap5\blueizis.min.css" />
+		<EmbeddedResource Include="bootstrap5\bootstrap.min.css" />
+		<EmbeddedResource Include="bootstrap5\bootstrap.min.css.map" />
+		<EmbeddedResource Include="bootstrap5\bootstrap.min.js" />
+		<EmbeddedResource Include="bootstrap5\burntcoral.min.css" />
+		<EmbeddedResource Include="bootstrap5\buttercream.min.css" />
+		<EmbeddedResource Include="bootstrap5\cerulean.min.css" />
+		<EmbeddedResource Include="bootstrap5\classic.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicblue.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicgreen.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicorange.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicplum.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicpurple.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicred.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicteal.min.css" />
+		<EmbeddedResource Include="bootstrap5\classicviolet.min.css" />
+		<EmbeddedResource Include="bootstrap5\darkblue.min.css" />
+		<EmbeddedResource Include="bootstrap5\darkgreen.css" />
+		<EmbeddedResource Include="bootstrap5\darkgreen.min.css" />
+		<EmbeddedResource Include="bootstrap5\darkorange.min.css" />
+		<EmbeddedResource Include="bootstrap5\darkpurple.min.css" />
+		<EmbeddedResource Include="bootstrap5\darkred.min.css" />
+		<EmbeddedResource Include="bootstrap5\desertmist.min.css" />
+		<EmbeddedResource Include="bootstrap5\frenchblue.min.css" />
+		<EmbeddedResource Include="bootstrap5\green.min.css" />
+		<EmbeddedResource Include="bootstrap5\greenash.min.css" />
+		<EmbeddedResource Include="bootstrap5\grey.min.css" />
+		<EmbeddedResource Include="bootstrap5\illuminating.min.css" />
+		<EmbeddedResource Include="bootstrap5\inkwell.min.css" />
+		<EmbeddedResource Include="bootstrap5\lightblue.min.css" />
+		<EmbeddedResource Include="bootstrap5\lightgreen.min.css" />
+		<EmbeddedResource Include="bootstrap5\lightpurple.min.css" />
+		<EmbeddedResource Include="bootstrap5\magenta.min.css" />
+		<EmbeddedResource Include="bootstrap5\marigold.min.css" />
+		<EmbeddedResource Include="bootstrap5\mauve.min.css" />
+		<EmbeddedResource Include="bootstrap5\mint.min.css" />
+		<EmbeddedResource Include="bootstrap5\mosaicblue.min.css" />
+		<EmbeddedResource Include="bootstrap5\orange.min.css" />
+		<EmbeddedResource Include="bootstrap5\plum.min.css" />
+		<EmbeddedResource Include="bootstrap5\purple.min.css" />
+		<EmbeddedResource Include="bootstrap5\quetzalgreen.min.css" />
+		<EmbeddedResource Include="bootstrap5\raspberrysorbet.min.css" />
+		<EmbeddedResource Include="bootstrap5\red.min.css" />
+		<EmbeddedResource Include="bootstrap5\rust.min.css" />
+		<EmbeddedResource Include="bootstrap5\sandstone.min.css" />
+		<EmbeddedResource Include="bootstrap5\sugaralmond.min.css" />
+		<EmbeddedResource Include="bootstrap5\teal.min.css" />
+		<EmbeddedResource Include="bootstrap5\ultimategray.min.css" />
+		<EmbeddedResource Include="bootstrap5\willow.min.css" />
+		<EmbeddedResource Include="bootstrap5\yellow.min.css" />
 		<EmbeddedResource Include="Views\Shared\_CarrotWebBlank.cshtml">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
