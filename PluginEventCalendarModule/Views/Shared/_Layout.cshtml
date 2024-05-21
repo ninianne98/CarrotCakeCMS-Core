@@ -59,13 +59,21 @@
 					showOn: "both",
 					buttonImage: '/Content/calendar.png',
 					buttonImageOnly: true,
-					constrainInput: true
+					constrainInput: true,
+					beforeShow: function () {
+						setTimeout(function () {
+							$('.ui-datepicker').css('z-index', 15);
+						}, 0);
+					}
 				});
 			});
 
 			$(".timeRegion").each(function () {
 				if (!$(this).hasClass("hasTimePicker")) {
 					$(this).addClass("hasTimePicker");
+					$(this).parent().css('z-index', 15);
+					$(this).parent().css('position', 'relative');
+
 					var id = $(this).attr('id');
 					$('<img class="ui-timepicker-trigger" src="/Content/clock.png" for="' + id + '" id="' + id + '_triggerbtn" alt="hh:mm" title="hh:mm">').insertAfter(this);
 
@@ -161,7 +169,7 @@
 					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active dropdown" }, new { @id = "tabAdmin", @class = "dropdown" })) {
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin Test <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li>@Html.ActionLink("Database", "Database", "Admin")</li>
+							@* <li>@Html.ActionLink("Database", "Database", "Admin")</li> *@
 							<li>@Html.ActionLink("Profile List", "ProfileList", "Admin")</li>
 							<li>@Html.ActionLink("Add Event Profile", "EventDetail", "Admin", new { @id = Guid.Empty }, null)</li>
 							<li>@Html.ActionLink("Event List", "EventList", "Admin")</li>
