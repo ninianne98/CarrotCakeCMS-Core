@@ -130,7 +130,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 					_db.CalendarEventCategories.Add(itm);
 				}
 
-				_db.SaveChanges();
+				if (_db.ChangeTracker.HasChanges()) {
+					_db.SaveChanges();
+				}
 
 				return RedirectToAction(this.GetActionName(x => x.CategoryDetail(model.CalendarEventCategoryId)), new { @id = model.CalendarEventCategoryId });
 			}
@@ -241,9 +243,15 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 					_db.CalendarEventProfiles.Add(currItem);
 				}
 
+				if (_db.ChangeTracker.HasChanges()) {
+					_db.SaveChanges();
+				}
+
 				CalendarFrequencyHelper.SaveFrequencies(_db, new CalendarEvent(currItem), origItem);
 
-				_db.SaveChanges();
+				if (_db.ChangeTracker.HasChanges()) {
+					_db.SaveChanges();
+				}
 
 				return RedirectToAction(this.GetActionName(x => x.EventDetail(model.ItemID)), new { @id = model.ItemID });
 			}
@@ -309,7 +317,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 					_db.CalendarEvents.Add(currItem);
 				}
 
-				_db.SaveChanges();
+				if (_db.ChangeTracker.HasChanges()) {
+					_db.SaveChanges();
+				}
 
 				return RedirectToAction(this.GetActionName(x => x.EventDetailSingle(model.ItemID)), new { @id = model.ItemID });
 			}

@@ -47,7 +47,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 
 					db.CalendarEventCategories.Add(itm);
 
-					db.SaveChanges();
+					if (db.ChangeTracker.HasChanges()) {
+						db.SaveChanges();
+					}
 				}
 			}
 		}
@@ -210,7 +212,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 					lst.ExecuteDelete();
 					db.CalendarEventProfiles.Remove(profile);
 
-					db.SaveChanges();
+					if (db.ChangeTracker.HasChanges()) {
+						db.SaveChanges();
+					}
 				}
 			}
 		}
@@ -222,6 +226,7 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 				var item = new CalendarEventProfile();
 				item.CalendarEventProfileId = Guid.NewGuid();
 				item.SiteID = srcProfile.SiteID;
+				item.EventTitle = string.Format("{0} (COPY)", srcProfile.EventTitle);
 				item.EventDetail = srcProfile.EventDetail;
 
 				item.EventRepeatPattern = srcProfile.EventRepeatPattern;
@@ -240,6 +245,10 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 
 				db.CalendarEventProfiles.Add(item);
 
+				if (db.ChangeTracker.HasChanges()) {
+					db.SaveChanges();
+				}
+
 				if (srcProfile != null) {
 					var lst = (from m in db.CalendarEvents
 							   where m.CalendarEventProfileId == calendarEventProfileID
@@ -257,7 +266,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 						db.CalendarEvents.Add(evt);
 					}
 
-					db.SaveChanges();
+					if (lst.Count() > 0 && db.ChangeTracker.HasChanges()) {
+						db.SaveChanges();
+					}
 				}
 
 				return item;

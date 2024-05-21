@@ -161,6 +161,10 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 
 				ctx.CalendarEvents.Add(evt);
 			}
+
+			if (lstDates.Count > 0 && ctx.ChangeTracker.HasChanges()) {
+				ctx.SaveChanges();
+			}
 		}
 
 		protected static List<DateTime> GetSequenceDates(DateTime testDate, bool createRecentOnly, CalendarEvent eventProfile) {
