@@ -76,6 +76,35 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
+		public static bool? _bootstrap = null;
+
+		public static bool UseBootstrap {
+			get {
+				bool? bootstrap = null;
+				try {
+					var ret = CarrotHttpHelper.CacheGet("UseBootstrap");
+					if (ret != null) {
+						bootstrap = Convert.ToBoolean(ret);
+					}
+				} catch {
+					bootstrap = null;
+				}
+
+				if (bootstrap.HasValue == false) {
+					var config = CarrotCakeConfig.GetConfig();
+					_bootstrap = config.MainConfig.UseBootstrap;
+				} else {
+					_bootstrap = bootstrap;
+				}
+
+				if (_bootstrap.HasValue && !bootstrap.HasValue) {
+					CarrotHttpHelper.CacheInsert("UseBootstrap", _bootstrap.Value.ToString(), 2);
+				}
+
+				return _bootstrap.Value;
+			}
+		}
+
 		public static string InsertSpecialView(ViewLocation CtrlKey) {
 			string sViewPath = string.Empty;
 			CarrotCakeConfig config = CarrotCakeConfig.GetConfig();

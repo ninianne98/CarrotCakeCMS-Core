@@ -33,9 +33,9 @@ namespace Carrotware.CMS.Core {
 
 	public static class CmsRouteHelper {
 
-		public static SiteNav ManipulateRoutes(this RouteValueDictionary routeData) {
+		public static SiteNav? ManipulateRoutes(this RouteValueDictionary routeData) {
 			var site = SiteData.CurrentSite;
-			SiteNav navData = null;
+			SiteNav? navData = null;
 
 			string requestedUri = @"/";
 
@@ -88,7 +88,7 @@ namespace Carrotware.CMS.Core {
 				// use ashx hack because a long querystring fails to reach the route otherwise
 				if (requestedUri == SiteFilename.TemplatePreviewAltUrl.ToLowerInvariant()) {
 					routeData.Add(CmsRouting.PageIdKey, SiteActions.TemplatePreview);
-					routeData.Add(CmsRouting.SpecialKey, true);
+					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Admin;
 					routeData["action"] = SiteActions.TemplatePreview;
 					routeData["id"] = null;
@@ -97,9 +97,11 @@ namespace Carrotware.CMS.Core {
 					return navData;
 				}
 
-				if (requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant()) {
+				if (requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant()
+					|| requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant().Replace(".ashx", ".axd")
+					|| requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant().Replace(".ashx", ".xml")) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.RssAction);
-					routeData.Add(CmsRouting.SpecialKey, true);
+					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
 					routeData["action"] = CmsRouteConstants.RssAction;
 					routeData["id"] = null;
@@ -108,7 +110,9 @@ namespace Carrotware.CMS.Core {
 					return navData;
 				}
 
-				if (requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant()) {
+				if (requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant()
+					|| requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant().Replace(".ashx", ".axd")
+					|| requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant().Replace(".ashx", ".xml")) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.SiteMapAction);
 					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;

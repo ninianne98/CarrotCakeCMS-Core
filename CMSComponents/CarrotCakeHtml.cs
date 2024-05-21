@@ -43,7 +43,7 @@ namespace Carrotware.CMS.UI.Components {
 
 		public static string AdminScriptValues {
 			get {
-				return "/carrotcakeadmininfo.axd";
+				return "/carrotcakeadmininfo.ashx";
 			}
 		}
 

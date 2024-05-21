@@ -1,6 +1,7 @@
 ﻿if (typeof jQuery === 'undefined') {
 	throw new Error('Advanced Editor JavaScript requires jQuery')
 }
+//var $j = jQuery.noConflict();
 
 var cmsIsPageLocked = true;
 
@@ -8,8 +9,8 @@ function cmsSetPageStatus(stat) {
 	cmsIsPageLocked = stat;
 }
 
-var webSvc = cmsWebServiceApi;
-var adminUri = cmsAdminBasePath;
+var cmsAdminUri = cmsAdminBasePath;  //  "/c3-admin/";
+var cmsWebSvc = cmsWebServiceApi;  // "/api/c3-admin";
 var thisPage = ""; // used in escaped fashion
 var thisPageNav = "";  // used non-escaped (redirects)
 var thisPageNavSaved = "";  // used non-escaped (redirects)
@@ -17,30 +18,12 @@ var thisPageID = "";
 var cmsTimeTick = 9999;
 
 function cmsGetAdminPath() {
-	var webMthd = webSvc + "/GetSiteAdminFolder";
-
-	$.ajax({
-		type: "GET",
-		url: webMthd,
-		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: cmsSetAdminPath,
-		error: cmsAjaxFailed
-	});
+	cmsAdminUri = cmsAdminBasePath;
+	cmsWebSvc = cmsWebServiceApi;
 }
-
-function cmsSetAdminPath(data, status) {
-	adminUri = data;
-}
-
-$(document).ready(function () {
-	cmsGetAdminPath();
-});
 
 function cmsSetServiceParms(serviceURL, pagePath, pageID) {
-	cmsGetAdminPath();
-
-	webSvc = serviceURL;
+	cmsWebSvc = serviceURL;
 	thisPageNav = pagePath;
 	thisPage = cmsMakeStringSafe(pagePath);
 	thisPageID = pageID;
@@ -261,7 +244,7 @@ function cmsEditHB() {
 	if (!cmsIsPageLocked) {
 		setTimeout("cmsEditHB();", 25 * 1000);
 
-		var webMthd = webSvc + "/RecordHeartbeat";
+		var webMthd = cmsWebSvc + "/RecordHeartbeat";
 
 		var dataObj = {};
 		dataObj["PageID"] = thisPageID;
@@ -271,10 +254,9 @@ function cmsEditHB() {
 			url: webMthd,
 			data: JSON.stringify(dataObj),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsUpdateHeartbeat,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsUpdateHeartbeat)
+			.fail(cmsAjaxFailed);
 	}
 }
 
@@ -283,7 +265,7 @@ function cmsSaveToolbarPosition() {
 	var scrollWTopPos = $('#cmsToolBox').scrollTop();
 	var tabID = $('#cmsTabbedToolbox').tabs("option", "active");
 
-	var webMthd = webSvc + "/RecordEditorPosition";
+	var webMthd = cmsWebSvc + "/RecordEditorPosition";
 
 	var dataObj = {};
 	dataObj["ToolbarState"] = cmsMnuVis.toString();
@@ -297,16 +279,15 @@ function cmsSaveToolbarPosition() {
 		url: webMthd,
 		data: JSON.stringify(dataObj),
 		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: cmsAjaxGeneralCallback,
-		error: cmsAjaxFailed
-	});
+		dataType: "json"
+	}).done(cmsAjaxGeneralCallback)
+		.fail(cmsAjaxFailed);
 }
 
 function cmsSaveContent(val, zone) {
 	cmsSaveToolbarPosition();
 
-	var webMthd = webSvc + "/CacheContentZoneText";
+	var webMthd = cmsWebSvc + "/CacheContentZoneText";
 
 	val = cmsMakeStringSafe(val);
 	zone = cmsMakeStringSafe(zone);
@@ -316,16 +297,15 @@ function cmsSaveContent(val, zone) {
 		url: webMthd,
 		data: JSON.stringify({ ZoneText: val, Zone: zone, ThisPage: thisPageID }),
 		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: cmsSaveContentCallback,
-		error: cmsAjaxFailed
-	});
+		dataType: "json"
+	}).done(cmsSaveContentCallback)
+		.fail(cmsAjaxFailed);
 }
 
 function cmsSaveGenericContent(val, key) {
 	cmsSaveToolbarPosition();
 
-	var webMthd = webSvc + "/CacheGenericContent";
+	var webMthd = cmsWebSvc + "/CacheGenericContent";
 
 	val = cmsMakeStringSafe(val);
 
@@ -334,10 +314,9 @@ function cmsSaveGenericContent(val, key) {
 		url: webMthd,
 		data: JSON.stringify({ ZoneText: val, DBKey: key, ThisPage: thisPageID }),
 		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: cmsSaveContentCallback,
-		error: cmsAjaxFailed
-	});
+		dataType: "json"
+	}).done(cmsSaveContentCallback)
+		.fail(cmsAjaxFailed);
 }
 
 function cmsPreviewTemplate2() {
@@ -497,17 +476,16 @@ function cmsUpdateTemplate() {
 
 	tmpl = cmsMakeStringSafe(tmpl);
 
-	var webMthd = webSvc + "/UpdatePageTemplate";
+	var webMthd = cmsWebSvc + "/UpdatePageTemplate";
 
 	$.ajax({
 		type: "POST",
 		url: webMthd,
 		data: JSON.stringify({ TheTemplate: tmpl, ThisPage: thisPageID }),
 		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: cmsSaveContentCallback,
-		error: cmsAjaxFailed
-	});
+		dataType: "json"
+	}).done(cmsSaveContentCallback)
+		.fail(cmsAjaxFailed);
 }
 
 var cmsWidgetUpdateInProgress = false;
@@ -516,7 +494,7 @@ function cmsUpdateWidgets() {
 	cmsSaveToolbarPosition();
 	cmsSpinnerLong();
 
-	var webMthd = webSvc + "/CacheWidgetUpdate";
+	var webMthd = cmsWebSvc + "/CacheWidgetUpdate";
 
 	if (!cmsWidgetUpdateInProgress) {
 		cmsWidgetUpdateInProgress = true;
@@ -534,10 +512,9 @@ function cmsUpdateWidgets() {
 			url: webMthd,
 			data: JSON.stringify(dataObj),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsSaveWidgetsCallback,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsSaveWidgetsCallback)
+			.fail(cmsAjaxFailed);
 	}
 }
 
@@ -545,7 +522,7 @@ function cmsRemoveWidget(key) {
 	cmsSaveToolbarPosition();
 	cmsSpinnerLong();
 
-	var webMthd = webSvc + "/RemoveWidget";
+	var webMthd = cmsWebSvc + "/RemoveWidget";
 
 	if (!cmsWidgetUpdateInProgress) {
 		cmsWidgetUpdateInProgress = true;
@@ -555,10 +532,9 @@ function cmsRemoveWidget(key) {
 			url: webMthd,
 			data: JSON.stringify({ DBKey: key, ThisPage: thisPageID }),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsSaveWidgetsCallback,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsSaveWidgetsCallback)
+			.fail(cmsAjaxFailed);
 	}
 }
 
@@ -566,7 +542,7 @@ function cmsActivateWidgetLink(key) {
 	cmsSaveToolbarPosition();
 	cmsSpinnerLong();
 
-	var webMthd = webSvc + "/ActivateWidget";
+	var webMthd = cmsWebSvc + "/ActivateWidget";
 
 	if (!cmsWidgetUpdateInProgress) {
 		cmsWidgetUpdateInProgress = true;
@@ -576,10 +552,9 @@ function cmsActivateWidgetLink(key) {
 			url: webMthd,
 			data: JSON.stringify({ DBKey: key, ThisPage: thisPageID }),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsSaveWidgetsCallback,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsSaveWidgetsCallback)
+			.fail(cmsAjaxFailed);
 	}
 }
 
@@ -587,7 +562,7 @@ function cmsMoveWidgetZone(zone, val) {
 	cmsSaveToolbarPosition();
 	cmsSpinnerLong();
 
-	var webMthd = webSvc + "/MoveWidgetToNewZone";
+	var webMthd = cmsWebSvc + "/MoveWidgetToNewZone";
 
 	if (!cmsWidgetUpdateInProgress) {
 		cmsWidgetUpdateInProgress = true;
@@ -597,17 +572,16 @@ function cmsMoveWidgetZone(zone, val) {
 			url: webMthd,
 			data: JSON.stringify({ WidgetTarget: zone, WidgetDropped: val, ThisPage: thisPageID }),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsSaveWidgetsCallback,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsSaveWidgetsCallback)
+			.fail(cmsAjaxFailed);
 	}
 }
 
 var IsPublishing = false;
 
 function cmsApplyChanges() {
-	var webMthd = webSvc + "/PublishChanges";
+	var webMthd = cmsWebSvc + "/PublishChanges";
 
 	// prevent multiple submissions
 	if (!IsPublishing) {
@@ -616,10 +590,9 @@ function cmsApplyChanges() {
 			url: webMthd,
 			data: JSON.stringify({ ThisPage: thisPageID }),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsSavePageCallback,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsSavePageCallback)
+			.fail(cmsAjaxFailed);
 	}
 
 	IsPublishing = true;
@@ -708,17 +681,16 @@ function cmsNotifySaved() {
 }
 
 function cmsRecordCancellation() {
-	var webMthd = webSvc + "/CancelEditing";
+	var webMthd = cmsWebSvc + "/CancelEditing";
 
 	$.ajax({
 		type: "POST",
 		url: webMthd,
 		data: JSON.stringify({ ThisPage: thisPageID }),
 		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: cmsAjaxGeneralCallback,
-		error: cmsAjaxFailed
-	});
+		dataType: "json"
+	}).done(cmsAjaxGeneralCallback)
+		.fail(cmsAjaxFailed);
 }
 
 function cmsCancelEdit() {
@@ -747,45 +719,6 @@ function cmsCancelEdit() {
 	cmsFixDialog('CMScancelconfirmmsg');
 	return false;
 }
-
-//function cmsSendTrackbackBatch() {
-//	var webMthd = webSvc + "/SendTrackbackBatch";
-
-//	if (!cmsGetOKToLeaveStatus()) {
-//		$.ajax({
-//			type: "POST",
-//			url: webMthd,
-//			contentType: "application/json; charset=utf-8",
-//			dataType: "json",
-//			success: cmsAjaxGeneralCallback,
-//			error: cmsAjaxFailedSwallow
-//		});
-//	}
-
-//	setTimeout("cmsSendTrackbackBatch();", 15000);
-//}
-
-//setTimeout("cmsSendTrackbackBatch();", 5000);
-
-//function cmsSendTrackbackPageBatch() {
-//	var webMthd = webSvc + "/SendTrackbackPageBatch";
-
-//	if (!cmsGetOKToLeaveStatus()) {
-//		$.ajax({
-//			type: "POST",
-//			url: webMthd,
-//			data: JSON.stringify({ ThisPage: thisPageID }),
-//			contentType: "application/json; charset=utf-8",
-//			dataType: "json",
-//			success: cmsAjaxGeneralCallback,
-//			error: cmsAjaxFailedSwallow
-//		});
-//	}
-
-//	setTimeout("cmsSendTrackbackPageBatch();", 3000);
-//}
-
-//setTimeout("cmsSendTrackbackPageBatch();", 1500);
 
 function cmsAjaxFailedSwallow(request) {
 	var s = "";
@@ -846,54 +779,54 @@ function cmsAlertModalXLarge(request) {
 // do a lot of iFrame magic
 
 function cmsShowWidgetList() {
-	cmsLaunchWindow(adminUri + 'WidgetList/' + thisPageID + "?zone=cms-all-placeholder-zones");
+	cmsLaunchWindow(cmsAdminUri + 'WidgetList/' + thisPageID + "?zone=cms-all-placeholder-zones");
 }
 function cmsManageWidgetList(zoneName) {
 	//alert(zoneName);
-	cmsLaunchWindow(adminUri + 'WidgetList/' + thisPageID + "?zone=" + zoneName);
+	cmsLaunchWindow(cmsAdminUri + 'WidgetList/' + thisPageID + "?zone=" + zoneName);
 }
 function cmsManageWidgetHistory(widgetID) {
 	//alert(widgetID);
-	cmsLaunchWindow(adminUri + 'WidgetHistory/' + thisPageID + "?widgetid=" + widgetID);
+	cmsLaunchWindow(cmsAdminUri + 'WidgetHistory/' + thisPageID + "?widgetid=" + widgetID);
 }
 function cmsManageWidgetTime(widgetID) {
 	//alert(widgetID);
-	cmsLaunchWindow(adminUri + 'WidgetTime/' + thisPageID + "?widgetid=" + widgetID);
+	cmsLaunchWindow(cmsAdminUri + 'WidgetTime/' + thisPageID + "?widgetid=" + widgetID);
 }
 
 function cmsShowEditPageInfo() {
-	cmsLaunchWindow(adminUri + 'PageEdit/' + thisPageID);
+	cmsLaunchWindow(cmsAdminUri + 'PageEdit/' + thisPageID);
 }
 
 function cmsShowEditPostInfo() {
-	cmsLaunchWindow(adminUri + 'BlogPostEdit/' + thisPageID);
+	cmsLaunchWindow(cmsAdminUri + 'BlogPostEdit/' + thisPageID);
 }
 function cmsShowAddPage() {
-	cmsLaunchWindow(adminUri + 'PageAddChild/' + thisPageID);
+	cmsLaunchWindow(cmsAdminUri + 'PageAddChild/' + thisPageID);
 }
 function cmsShowAddChildPage() {
-	cmsLaunchWindow(adminUri + 'PageAddChild/' + thisPageID);
+	cmsLaunchWindow(cmsAdminUri + 'PageAddChild/' + thisPageID);
 }
 function cmsShowAddTopPage() {
-	cmsLaunchWindow(adminUri + 'PageAddChild/' + thisPageID + '?addtoplevel=true');
+	cmsLaunchWindow(cmsAdminUri + 'PageAddChild/' + thisPageID + '?addtoplevel=true');
 }
 function cmsEditSiteMap() {
-	cmsLaunchWindow(adminUri + 'SiteMapPop');
+	cmsLaunchWindow(cmsAdminUri + 'SiteMapPop');
 }
 
 function cmsSortChildren() {
 	//cmsAlertModal("cmsSortChildren");
-	cmsLaunchWindowOnly(adminUri + 'PageChildSort/' + thisPageID);
+	cmsLaunchWindowOnly(cmsAdminUri + 'PageChildSort/' + thisPageID);
 }
 
 function cmsShowEditWidgetForm(w, m) {
 	//cmsAlertModal("cmsShowEditWidgetForm");
-	cmsLaunchWindow(adminUri + 'ContentEdit/' + thisPageID + '?widgetid=' + w + '&mode=' + m);
+	cmsLaunchWindow(cmsAdminUri + 'ContentEdit/' + thisPageID + '?widgetid=' + w + '&mode=' + m);
 }
 
 function cmsShowEditContentForm(f, m) {
 	//cmsAlertModal("cmsShowEditContentForm");
-	cmsLaunchWindow(adminUri + 'ContentEdit/' + thisPageID + '?field=' + f + '&mode=' + m);
+	cmsLaunchWindow(cmsAdminUri + 'ContentEdit/' + thisPageID + '?field=' + f + '&mode=' + m);
 }
 
 function cmsFixSpinner() {
@@ -956,14 +889,14 @@ function cmsBuildOrder() {
 }
 
 function cmsCopyWidgetFrom(zoneName) {
-	cmsLaunchWindow(adminUri + 'DuplicateWidgetFrom/' + thisPageID + "?zone=" + zoneName);
+	cmsLaunchWindow(cmsAdminUri + 'DuplicateWidgetFrom/' + thisPageID + "?zone=" + zoneName);
 }
 
 function cmsCopyWidget(key) {
 	cmsSaveToolbarPosition();
 	cmsSpinnerLong();
 
-	var webMthd = webSvc + "/CopyWidget";
+	var webMthd = cmsWebSvc + "/CopyWidget";
 
 	if (!cmsWidgetUpdateInProgress) {
 		cmsWidgetUpdateInProgress = true;
@@ -973,10 +906,9 @@ function cmsCopyWidget(key) {
 			url: webMthd,
 			data: JSON.stringify({ DBKey: key, ThisPage: thisPageID }),
 			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: cmsSaveWidgetsCallback,
-			error: cmsAjaxFailed
-		});
+			dataType: "json"
+		}).done(cmsSaveWidgetsCallback)
+			.fail(cmsAjaxFailed);
 	}
 }
 
@@ -1258,12 +1190,10 @@ function cmsOverrideCSSScope(elm, xtra) {
 }
 
 function cmsGenericEdit(PageId, WidgetId) {
-	cmsLaunchWindow(adminUri + 'ControlPropertiesEdit?pageid=' + PageId + '&id=' + WidgetId);
+	cmsLaunchWindow(cmsAdminUri + 'ControlPropertiesEdit?pageid=' + PageId + '&id=' + WidgetId);
 }
 
 function cmsLaunchWindow(theURL) {
-	var TheURL = theURL;
-
 	cmsSetiFrameSource(theURL);
 
 	cmsSaveToolbarPosition();
@@ -1305,9 +1235,9 @@ function cmsSetIframeRealSrc(theFrameID) {
 }
 
 function cmsSetiFrameSource(theURL) {
-	var TheURL = theURL;
+	var realURL = theURL;
 
-	$('#cmsModalFrame').html('<div id="cmsAjaxMainDiv2"> <iframe scrolling="auto" id="cmsFrameEditor" frameborder="0" name="cmsFrameEditor" width="96%" height="500" realsrc="' + TheURL + '" src="/Assets/Admin/includes/Blank.htm" /> </div>');
+	$('#cmsModalFrame').html('<div id="cmsAjaxMainDiv2"> <iframe scrolling="auto" id="cmsFrameEditor" frameborder="0" name="cmsFrameEditor" width="96%" height="500" realsrc="' + realURL + '" src="/Assets/Admin/includes/Blank.htm" /> </div>');
 
 	setTimeout("cmsSetIframeRealSrc('cmsFrameEditor');", 750);
 
@@ -1323,8 +1253,6 @@ function cmsSetiFrameSource(theURL) {
 }
 
 function cmsLaunchWindowOnly(theURL) {
-	var TheURL = theURL;
-
 	cmsSetiFrameSource(theURL);
 
 	cmsSaveToolbarPosition();

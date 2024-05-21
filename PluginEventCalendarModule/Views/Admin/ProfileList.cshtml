@@ -6,7 +6,7 @@
 
 	var grid = Html.CarrotWeb().CarrotWebGrid(Model.Profiles);
 	grid.PrettifyHeadings = true;
-	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead thead" }, null);
+	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead header thead-dark" }, null);
 	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
 	grid.ConfigName(Html.NameFor(x => x.Profiles));
 
@@ -23,7 +23,7 @@
 		FormatTemplate = @<text>
 			 <div style="border: solid 1px @item.CategoryBGColor; background-color: @item.CategoryFGColor; padding: 1px;">
 				<div style="border: solid 2px @item.CategoryFGColor; color: @item.CategoryFGColor; background-color: @item.CategoryBGColor; padding: 5px; margin: 1px;">
-					<b> @item.CategoryName </b>
+					<span style="font-weight: bold; color: @item.CategoryFGColor;"> @item.CategoryName </span>
 				</div>
 			</div>
 			</text>

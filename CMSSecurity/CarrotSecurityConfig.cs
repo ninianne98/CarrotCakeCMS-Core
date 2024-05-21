@@ -16,6 +16,10 @@ namespace Carrotware.CMS.Security {
 
 		public static CarrotSecurityConfig GetConfig(IConfigurationRoot config) {
 			var security = config.GetSection("CarrotSecurity").Get<CarrotSecurityConfig>();
+
+			var addSettings = new AdditionalSettings(config);
+			security.AdditionalSettings = addSettings;
+
 			return security ?? new CarrotSecurityConfig();
 		}
 
@@ -44,15 +48,69 @@ namespace Carrotware.CMS.Security {
 	}
 
 	//==============================
-	public class AdditionalSettings {
+	public class AdditionalSettings : AdditionalSettingsJson {
+
+		public AdditionalSettings() {
+			if (CarrotHttpHelper.Configuration != null) {
+				var configuration = CarrotHttpHelper.Configuration;
+				Settings(configuration);
+			}
+		}
+
+		public AdditionalSettings(IConfigurationRoot configuration) {
+			Settings(configuration);
+		}
+
+		private static AdditionalSettingsJson GetSettings(IConfigurationRoot config) {
+			var section = config.GetSection("CarrotSecurity:AdditionalSettings");
+			return section.Get<AdditionalSettingsJson>();
+		}
+
+		private void Settings(IConfigurationRoot config) {
+			var settingsJson = GetSettings(config);
+
+			var adminFolder = "/c3-admin/";
+
+			if (config != null) {
+				var settings = config.GetSection("CarrotCakeCMS:Config");
+				var folder = settings.GetSection("AdminFolderPath").Get<string>();
+
+				if (!string.IsNullOrWhiteSpace(folder) && folder.Length > 2) {
+					adminFolder = "/" + folder + "/";
+					adminFolder = adminFolder.Replace("\\", "/");
+					adminFolder = adminFolder.Replace("//", "/").Replace("//", "/").Replace("//", "/");
+				}
+			}
+
+			this.MaxFailedAccessAttempts = settingsJson.MaxFailedAccessAttempts;
+			this.DefaultLockoutTimeSpan = settingsJson.DefaultLockoutTimeSpan;
+			this.TokenLifespan = settingsJson.TokenLifespan;
+			this.UserLockoutEnabledByDefault = settingsJson.UserLockoutEnabledByDefault;
+			this.ExpireTimeSpan = settingsJson.ExpireTimeSpan;
+			this.SetCookieExpireTimeSpan = settingsJson.SetCookieExpireTimeSpan;
+			this.ValidateInterval = settingsJson.ValidateInterval;
+
+			this.LoginPath = adminFolder + "Login";
+			this.Unauthorized = adminFolder + "NotAuthorized";
+			this.ResetPath = adminFolder + "ResetPassword";
+		}
+
+		public string DataProtectionProviderAppName { get; internal set; } = "CarrotCake CMS";
+		public string LoginPath { get; internal set; } = "/Login";
+		public string Unauthorized { get; internal set; } = "/NotAuthorized";
+		public string ResetPath { get; internal set; } = "/ResetPassword";
+	}
+
+	//==============================
+	public class AdditionalSettingsJson {
+
+		public AdditionalSettingsJson() {
+		}
+
 		public int MaxFailedAccessAttempts { get; set; } = 5;
 		public int DefaultLockoutTimeSpan { get; set; } = 15;
 		public int TokenLifespan { get; set; } = 2;
 		public bool UserLockoutEnabledByDefault { get; set; } = true;
-		public string DataProtectionProviderAppName { get; set; } = "CarrotCake CMS";
-		public string LoginPath { get; set; } = "/c3-admin/Login";
-		public string Unauthorized { get; set; } = "/c3-admin/NotAuthorized";
-		public string ResetPath { get; set; } = "/c3-admin/ResetPassword";
 		public int ExpireTimeSpan { get; set; } = 360;
 		public bool SetCookieExpireTimeSpan { get; set; } = true;
 		public int ValidateInterval { get; set; } = 30;

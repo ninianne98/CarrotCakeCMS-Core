@@ -1,9 +1,6 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 /*
@@ -76,18 +73,23 @@ namespace Carrotware.CMS.UI.Components {
 		public void SetItemAttributes(object attribute) {
 			this.ItemAttributes = attribute;
 		}
+
 		public void SetAnchorAttributes(object attribute) {
 			this.AnchorAttributes = attribute;
 		}
+
 		public void SetSelectedAttributes(object attribute) {
 			this.SelectedAttributes = attribute;
 		}
+
 		public void SetULClassTopAttributes(object attribute) {
 			this.ULClassTopAttributes = attribute;
 		}
+
 		public void SetULClassLowerAttributes(object attribute) {
 			this.ULClassLowerAttributes = attribute;
 		}
+
 		public void SetHasChildrenAttributes(object attribute) {
 			this.HasChildrenAttributes = attribute;
 		}
