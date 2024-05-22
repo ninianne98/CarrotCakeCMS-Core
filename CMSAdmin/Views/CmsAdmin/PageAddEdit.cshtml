@@ -149,7 +149,7 @@
 
 		@if (Model.ContentPage.IsPageLocked) {
 			<text>
-			function EditHB() { }
+				function EditHB() { }
 
 			function cancelEditing() { }
 
@@ -171,10 +171,10 @@
 		} else {
 
 			<text>
-			function openPage() {
-				var theURL = $('#OriginalFileName').val();
-				cmsOpenPage(theURL);
-			}
+				function openPage() {
+					var theURL = $('#OriginalFileName').val();
+					cmsOpenPage(theURL);
+				}
 
 			function EditHB() {
 				var dataObj = {};
@@ -255,7 +255,7 @@
 			</text>
 		}
 
-		var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
+								var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
 
 		$(window).bind('beforeunload', function () {
 			//cmsConfirmLeavingPage = false;
@@ -705,8 +705,6 @@
 	$(document).ready(function () {
 		cmsInputEnterBlock();
 	});
-</script>
-<script type="text/javascript">
 
 	function SubmitPage() {
 		var sc = SaveCommon();
@@ -737,9 +735,10 @@
 		cmsSaveMakeOKAndCancelLeave();
 		return true;
 	}
-</script>
-<script type="text/javascript">
+
 	$(document).ready(function () {
 		setTimeout("$('#jqtabs').tabs('option', 'active', 1);", 500);
 	});
+
+	cmsDirtyPageForceInit();
 </script>
