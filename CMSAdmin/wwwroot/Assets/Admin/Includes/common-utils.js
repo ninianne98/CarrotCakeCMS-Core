@@ -153,7 +153,7 @@ function uncheckGridBoxes(gridID) {
 //===================
 
 function cmsGetServiceAddress() {
-	return cmsWebSvc;
+	return cmsWebServiceApi;
 }
 
 function MakeStringSafe(val) {
@@ -720,16 +720,31 @@ function cmsSerializeForm(frmName) {
 
 $(document).ready(function () {
 	setTimeout(function () {
-		if ($('#contentForm').length > 0) {
-			if ($('#SerialCache').val().length < 10) {
-				cmsContentFormSerial = cmsSerializeForm('#contentForm');
-				$('#SerialCache').val(cmsContentFormSerial);
-			} else {
-				cmsContentFormSerial = $('#SerialCache').val();
-			}
-		}
-	}, 500);
+		cmsDirtyPageInit();
+	}, 2500);
 });
+
+function cmsDirtyPageForceInit() {
+	if ($('#SerialCache').val().length < 10) {
+		$('#SerialCache').val('');
+		cmsContentFormSerial = '';
+	}
+
+	setTimeout(function () {
+		cmsDirtyPageInit();
+	}, 1250);
+}
+
+function cmsDirtyPageInit() {
+	if ($('#contentForm').length > 0) {
+		if ($('#SerialCache').val().length < 10) {
+			cmsContentFormSerial = cmsSerializeForm('#contentForm');
+			$('#SerialCache').val(cmsContentFormSerial);
+		} else {
+			cmsContentFormSerial = $('#SerialCache').val();
+		}
+	}
+}
 
 function cmsGetPageStatus() {
 	if (cmsConfirmLeavingPage == true) {
