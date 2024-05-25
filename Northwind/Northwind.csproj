@@ -21,9 +21,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="App_Data\**" />
 		<Compile Remove="wwwroot\lib\**" />
+		<Content Remove="App_Data\**" />
 		<Content Remove="wwwroot\lib\**" />
+		<EmbeddedResource Remove="App_Data\**" />
 		<EmbeddedResource Remove="wwwroot\lib\**" />
+		<None Remove="App_Data\**" />
 		<None Remove="wwwroot\lib\**" />
 	</ItemGroup>
 
@@ -56,7 +60,6 @@
 	</Target>
 
 	<ItemGroup>
-		<Folder Include="App_Data\" />
 		<Folder Include="wwwroot\assets\admin\" />
 	</ItemGroup>
 

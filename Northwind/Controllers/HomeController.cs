@@ -61,9 +61,12 @@ namespace Northwind.Controllers {
 
 		[HttpPost]
 		public ActionResult Sampler(SelectSkin model) {
-			var scheme = model.SelectedItem;
 
-			Helper.SetBootstrapColor(scheme);
+			if (model.UseBootstrap5) {
+				Helper.SetBootstrapColor(model.SelectedItem5);
+			} else {
+				Helper.SetBootstrapColor(model.SelectedItem);
+			}
 
 			return RedirectToAction("Sampler");
 		}
@@ -83,11 +86,10 @@ namespace Northwind.Controllers {
 				settings = (WidgetActionSettingModel)this.WidgetPayload;
 				settings.LoadData();
 			}
+			ViewBag.SiteID = settings.SiteID;
 
 			ProductSearch model = null;
 			model = InitProductSearch(model);
-
-			ViewBag.SiteID = settings.SiteID;
 
 			if (string.IsNullOrEmpty(settings.AlternateViewFile)) {
 				return PartialView(model);
@@ -107,10 +109,9 @@ namespace Northwind.Controllers {
 				settings = (WidgetActionSettingModel)this.WidgetPayload;
 				settings.LoadData();
 			}
+			ViewBag.SiteID = settings.SiteID;
 
 			model = InitProductSearch(model);
-
-			ViewBag.SiteID = settings.SiteID;
 
 			if (string.IsNullOrEmpty(model.AltViewName)) {
 				return PartialView(model);
@@ -121,6 +122,8 @@ namespace Northwind.Controllers {
 
 		[HttpGet]
 		public ActionResult TestProductSearch() {
+			ViewBag.SiteID = _site.SiteID;
+
 			ProductSearch model = null;
 			model = InitProductSearch(model);
 
@@ -156,6 +159,8 @@ namespace Northwind.Controllers {
 
 		[HttpGet]
 		public ActionResult TestProductSearchMulti() {
+			ViewBag.SiteID = _site.SiteID;
+
 			var model = new TestModel();
 
 			return View(model);

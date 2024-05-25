@@ -1,13 +1,11 @@
 ﻿using Northwind.Data;
-using System;
-using System.Collections.Generic;
 
 namespace Northwind.Models {
 
 	public class ProductSearch {
 
 		public ProductSearch() {
-			this.AltViewName = String.Empty;
+			this.AltViewName = string.Empty;
 
 			this.Options = new List<Category>();
 			this.Results = new List<Product>();
