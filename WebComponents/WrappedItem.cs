@@ -33,8 +33,8 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public WrappedItem(IHtmlHelper htmlHelper, string tag,
-					int currentPage, int selectedPage,
-					object? activeAttributes = null, object? inactiveAttributes = null) {
+							int currentPage, int selectedPage,
+							object? activeAttributes = null, object? inactiveAttributes = null) {
 			_helper = htmlHelper;
 			var sb = new StringBuilder();
 
@@ -84,6 +84,8 @@ namespace Carrotware.Web.UI.Components {
 		private string OpenTag(IHtmlHelper htmlHelper, StringBuilder sb, string tag,
 				string actionName, string controllerName,
 				object? activeAttributes = null, object? inactiveAttributes = null) {
+
+			_helper = htmlHelper;
 			_stringbldr = sb;
 			_tag = string.IsNullOrEmpty(tag) ? "li" : tag;
 
@@ -136,6 +138,8 @@ namespace Carrotware.Web.UI.Components {
 		private string OpenTag(IHtmlHelper htmlHelper, StringBuilder sb, string tag,
 							int currentPage, int selectedPage,
 							object? activeAttributes = null, object? inactiveAttributes = null) {
+
+			_helper = htmlHelper;
 			_stringbldr = sb;
 			_tag = string.IsNullOrEmpty(tag) ? "li" : tag;
 

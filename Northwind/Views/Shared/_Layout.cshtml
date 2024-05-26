@@ -72,20 +72,20 @@
 						@using (Html.CarrotWeb().BeginWrappedItem("li", "TestMath;TestProductSearch;TestProductSearchMulti", "Home", new { @class = "active dropdown" }, new { @class = "dropdown" })) {
 							<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Public Test</a>
 							<ul class="dropdown-menu">
-								<li>@Html.ActionLink("Math", "TestMath", "Home", null, new { @class = "nav-link" })</li>
-								<li>@Html.ActionLink("Product Search", "TestProductSearch", "Home", null, new { @class = "nav-link" })</li>
-								<li>@Html.ActionLink("Product Search Multi", "TestProductSearchMulti", "Home", null, new { @class = "nav-link" })</li>
+								<li>@Html.ActionLink("Math", "TestMath", "Home", null, new { @class = "dropdown-item" })</li>
+								<li>@Html.ActionLink("Product Search", "TestProductSearch", "Home", null, new { @class = "dropdown-item" })</li>
+								<li>@Html.ActionLink("Product Search Multi", "TestProductSearchMulti", "Home", null, new { @class = "dropdown-item" })</li>
 							</ul>
 						}
 
 						@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @class = "active dropdown" }, new { @class = "dropdown" })) {
 							<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin Test  </a>
 							<ul class="dropdown-menu">
-								<li>@Html.ActionLink("Math", "Math", "Admin", null, new { @class = "nav-link" })</li>
-								<li>@Html.ActionLink("Employees", "Employees", "Admin", null, new { @class = "nav-link" })</li>
-								<li>@Html.ActionLink("Suppliers", "Suppliers", "Admin", null, new { @class = "nav-link" })</li>
-								<li>@Html.ActionLink("Products", "Products", "Admin", null, new { @class = "nav-link" })</li>
-								<li>@Html.ActionLink("Products 2", "Products2", "Admin", null, new { @class = "nav-link" })</li>
+								<li>@Html.ActionLink("Math", "Math", "Admin", null, new { @class = "dropdown-item" })</li>
+								<li>@Html.ActionLink("Employees", "Employees", "Admin", null, new { @class = "dropdown-item" })</li>
+								<li>@Html.ActionLink("Suppliers", "Suppliers", "Admin", null, new { @class = "dropdown-item" })</li>
+								<li>@Html.ActionLink("Products", "Products", "Admin", null, new { @class = "dropdown-item" })</li>
+								<li>@Html.ActionLink("Products 2", "Products2", "Admin", null, new { @class = "dropdown-item" })</li>
 							</ul>
 						}
 					</ul>

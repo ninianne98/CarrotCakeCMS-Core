@@ -72,7 +72,6 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public Bootstrap5ColorScheme SelectedSkin { get; set; }
-
 		public bool ExcludeIcons { get; set; }
 
 		private static string GetWebResourceUrl(string resource) {
@@ -84,25 +83,24 @@ namespace Carrotware.Web.UI.Components {
 				this.SelectedSkin = Bootstrap5ColorScheme.ClassicViolet;
 			}
 
+			var bootstrapJSUri = GetWebResourceUrl("bootstrap5.bootstrap.min.js");
 			var bootstrapCss = "bootstrap5.bootstrap.min.css";
-			var bootstrapColor = string.Empty;
-			var bootstrapIconCss = this.ExcludeIcons == false ? UrlPaths.CreateCssTag("Bootstrap Icons", GetWebResourceUrl("bootstrap5.bootstrap-icons.min.css")) + " \n" : string.Empty;
+
+			var bootstrapIconCssUri = this.ExcludeIcons == false ? UrlPaths.CreateCssTag("Bootstrap Icons", GetWebResourceUrl("bootstrap5.bootstrap-icons.min.css")) + " \n" : string.Empty;
+			var bootstrapColorUri = string.Empty;
 
 			if (this.SelectedSkin != Bootstrap5ColorScheme.NotUsed) {
 				bootstrapCss = string.Format("bootstrap5.bootstrap.{0}.min.css", this.SelectedSkin.ToString().ToLowerInvariant());
-
 				var colorUri = GetWebResourceUrl(string.Format("bootstrap5.{0}.min.css", this.SelectedSkin.ToString().ToLowerInvariant()));
-
-				bootstrapColor = UrlPaths.CreateCssTag(string.Format("Bootstrap 5 CSS {0}", this.SelectedSkin), colorUri) + " \n";
+				bootstrapColorUri = UrlPaths.CreateCssTag(string.Format("Bootstrap 5 CSS {0}", this.SelectedSkin), colorUri);
 			}
 
-			var bootstrapJS = GetWebResourceUrl("bootstrap5.bootstrap.min.js");
 			var bootstrapCssUri = GetWebResourceUrl(bootstrapCss);
 
-			return (UrlPaths.CreateJavascriptTag("Bootstrap 5", bootstrapJS) + " \n"
-							+ UrlPaths.CreateCssTag("Bootstrap 5 CSS", bootstrapCssUri) + " \n"
-							+ bootstrapIconCss
-							+ bootstrapColor).Trim();
+			return (UrlPaths.CreateJavascriptTag("Bootstrap 5 JS", bootstrapJSUri) + " \n"
+							+ UrlPaths.CreateCssTag(string.Format("Bootstrap 5 CSS Main {0}", this.SelectedSkin), bootstrapCssUri) + " \n"
+							+ bootstrapColorUri
+							+ bootstrapIconCssUri).Trim();
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Html;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 
@@ -16,7 +17,7 @@ using System.Web;
 namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 	public class FileBrowserModel : AjaxFileUploadModel {
-		private string defaultBrowseMode = "file";
+		private string _defaultBrowseMode = "file";
 
 		public FileBrowserModel() {
 			this.FileMsg = string.Empty;
@@ -28,11 +29,15 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			this.EscapeSpaces = true;
 		}
 
-		public FileBrowserModel(string queryPath, string useTiny, string returnVal, string viewMode)
+		public FileBrowserModel(string queryPath, string useTiny, string returnVal, string viewMode) :
+			this(queryPath, useTiny, returnVal, viewMode, "") {
+		}
+
+		public FileBrowserModel(string queryPath, string useTiny, string returnVal, string viewMode, string sort)
 			: this() {
 			this.QueryPath = queryPath ?? @"/";
 
-			this.ViewMode = viewMode ?? defaultBrowseMode;
+			this.ViewMode = viewMode ?? _defaultBrowseMode;
 			this.QueryPath = this.QueryPath.FixPathSlashes();
 
 			if (string.IsNullOrEmpty(this.QueryPath) || this.QueryPath == @"/") {
@@ -46,7 +51,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			returnVal = returnVal ?? "0";
 			this.UseTinyMCE = useTiny == "1" || useTiny.ToLowerInvariant() == "true";
 			this.ReturnMode = returnVal == "1" || returnVal.ToLowerInvariant() == "true";
-			this.Thumbnails = this.ViewMode.ToLowerInvariant() != defaultBrowseMode;
+			this.Thumbnails = this.ViewMode.ToLowerInvariant() != _defaultBrowseMode;
 
 			string linkPatt = "{0}?fldrpath={1}&useTiny={2}&returnvalue={3}&viewmode={4}";
 
@@ -55,16 +60,85 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 				this.UpLink = string.Format(linkPatt, SiteData.CurrentScriptName, HttpUtility.UrlEncode(sUrlUp), this.UseTinyMCE, this.ReturnMode, this.ViewMode);
 			}
 
+			this.BaseLinkPattern = string.Format(linkPatt, SiteData.CurrentScriptName, HttpUtility.UrlEncode(this.QueryPath), this.UseTinyMCE, this.ReturnMode, this.ViewMode);
 			this.ThumbViewLink = string.Format(linkPatt, SiteData.CurrentScriptName, HttpUtility.UrlEncode(this.QueryPath), this.UseTinyMCE, this.ReturnMode, "thumb");
 			this.FileViewLink = string.Format(linkPatt, SiteData.CurrentScriptName, HttpUtility.UrlEncode(this.QueryPath), this.UseTinyMCE, this.ReturnMode, "file");
 
 			this.Dirs = helpFile.GetFolders(this.QueryPath);
-			this.Files = helpFile.GetFiles(this.QueryPath);
+
+			var files = helpFile.GetFiles(this.QueryPath);
+
+			if (this.Thumbnails) {
+				files = files.Where(x => x.MimeType.StartsWith("image/")).ToList();
+			}
+
+			var sortParms = (string.IsNullOrEmpty(sort) ? "file-asc" : (sort + "-asc")).ToLowerInvariant().Split('-');
+			this.SortField = sortParms[0];
+			this.SortDir = sortParms[1];
+			this.Sort = string.Format("{0}-{1}", this.SortField, this.SortDir);
+
+			if (this.SortDir == "asc") {
+				if (this.SortField == "file") {
+					files = files.OrderBy(x => x.FileName).ToList();
+				}
+				if (this.SortField == "date") {
+					files = files.OrderBy(x => x.FileDate).ToList();
+				}
+				if (this.SortField == "size") {
+					files = files.OrderBy(x => x.FileSize).ToList();
+				}
+				if (this.SortField == "type") {
+					files = files.OrderBy(x => x.FileExtension).ToList();
+				}
+			} else {
+				if (this.SortField == "file") {
+					files = files.OrderByDescending(x => x.FileName).ToList();
+				}
+				if (this.SortField == "date") {
+					files = files.OrderByDescending(x => x.FileDate).ToList();
+				}
+				if (this.SortField == "size") {
+					files = files.OrderByDescending(x => x.FileSize).ToList();
+				}
+				if (this.SortField == "type") {
+					files = files.OrderByDescending(x => x.FileExtension).ToList();
+				}
+			}
+
+			this.Files = files;
 
 			if (this.Thumbnails) {
 				this.Files = this.Files.Where(x => x.MimeType.StartsWith("image/")).ToList();
 			}
 		}
+
+		public string GenerateSortLink(string field) {
+			string sortKey = "file-asc";
+
+			if (field.ToLowerInvariant() == this.SortField.ToLowerInvariant()) {
+				sortKey = (this.SortField + "-" + (this.SortDir.ToLowerInvariant() == "asc" ? "desc" : "asc")).ToLowerInvariant();
+			} else {
+				sortKey = (field + "-asc").ToLowerInvariant();
+			}
+
+			return string.Format("{0}&sort={1}", this.BaseLinkPattern, sortKey);
+		}
+
+		public IHtmlContent GenerateSortText(string field, string fieldCaption) {
+			string sortCaption = fieldCaption;
+
+			if (field.ToLowerInvariant() == this.SortField.ToLowerInvariant()) {
+				sortCaption = fieldCaption + (this.SortDir.ToLowerInvariant() == "asc" ? "&nbsp;&#9650;" : "&nbsp;&#9660;");
+			}
+
+			return new HtmlString(sortCaption);
+		}
+
+		public string Sort { get; set; }
+		public string SortField { get; set; }
+		public string SortDir { get; set; }
+
+		public string BaseLinkPattern { get; set; }
 
 		public List<FileData> Files { get; set; }
 		public List<FileData> Dirs { get; set; }
@@ -95,9 +169,13 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public string FileViewLink { get; set; }
 
-		public string FileImageLink(string sMime) {
-			sMime = sMime.ToLowerInvariant();
-			var mime = sMime.Substring(0, sMime.IndexOf("/"));
+		public string FileType(string fileExt) {
+			return string.IsNullOrEmpty(fileExt) ? "none" : fileExt.Replace(".", string.Empty);
+		}
+
+		public string FileImageLink(string mimeType) {
+			mimeType = mimeType.ToLowerInvariant();
+			var mime = mimeType.Substring(0, mimeType.IndexOf("/"));
 
 			string sImage = "plain";
 
@@ -123,7 +201,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 					break;
 			}
 
-			switch (sMime) {
+			switch (mimeType) {
 				case "application/pdf":
 					sImage = "pdf";
 					break;
