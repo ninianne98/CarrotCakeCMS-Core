@@ -29,6 +29,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Properties\**" />
+	  <Content Remove="Properties\**" />
+	  <EmbeddedResource Remove="Properties\**" />
+	  <None Remove="Properties\**" />
+	  <_WebToolingArtifacts Remove="Properties\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Remove="compilerconfig.json" />
 	</ItemGroup>
 
@@ -56,14 +64,10 @@
 
 	<ItemGroup>
 
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.29" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Properties\" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.30" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.19" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="compilerconfig.json" />

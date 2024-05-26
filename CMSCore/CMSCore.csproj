@@ -28,6 +28,14 @@
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Properties\**" />
+	  <Content Remove="Properties\**" />
+	  <EmbeddedResource Remove="Properties\**" />
+	  <None Remove="Properties\**" />
+	  <_WebToolingArtifacts Remove="Properties\**" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<Reference Update="System.Core">
@@ -60,14 +68,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.19" />
 		<PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
 		<PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Properties\" />
 	</ItemGroup>
 </Project>

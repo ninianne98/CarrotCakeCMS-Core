@@ -28,6 +28,14 @@
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Properties\**" />
+	  <Content Remove="Properties\**" />
+	  <EmbeddedResource Remove="Properties\**" />
+	  <None Remove="Properties\**" />
+	  <_WebToolingArtifacts Remove="Properties\**" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<None Remove="Scripts\00_Initial.sql" />
@@ -36,16 +44,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.29" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.30" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.19">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.19">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -55,10 +63,6 @@
 		<EmbeddedResource Include="Scripts\00_Initial.sql" />
 		<EmbeddedResource Include="Scripts\20230610_Migrate.sql" />
 		<EmbeddedResource Include="Scripts\20230611_Update.sql" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Properties\" />
 	</ItemGroup>
 
 	<ItemGroup>

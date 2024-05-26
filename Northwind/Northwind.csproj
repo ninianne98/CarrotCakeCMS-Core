@@ -21,6 +21,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="App_Data\**" />
+	  <Content Remove="App_Data\**" />
+	  <EmbeddedResource Remove="App_Data\**" />
+	  <None Remove="App_Data\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
 		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
@@ -29,15 +36,15 @@
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="3.7.1" />
 		<PackageReference Include="jQuery.UI.Combined" Version="1.13.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.29" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.30" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.19">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.19" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.19">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -48,7 +55,6 @@
 	</Target>
 
 	<ItemGroup>
-		<Folder Include="App_Data\" />
 		<Folder Include="wwwroot\assets\admin\" />
 	</ItemGroup>
 

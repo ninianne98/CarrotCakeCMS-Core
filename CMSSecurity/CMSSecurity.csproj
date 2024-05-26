@@ -40,10 +40,10 @@
 	</Target>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.29"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.30"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.30" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.19" />
 	</ItemGroup>
 
 	<ItemGroup>
