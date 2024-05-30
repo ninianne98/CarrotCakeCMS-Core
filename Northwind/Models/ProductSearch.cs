@@ -18,5 +18,7 @@ namespace Northwind.Models {
 		public List<Product> Results { get; set; }
 
 		public string AltViewName { get; set; }
+
+		public Guid SiteID { get; set; } = Guid.Empty;
 	}
 }

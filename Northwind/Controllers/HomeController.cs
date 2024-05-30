@@ -33,6 +33,10 @@ namespace Northwind.Controllers {
 
 			model.GetResult();
 
+			model.SiteID = _site.SiteID;
+			ViewBag.SiteID = _site.SiteID;
+			this.ViewData["Math_SiteID"] = _site.SiteID.ToString();
+
 			return View(model);
 		}
 
@@ -42,6 +46,10 @@ namespace Northwind.Controllers {
 
 			model.GetResult();
 
+			model.SiteID = _site.SiteID;
+			//ViewBag.SiteID = _site.SiteID;
+			this.ViewData["Math_SiteID"] = _site.SiteID.ToString();
+
 			return PartialView(model);
 		}
 
@@ -49,6 +57,11 @@ namespace Northwind.Controllers {
 		public ActionResult Math(MathModel model) {
 			model.GetResult();
 			ModelState.Clear();
+
+			model.SiteID = _site.SiteID;
+			//ViewBag.SiteID = _site.SiteID;
+			this.ViewData["Math_SiteID"] = _site.SiteID.ToString();
+
 			return PartialView(model);
 		}
 
@@ -61,7 +74,6 @@ namespace Northwind.Controllers {
 
 		[HttpPost]
 		public ActionResult Sampler(SelectSkin model) {
-
 			if (model.UseBootstrap5) {
 				Helper.SetBootstrapColor(model.SelectedItem5);
 			} else {
@@ -81,6 +93,7 @@ namespace Northwind.Controllers {
 		[WidgetActionSettingModel("Carrotware.CMS.Interface.WidgetActionSettingModel, Carrotware.CMS.Interface")]
 		public ActionResult ProductSearch() {
 			var settings = new WidgetActionSettingModel();
+			settings.SiteID = _site.SiteID;
 
 			if (this.WidgetPayload is WidgetActionSettingModel) {
 				settings = (WidgetActionSettingModel)this.WidgetPayload;
@@ -88,8 +101,8 @@ namespace Northwind.Controllers {
 			}
 			ViewBag.SiteID = settings.SiteID;
 
-			ProductSearch model = null;
-			model = InitProductSearch(model);
+			ProductSearch model = InitProductSearch(null);
+			model.SiteID = settings.SiteID;
 
 			if (string.IsNullOrEmpty(settings.AlternateViewFile)) {
 				return PartialView(model);
@@ -112,6 +125,7 @@ namespace Northwind.Controllers {
 			ViewBag.SiteID = settings.SiteID;
 
 			model = InitProductSearch(model);
+			model.SiteID = settings.SiteID;
 
 			if (string.IsNullOrEmpty(model.AltViewName)) {
 				return PartialView(model);

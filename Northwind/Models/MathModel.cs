@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Northwind.Models {
+
 	public class MathModel {
 
 		public MathModel() {
@@ -14,6 +15,8 @@ namespace Northwind.Models {
 
 		public double? Number3 { get; set; }
 
+		public Guid SiteID { get; set; } = Guid.Empty;
+
 		public double GetResult() {
 			if (this.Number2 > -0.2 && this.Number2 < 0.2) {
 				this.Number3 = Convert.ToInt32(this.Number1) / Convert.ToInt32(this.Number2);
@@ -23,6 +26,5 @@ namespace Northwind.Models {
 
 			return this.Number3.Value;
 		}
-
 	}
 }

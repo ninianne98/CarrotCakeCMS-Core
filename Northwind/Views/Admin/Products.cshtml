@@ -23,7 +23,7 @@
 	<input type="button" value="Uncheck All" onclick="UncheckTheBoxes()" />
 </p>
 
-<h2>@ViewBag.SiteID</h2>
+<h3>@ViewBag.SiteID</h3>
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmNorthwindProducts" })) {
 	@Html.AntiForgeryToken()
@@ -31,7 +31,7 @@
 	var grid = Html.CarrotWeb().CarrotWebGrid<Product>(Model);
 	grid.PrettifyHeadings = true;
 	grid.HtmlFormId = "frmNorthwindProducts";
-	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead header thead-dark" }, null);
+	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead header thead-dark" }, null);
 	grid.SetupFooter("ul", new { @class = "tablepager ui-widget ui-helper-clearfix ui-widget-content ui-corner-all" }, "li", new { @class = "ui-state-default ui-state-active ui-corner-all" }, new { @class = "ui-state-default ui-corner-all" });
 
 	//grid.ConfigName(Html.NameFor(x => x));

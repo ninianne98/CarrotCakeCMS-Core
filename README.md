@@ -65,6 +65,8 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 	There may be some warnings, you can ignore them
 
+1. To deploy a sample widget, select the individual project and select **Rebuild**.  The post build task will copy the widget views and assemblies into the main website project. 
+
 1. SQL Server should be running with an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  
 	- Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  
 	- If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  
@@ -136,11 +138,11 @@ END
 select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'
 ```
 
-1. if the database is empty or has pending database changes, the EF migrations will be automatically applied.
+1. If the database is empty or has pending database changes, the EF migrations will be automatically applied.
 
 1. The first time you start up the website, it will create the required artifacts in the database (tables/views/sprocs etc.)
 
-1. Click the **Play** button (or hit F5) in the main toolbar to launch CarrotCakeCMS
+1. Select run mode as IIS Express and click the **Play** button (or hit F5) in the main toolbar to launch CarrotCakeCMS
 
 1. When you run the website with an empty user database, you will be prompted to create the first user
 

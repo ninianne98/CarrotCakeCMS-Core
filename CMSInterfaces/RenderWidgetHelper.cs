@@ -37,6 +37,7 @@ namespace Carrotware.CMS.Interface {
 
 		public RenderWidgetData(Controller controller) : this() {
 			this.Controller = controller;
+			_context = controller.HttpContext;
 		}
 
 		public RenderWidgetData(Controller controller, IHtmlHelper helper) : this() {
@@ -50,18 +51,25 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		private HttpContext _context;
-		private RouteData _routeData;
 		private IHtmlHelper _helper;
+		private RouteData _routeData;
+		private PartialViewResult _partialViewResult;
 
 		public Controller Controller { get; set; }
 		public RouteData RouteData { get { return _routeData; } }
 		public RouteValueDictionary RouteValues { get; set; }
+
+		public PartialViewResult PartialView { get { return _partialViewResult; } }
 
 		public void InitController() {
 			var act = this.GetActionContext();
 			var context = new ActionExecutingContext(act, new List<IFilterMetadata>(),
 						new Dictionary<string, object>(), this.Controller);
 			this.Controller.OnActionExecuting(context);
+		}
+
+		public void CapturePartialResult(PartialViewResult partial) {
+			_partialViewResult = partial;
 		}
 
 		public ActionContext GetActionContext() {
@@ -73,16 +81,45 @@ namespace Carrotware.CMS.Interface {
 			}
 		}
 
-		public ViewContext GetViewContext(TextWriter stream, IView view, object model) {
-			var tmpData = CarrotHttpHelper.HttpContext.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
-
-			var tmp = new TempDataDictionary(_context, tmpData);
+		public ViewContext GetViewContext(TextWriter stream, IView view, object? model) {
 			var actionContext = this.GetActionContext();
+			var dataProvider = _context.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
 
+			var tempData = new TempDataDictionary(_context, dataProvider);
 			var viewData = new ViewDataDictionary<object>(new EmptyModelMetadataProvider(), new ModelStateDictionary());
-			viewData.Model = model;
 
-			return new ViewContext(actionContext, view, viewData, tmp, stream, new HtmlHelperOptions());
+			if (this.PartialView != null) {
+				// get the TempData from the widget controller
+				if (this.PartialView.TempData != null) {
+					tempData.Clear();
+					foreach (var v in this.PartialView.TempData) {
+						tempData.Add(v.Key, v.Value);
+					}
+				}
+				// get the ViewData/ViewBag from the widget controller
+				if (this.PartialView.ViewData != null) {
+					viewData.Clear();
+					foreach (var v in this.PartialView.ViewData) {
+						viewData.Add(v.Key, v.Value);
+					}
+				}
+			}
+
+			// get the ViewData/ViewBag from the main page, ex template stuff
+			if (_helper != null && _helper.ViewData != null) {
+				foreach (var v in _helper.ViewData) {
+					// don't overwrite any values found from the widget
+					if (!viewData.ContainsKey(v.Key)) {
+						viewData.Add(v.Key, v.Value);
+					}
+				}
+			}
+
+			if (model != null) {
+				viewData.Model = model;
+			}
+
+			return new ViewContext(actionContext, view, viewData, tempData, stream, new HtmlHelperOptions());
 		}
 	}
 
@@ -197,7 +234,7 @@ namespace Carrotware.CMS.Interface {
 				methodInfo = mthds.Where(x => x.GetCustomAttributes(typeof(HttpGetAttribute), true).Any()).FirstOrDefault();
 			}
 
-			PartialViewResult partialResult = null;
+			PartialViewResult partial = null;
 
 			if (methodInfo != null) {
 				object result = null;
@@ -205,7 +242,7 @@ namespace Carrotware.CMS.Interface {
 
 				if (parameters.Length == 0) {
 					result = methodInfo.Invoke(controller, null);
-					partialResult = (PartialViewResult)result;
+					partial = (PartialViewResult)result;
 				} else {
 					List<object> parametersArray = new List<object>();
 
@@ -237,16 +274,18 @@ namespace Carrotware.CMS.Interface {
 					}
 
 					result = methodInfo.Invoke(controller, parametersArray.ToArray());
-					partialResult = (PartialViewResult)result;
+					partial = (PartialViewResult)result;
 				}
+
+				data.CapturePartialResult(partial);
 			}
 
-			return partialResult;
+			return partial;
 		}
 
 		public static string ResultToString(RenderWidgetData data, PartialViewResult partialResult, string viewName = null) {
 			Controller controller = data.Controller;
-			string stringResult = null;
+			string stringResult = string.Empty;
 			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			if (string.IsNullOrEmpty(viewName)) {
@@ -254,6 +293,8 @@ namespace Carrotware.CMS.Interface {
 			}
 
 			if (partialResult != null) {
+				data.CapturePartialResult(partialResult);
+
 				var model = partialResult.Model;
 
 				if (model != null) {
@@ -262,14 +303,22 @@ namespace Carrotware.CMS.Interface {
 
 				var context = data.GetActionContext();
 
-				var actualViewName = string.IsNullOrWhiteSpace(partialResult.ViewName) ? viewName : partialResult.ViewName;
-				var viewEngineResult = engine.FindView(context, actualViewName, false);
-				var view = viewEngineResult.View;
+				if (engine != null) {
+					var actualViewName = (string.IsNullOrWhiteSpace(partialResult.ViewName) ? viewName : partialResult.ViewName) ?? string.Empty;
+					var viewEngineResult = engine.FindView(context, actualViewName, false);
+					var view = viewEngineResult.View;
 
-				using (var sw = new StringWriter()) {
-					var ctx = data.GetViewContext(sw, view, model);
-					var task = view.RenderAsync(ctx);
-					stringResult = sw.ToString();
+					if (view != null) {
+						using (var sw = new StringWriter()) {
+							var ctx = data.GetViewContext(sw, view, model);
+							var task = view.RenderAsync(ctx);
+							stringResult = sw.ToString();
+						}
+					} else {
+						throw new Exception("View '" + actualViewName + "' is null");
+					}
+				} else {
+					throw new Exception("IRazorViewEngine is null");
 				}
 			}
 
