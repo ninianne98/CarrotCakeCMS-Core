@@ -5,7 +5,6 @@ using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
-using static Carrotware.CMS.UI.Components.CmsSkin;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -38,32 +37,33 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
-		public static SkinOption _theme = SkinOption.None;
+		private static string _siteSkin = "cmsSiteSkin";
+		public static CmsSkin.SkinOption _theme = CmsSkin.SkinOption.None;
 
-		public static SkinOption SiteSkin {
+		public static CmsSkin.SkinOption SiteSkin {
 			get {
-				var actualSkin = SkinOption.Classic;
+				var actualSkin = CmsSkin.SkinOption.Classic;
 				try {
-					var cacheSkin = CarrotHttpHelper.CacheGet("SiteSkin");
+					var cacheSkin = CarrotHttpHelper.CacheGet(_siteSkin);
 					if (cacheSkin != null) {
-						actualSkin = (SkinOption)cacheSkin;
+						actualSkin = (CmsSkin.SkinOption)cacheSkin;
 					} else {
-						actualSkin = SkinOption.Classic;
-						_theme = SkinOption.None;
+						actualSkin = CmsSkin.SkinOption.Classic;
+						_theme = CmsSkin.SkinOption.None;
 					}
 				} catch {
-					actualSkin = SkinOption.Classic;
-					_theme = SkinOption.None;
+					actualSkin = CmsSkin.SkinOption.Classic;
+					_theme = CmsSkin.SkinOption.None;
 				}
 
-				if (_theme == SkinOption.None) {
-					CarrotCakeConfig config = CarrotCakeConfig.GetConfig();
+				if (_theme == CmsSkin.SkinOption.None) {
+					var config = CarrotCakeConfig.GetConfig();
 					string skin = config.MainConfig.SiteSkin;
 
-					try { actualSkin = (SkinOption)Enum.Parse(typeof(SkinOption), skin, true); } catch { }
+					try { actualSkin = (CmsSkin.SkinOption)Enum.Parse(typeof(CmsSkin.SkinOption), skin, true); } catch { }
 
 					_theme = actualSkin;
-					CarrotHttpHelper.CacheInsert("SiteSkin", _theme, 2);
+					CarrotHttpHelper.CacheInsert(_siteSkin, _theme, 2);
 				}
 
 				return _theme;
@@ -76,13 +76,14 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
+		private static string _useBootstrap = "cmsUseBootstrap";
 		public static bool? _bootstrap = null;
 
 		public static bool UseBootstrap {
 			get {
 				bool? bootstrap = null;
 				try {
-					var ret = CarrotHttpHelper.CacheGet("UseBootstrap");
+					var ret = CarrotHttpHelper.CacheGet(_useBootstrap);
 					if (ret != null) {
 						bootstrap = Convert.ToBoolean(ret);
 					}
@@ -98,7 +99,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 				}
 
 				if (_bootstrap.HasValue && !bootstrap.HasValue) {
-					CarrotHttpHelper.CacheInsert("UseBootstrap", _bootstrap.Value.ToString(), 2);
+					CarrotHttpHelper.CacheInsert(_useBootstrap, _bootstrap.Value.ToString(), 2);
 				}
 
 				return _bootstrap.Value;
@@ -106,32 +107,32 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 		}
 
 		public static string InsertSpecialView(ViewLocation CtrlKey) {
-			string sViewPath = string.Empty;
-			CarrotCakeConfig config = CarrotCakeConfig.GetConfig();
+			string viewPath = string.Empty;
+			var config = CarrotCakeConfig.GetConfig();
 
 			switch (CtrlKey) {
 				case ViewLocation.AdminPublicFooter:
-					sViewPath = config.AdminFooterControls.ViewPathPublic;
+					viewPath = config.AdminFooterControls.ViewPathPublic;
 					break;
 
 				case ViewLocation.AdminPopupFooter:
-					sViewPath = config.AdminFooterControls.ViewPathPopup;
+					viewPath = config.AdminFooterControls.ViewPathPopup;
 					break;
 
 				case ViewLocation.AdminMainFooter:
-					sViewPath = config.AdminFooterControls.ViewPathMain;
+					viewPath = config.AdminFooterControls.ViewPathMain;
 					break;
 
 				case ViewLocation.PublicMainHeader:
-					sViewPath = config.PublicSiteControls.ViewPathHeader;
+					viewPath = config.PublicSiteControls.ViewPathHeader;
 					break;
 
 				case ViewLocation.PublicMainFooter:
-					sViewPath = config.PublicSiteControls.ViewPathFooter;
+					viewPath = config.PublicSiteControls.ViewPathFooter;
 					break;
 			}
 
-			return sViewPath;
+			return viewPath;
 		}
 
 		public static Dictionary<bool, string> CreateBoolFilter() {

@@ -5,7 +5,6 @@
 */
 
 (function ($) {
-
 	var $window = $(window),
 		$body = $('body');
 
@@ -38,7 +37,7 @@
 	// Button.
 	$(
 		'<div id="navButton">' +
-			'<a href="#navPanel" class="toggle"></a>' +
+		'<a href="#navPanel" class="toggle"></a>' +
 		'</div>'
 	)
 		.appendTo($body);
@@ -46,10 +45,10 @@
 	// Panel.
 	$(
 		'<div id="navPanel">' +
-			'<nav>' +
-				'<a href="index.html" class="link depth-0">Home</a>' +
-				$('#nav').navList() +
-			'</nav>' +
+		'<nav>' +
+		'<a href="index.html" class="link depth-0">Home</a>' +
+		$('#nav').navList() +
+		'</nav>' +
 		'</div>'
 	)
 		.appendTo($body)
@@ -62,5 +61,4 @@
 			target: $body,
 			visibleClass: 'navPanel-visible'
 		});
-
 })(jQuery);

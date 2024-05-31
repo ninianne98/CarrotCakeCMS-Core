@@ -1,16 +1,16 @@
 {
 	"profiles": {
-		"CMSAdminMVC": {
-			"commandName": "Project",
-			"launchBrowser": true,
-			"environmentVariables": {
-				"ASPNETCORE_ENVIRONMENT": "Development"
-			},
-			"hotReloadEnabled": false,
-			"dotnetRunMessages": true,
-			//"applicationUrl": "https://localhost:17710;http://localhost:16710"
-			"applicationUrl": "http://localhost:16710"
-		},
+		//"CMSAdminMVC": {
+		//	"commandName": "Project",
+		//	"launchBrowser": true,
+		//	"environmentVariables": {
+		//		"ASPNETCORE_ENVIRONMENT": "Development"
+		//	},
+		//	"hotReloadEnabled": false,
+		//	"dotnetRunMessages": true,
+		//	//"applicationUrl": "https://localhost:17710;http://localhost:16710"
+		//	"applicationUrl": "http://localhost:16710"
+		//},
 		"IIS Express": {
 			"hotReloadEnabled": false,
 			"commandName": "IISExpress",

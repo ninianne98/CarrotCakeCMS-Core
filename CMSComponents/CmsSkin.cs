@@ -43,6 +43,7 @@ namespace Carrotware.CMS.UI.Components {
 			Popup,
 			Logon,
 			Notify,
+			Filebrowse,
 		}
 
 		private bool _useEditor = false;

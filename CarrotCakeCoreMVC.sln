@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSData", "CarrotCMSData\CMSData.csproj", "{88CC5073-9F28-42EB-A502-133DB06865A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSAdminCore", "CMSAdmin\CMSAdminCore.csproj", "{F569BAF6-D3C0-4610-9498-120434F92D76}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSCore", "CMSCore\CMSCore.csproj", "{83B39B26-EC55-4D23-AAE7-0EB3B76BB965}"
 EndProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSSecurity", "CMSSecurity\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CMSDataScripts", "CMSDataScripts\CMSDataScripts.sqlproj", "{BE957D52-307D-4EBA-8B37-7016F8CD77E0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSAdminCore", "CMSAdmin\CMSAdminCore.csproj", "{F569BAF6-D3C0-4610-9498-120434F92D76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSData", "CarrotCMSData\CMSData.csproj", "{88CC5073-9F28-42EB-A502-133DB06865A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

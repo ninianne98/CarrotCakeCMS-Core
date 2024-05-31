@@ -3,7 +3,6 @@ using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -52,11 +51,14 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		internal static string RenderView(RenderWidgetData data, PartialViewResult partialResult, string viewName) {
-			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+			//var controller = data.Controller;
+			//var routeData = data.RouteData;
+			//var actualViewName = viewName;
 
-			var controller = data.Controller;
-			var routeData = data.RouteData;
-			var actualViewName = viewName;
+			string stringResult = partialResult != null ? partialResult.ResultToString(data, viewName) : string.Empty;
+
+			/*
+			var engine = data.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			data.CapturePartialResult(partialResult);
 
@@ -67,7 +69,6 @@ namespace Carrotware.CMS.UI.Components {
 				}
 			}
 
-			string stringResult = string.Empty;
 			var context = data.GetActionContext();
 
 			if (engine != null) {
@@ -86,11 +87,12 @@ namespace Carrotware.CMS.UI.Components {
 						stringResult = sw.ToString();
 					}
 				} else {
-					throw new Exception("View '" + actualViewName + "' is null");
+					throw new Exception($"View '{actualViewName}' is null");
 				}
 			} else {
 				throw new Exception("IRazorViewEngine is null");
 			}
+			*/
 
 			return stringResult;
 		}

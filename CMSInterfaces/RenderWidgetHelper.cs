@@ -60,11 +60,14 @@ namespace Carrotware.CMS.Interface {
 		public RouteValueDictionary RouteValues { get; set; }
 
 		public PartialViewResult PartialView { get { return _partialViewResult; } }
+		public HttpContext HttpContext { get { return _context; } }
 
 		public void InitController() {
 			var act = this.GetActionContext();
+
 			var context = new ActionExecutingContext(act, new List<IFilterMetadata>(),
 						new Dictionary<string, object>(), this.Controller);
+
 			this.Controller.OnActionExecuting(context);
 		}
 
@@ -75,7 +78,7 @@ namespace Carrotware.CMS.Interface {
 		public ActionContext GetActionContext() {
 			if (_helper == null) {
 				_routeData = new RouteData(this.RouteValues);
-				return new ActionContext(_context, this.RouteData, new ActionDescriptor());
+				return new ActionContext(this.HttpContext, this.RouteData, new ActionDescriptor());
 			} else {
 				return new ActionContext(_helper.ViewContext.HttpContext, _helper.ViewContext.RouteData, new ActionDescriptor());
 			}
@@ -83,9 +86,9 @@ namespace Carrotware.CMS.Interface {
 
 		public ViewContext GetViewContext(TextWriter stream, IView view, object? model) {
 			var actionContext = this.GetActionContext();
-			var dataProvider = _context.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
+			var dataProvider = this.HttpContext.RequestServices.GetService(typeof(ITempDataProvider)) as ITempDataProvider;
 
-			var tempData = new TempDataDictionary(_context, dataProvider);
+			var tempData = new TempDataDictionary(this.HttpContext, dataProvider);
 			var viewData = new ViewDataDictionary<object>(new EmptyModelMetadataProvider(), new ModelStateDictionary());
 
 			if (this.PartialView != null) {
@@ -105,15 +108,15 @@ namespace Carrotware.CMS.Interface {
 				}
 			}
 
-			// get the ViewData/ViewBag from the main page, ex template stuff
-			if (_helper != null && _helper.ViewData != null) {
-				foreach (var v in _helper.ViewData) {
-					// don't overwrite any values found from the widget
-					if (!viewData.ContainsKey(v.Key)) {
-						viewData.Add(v.Key, v.Value);
-					}
-				}
-			}
+			//// get the ViewData/ViewBag from the main page, ex template stuff
+			//if (_helper != null && _helper.ViewData != null) {
+			//	foreach (var v in _helper.ViewData) {
+			//		// don't overwrite any values found from the widget
+			//		if (!viewData.ContainsKey(v.Key)) {
+			//			viewData.Add(v.Key, v.Value);
+			//		}
+			//	}
+			//}
 
 			if (model != null) {
 				viewData.Model = model;
@@ -126,6 +129,27 @@ namespace Carrotware.CMS.Interface {
 	//===================================
 
 	public static class RenderWidgetHelper {
+		private static ConcurrentDictionary<string, Type> _discoveredTypes = new ConcurrentDictionary<string, Type>();
+
+		public static RenderWidgetData CreateController(this Controller source, Type type, string actionName, string areaName, object widgetPayload) {
+			return CreateController(type, source, actionName, areaName, widgetPayload);
+		}
+
+		public static RenderWidgetData CreateController(this Controller source, string typeName, string actionName, string areaName, object widgetPayload) {
+			return CreateController(typeName, source, actionName, areaName, widgetPayload);
+		}
+
+		public static HtmlString RenderActionToString(this Controller source, string typeName, string actionName, string areaName, object widgetPayload) {
+			return RenderActionToString(typeName, source, actionName, areaName, widgetPayload);
+		}
+
+		public static HtmlString RenderActionToString(this Controller source, Type type, string actionName, string areaName, object widgetPayload) {
+			return RenderActionToString(type, source, actionName, areaName, widgetPayload);
+		}
+
+		public static string ResultToString(this PartialViewResult partialResult, RenderWidgetData data, string viewName = null) {
+			return ResultToString(data, partialResult, viewName);
+		}
 
 		public static RenderWidgetData CreateController(string typeName, Controller source, string actionName, string areaName, object widgetPayload) {
 			Type type = Type.GetType(typeName);
@@ -156,13 +180,10 @@ namespace Carrotware.CMS.Interface {
 
 		public static RenderWidgetData CreateController(Type type, Controller source, string actionName, string areaName, object widgetPayload) {
 			var data = new RenderWidgetData();
-			var svc = new object();
 			Controller controller = null;
 
-			svc = CarrotHttpHelper.HttpContext.RequestServices.GetService(type);
-			if (svc == null) {
-				svc = source.HttpContext.RequestServices.GetService(type);
-			}
+			var svc = source.HttpContext.RequestServices.GetService(type);
+
 			if (svc == null) {
 				svc = CarrotHttpHelper.ServiceProvider.GetService(type);
 			}
@@ -242,7 +263,6 @@ namespace Carrotware.CMS.Interface {
 
 				if (parameters.Length == 0) {
 					result = methodInfo.Invoke(controller, null);
-					partial = (PartialViewResult)result;
 				} else {
 					List<object> parametersArray = new List<object>();
 
@@ -274,9 +294,9 @@ namespace Carrotware.CMS.Interface {
 					}
 
 					result = methodInfo.Invoke(controller, parametersArray.ToArray());
-					partial = (PartialViewResult)result;
 				}
 
+				partial = (PartialViewResult)result;
 				data.CapturePartialResult(partial);
 			}
 
@@ -285,8 +305,9 @@ namespace Carrotware.CMS.Interface {
 
 		public static string ResultToString(RenderWidgetData data, PartialViewResult partialResult, string viewName = null) {
 			Controller controller = data.Controller;
-			string stringResult = string.Empty;
-			var engine = CarrotHttpHelper.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+			string stringResult = null;
+
+			var engine = data.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			if (string.IsNullOrEmpty(viewName)) {
 				viewName = data.RouteData.Values["action"].ToString();
@@ -315,7 +336,7 @@ namespace Carrotware.CMS.Interface {
 							stringResult = sw.ToString();
 						}
 					} else {
-						throw new Exception("View '" + actualViewName + "' is null");
+						throw new Exception($"View '{actualViewName}' is null");
 					}
 				} else {
 					throw new Exception("IRazorViewEngine is null");
@@ -324,8 +345,6 @@ namespace Carrotware.CMS.Interface {
 
 			return stringResult;
 		}
-
-		private static ConcurrentDictionary<string, Type> _discoveredTypes = new ConcurrentDictionary<string, Type>();
 
 		internal static Assembly GetAssembly(string typeName) {
 			var parts = typeName.Split(',');

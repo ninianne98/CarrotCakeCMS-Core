@@ -16,10 +16,10 @@
 	ViewBag.SiteName = CmsPage.TheSite.SiteName;
 
 	var nav = new TwoLevelNavigation() {
-				AutoStylingDisabled = true,
-				CssSelected = "selected",
-				ElementId = "nav"
-			};
+		AutoStylingDisabled = true,
+		CssSelected = "selected",
+		ElementId = "nav"
+	};
 
 	bool specialThemed = ViewBag.TelephasicThemed ?? false;
 }
@@ -45,6 +45,23 @@
 				}
 			}
 		});
+
+		setTimeout(function () {
+			buttonStyleStdTele();
+		}, 250);
+
+		$(document).ajaxComplete(function (event, xhr, settings) {
+			setTimeout(function () {
+				buttonStyleStdTele();
+			}, 500);
+		});
+
+		function buttonStyleStdTele() {
+			var btns = "#page-wrapper input:button, #page-wrapper input:submit, #page-wrapper input:reset, #page-wrapper button";
+			$(btns).removeClass('ui-corner-all');
+			$(btns).removeClass('ui-button');
+			//$(btns).addClass('button');
+		}
 	</script>
 
 	@if (specialThemed) {
