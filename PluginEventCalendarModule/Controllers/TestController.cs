@@ -82,9 +82,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 		public IActionResult TestView1() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarUpcoming", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "CalendarUpcoming", this.AreaName, this.WidgetPayload);
 			var result = RenderWidgetHelper.ExecuteAction(ctrl);
-			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, result));
+			model.RenderedContent = new HtmlString(result.ResultToString(ctrl));
 
 			ViewBag.WidgetTitle = "Test Widget Display 1";
 
@@ -94,9 +94,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 		public IActionResult TestView2() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "EventCalendarDisplay", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "EventCalendarDisplay", this.AreaName, this.WidgetPayload);
 			var result = RenderWidgetHelper.ExecuteAction(ctrl);
-			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, result));
+			model.RenderedContent = new HtmlString(result.ResultToString(ctrl));
 
 			ViewBag.WidgetTitle = "Test Widget Display 2";
 
@@ -106,9 +106,9 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 		public IActionResult TestView3() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "EventCalendarDisplay2", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "EventCalendarDisplay2", this.AreaName, this.WidgetPayload);
 			var result = RenderWidgetHelper.ExecuteAction(ctrl);
-			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, result));
+			model.RenderedContent = new HtmlString(result.ResultToString(ctrl));
 
 			ViewBag.WidgetTitle = "Test Widget Display 3";
 

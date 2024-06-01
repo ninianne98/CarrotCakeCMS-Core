@@ -2,17 +2,23 @@
 @{
 	Layout = null;
 
-	string areaName = ViewBag.WidgetAreaName;
 	string assemblyName = ViewBag.WidgetAssemblyName;
-	string areaAlias = string.Format("{0}_Area", areaName);
+	string areaAlias = ViewBag.WidgetAreaAlias;
+
+	var widgetParts = assemblyName.Split('.');
+	var widgetName = assemblyName;
+	if (widgetParts.Length > 1) {
+		widgetName = widgetParts[widgetParts.Length - 1];
+	}
+	widgetName = widgetName.ToSpacedPascal();
 }
 <html>
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>@ViewBag.Title - @ViewBag.WidgetAssemblyName</title>
+	<title>@ViewBag.Title - @assemblyName</title>
 	@Html.CarrotWeb().RenderControlToHtml((new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.Silver }))
-	@(new Bootstrap() { SelectedSkin = Bootstrap.BootstrapColorScheme.FrenchBlue })
+	@(new Bootstrap5() { SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.FrenchBlue })
 
 	<link href="~/Content/jquery.ui.timepicker.css" rel="stylesheet" />
 	<link href="~/Content/MiniColors/jquery.minicolors.css" rel="stylesheet" />
@@ -22,6 +28,8 @@
 	<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
+		var cmsBootstrap = (typeof bootstrap === 'undefined') == false;
+
 		$(document).ready(function () {
 			fixButtons();
 		});
@@ -32,12 +40,18 @@
 		});
 
 		function fixButtons() {
-			$("button").addClass('btn btn-lg');
-			$("input[type=button]").addClass('btn btn-lg btn-default');
-			$("input[type=submit]").addClass('btn btn-lg btn-default');
-			$("input[type=text]").addClass('form-control2');
-			$("input[type=password]").addClass('form-control2');
-			$("select").addClass('form-control2');
+			$("input[type=text]").addClass('form-control');
+			$("input[type=password]").addClass('form-control');
+			$("select").addClass('form-control form-select');
+
+			$("input:button, input:submit, input:reset, button").each(function () {
+				if (!$(this).hasClass("btn")) {
+					$(this).addClass('btn btn-primary');
+				}
+				if ($(this).hasClass("btn-default")) {
+					$(this).addClass('btn-primary');
+				}
+			});
 		}
 
 		$(document).ready(function () {
@@ -49,40 +63,81 @@
 		});
 
 		function doStyles() {
-			$("input:button, input:submit, input:reset, button").button();
-			$("input:button, input:submit, input:reset, button").addClass('btn');
+			fixButtons();
+
+			cmsSetDateRegion();
+
+			cmsSetTimeRegion();
+		}
+
+		function cmsSetDateRegion() {
+			var calSetting = {
+				changeMonth: true,
+				changeYear: true,
+				constrainInput: true,
+				beforeShow: function () {
+					setTimeout(function () {
+						$('.ui-datepicker').css('z-index', 15);
+					}, 0);
+				}
+			};
+
+			if (cmsBootstrap == false) {
+				calSetting.showOn = "both";
+				calSetting.buttonImageOnly = true;
+				calSetting.buttonImage = '/content/calendar.png';
+			}
+
+			var parentGrp = $(this).parent().hasClass('input-group');
+			var nextItem = $(this).next().hasClass('input-group-text');
 
 			$(".dateRegion").each(function () {
-				$(this).datepicker({
-					changeMonth: true,
-					changeYear: true,
-					showOn: "both",
-					buttonImage: '/Content/calendar.png',
-					buttonImageOnly: true,
-					constrainInput: true,
-					beforeShow: function () {
-						setTimeout(function () {
-							$('.ui-datepicker').css('z-index', 15);
-						}, 0);
+				if ($(this).hasClass('hasDatepicker') == false) {
+					if (cmsBootstrap == true && parentGrp == false && nextItem == false) {
+						var id = $(this).attr('id');
+						$(this).addClass('form-control');
+						$(this).css("width", '');
+						$(this).css("margin", '');
+						$(this).wrap('<div style="width:10em" class="input-group" />')
+						$('<label for="' + id + '" id="' + id + '_triggerbtn" class="input-group-addon input-group-text"><span class="bi bi-calendar3"></span></label>').insertAfter($(this));
 					}
-				});
-			});
 
+					if (cmsBootstrap == false) {
+						$(this).wrap('<span style="white-space: nowrap;" />')
+					}
+
+					$(this).datepicker(calSetting);
+				}
+			});
+		}
+
+		function cmsSetTimeRegion() {
 			$(".timeRegion").each(function () {
 				if (!$(this).hasClass("hasTimePicker")) {
 					$(this).addClass("hasTimePicker");
+					var id = $(this).attr('id');
+					var parentGrp = $(this).parent().hasClass('input-group');
+					var nextItem = $(this).next().hasClass('input-group-text');
+
 					$(this).parent().css('z-index', 15);
 					$(this).parent().css('position', 'relative');
 
-					var id = $(this).attr('id');
-					$('<img class="ui-timepicker-trigger" src="/Content/clock.png" for="' + id + '" id="' + id + '_triggerbtn" alt="hh:mm" title="hh:mm">').insertAfter(this);
+					if (cmsBootstrap == true && parentGrp == false && nextItem == false) {
+						$(this).addClass('form-control');
+						$(this).css("width", '');
+						$(this).css("margin", '');
+						$(this).wrap('<div style="width:10em" class="input-group" />')
+						$('<label for="' + id + '" id="' + id + '_triggerbtn" class="ui-timepicker-trigger input-group-addon input-group-text"><span class="bi bi-clock"></span></label>').insertAfter($(this));
+					}
+
+					if (cmsBootstrap == false) {
+						$(this).wrap('<span style="white-space: nowrap;" />')
+						$('<img class="ui-timepicker-trigger" src="/Content/clock.png" for="' + id + '" id="' + id + '_triggerbtn" alt="' + cmsTimePattern + '" title="' + cmsTimePattern + '">').insertAfter($(this));
+					}
 
 					$(this).timepicker({
 						showOn: "both",
 						button: '#' + id + '_triggerbtn',
-						showPeriodLabels: true,
-						showPeriod: true,
-						amPmText: ["am", "pm"],
 						showLeadingZero: true
 					});
 				};
@@ -99,21 +154,45 @@
 				selector: "textarea.mceEditor",
 				promotion: false,
 				convert_unsafe_embeds: true,
-				height: h,
-				width: w,
-				resize: r,
-				menubar: false,
 				plugins: 'image link lists media charmap searchreplace visualblocks table preview code codesample help',
-				toolbar: [
-					'bold italic underline strikethrough sub sup | blocks forecolor backcolor | blockquote alignleft aligncenter alignright alignjustify outdent indent | help | ',
-					'undo redo searchreplace | bullist numlist | removeformat pastetext | link unlink anchor image media customfilebrowser | charmap codesample code preview visualblocks'
+				toolbar1: 'savebutton  bold italic underline strikethrough sub sup  blocks forecolor backcolor blockquote alignleft aligncenter alignright alignjustify outdent indent  ',
+				toolbar2: 'undo redo searchreplace  bullist numlist  removeformat pastetext  link unlink anchor image media customfilebrowser  charmap codesample code preview visualblocks   help',
+				removed_menuitems: 'newdocument help',
+				codesample_languages: [
+					{ text: 'HTML', value: 'markup' },
+					{ text: 'Markdown', value: 'markdown' },
+					{ text: 'Plain Text', value: 'plaintext' },
+					{ text: 'XML', value: 'xml' },
+					{ text: 'JSON', value: 'json' },
+					{ text: 'Bash', value: 'bash' },
+					{ text: 'Shell', value: 'shell' },
+					{ text: 'Access log', value: 'accesslog' },
+					{ text: 'JavaScript', value: 'javascript' },
+					{ text: 'TypeScript', value: 'typescript' },
+					{ text: 'CSS', value: 'css' },
+					{ text: 'SQL', value: 'sql' },
+					{ text: 'PHP', value: 'php' },
+					{ text: 'Ruby', value: 'ruby' },
+					{ text: 'Python', value: 'python' },
+					{ text: 'PowerShell', value: 'powershell' },
+					{ text: 'Java', value: 'java' },
+					{ text: 'C', value: 'c' },
+					{ text: 'C#', value: 'csharp' },
+					{ text: 'VB', value: 'vbnet' },
+					{ text: 'ASP', value: 'vbscript-html' },
+					{ text: 'VBS', value: 'vbscript' },
+					{ text: 'C++', value: 'cpp' }
 				],
+				relative_urls: false,
+				remove_script_host: true,
 				content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
 			});
 		}
 
 		function cmsPreSaveTrigger() {
-			var tgr = tinymce.triggerSave();
+			if (tinymce) {
+				var tgr = tinymce.triggerSave();
+			}
 
 			return true;
 		}
@@ -127,7 +206,7 @@
 
 		function AjaxTinyLoad() {
 			if (!bTinyLoaded) {
-				cmsTinyMceInit(875, 500, false);
+				cmsTinyMceInit(750, 500, false);
 			}
 			bTinyLoaded = true;
 		}
@@ -144,51 +223,55 @@
 	@RenderSection("scripts", required: false)
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<h2>Widget : @assemblyName</h2>
+	</div>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="navbar">
 		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				@Html.ActionLink("Widget: Event Calendar (Core)", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-			</div>
-			<div class="navbar-collapse collapse">
+			@Html.ActionLink(string.Format("{0}  (Core)", widgetName), "Index", "Home", null, new { @class = "navbar-brand" })
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarWidget" aria-controls="navbarWidget" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarWidget">
 				<ul class="nav navbar-nav">
-					@using (Html.CarrotWeb().BeginWrappedItem("li", "TestView1;", "Test", new { @class = "active" }, null)) {
-						@Html.ActionLink("Display 1", "TestView1", "Test")
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "TestView1;", "Test", new { @class = "nav-item active" }, new { @class = "nav-item" })) {
+						@Html.ActionLink("Display 1", "TestView1", "Test", null, new { @class = "nav-link" })
 					}
-					@using (Html.CarrotWeb().BeginWrappedItem("li", "TestView2", "Test", new { @class = "active" }, null)) {
-						@Html.ActionLink("Display 2", "TestView2", "Test")
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "TestView2", "Test", new { @class = "nav-item active" }, new { @class = "nav-item" })) {
+						@Html.ActionLink("Display 2", "TestView2", "Test", null, new { @class = "nav-link" })
 					}
-					@using (Html.CarrotWeb().BeginWrappedItem("li", "TestView3", "Test", new { @class = "active" }, null)) {
-						@Html.ActionLink("Display 3", "TestView3", "Test")
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "TestView3", "Test", new { @class = "nav-item active" }, new { @class = "nav-item" })) {
+						@Html.ActionLink("Display 3", "TestView3", "Test", null, new { @class = "nav-link" })
 					}
 
-					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active dropdown" }, new { @id = "tabAdmin", @class = "dropdown" })) {
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin Test <b class="caret"></b></a>
+					@using (Html.CarrotWeb().BeginWrappedItem("li", "*", "Admin", new { @id = "tabAdmin", @class = "active nav-item dropdown" }, new { @id = "tabAdmin", @class = "nav-item dropdown" })) {
+						<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin Test </a>
 						<ul class="dropdown-menu">
-							@* <li>@Html.ActionLink("Database", "Database", "Admin")</li> *@
-							<li>@Html.ActionLink("Profile List", "ProfileList", "Admin")</li>
-							<li>@Html.ActionLink("Add Event Profile", "EventDetail", "Admin", new { @id = Guid.Empty }, null)</li>
-							<li>@Html.ActionLink("Event List", "EventList", "Admin")</li>
-							<li>@Html.ActionLink("Category List", "CategoryList", "Admin")</li>
-							<li>@Html.ActionLink("Add Category", "CategoryDetail", "Admin", new { @id = Guid.Empty }, null)</li>
+							@foreach (var item in Html.GetMenuEntries().Where(x => x.IsVisible)) {
+								<li><a class="dropdown-item" href="@string.Format("/Admin/{0}", item.Action )"> @item.Caption</a></li>
+							}
+							@*
+								<li>@Html.ActionLink("Database", "Database", "Admin")</li>
+								<li>@Html.ActionLink("Profile List", "ProfileList", "Admin")</li>
+								<li>@Html.ActionLink("Add Event Profile", "EventDetail", "Admin", new { @id = Guid.Empty }, null)</li>
+								<li>@Html.ActionLink("Event List", "EventList", "Admin")</li>
+								<li>@Html.ActionLink("Category List", "CategoryList", "Admin")</li>
+								<li>@Html.ActionLink("Add Category", "CategoryDetail", "Admin", new { @id = Guid.Empty }, null)</li>
+							*@
 						</ul>
 					}
 				</ul>
 			</div>
 		</div>
-	</div>
-
-	<div class="container body-content">
+	</nav>
+	<div class="container body-content bootstrap-content">
 		<div>
 			@RenderBody()
 		</div>
 		<hr />
 		<footer>
-			<p>&copy; @DateTime.Now.Year - @areaName</p>
+			<p>&copy; @DateTime.Now.Year - @assemblyName</p>
 		</footer>
 	</div>
 </body>

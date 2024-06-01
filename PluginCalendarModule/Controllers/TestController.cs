@@ -72,9 +72,9 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 		public ActionResult TestView1() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarUpcoming", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "CalendarUpcoming", this.AreaName, this.WidgetPayload);
 			model.PartialResult = RenderWidgetHelper.ExecuteAction(ctrl);
-			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, model.PartialResult));
+			model.RenderedContent = new HtmlString(model.PartialResult.ResultToString(ctrl));
 
 			ViewBag.WidgetTitle = "Test Widget Display 1";
 
@@ -84,9 +84,9 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 		public ActionResult TestView2() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarDisplay", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "CalendarDisplay", this.AreaName, this.WidgetPayload);
 			model.PartialResult = RenderWidgetHelper.ExecuteAction(ctrl);
-			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, model.PartialResult));
+			model.RenderedContent = new HtmlString(model.PartialResult.ResultToString(ctrl));
 
 			ViewBag.WidgetTitle = "Test Widget Display 2";
 
@@ -96,9 +96,9 @@ namespace CarrotCake.CMS.Plugins.CalendarModule.Controllers {
 		public ActionResult TestView3() {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "CalendarDisplaySimple", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "CalendarDisplaySimple", this.AreaName, this.WidgetPayload);
 			model.PartialResult = RenderWidgetHelper.ExecuteAction(ctrl);
-			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, model.PartialResult));
+			model.RenderedContent = new HtmlString(model.PartialResult.ResultToString(ctrl));
 
 			ViewBag.WidgetTitle = "Test Widget Display 3";
 

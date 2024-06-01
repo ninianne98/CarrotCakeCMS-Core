@@ -12,8 +12,8 @@ function cmsTinyMceInit(winWidth, winHeight, allowResize) {
 	if (tinyBrowseWidth < 500) {
 		tinyBrowseWidth = 500;
 	}
-	if (tinyBrowseWidth > 960) {
-		tinyBrowseWidth = 960;
+	if (tinyBrowseWidth > 800) {
+		tinyBrowseWidth = 800;
 	}
 	if (tinyBrowseHeight < 100) {
 		tinyBrowseHeight = 100;

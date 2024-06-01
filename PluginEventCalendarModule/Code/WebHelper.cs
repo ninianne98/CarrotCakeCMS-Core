@@ -1,4 +1,7 @@
-﻿using Carrotware.CMS.Interface;
+﻿using Carrotware.CMS.Core;
+using Carrotware.CMS.Interface;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data;
 using System.Globalization;
 using System.Reflection;
 
@@ -15,6 +18,26 @@ using System.Reflection;
 namespace CarrotCake.CMS.Plugins.EventCalendarModule {
 
 	public static class WebHelper {
+
+		public static List<CMSAdminModuleMenu> GetMenuEntries(this IHtmlHelper helper) {
+			var web = helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+
+			DataSet ds = new DataSet();
+			ds.ReadXml(web.ContentRootPath + "/Views/Admin.config");
+
+			var lst = (from d in ds.Tables[1].AsEnumerable()
+					   select new CMSAdminModuleMenu {
+						   Caption = d.Field<string>("pluginlabel"),
+						   SortOrder = string.IsNullOrEmpty(d.Field<string>("menuorder")) ? -1 : int.Parse(d.Field<string>("menuorder")),
+						   Action = d.Field<string>("action"),
+						   Controller = d.Field<string>("controller"),
+						   UsePopup = (d.Table.Columns.Contains("usepopup") == false || string.IsNullOrEmpty(d.Field<string>("usepopup"))) ? false : Convert.ToBoolean(d.Field<string>("usepopup")),
+						   IsVisible = (d.Table.Columns.Contains("visible") == false || string.IsNullOrEmpty(d.Field<string>("visible"))) ? false : Convert.ToBoolean(d.Field<string>("visible")),
+						   AreaKey = d.Field<string>("area")
+					   }).OrderBy(x => x.Caption).OrderBy(x => x.SortOrder).ToList();
+
+			return lst;
+		}
 
 		public static string ReadEmbededScript(string resouceName) {
 			string sReturn = null;

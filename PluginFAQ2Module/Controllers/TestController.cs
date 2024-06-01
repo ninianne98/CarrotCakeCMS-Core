@@ -96,7 +96,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		public ActionResult TestView1(Guid id) {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowFaqList", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "ShowFaqList", this.AreaName, this.WidgetPayload);
 			var result = RenderWidgetHelper.ExecuteAction(ctrl);
 			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, result));
 
@@ -108,7 +108,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		public ActionResult TestView2(Guid id) {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowRandomFaq", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "ShowRandomFaq", this.AreaName, this.WidgetPayload);
 			var result = RenderWidgetHelper.ExecuteAction(ctrl);
 			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, result));
 
@@ -120,7 +120,7 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		public ActionResult TestView3(Guid id, int top) {
 			var model = new TestModel();
 
-			var ctrl = RenderWidgetHelper.CreateController(typeof(HomeController), this, "ShowFaqTopList", this.AreaName, this.WidgetPayload);
+			var ctrl = this.CreateController(typeof(HomeController), "ShowFaqTopList", this.AreaName, this.WidgetPayload);
 			var result = RenderWidgetHelper.ExecuteAction(ctrl);
 			model.RenderedContent = new HtmlString(RenderWidgetHelper.ResultToString(ctrl, result));
 

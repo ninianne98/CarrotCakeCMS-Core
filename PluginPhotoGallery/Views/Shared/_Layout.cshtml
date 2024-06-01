@@ -2,16 +2,21 @@
 @{
 	Layout = null;
 
-	string areaName = ViewBag.WidgetAreaName;
 	string assemblyName = ViewBag.WidgetAssemblyName;
-	string areaAlias = string.Format("{0}_Area", areaName);
+	string areaAlias = ViewBag.WidgetAreaAlias;
+
+	var widgetParts = assemblyName.Split('.');
+	var widgetName = assemblyName;
+	if (widgetParts.Length > 1) {
+		widgetName = widgetParts[widgetParts.Length - 1];
+	}
 }
 
 <html>
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>@ViewBag.Title - @ViewBag.WidgetAssemblyName</title>
+	<title>@ViewBag.Title - @assemblyName</title>
 	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.Silver })
 
 	@(new Bootstrap() { SelectedSkin = Bootstrap.BootstrapColorScheme.Plum })
@@ -61,7 +66,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				@Html.ActionLink(string.Format("{0}  (Core)", assemblyName), "Index", "Home", null, new { @class = "navbar-brand" })
+				@Html.ActionLink(string.Format("Widget: {0}  (Core)", widgetName), "Index", "Home", null, new { @class = "navbar-brand" })
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
@@ -90,7 +95,7 @@
 		@RenderBody()
 		<hr />
 		<footer>
-			<p>&copy; @DateTime.Now.Year - @ViewBag.WidgetAssemblyName</p>
+			<p>&copy; @DateTime.Now.Year - @assemblyName</p>
 		</footer>
 	</div>
 </body>

@@ -74,7 +74,6 @@ A:hover {
 	text-decoration: none;
 	padding: 5px;
 }
-
 .today a, .todaysel a {
 	color: #FFFF80;
 	text-decoration: none;
@@ -84,3 +83,5 @@ A:hover {
 table.innerhead, table.innerhead tr, table.innerhead tr td, .head tr, .head tr td, .innerhead tr, .innerhead tr td {
 	border: 0px solid #303030;
 }
+
+

@@ -11,7 +11,7 @@
 
 	var grid = Html.CarrotWeb().CarrotWebGrid<CalendarEntry>(Model.MonthDates);
 
-	grid.SetTableAttributes(new { @class = "calendarGrid" }, new { @class = " " }, null);
+	grid.SetTableAttributes(new { @class = "calendarGrid" }, new { @class = "header" }, null);
 
 	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
 	grid.ConfigName(Html.NameFor(x => x.MonthDates));
@@ -36,10 +36,12 @@
 
 	<style type="text/css">
 		.calendarCenter1 {
-			width: 225px;
+			width: 300px;
 			margin: 0 auto;
 			border: 1px solid transparent;
 			text-align: center;
+			padding: 0;
+			padding-top: 5px;
 			padding-bottom: 10px;
 		}
 

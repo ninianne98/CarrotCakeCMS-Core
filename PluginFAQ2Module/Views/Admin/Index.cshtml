@@ -17,7 +17,8 @@
 
 	var grid = Html.CarrotWeb().CarrotWebGrid<CarrotFaqCategory>(Model);
 
-	grid.SetTableAttributes(new { @class = "datatable" }, new { @class = "tablehead header thead-dark" }, null);
+	grid.PrettifyHeadings = true;
+	grid.SetTableAttributes(new { @class = "datatable table" }, new { @class = "tablehead header thead-dark" }, null);
 	grid.EmptyDataTemplate = @<text><p> <b>No records found.</b> </p></text>;
 	grid.ConfigName(Html.NameFor(x => x));
 
