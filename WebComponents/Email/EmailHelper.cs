@@ -12,7 +12,7 @@ namespace Carrotware.Web.UI.Components {
 
 	public static class EmailHelper {
 
-		public static bool SendMail(string fromEmail, string emailTo, string subjectLine, string bodyText, bool isHTML) {
+		public static bool SendMail(string? fromEmail, string emailTo, string subjectLine, string bodyText, bool isHTML) {
 			List<string> lstTo = new List<string>();
 			if (string.IsNullOrEmpty(emailTo)) {
 				emailTo = string.Empty;

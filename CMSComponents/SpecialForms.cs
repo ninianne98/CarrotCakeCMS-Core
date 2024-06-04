@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Reflection;
-using System.Xml.Serialization;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -50,10 +49,10 @@ namespace Carrotware.CMS.UI.Components {
 		public IHtmlHelper<SiteSearch> GetModelHelper(bool restoreQuery) {
 			var model = new SiteSearch();
 
-			if (_helper.ViewData["CMS_searchform"] != null) {
-				model = _helper.ViewData["CMS_searchform"] as SiteSearch;
+			if (_helper.ViewData[SiteSearch.Key] != null) {
+				model = _helper.ViewData[SiteSearch.Key] as SiteSearch;
 			} else {
-				model = new SiteSearch();
+				model = new SiteSearch(_helper);
 			}
 
 			if (restoreQuery) {
@@ -134,43 +133,30 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected ContactInfo InitContactInfo(string partialName) {
-			ContactInfo model = new ContactInfo();
+			var model = new ContactInfo();
 			_settings = new ContactInfoSettings();
 
 			if (_helper.ViewData[ContactInfo.Key] != null) {
 				model = _helper.ViewData[ContactInfo.Key] as ContactInfo;
+				_settings = model.Settings;
 			} else {
 				model = new ContactInfo();
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
 			}
 
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
 			model.Settings = _settings;
 
 			return model;
 		}
 
 		protected IHtmlHelper<ContactInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(ContactInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<ContactInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}
@@ -286,43 +272,30 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected LoginInfo InitLoginInfo(string partialName) {
-			LoginInfo model = new LoginInfo();
+			var model = new LoginInfo();
 			_settings = new LoginInfoSettings();
 
 			if (_helper.ViewData[LoginInfo.Key] != null) {
 				model = _helper.ViewData[LoginInfo.Key] as LoginInfo;
+				_settings = model.Settings;
 			} else {
 				model = new LoginInfo();
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
 			}
 
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
 			model.Settings = _settings;
 
 			return model;
 		}
 
 		protected IHtmlHelper<LoginInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(LoginInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<LoginInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}
@@ -420,43 +393,30 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected LogoutInfo InitLogoutInfo(string partialName) {
-			LogoutInfo model = new LogoutInfo();
+			var model = new LogoutInfo();
 			_settings = new LogoutInfoSettings();
 
 			if (_helper.ViewData[LogoutInfo.Key] != null) {
 				model = _helper.ViewData[LogoutInfo.Key] as LogoutInfo;
+				_settings = model.Settings;
 			} else {
 				model = new LogoutInfo();
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
 			}
 
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
 			model.Settings = _settings;
 
 			return model;
 		}
 
 		protected IHtmlHelper<LogoutInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(LogoutInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<LogoutInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}
@@ -550,43 +510,30 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected ForgotPasswordInfo InitForgotPasswordInfo(string partialName) {
-			ForgotPasswordInfo model = new ForgotPasswordInfo();
+			var model = new ForgotPasswordInfo();
 			_settings = new ForgotPasswordInfoSettings();
 
 			if (_helper.ViewData[ForgotPasswordInfo.Key] != null) {
 				model = _helper.ViewData[ForgotPasswordInfo.Key] as ForgotPasswordInfo;
+				_settings = model.Settings;
 			} else {
 				model = new ForgotPasswordInfo();
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
 			}
 
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
 			model.Settings = _settings;
 
 			return model;
 		}
 
 		protected IHtmlHelper<ForgotPasswordInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(ForgotPasswordInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<ForgotPasswordInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}
@@ -687,18 +634,18 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected ResetPasswordInfo InitResetPasswordInfo(string partialName) {
-			ResetPasswordInfo model = new ResetPasswordInfo();
+			var model = new ResetPasswordInfo();
 			_settings = new ResetPasswordInfoSettings();
 
 			if (_helper.ViewData[ResetPasswordInfo.Key] != null) {
 				model = _helper.ViewData[ResetPasswordInfo.Key] as ResetPasswordInfo;
+				_settings = model.Settings;
 			} else {
 				model = new ResetPasswordInfo();
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
+				_settings.UserCode = ResetPasswordInfoSettings.CodeUrl;
 			}
-
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
-			_settings.UserCode = ResetPasswordInfoSettings.CodeUrl;
 
 			model.Settings = _settings;
 
@@ -706,26 +653,12 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ResetPasswordInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(ResetPasswordInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<ResetPasswordInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}
@@ -833,17 +766,17 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected ChangePasswordInfo InitChangePasswordInfo(string partialName) {
-			ChangePasswordInfo model = new ChangePasswordInfo();
+			var model = new ChangePasswordInfo();
 			_settings = new ChangePasswordInfoSettings();
 
 			if (_helper.ViewData[ChangePasswordInfo.Key] != null) {
 				model = _helper.ViewData[ChangePasswordInfo.Key] as ChangePasswordInfo;
+				_settings = model.Settings;
 			} else {
 				model = new ChangePasswordInfo();
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
 			}
-
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
 
 			model.Settings = _settings;
 
@@ -851,26 +784,12 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ChangePasswordInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(ChangePasswordInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<ChangePasswordInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}
@@ -974,26 +893,25 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected ChangeProfileInfo InitChangeProfileInfo(string partialName) {
-			ChangeProfileInfo model = new ChangeProfileInfo();
-
+			var model = new ChangeProfileInfo();
 			_settings = new ChangeProfileInfoSettings();
 
 			if (_helper.ViewData[ChangeProfileInfo.Key] != null) {
 				model = _helper.ViewData[ChangeProfileInfo.Key] as ChangeProfileInfo;
+				_settings = model.Settings;
 			} else {
 				if (SecurityData.IsAuthenticated) {
 					var usr = SecurityData.CurrentExUser;
 					if (usr != null) {
 						model.Email = usr.Email;
-						model.UserNickName = usr.UserNickName;
-						model.FirstName = usr.FirstName;
-						model.LastName = usr.LastName;
+						model.UserNickName = usr.UserNickName ?? string.Empty;
+						model.FirstName = usr.FirstName ?? string.Empty;
+						model.LastName = usr.LastName ?? string.Empty;
 					}
 				}
+				_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
+				_settings.PostPartialName = partialName;
 			}
-
-			_settings.Uri = _helper.CarrotCakeHtml().CmsPage.ThePage.FileName;
-			_settings.PostPartialName = partialName;
 
 			model.Settings = _settings;
 
@@ -1001,26 +919,12 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		protected IHtmlHelper<ChangeProfileInfo> InitHelp() {
-			var xmlSerializer = new XmlSerializer(typeof(ChangeProfileInfoSettings));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, _settings);
-				xml = sw.ToString();
-				xml = xml.EncodeBase64();
-			}
-
 			_model.Settings = _settings;
-			_model.EncodedSettings = xml;
+			var xml = _model.SerializeSettings();
 
-			var hlp = _helper.CarrotHtmlHelper<ChangeProfileInfo>(_settings.PostPartialName, _model);
+			var hlp = _helper.CarrotHtmlHelper(_settings.PostPartialName, _model);
 
-			string frmTag = Environment.NewLine
-						+ hlp.AntiForgeryToken().RenderToString()
-						+ Environment.NewLine
-						+ hlp.HiddenFor(x => x.EncodedSettings).RenderToString()
-						+ Environment.NewLine;
-
-			_helper.ViewContext.Writer.Write(frmTag);
+			_model.WriteCache(_helper, hlp);
 
 			return hlp;
 		}

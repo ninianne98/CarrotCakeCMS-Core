@@ -1,6 +1,7 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Xml.Serialization;
 
 /*
@@ -21,8 +22,8 @@ namespace Carrotware.CMS.UI.Components {
 			this.Uri = CarrotHttpHelper.HttpContext.Request.Path;
 		}
 
-		public string PostPartialName { get; set; }
-		public string Uri { get; set; }
+		public string PostPartialName { get; set; } = string.Empty;
+		public string Uri { get; set; } = string.Empty;
 	}
 
 	//==============================
@@ -34,16 +35,19 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==============================
 
-	public abstract class FormSettingBase : FormSettingRootBase, IFormSettingBase {
+	public abstract class FormSettingBase : IFormSettingBase {
 
-		public FormSettingBase()
-			: base() {
+		public FormSettingBase() {
 			this.ValidationFailText = "Failed to validate as a human.";
+			this.Uri = CarrotHttpHelper.HttpContext.Request.Path;
 		}
 
+		public string PostPartialName { get; set; } = string.Empty;
+		public string Uri { get; set; } = string.Empty;
+
 		public bool UseValidateHuman { get; set; }
-		public string ValidateHumanClass { get; set; }
-		public string ValidationFailText { get; set; }
+		public string ValidateHumanClass { get; set; } = string.Empty;
+		public string ValidationFailText { get; set; } = string.Empty;
 
 		public void GetSettingFromConfig(FormConfigBase config) {
 			if (config != null && config.ValidateHuman != null) {
@@ -76,7 +80,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==============================
 
-	public interface IFormSettingBase {
+	public interface IFormSettingBase : IFormSettingRootBase {
 		bool UseValidateHuman { get; set; }
 		string ValidateHumanClass { get; set; }
 		string ValidationFailText { get; set; }
@@ -95,7 +99,7 @@ namespace Carrotware.CMS.UI.Components {
 			this.PostPartialName = partialName;
 		}
 
-		public string PostPartialName { get; set; }
+		public string PostPartialName { get; set; } = string.Empty;
 	}
 
 	//==============================
@@ -106,34 +110,52 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==============================
 
-	public abstract class FormConfigBase : FormConfigRootBase, IFormConfigBase {
+	public abstract class FormConfigBase : IFormConfigBase {
 
-		public FormConfigBase()
-			: base() {
+		public FormConfigBase() {
 			this.ValidateHuman = null;
+			this.PostPartialName = string.Empty;
 		}
 
 		public FormConfigBase(string partialName)
-			: base(partialName) {
+			: this() {
+			this.PostPartialName = partialName;
 		}
 
 		public FormConfigBase(string partialName, IValidateHuman validateHuman)
-			: base(partialName) {
+			: this(partialName) {
 			this.ValidateHuman = validateHuman;
 		}
+
+		public string PostPartialName { get; set; } = string.Empty;
 
 		public IValidateHuman? ValidateHuman { get; set; }
 	}
 
 	//==============================
 
-	public interface IFormConfigBase {
+	public interface IFormConfigBase : IFormConfigRootBase {
 		IValidateHuman? ValidateHuman { get; set; }
 	}
 
 	//==============================
 
-	public abstract class FormModelBase {
+	public interface IFormModelBase<S> {
+		string EncodedSettings { get; set; }
+		IValidateHuman ValidateHuman { get; set; }
+		object ValidateSettings { get; set; }
+		string ValidationValue { get; set; }
+
+		S Settings { get; set; }
+
+		void GetSettings();
+
+		string SerializeSettings();
+	}
+
+	//==============================
+
+	public abstract class FormModelBase<P> : IFormModelBase<P> {
 
 		public FormModelBase() { }
 
@@ -142,14 +164,17 @@ namespace Carrotware.CMS.UI.Components {
 		public object? ValidateSettings { get; set; }
 		public string? ValidationValue { get; set; }
 
-		public void GetSettings(Type type) {
+		public virtual P Settings { get; set; } = default;
+
+		public void GetSettings() {
 			this.ValidateSettings = null;
+			Type type = typeof(P);  //  this.Settings.GetType();
 
 			if (!string.IsNullOrEmpty(this.EncodedSettings)) {
-				string sXML = this.EncodedSettings.DecodeBase64();
+				string xml = this.EncodedSettings.DecodeBase64();
 				var xmlSerializer = new XmlSerializer(type);
-				using (var stringReader = new StringReader(sXML)) {
-					this.ValidateSettings = xmlSerializer.Deserialize(stringReader);
+				using (var sr = new StringReader(xml)) {
+					this.ValidateSettings = xmlSerializer.Deserialize(sr);
 				}
 
 				if (this.ValidateSettings != null && this.ValidateSettings is IFormSettingBase) {
@@ -164,6 +189,32 @@ namespace Carrotware.CMS.UI.Components {
 					}
 				}
 			}
+		}
+
+		public virtual string SerializeSettings() {
+			Type type = typeof(P);  //  this.Settings.GetType();
+			string xml = string.Empty;
+
+			var xmlSerializer = new XmlSerializer(type);
+			using (var sw = new StringWriter()) {
+				xmlSerializer.Serialize(sw, this.Settings);
+				xml = sw.ToString();
+			}
+
+			xml = xml.EncodeBase64();
+			this.EncodedSettings = xml;
+
+			return xml;
+		}
+
+		public virtual void WriteCache<T>(IHtmlHelper helper, IHtmlHelper<T> specialForm) where T : IFormModelBase<P> {
+			string frmTag = Environment.NewLine
+							+ specialForm.AntiForgeryToken().RenderToString()
+							+ Environment.NewLine
+							+ specialForm.HiddenFor(x => x.EncodedSettings).RenderToString()
+							+ Environment.NewLine;
+
+			helper.ViewContext.Writer.Write(frmTag);
 		}
 
 		public virtual ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {

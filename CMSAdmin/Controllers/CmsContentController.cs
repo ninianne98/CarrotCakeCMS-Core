@@ -86,9 +86,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				string formMode = Request.Form["form_type"].ToString().ToLowerInvariant();
 
 				if (formMode == "searchform") {
-					frm = new SiteSearch();
+					frm = new SiteSearch(this.HttpContext);
 					frm = FormHelper.ParseRequest(frm, Request);
-					this.ViewData["CMS_searchform"] = frm;
+					this.ViewData[SiteSearch.Key] = frm;
 					if (frm != null) {
 						this.TryValidateModel(frm);
 					}

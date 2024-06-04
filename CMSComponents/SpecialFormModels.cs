@@ -2,10 +2,9 @@
 using Carrotware.CMS.Interface;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
-using System.Xml.Serialization;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -22,22 +21,46 @@ namespace Carrotware.CMS.UI.Components {
 	//==================================================
 	public class SiteSearch {
 
+		private IHtmlHelper? _helper;
+		private HttpContext? _http;
+
 		public SiteSearch() {
 		}
 
+		public SiteSearch(IHtmlHelper helper) {
+			_helper = helper;
+			_http = _helper.ViewContext.HttpContext;
+		}
+
+		public SiteSearch(HttpContext http) {
+			_http = http;
+		}
+
+		public static string Key {
+			get {
+				return "CMS_searchform";
+			}
+		}
+
 		public void RestoreQueryString() {
-			if (CarrotHttpHelper.QueryString(SiteData.SearchQueryParameter) != null) {
-				this.query = CarrotHttpHelper.QueryString(SiteData.SearchQueryParameter).ToString();
+			if (_http != null) {
+				if (_http.Request.Query[SiteData.SearchQueryParameter].FirstOrDefault() != null) {
+					this.query = _http.Request.Query[SiteData.SearchQueryParameter].FirstOrDefault() ?? string.Empty;
+				}
+			} else {
+				if (CarrotHttpHelper.QueryString(SiteData.SearchQueryParameter) != null) {
+					this.query = CarrotHttpHelper.QueryString(SiteData.SearchQueryParameter).ToString();
+				}
 			}
 		}
 
 		[StringLength(128)]
-		public string query { get; set; }
+		public string query { get; set; } = string.Empty;
 	}
 
 	//==================================================
 
-	public class ContactInfo : FormModelBase {
+	public class ContactInfo : FormModelBase<ContactInfoSettings> {
 
 		public ContactInfo()
 			: base() {
@@ -51,7 +74,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			base.GetSettings(typeof(ContactInfoSettings));
+			base.GetSettings();
 			this.Settings = null;
 
 			if (this.ValidateSettings != null && this.ValidateSettings is ContactInfoSettings) {
@@ -86,7 +109,6 @@ namespace Carrotware.CMS.UI.Components {
 		[Display(Name = "Comment")]
 		public string PostCommentText { get; set; }
 
-		public ContactInfoSettings? Settings { get; set; }
 		public bool IsSaved { get; set; }
 
 		public void SendMail(PostComment pc, ContentPage page) {
@@ -140,7 +162,7 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==================================================
 
-	public class LogoutInfo {
+	public class LogoutInfo : FormModelBase<LogoutInfoSettings> {
 
 		public LogoutInfo() {
 			ReconstructSettings();
@@ -153,39 +175,23 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			this.Settings = null;
+			base.GetSettings();
+			this.Settings = null;   // new LogoutInfoSettings();
 
-			if (!string.IsNullOrEmpty(this.EncodedSettings)) {
-				string xml = this.EncodedSettings.DecodeBase64();
-				var xmlSerializer = new XmlSerializer(typeof(LogoutInfoSettings));
-				using (var stringReader = new StringReader(xml)) {
-					this.Settings = (LogoutInfoSettings)xmlSerializer.Deserialize(stringReader);
-				}
+			if (this.ValidateSettings != null && this.ValidateSettings is LogoutInfoSettings) {
+				this.Settings = this.ValidateSettings as LogoutInfoSettings;
 			}
 
 			this.IsLoggedIn = SecurityData.IsAuthenticated;
 		}
 
-		public string EncodedSettings { get; set; }
-		public LogoutInfoSettings Settings { get; set; }
 		public bool IsLoggedIn { get; set; }
 		public string? RedirectUri { get; set; }
-
-		public virtual ModelStateDictionary ClearOptionalItems(ModelStateDictionary modelState) {
-			// these child objects are for display only, and their validation is not needed
-			foreach (var ms in modelState.ToArray()) {
-				if (ms.Key.ToLowerInvariant().Contains("settings")) {
-					modelState.Remove(ms.Key);
-				}
-			}
-
-			return modelState;
-		}
 	}
 
 	//==================================================
 
-	public class LoginInfo : FormModelBase {
+	public class LoginInfo : FormModelBase<LoginInfoSettings> {
 
 		public LoginInfo()
 			: base() {
@@ -199,7 +205,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			base.GetSettings(typeof(LoginInfoSettings));
+			base.GetSettings();
 			this.Settings = null;
 
 			if (this.ValidateSettings != null && this.ValidateSettings is LoginInfoSettings) {
@@ -223,14 +229,13 @@ namespace Carrotware.CMS.UI.Components {
 
 		public string? RedirectUri { get; set; }
 
-		public LoginInfoSettings Settings { get; set; }
 		public SignInResult LogInStatus { get; set; }
 		public bool IsLoggedIn { get; set; }
 	}
 
 	//==================================================
 
-	public class ForgotPasswordInfo : FormModelBase {
+	public class ForgotPasswordInfo : FormModelBase<ForgotPasswordInfoSettings> {
 
 		public ForgotPasswordInfo()
 			: base() {
@@ -244,7 +249,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			base.GetSettings(typeof(ForgotPasswordInfoSettings));
+			base.GetSettings();
 			this.Settings = null;
 
 			if (this.ValidateSettings != null && this.ValidateSettings is ForgotPasswordInfoSettings) {
@@ -257,13 +262,11 @@ namespace Carrotware.CMS.UI.Components {
 		[Display(Name = "Email")]
 		[StringLength(128)]
 		public string Email { get; set; }
-
-		public ForgotPasswordInfoSettings Settings { get; set; }
 	}
 
 	//==================================================
 
-	public class ResetPasswordInfo : FormModelBase {
+	public class ResetPasswordInfo : FormModelBase<ResetPasswordInfoSettings> {
 
 		public ResetPasswordInfo()
 			: base() {
@@ -279,7 +282,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			base.GetSettings(typeof(ResetPasswordInfoSettings));
+			base.GetSettings();
 			this.Settings = null;
 
 			if (this.ValidateSettings != null && this.ValidateSettings is ResetPasswordInfoSettings) {
@@ -304,14 +307,12 @@ namespace Carrotware.CMS.UI.Components {
 		[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 		public string ConfirmPassword { get; set; }
 
-		public ResetPasswordInfoSettings Settings { get; set; }
-
 		public IdentityResult CreationResult { get; set; }
 	}
 
 	//==================================================
 
-	public class ChangePasswordInfo : FormModelBase {
+	public class ChangePasswordInfo : FormModelBase<ChangePasswordInfoSettings> {
 
 		public ChangePasswordInfo()
 			: base() {
@@ -325,7 +326,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			base.GetSettings(typeof(ChangePasswordInfoSettings));
+			base.GetSettings();
 			this.Settings = null;
 
 			if (this.ValidateSettings != null && this.ValidateSettings is ChangePasswordInfoSettings) {
@@ -348,13 +349,11 @@ namespace Carrotware.CMS.UI.Components {
 		[Display(Name = "Confirm new password")]
 		[Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
 		public string ConfirmPassword { get; set; }
-
-		public ChangePasswordInfoSettings Settings { get; set; }
 	}
 
 	//==================================================
 
-	public class ChangeProfileInfo : FormModelBase {
+	public class ChangeProfileInfo : FormModelBase<ChangeProfileInfoSettings> {
 
 		public ChangeProfileInfo()
 			: base() {
@@ -368,7 +367,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public void ReconstructSettings() {
-			base.GetSettings(typeof(ChangeProfileInfoSettings));
+			base.GetSettings();
 			this.Settings = null;
 
 			if (this.ValidateSettings != null && this.ValidateSettings is ChangeProfileInfoSettings) {
@@ -393,7 +392,5 @@ namespace Carrotware.CMS.UI.Components {
 		[Display(Name = "Last name")]
 		[StringLength(64)]
 		public string LastName { get; set; }
-
-		public ChangeProfileInfoSettings Settings { get; set; }
 	}
 }
