@@ -77,6 +77,32 @@
 	</Target>
 
 	<ItemGroup>
+		<None Include="Views\CmsAdmin\*.cshtml" />
+		<None Include="Views\CmsContent\*.cshtml" />
+		<None Include="Views\Shared\*.cshtml" />
+		<None Include="Views\*.cshtml" />
+
+		<Compile Remove="Views\CmsAdmin\*.cshtml" />
+		<Compile Remove="Views\CmsContent\*.cshtml" />
+		<Compile Remove="Views\Shared\*.cshtml" />
+		<Compile Remove="Views\Templates\*.cshtml" />
+		<Compile Remove="Views\*.cshtml" />
+
+		<None Include="Views\CmsAdmin\**\*.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\CmsContent\**\*.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\_View*.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<Content Remove="Views\CmsContent\PlainPage\plain.css" />
+		<EmbeddedResource Include="Views\CmsContent\PlainPage\plain.css" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Include="wwwroot\favicon.ico" />
 
 		<Content Include="appsettings.Development.json">
@@ -93,15 +119,6 @@
 		</Content>
 
 		<Content Include="TextContentProcessors.config">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-
-		<Content Include="Views\Shared\**\*" />
-		<Content Include="Views\CmsAdmin\**\*" />
-		<Content Include="Views\_ViewImports.cshtml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Views\_ViewStart.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 
@@ -124,9 +141,6 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="Views\Templates\Waterdrops\**\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Include="Views\CmsContent\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="Views\Templates\_ViewImports.cshtml">
@@ -223,12 +237,5 @@
 		<Content Include="Properties\launchSettings.json" />
 		<Content Include="wwwroot\error.html" />
 		<Content Include="wwwroot\general.html" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Remove="Views\CmsContent\PlainPage\plain.css" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="Views\CmsContent\PlainPage\plain.css" />
 	</ItemGroup>
 </Project>
