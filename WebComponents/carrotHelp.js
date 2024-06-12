@@ -61,11 +61,15 @@ function __carrotUserAjaxFunction(funcName) {
 $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 	e.preventDefault();
 
+	//console.log("the button id:  " + $(this).attr('id'));
+
 	var theForm = this.form;
 	//console.log("the form id:  " + $(theForm).attr('id'));
 
 	var frm = $(theForm);
 	var postUri = frm.attr('action');
+
+	//console.log("the postUri:  " + postUri);
 
 	// check if client side validated, if not present, assume left to server side
 	var validated = (frm.attr('data-ajax-valid') || 'true') == 'true';
@@ -78,6 +82,8 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 	var formType = frm.attr('data-ajax-method').toUpperCase();
 	var placeholder = frm.attr('data-ajax-update');
 	var fillMode = frm.attr('data-ajax-mode').toUpperCase();
+
+	//console.log("the placeholder:  " + placeholder);
 
 	var onBegin = frm.attr('data-ajax-begin') || '';
 	var onSuccess = frm.attr('data-ajax-success') || '';
@@ -108,6 +114,8 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 				__carrotUserAjaxFunction(onComplete).apply(frm, arguments);
 			},
 			success: function (result, status, xhr) {
+				//console.log(result);
+				//console.log("the placeholder: --------------  " + placeholder);
 				switch (fillMode) {
 					case "BEFORE":
 						$(placeholder).prepend(result);
@@ -119,7 +127,7 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 						$(placeholder).html(result);
 						break;
 				};
-
+				//__carrotSimpleOkAlert(result);
 				__carrotUserAjaxFunction(onSuccess).apply(frm, arguments);
 			},
 			error: function (xhr, status, error) {
@@ -140,6 +148,8 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 			}
 		}).done(function (result, status, xhr) {
 			//console.log("done/success");
+			//console.log(result);
+			//console.log("the placeholder: --------------  " + placeholder);
 			switch (fillMode) {
 				case "BEFORE":
 					$(placeholder).prepend(result);
@@ -151,6 +161,7 @@ $(document).on("click", "form[data-ajax=true] :submit", function (e) {
 					$(placeholder).html(result);
 					break;
 			};
+			//__carrotSimpleOkAlert(result);
 			__carrotUserAjaxFunction(onSuccess).apply(frm, arguments);
 		}).fail(function (xhr, status, error) {
 			//console.log("fail/error");

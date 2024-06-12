@@ -75,21 +75,20 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 		[ValidateAntiForgeryToken]
 		[WidgetActionSettingModel(typeof(CalendarDisplaySettings))]
 		public IActionResult EventCalendarDisplay(CalendarViewModel model) {
-			var settings = model.GetSettings();
+			var settings = new CalendarViewSettings();
+			var payload = new CalendarDisplaySettings();
 
-			if (string.IsNullOrEmpty(model.EncodedSettings)) {
-				var payload = new CalendarDisplaySettings();
-
+			if (string.IsNullOrWhiteSpace(model.EncodedSettings)) {
 				if (this.WidgetPayload is CalendarDisplaySettings) {
 					payload = (CalendarDisplaySettings)this.WidgetPayload;
 					payload.LoadData();
 				}
-
 				settings = model.ConvertSettings(payload);
-				model.AssignSettings(settings);
-
-				model.SetSettings(payload);
+			} else {
+				settings = model.GetSettings();
 			}
+
+			model.AssignSettings(settings);
 
 			ModelState.Clear();
 
@@ -114,21 +113,20 @@ namespace CarrotCake.CMS.Plugins.EventCalendarModule.Controllers {
 		[ValidateAntiForgeryToken]
 		[WidgetActionSettingModel(typeof(CalendarSimpleSettings))]
 		public IActionResult EventCalendarDisplay2(CalendarViewModel model) {
-			var settings = model.GetSettings();
+			var settings = new CalendarViewSettings();
+			var payload = new CalendarSimpleSettings();
 
-			if (string.IsNullOrEmpty(model.EncodedSettings)) {
-				var payload = new CalendarSimpleSettings();
-
+			if (string.IsNullOrWhiteSpace(model.EncodedSettings)) {
 				if (this.WidgetPayload is CalendarSimpleSettings) {
 					payload = (CalendarSimpleSettings)this.WidgetPayload;
 					payload.LoadData();
 				}
-
 				settings = model.ConvertSettings(payload);
-				model.AssignSettings(settings);
-
-				model.SetSettings(payload);
+			} else {
+				settings = model.GetSettings();
 			}
+
+			model.AssignSettings(settings);
 
 			ModelState.Clear();
 

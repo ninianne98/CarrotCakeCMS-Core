@@ -93,27 +93,27 @@
 
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('#CalendarInputDate').change(function () {
+			$('#CalendarInputDate1').change(function () {
 				PostSelected();
 			});
 		});
 
 		function PostSelected() {
-			$('#@Html.IdFor(m => m.MonthSelected)').val($('#CalendarInputDate').val());
+			$('#divCalendarResults #@Html.IdFor(m => m.MonthSelected)').val($('#CalendarInputDate1').val());
 
-			$('#btnSubmitCal').click();
+			$('#btnSubmitCal1').click();
 		}
 
 		function PostNext() {
-			$('#@Html.IdFor(m => m.MonthSelected)').val($('#@Html.IdFor(m => m.MonthNext)').val());
+			$('#divCalendarResults #@Html.IdFor(m => m.MonthSelected)').val($('#divCalendarResults #@Html.IdFor(m => m.MonthNext)').val());
 
-			$('#btnSubmitCal').click();
+			$('#btnSubmitCal1').click();
 		}
 
 		function PostPrior() {
-			$('#@Html.IdFor(m => m.MonthSelected)').val($('#@Html.IdFor(m => m.MonthPrior)').val());
+			$('#divCalendarResults #@Html.IdFor(m => m.MonthSelected)').val($('#divCalendarResults #@Html.IdFor(m => m.MonthPrior)').val());
 
-			$('#btnSubmitCal').click();
+			$('#btnSubmitCal1').click();
 		}
 	</script>
 
@@ -132,42 +132,42 @@
 		grid.ConfigName(Html.NameFor(x => x.MonthDates));
 
 		grid
-			.AddColumn(x => x.EventDate, new CarrotGridColumn { HasHeadingText = false, CellFormatString = WebHelper.ShortDateFormatPattern })
-			.AddColumn(new CarrotGridTemplateColumn<ViewCalendarEvent> {
-				HasHeadingText = false,
-				BodyAttributes = new { @class = "leftAlignCell" },
-				FormatTemplate = @<text>
-						@if (!item.IsAllDayEvent) {
-					if (item.EventStartTime.HasValue && item.EventEndTime.HasValue) {
-						@item.EventDate.ToString(WebHelper.ShortTimePattern)
-						<span> - </span>
-						@item.EventEndDate.ToString(WebHelper.ShortTimePattern)
-					} else if (item.EventStartTime.HasValue) {
-						@item.EventDate.ToString(WebHelper.ShortTimePattern)
-					}
-					}
-					</text>
-			})
-			.AddColumn(new CarrotGridTemplateColumn<ViewCalendarEvent> {
-				HasHeadingText = false,
-				BodyAttributes = new { @class = "leftAlignCell" },
-				FormatTemplate = @<text>
-					<div style="border: solid 1px @item.CategoryBGColor; background-color: @item.CategoryFGColor; padding: 1px;">
-						<div style="border: solid 2px @item.CategoryFGColor; color: @item.CategoryFGColor; background-color: @item.CategoryBGColor; padding: 5px; margin: 1px;">
-							<span style="font-weight: bold; color: @item.CategoryFGColor;">
-								@item.EventTitle
-								@if (item.IsCancelledSeries || item.IsCancelledEvent) {
-								<span> (CANCELLED) </span>
-							}
-							</span>
-						</div>
-					</div>
-					<div class="divCalendarDetailText">
-						@Html.Raw(item.EventSeriesDetail)
-						@Html.Raw(item.EventDetail)
-					</div>
-				</text>
-			});
+		.AddColumn(x => x.EventDate, new CarrotGridColumn { HasHeadingText = false, CellFormatString = WebHelper.ShortDateFormatPattern })
+		.AddColumn(new CarrotGridTemplateColumn<ViewCalendarEvent> {
+		HasHeadingText = false,
+		BodyAttributes = new { @class = "leftAlignCell" },
+		FormatTemplate = @<text>
+			@if (!item.IsAllDayEvent) {
+				if (item.EventStartTime.HasValue && item.EventEndTime.HasValue) {
+					@item.EventDate.ToString(WebHelper.ShortTimePattern)
+					<span> - </span>
+					@item.EventEndDate.ToString(WebHelper.ShortTimePattern)
+				} else if (item.EventStartTime.HasValue) {
+					@item.EventDate.ToString(WebHelper.ShortTimePattern)
+				}
+			}
+		</text>
+		})
+		.AddColumn(new CarrotGridTemplateColumn<ViewCalendarEvent> {
+		HasHeadingText = false,
+		BodyAttributes = new { @class = "leftAlignCell" },
+		FormatTemplate = @<text>
+			<div style="border: solid 1px @item.CategoryBGColor; background-color: @item.CategoryFGColor; padding: 1px;">
+				<div style="border: solid 2px @item.CategoryFGColor; color: @item.CategoryFGColor; background-color: @item.CategoryBGColor; padding: 5px; margin: 1px;">
+					<span style="font-weight: bold; color: @item.CategoryFGColor;">
+						@item.EventTitle
+						@if (item.IsCancelledSeries || item.IsCancelledEvent) {
+							<span> (CANCELLED) </span>
+						}
+					</span>
+				</div>
+			</div>
+			<div class="divCalendarDetailText">
+				@Html.Raw(item.EventSeriesDetail)
+				@Html.Raw(item.EventDetail)
+			</div>
+		</text>
+		});
 	}
 
 	@if (Model.GenerateCss) {
@@ -178,7 +178,7 @@
 		@Html.AntiForgeryToken()
 
 		<div id="divDatePicker" class="calendarCenter1">
-			@Html.TextBox("CalendarInputDate", string.Format(WebHelper.ShortDateFormatPattern, Model.MonthSelected), new { maxlength = "12", size = "16", style = "width: 120px; display:inline; margin:1em", @class = "eventDateRegion form-control-sm" })
+			@Html.TextBox("CalendarInputDate1", string.Format(WebHelper.ShortDateFormatPattern, Model.MonthSelected), new { maxlength = "12", size = "16", style = "width: 120px; display:inline; margin:1em", @class = "eventDateRegion form-control-sm" })
 		</div>
 
 		<div class="calendarCenter2">
@@ -186,9 +186,9 @@
 				@cal.RenderBody()
 			</div>
 
-			<input type="button" class="calendarbutton" id="btnLast " value="«««««" onclick="PostPrior();" />
+			<input type="button" class="calendarbutton" id="btnLast" value="«««««" onclick="PostPrior();" />
 			&nbsp;&nbsp;&nbsp;
-			<input type="button" class="calendarbutton" id="btnNext " value="»»»»»" onclick="PostNext();" />
+			<input type="button" class="calendarbutton" id="btnNext" value="»»»»»" onclick="PostNext();" />
 		</div>
 
 		<div style="display:none;">
@@ -196,7 +196,7 @@
 			@Html.TextBoxFor(m => m.MonthPrior, WebHelper.ShortDateFormatPattern, new { maxlength = "12", size = "16" })
 			@Html.TextBoxFor(m => m.MonthNext, WebHelper.ShortDateFormatPattern, new { maxlength = "12", size = "16" })
 			@Html.HiddenFor(m => m.EncodedSettings)
-			<input type="submit" id="btnSubmitCal" />
+			<input type="submit" id="btnSubmitCal1" />
 		</div>
 	}
 

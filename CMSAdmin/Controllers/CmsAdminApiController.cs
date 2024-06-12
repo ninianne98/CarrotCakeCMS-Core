@@ -573,18 +573,13 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
-		public string GenerateNewFilename([FromBody] ApiModel model) {
+		[HttpGet]
+		public string GenerateNewFilename(string ThePageTitle, string GoLiveDate, string PageID, string Mode) {
 			try {
-				string thePageTitle = model.ThePageTitle;
-				string goLiveDateString = model.GoLiveDate;
-				string pageID = model.PageID;
-				string mode = model.Mode;
-
-				currentPageGuid = new Guid(pageID);
-				DateTime goLiveDate = Convert.ToDateTime(goLiveDateString);
-				string sThePageTitle = CMSConfigHelper.DecodeBase64(thePageTitle);
-				var pageType = mode.ToLowerInvariant() == "page" ? ContentPageType.PageType.ContentEntry : ContentPageType.PageType.BlogEntry;
+				currentPageGuid = new Guid(PageID);
+				DateTime goLiveDate = Convert.ToDateTime(GoLiveDate);
+				string sThePageTitle = CMSConfigHelper.DecodeBase64(ThePageTitle);
+				var pageType = Mode.ToLowerInvariant() == "page" ? ContentPageType.PageType.ContentEntry : ContentPageType.PageType.BlogEntry;
 
 				return JsonSerializer.Serialize(SiteData.GenerateNewFilename(currentPageGuid, sThePageTitle, goLiveDate, pageType));
 			} catch (Exception ex) {

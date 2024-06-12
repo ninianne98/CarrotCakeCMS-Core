@@ -46,8 +46,8 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		public PartialViewResult ShowPrettyPhotoGallery() {
 			var settings = new GallerySettings();
 
-			if (WidgetPayload is GallerySettings) {
-				settings = (GallerySettings)WidgetPayload;
+			if (this.WidgetPayload is GallerySettings) {
+				settings = (GallerySettings)this.WidgetPayload;
 				settings.LoadData();
 			}
 

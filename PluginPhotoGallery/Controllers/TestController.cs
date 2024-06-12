@@ -57,7 +57,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			settings.PublicParmValues.Add("GalleryId", settings.GalleryId.ToString().ToLowerInvariant());
 			settings.PublicParmValues.Add("ShowHeading", settings.ShowHeading.ToString());
 
-			WidgetPayload = settings;
+			this.WidgetPayload = settings;
 		}
 
 		protected override void Dispose(bool disposing) {
@@ -218,8 +218,8 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		public IActionResult GalleryView(Guid id) {
 			var settings = new GallerySettings();
 
-			if (WidgetPayload is GallerySettings) {
-				settings = (GallerySettings)WidgetPayload;
+			if (this.WidgetPayload is GallerySettings) {
+				settings = (GallerySettings)this.WidgetPayload;
 				settings.LoadData();
 			}
 

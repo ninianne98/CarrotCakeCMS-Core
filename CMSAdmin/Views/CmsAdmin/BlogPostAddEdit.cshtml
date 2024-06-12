@@ -106,9 +106,9 @@
 				var myPageTitle = MakeStringSafe(theTitle);
 
 				$.ajax({
-					type: "POST",
-					url: webMthd,
-					data: JSON.stringify({ ThePageTitle: myPageTitle, GoLiveDate: sGoLiveDate, PageID: thePageID, Mode: 'blog' }),
+					type: "GET",
+					url: webMthd + "?ThePageTitle=" + encodeURIComponent(myPageTitle) + "&GoLiveDate=" + encodeURIComponent(sGoLiveDate) + "&PageID=" + encodeURIComponent(thePageID) + "&Mode=blog",
+					//data: JSON.stringify({ ThePageTitle: myPageTitle, GoLiveDate: sGoLiveDate, PageID: thePageID, Mode: 'blog' }),
 					contentType: "application/json; charset=utf-8",
 					dataType: "json"
 				}).done(ajaxGeneratePageFilename)
