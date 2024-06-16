@@ -23,6 +23,12 @@
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
+
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+		<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Compile Include="Code\CalendarDisplaySettings.cs" />
 		<Compile Include="Code\CalendarEvent.cs" />
@@ -64,7 +70,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="global.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Properties\launchSettings.json" />
 	</ItemGroup>
@@ -94,31 +100,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Data\Scripts\Script01_DownCalendarEvent.sql" />
-	  <EmbeddedResource Include="Data\Scripts\Script01_UpCalendarEvent.sql" />
-	  <Content Include="Views\_ViewImports.cshtml" />
-	  <Content Include="Views\_ViewStart.cshtml" />
-	  <Content Include="Views\Admin.config" />
-	  <Content Include="Views\Admin\CategoryDetail.cshtml" />
-	  <Content Include="Views\Admin\CategoryList.cshtml" />
-	  <Content Include="Views\Admin\Database.cshtml" />
-	  <Content Include="Views\Admin\EventDetail.cshtml" />
-	  <Content Include="Views\Admin\EventDetailSingle.cshtml" />
-	  <Content Include="Views\Admin\EventList.cshtml" />
-	  <Content Include="Views\Admin\Index.cshtml" />
-	  <Content Include="Views\Admin\ProfileList.cshtml" />
-	  <Content Include="Views\Home\CalendarUpcoming.cshtml" />
-	  <Content Include="Views\Home\EventCalendarDisplay.cshtml" />
-	  <Content Include="Views\Home\EventCalendarDisplay2.cshtml" />
-	  <Content Include="Views\Home\Index.cshtml" />
-	  <Content Include="Views\Public.config" />
-	  <Content Include="Views\Shared\_Layout.cshtml" />
-	  <Content Include="Views\Shared\_LayoutPop.cshtml" />
-	  <Content Include="Views\Test\TestView.cshtml" />
+		<EmbeddedResource Include="Data\Scripts\Script01_DownCalendarEvent.sql" />
+		<EmbeddedResource Include="Data\Scripts\Script01_UpCalendarEvent.sql" />
+		<Content Include="Views\_ViewImports.cshtml" />
+		<Content Include="Views\_ViewStart.cshtml" />
+		<Content Include="Views\Admin.config" />
+		<Content Include="Views\Admin\CategoryDetail.cshtml" />
+		<Content Include="Views\Admin\CategoryList.cshtml" />
+		<Content Include="Views\Admin\Database.cshtml" />
+		<Content Include="Views\Admin\EventDetail.cshtml" />
+		<Content Include="Views\Admin\EventDetailSingle.cshtml" />
+		<Content Include="Views\Admin\EventList.cshtml" />
+		<Content Include="Views\Admin\Index.cshtml" />
+		<Content Include="Views\Admin\ProfileList.cshtml" />
+		<Content Include="Views\Home\CalendarUpcoming.cshtml" />
+		<Content Include="Views\Home\EventCalendarDisplay.cshtml" />
+		<Content Include="Views\Home\EventCalendarDisplay2.cshtml" />
+		<Content Include="Views\Home\Index.cshtml" />
+		<Content Include="Views\Public.config" />
+		<Content Include="Views\Shared\_Layout.cshtml" />
+		<Content Include="Views\Shared\_LayoutPop.cshtml" />
+		<Content Include="Views\Test\TestView.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Views\Shared\_LayoutModule.cshtml" />
+		<None Include="Views\Shared\_LayoutModule.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -130,13 +136,13 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 

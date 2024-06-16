@@ -28,6 +28,12 @@
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
+
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+		<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Content Remove="compilerconfig.json" />
 	</ItemGroup>
@@ -35,7 +41,6 @@
 	<ItemGroup>
 		<None Remove="adminHelp.js" />
 	</ItemGroup>
-
 
 	<ItemGroup>
 		<EmbeddedResource Include="adminHelp.js" />

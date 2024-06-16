@@ -28,6 +28,7 @@
 		<FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
 	</PropertyGroup>
 
+
 	<PropertyGroup>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 		<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
@@ -36,6 +37,10 @@
 		<PreserveCompilationContext>true</PreserveCompilationContext>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Remove="compilerconfig.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="bootstrap5\amethystorchid.min.css" />
@@ -273,14 +278,6 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Update="System.Core">
-			<RequiredTargetFramework>3.5</RequiredTargetFramework>
-		</Reference>
-		<Reference Update="System.Xml.Linq">
-			<RequiredTargetFramework>3.5</RequiredTargetFramework>
-		</Reference>
-	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="calendar.txt" />
 		<EmbeddedResource Include="carrotHelp.js" />
@@ -534,5 +531,13 @@
 
 	<ItemGroup>
 		<Folder Include="Properties\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="compilerconfig.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 </Project>

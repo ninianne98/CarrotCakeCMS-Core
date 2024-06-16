@@ -29,6 +29,10 @@
 	</PropertyGroup>
 
 
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<None Remove="Scripts\00_Initial.sql" />
 		<None Remove="Scripts\20230610_Migrate.sql" />
