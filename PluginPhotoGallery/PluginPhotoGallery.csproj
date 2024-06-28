@@ -119,6 +119,10 @@
 		<Content Include="wwwroot\Assets\prettyPhoto\PhotoIcon2.png" />
 		<Content Include="wwwroot\Assets\prettyPhoto\PhotoIcon3.png" />
 		<Content Include="wwwroot\Assets\prettyPhoto\prettyPhoto.css" />
+		<Content Include="wwwroot\Content\calendar.png" />
+		<Content Include="wwwroot\Content\SampleA.png" />
+		<Content Include="wwwroot\Content\SampleB.png" />
+		<Content Include="wwwroot\Content\SampleC.png" />
 		<Content Include="wwwroot\Content\Site.css" />
 		<Content Include="wwwroot\favicon.ico" />
 	</ItemGroup>

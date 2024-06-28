@@ -37,12 +37,15 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 		public string? ImageMetaData { get; set; }
 
 		public void ValidateGalleryImage() {
+			if (string.IsNullOrWhiteSpace(this.GalleryImageName)) {
+				throw new Exception("Image path must be provided.");
+			}
 			if (!string.IsNullOrEmpty(this.GalleryImageName)) {
 				if (this.GalleryImageName.Contains("../") || this.GalleryImageName.Contains(@"..\")) {
 					throw new Exception("Cannot use relative paths.");
 				}
 				if (this.GalleryImageName.Contains(":")) {
-					throw new Exception("Cannot specify drive letters.");
+					throw new Exception("Cannot specify drive letters or other protocols.");
 				}
 				if (this.GalleryImageName.Contains("//") || this.GalleryImageName.Contains(@"\\")) {
 					throw new Exception("Cannot use UNC paths.");

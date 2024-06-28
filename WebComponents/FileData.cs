@@ -220,6 +220,11 @@ namespace Carrotware.Web.UI.Components {
 				} catch (Exception ex) { }
 			}
 
+			if (File.Exists(testFile) == false) {
+				f.FileName = Path.GetFileName(myFileName);
+				f.FolderPath = MakeWebFolderPath(sQuery);
+			}
+
 			return f;
 		}
 

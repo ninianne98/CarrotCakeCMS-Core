@@ -18,7 +18,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>@ViewBag.Title - @assemblyName</title>
 	@(new jquerybasic() { SelectedSkin = jquerybasic.jQueryTheme.Silver })
-
 	@(new Bootstrap() { SelectedSkin = Bootstrap.BootstrapColorScheme.Plum })
 	<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 
@@ -33,12 +32,84 @@
 
 		function doStyles() {
 			$("input:button, input:submit, input:reset, button").button();
-			$("input:button, input:submit, input:reset, button").addClass('btn');
+			$("input:button, input:submit, input:reset, button").each(function () {
+				if (!$(this).hasClass("btn")) {
+					$(this).addClass('btn btn-primary');
+				}
+				if ($(this).hasClass("btn-default")) {
+					$(this).addClass('btn-primary');
+				}
+			});
+
+			$(".dateRegion").each(function () {
+				$(this).datepicker({
+					changeMonth: true,
+					changeYear: true,
+					showOn: "both",
+					buttonImage: '/Content/calendar.png',
+					buttonImageOnly: true,
+					constrainInput: true,
+					beforeShow: function () {
+						setTimeout(function () {
+							$('.ui-datepicker').css('z-index', 15);
+						}, 0);
+					}
+				});
+			});
+		}
+	</script>
+
+	@* https://cdnjs.com/libraries/tinymce/6.8.4 *@
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.4/tinymce.min.js" integrity="sha512-DgTvLlVQBm8TJnlfqGDPm0re0QnTIv/frIzuARdI8zeZaYeFx+DgEIJhaD6kUCbcnn9wUYwFaMkxT52NdnYNDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<script type="text/javascript">
+		function cmsTinyMceInit(w, h, r) {
+			tinymce.init({
+				selector: "textarea.mceEditor",
+				promotion: false,
+				convert_unsafe_embeds: true,
+				height: h,
+				width: w,
+				resize: r,
+				menubar: false,
+				plugins: 'image link lists media charmap searchreplace visualblocks table preview code codesample help',
+				toolbar: [
+					'bold italic underline strikethrough sub sup | blocks forecolor backcolor | blockquote alignleft aligncenter alignright alignjustify outdent indent | help | ',
+					'undo redo searchreplace | bullist numlist | removeformat pastetext | link unlink anchor image media customfilebrowser | charmap codesample code preview visualblocks'
+				],
+				content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+			});
 		}
 
 		function cmsPreSaveTrigger() {
+			if (tinymce) {
+				var tgr = tinymce.triggerSave();
+			}
+
 			return true;
 		}
+	</script>
+
+	<script type="text/javascript">
+		var bTinyLoaded = false;
+
+		function cmsAjaxFailed() {
+		}
+
+		function AjaxTinyLoad() {
+			if (!bTinyLoaded) {
+				cmsTinyMceInit(875, 500, false);
+			}
+			bTinyLoaded = true;
+		}
+
+		$(document).ready(function () {
+			AjaxTinyLoad();
+		});
+
+		$(document).ajaxComplete(function (event, xhr, settings) {
+			AjaxTinyLoad();
+		});
 	</script>
 
 	<style>

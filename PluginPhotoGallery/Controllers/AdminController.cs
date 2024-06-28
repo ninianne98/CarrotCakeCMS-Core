@@ -5,6 +5,7 @@ using Carrotware.CMS.Interface.Controllers;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -31,6 +32,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			_helper = new GalleryHelper(_site.SiteID);
 		}
 
+		[HttpGet]
 		public ActionResult Index() {
 			var model = new PagedData<GalleryGroup>();
 			model.InitOrderBy(x => x.GalleryTitle, true);
@@ -59,6 +61,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			return View(model);
 		}
 
+		[HttpGet]
 		public ActionResult EditGallery(Guid id) {
 			return View("EditGallery", _helper.GalleryGroupGetByID(id));
 		}
@@ -95,6 +98,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			}
 		}
 
+		[HttpGet]
 		public ActionResult CreateGallery() {
 			return View("EditGallery", new GalleryGroup());
 		}
@@ -105,8 +109,9 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			return EditGallery(model);
 		}
 
+		[HttpGet]
 		public ActionResult EditGalleryPhotos(Guid id) {
-			EditPhotoGalleryModel model = new EditPhotoGalleryModel(_site.SiteID, id);
+			EditPhotoGalleryModel model = new EditPhotoGalleryModel(_site.SiteID, id, "images");
 
 			return View(model);
 		}
@@ -126,12 +131,15 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 			}
 		}
 
+		[HttpGet]
 		public ActionResult GalleryDatabase() {
-			List<string> lst = new List<string>();
+			var lst = new List<string>();
 
 			using (var ctx = new GalleryContext()) {
 				try {
+					var mig = ctx.Database.GetPendingMigrations();
 					ctx.Database.Initialize();
+					lst = lst.Union(mig).ToList();
 				} catch (Exception ex) {
 					lst.Add(ex.ToString());
 					throw;
@@ -165,6 +173,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult EditImageMetaData(GalleryMetaData model) {
+			ValidateGalleryImage(model.GalleryImageName);
 			GalleryMetaData meta = _helper.GalleryMetaDataGetByFilename(model.GalleryImageName);
 
 			if (meta == null) {
@@ -184,11 +193,14 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Controllers {
 		}
 
 		protected void ValidateGalleryImage(string imageFile) {
+			if (string.IsNullOrWhiteSpace(imageFile)) {
+				throw new Exception("Image path must be provided.");
+			}
 			if (imageFile.Contains("../") || imageFile.Contains(@"..\")) {
 				throw new Exception("Cannot use relative paths.");
 			}
 			if (imageFile.Contains(":")) {
-				throw new Exception("Cannot specify drive letters.");
+				throw new Exception("Cannot specify drive letters or other protocols.");
 			}
 			if (imageFile.Contains("//") || imageFile.Contains(@"\\")) {
 				throw new Exception("Cannot use UNC paths.");
