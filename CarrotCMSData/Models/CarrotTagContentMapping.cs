@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Carrotware.CMS.Data.Models {
+﻿namespace Carrotware.CMS.Data.Models {
 	public partial class CarrotTagContentMapping {
 		public Guid TagContentMappingId { get; set; }
 		public Guid ContentTagId { get; set; }

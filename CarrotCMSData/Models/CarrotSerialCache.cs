@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Carrotware.CMS.Data.Models {
+﻿namespace Carrotware.CMS.Data.Models {
 	public partial class CarrotSerialCache {
 		public Guid SerialCacheId { get; set; }
 		public Guid SiteId { get; set; }
