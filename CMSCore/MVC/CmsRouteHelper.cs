@@ -97,9 +97,7 @@ namespace Carrotware.CMS.Core {
 					return navData;
 				}
 
-				if (requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant()
-					|| requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant().Replace(".ashx", ".axd")
-					|| requestedUri == SiteFilename.RssFeedUri.ToLowerInvariant().Replace(".ashx", ".xml")) {
+				if (UseDynamicFeed(SiteFilename.RssFeedUri, requestedUri)) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.RssAction);
 					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
@@ -110,9 +108,7 @@ namespace Carrotware.CMS.Core {
 					return navData;
 				}
 
-				if (requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant()
-					|| requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant().Replace(".ashx", ".axd")
-					|| requestedUri == SiteFilename.SiteMapUri.ToLowerInvariant().Replace(".ashx", ".xml")) {
+				if (UseDynamicFeed(SiteFilename.SiteMapUri, requestedUri)) {
 					routeData.Add(CmsRouting.PageIdKey, CmsRouteConstants.SiteMapAction);
 					routeData[CmsRouting.SpecialKey] = true;
 					routeData["controller"] = CmsRouteConstants.CmsController.Content;
@@ -194,6 +190,22 @@ namespace Carrotware.CMS.Core {
 			}
 
 			return navData;
+		}
+
+		private static bool UseDynamicFeed(string feedUri, string requestedUri) {
+			var uri = feedUri.ToLowerInvariant();
+			var reqUri = requestedUri.ToLowerInvariant();
+
+			var pathMatch = reqUri == uri.ToLowerInvariant()
+								|| reqUri == uri.Replace(".ashx", ".axd")
+								|| reqUri == uri.Replace(".ashx", ".xml");
+
+			// give precidence to actual xml
+			if (pathMatch && reqUri.EndsWith(".xml")) {
+				return File.Exists(CarrotWebHelper.MapWebPath(reqUri)) == false;
+			}
+
+			return pathMatch;
 		}
 	}
 }

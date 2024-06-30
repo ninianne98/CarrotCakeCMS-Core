@@ -29,7 +29,7 @@ namespace Carrotware.CMS.Core {
 
 		public static List<ContentPageType> ContentPageTypeList {
 			get {
-				List<ContentPageType> types = new List<ContentPageType>();
+				var types = new List<ContentPageType>();
 
 				bool bCached = false;
 
@@ -66,9 +66,9 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static PageType GetTypeByID(Guid contentTypeID) {
-			ContentPageType _type = ContentPageTypeList.Where(t => t.ContentTypeID == contentTypeID).FirstOrDefault();
+			var type = ContentPageTypeList.Where(t => t.ContentTypeID == contentTypeID).FirstOrDefault();
 
-			return GetTypeByName(_type.ContentTypeValue);
+			return GetTypeByName(type.ContentTypeValue);
 		}
 
 		public static PageType GetTypeByName(string contentTypeValue) {
@@ -84,9 +84,9 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static Guid GetIDByType(PageType contentType) {
-			ContentPageType _type = ContentPageTypeList.Where(t => t.ContentTypeValue.ToLowerInvariant() == contentType.ToString().ToLowerInvariant()).FirstOrDefault();
+			var type = ContentPageTypeList.Where(t => t.ContentTypeValue.ToLowerInvariant() == contentType.ToString().ToLowerInvariant()).FirstOrDefault();
 
-			return _type.ContentTypeID;
+			return type.ContentTypeID;
 		}
 
 		#region IDisposable Members

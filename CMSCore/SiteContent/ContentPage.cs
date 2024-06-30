@@ -368,6 +368,15 @@ namespace Carrotware.CMS.Core {
 
 				SaveKeywordsAndTags(db);
 
+				var priorVersions = db.CarrotContents.Where(x => x.IsLatestVersion == true && x.ContentId != c.ContentId
+											&& x.RootContentId == c.RootContentId).Select(x => x.ContentId).ToList();
+
+				// make sure if there are any stray active rows besides the new one, mark them inactive
+				if (priorVersions.Any()) {
+					db.CarrotContents.Where(x => priorVersions.Contains(x.ContentId) && x.RootContentId == c.RootContentId)
+										.ExecuteUpdate(y => y.SetProperty(z => z.IsLatestVersion, false));
+				}
+
 				db.SaveChanges();
 			}
 		}
@@ -442,14 +451,14 @@ namespace Carrotware.CMS.Core {
 		[Display(Name = "Template File")]
 		[StringLength(256)]
 		[Required]
-		public string TemplateFile { get; set; }
+		public string TemplateFile { get; set; } = string.Empty;
 
 		public string? Thumbnail { get; set; }
 
 		[Display(Name = "File Name")]
 		[StringLength(256)]
 		[Required]
-		public string FileName { get; set; }
+		public string FileName { get; set; } = string.Empty;
 
 		[Display(Name = "Heading")]
 		[StringLength(256)]
@@ -458,12 +467,12 @@ namespace Carrotware.CMS.Core {
 		[Display(Name = "Title")]
 		[StringLength(256)]
 		[Required]
-		public string TitleBar { get; set; }
+		public string TitleBar { get; set; } = string.Empty;
 
 		[Display(Name = "Nav Text")]
 		[StringLength(256)]
 		[Required]
-		public string NavMenuText { get; set; }
+		public string NavMenuText { get; set; } = string.Empty;
 
 		[Display(Name = "Body")]
 		public string? PageText { get; set; }

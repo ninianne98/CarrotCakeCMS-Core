@@ -63,16 +63,16 @@ namespace Carrotware.CMS.Core {
 		}
 
 		[Display(Name = "Control Path")]
-		public string ControlPath { get; set; }
+		public string ControlPath { get; set; } = string.Empty;
 
 		[Display(Name = "Control Properties")]
-		public string ControlProperties { get; set; }
+		public string? ControlProperties { get; set; }
 
 		public Guid WidgetDataID { get; set; }
 		public Guid Root_WidgetID { get; set; }
 
 		[Display(Name = "Placeholder Name")]
-		public string PlaceholderName { get; set; }
+		public string PlaceholderName { get; set; } = string.Empty;
 
 		public Guid Root_ContentID { get; set; }
 		public int WidgetOrder { get; set; }
@@ -125,7 +125,7 @@ namespace Carrotware.CMS.Core {
 
 		public void Save() {
 			if (!this.IsWidgetPendingDelete) {
-				SiteData site = new SiteData(CompiledQueries.cqGetSiteFromRootContentID(_db, this.Root_ContentID));
+				var site = new SiteData(CompiledQueries.cqGetSiteFromRootContentID(_db, this.Root_ContentID));
 
 				var w = CompiledQueries.cqGetRootWidget(_db, this.Root_WidgetID);
 
@@ -177,6 +177,19 @@ namespace Carrotware.CMS.Core {
 
 				if (bAdd) {
 					_db.CarrotWidgets.Add(w);
+				}
+
+				Guid oldId = oldWD != null ? oldWD.WidgetDataId : Guid.Empty;
+
+				var priorVersions = _db.CarrotWidgetData.Where(x => x.IsLatestVersion == true
+								&& x.WidgetDataId != oldId
+								&& x.WidgetDataId != wd.WidgetDataId
+								&& x.RootWidgetId == wd.RootWidgetId).Select(x => x.WidgetDataId).ToList();
+
+				// make sure if there are any stray active rows besides the new one, mark them inactive
+				if (priorVersions.Any()) {
+					_db.CarrotWidgetData.Where(x => priorVersions.Contains(x.WidgetDataId) && x.WidgetDataId == wd.WidgetDataId)
+										.ExecuteUpdate(y => y.SetProperty(z => z.IsLatestVersion, false));
 				}
 
 				_db.SaveChanges();

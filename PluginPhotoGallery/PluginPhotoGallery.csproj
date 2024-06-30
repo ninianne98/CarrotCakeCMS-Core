@@ -29,6 +29,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Azure.Core" Version="1.40.0" />
+		<PackageReference Include="Azure.Identity" Version="1.12.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
 			<PrivateAssets>all</PrivateAssets>
@@ -39,6 +41,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="Code\GalleryGroup.cs" />
@@ -151,6 +155,6 @@
 	</Target>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="xcopy &quot;$(ProjectDir)\wwwroot\Assets\prettyPhoto\*&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\prettyPhoto\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM del &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\*.cshtml&quot;&#xD;&#xA;&#xD;&#xA;" />
+		<Exec Command="xcopy &quot;$(ProjectDir)\wwwroot\Assets\prettyPhoto\*&quot; &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\prettyPhoto\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\CMSAdmin\wwwroot\Assets\Admin\*.png&quot; &quot;$(ProjectDir)\wwwroot\Assets\Admin\&quot; /F/R/Y/I/S/C&#xD;&#xA;&#xD;&#xA;REM del &quot;$(SolutionDir)\CMSAdmin\Views\$(TargetName)\*.cshtml&quot;&#xD;&#xA;&#xD;&#xA;" />
 	</Target>
 </Project>

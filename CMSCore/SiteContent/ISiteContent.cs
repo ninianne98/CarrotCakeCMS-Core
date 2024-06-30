@@ -21,14 +21,14 @@ namespace Carrotware.CMS.Core {
 		Guid? EditUserId { get; set; }
 		Guid CreateUserId { get; set; }
 		string FileName { get; set; }
-		string Thumbnail { get; set; }
+		string? Thumbnail { get; set; }
 		string NavMenuText { get; set; }
 		int NavOrder { get; set; }
 		bool PageActive { get; set; }
 		bool ShowInSiteMap { get; set; }
 		bool BlockIndex { get; set; }
-		string PageHead { get; set; }
-		string PageText { get; set; }
+		string? PageHead { get; set; }
+		string? PageText { get; set; }
 		IHtmlContent PageTextPlainSummaryMedium { get; }
 		IHtmlContent PageTextPlainSummary { get; }
 		IHtmlContent NavigationText { get; }

@@ -1,13 +1,14 @@
 ﻿using Carrotware.CMS.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 /*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
-* Copyright 2015, 2023, Samantha Copeland
+* Copyright 2015, 2023, 2024 Samantha Copeland
 * Dual licensed under the MIT or GPL Version 3 licenses.
 *
-* Date: June 2023
+* Date: June 2023, June 2024
 */
 
 namespace Carrotware.CMS.Core {
@@ -18,25 +19,25 @@ namespace Carrotware.CMS.Core {
 			return (from ct in ctx.vwCarrotContents
 					orderby ct.NavOrder, ct.NavMenuText
 					where ct.SiteId == siteID
-					&& ct.IsLatestVersion == true
-					&& (ct.PageActive == true || bActiveOnly == false)
-					&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
-					&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					&& ct.IsLatestVersion == true
-					&& ct.ContentTypeId == ContentPageType.GetIDByType(entryType)
-					select ct);
+						&& ct.IsLatestVersion == true
+						&& (ct.PageActive == true || bActiveOnly == false)
+						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
+						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
+						&& ct.IsLatestVersion == true
+						&& ct.ContentTypeId == ContentPageType.GetIDByType(entryType)
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContentSnippet> GetSnippets(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly) {
 			return (from ct in ctx.vwCarrotContentSnippets
 					orderby ct.ContentSnippetName
 					where ct.SiteId == siteID
-					&& ct.IsLatestVersion == true
-					&& (ct.ContentSnippetActive == true || bActiveOnly == false)
-					&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
-					&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					&& ct.IsLatestVersion == true
-					select ct);
+						&& ct.IsLatestVersion == true
+						&& (ct.ContentSnippetActive == true || bActiveOnly == false)
+						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
+						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
+						&& ct.IsLatestVersion == true
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetAllContentList(CarrotCakeContext ctx, Guid siteID) {
@@ -45,7 +46,7 @@ namespace Carrotware.CMS.Core {
 					where ct.SiteId == siteID
 					 && ct.IsLatestVersion == true
 					 && ct.ContentTypeId == ContentPageType.GetIDByType(ContentPageType.PageType.ContentEntry)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetAllBlogList(CarrotCakeContext ctx, Guid siteID) {
@@ -54,7 +55,7 @@ namespace Carrotware.CMS.Core {
 					where ct.SiteId == siteID
 					 && ct.IsLatestVersion == true
 					 && ct.ContentTypeId == ContentPageType.GetIDByType(ContentPageType.PageType.BlogEntry)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> FindPageByTitleAndDate(CarrotCakeContext ctx, Guid siteID, string sTitle, string sFileNameFrag, DateTime dateCreate) {
@@ -65,7 +66,7 @@ namespace Carrotware.CMS.Core {
 					 && (ct.PageHead == sTitle || ct.TitleBar == sTitle)
 					 && ct.FileName.Contains(sFileNameFrag)
 					 && ct.CreateDate.Date == dateCreate.Date
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetLatestContentList(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly) {
@@ -77,7 +78,7 @@ namespace Carrotware.CMS.Core {
 					 && (ct.PageActive == true || bActiveOnly == false)
 					 && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 					 && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<CarrotWidgetData> GetWidgetDataByRootAll(CarrotCakeContext ctx, Guid rootWidgetID) {
@@ -95,7 +96,7 @@ namespace Carrotware.CMS.Core {
 		internal static IQueryable<vwCarrotContent> GetContentByRoot(CarrotCakeContext ctx, Guid rootContentID) {
 			return (from r in ctx.vwCarrotContents
 					where r.RootContentId == rootContentID
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentByStatusAndDateRange(CarrotCakeContext ctx, Guid siteID, ContentPageType.PageType pageType,
@@ -115,7 +116,7 @@ namespace Carrotware.CMS.Core {
 						&& (ct.BlockIndex == Convert.ToBoolean(bBlock) || bBlock == null)
 						&& ((ct.ShowInSiteMap == Convert.ToBoolean(bSiteMap) && ct.ContentTypeId == gContent) || bSiteMap == null)
 						&& ((ct.ShowInSiteNav == Convert.ToBoolean(bSiteNav) && ct.ContentTypeId == gContent) || bSiteNav == null)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetLatestBlogListDateRange(CarrotCakeContext ctx, Guid siteID, DateTime dateBegin, DateTime dateEnd, bool bActiveOnly) {
@@ -128,7 +129,7 @@ namespace Carrotware.CMS.Core {
 					 && (ct.PageActive == true || bActiveOnly == false)
 					 && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 					 && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentByStatusAndType(CarrotCakeContext ctx, Guid siteID,
@@ -143,7 +144,7 @@ namespace Carrotware.CMS.Core {
 						&& (ct.PageActive == true || bActiveOnly == false)
 						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetLatestBlogList(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly) {
@@ -155,13 +156,13 @@ namespace Carrotware.CMS.Core {
 					 && (ct.PageActive == true || bActiveOnly == false)
 					 && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 					 && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static Dictionary<string, float> GetTemplateCounts(CarrotCakeContext ctx, Guid siteID, ContentPageType.PageType pageType) {
 			Guid contentTypeID = ContentPageType.GetIDByType(pageType);
 
-			return (from ct in ctx.vwCarrotContents.Where(c => c.SiteId == siteID && c.ContentTypeId == contentTypeID && c.IsLatestVersion == true)
+			return (from ct in ctx.vwCarrotContents.Where(c => c.SiteId == siteID && c.ContentTypeId == contentTypeID && c.IsLatestVersion == true).AsNoTracking()
 					group ct by ct.TemplateFile into grp
 					orderby grp.Count() descending
 					select new KeyValuePair<string, float>(grp.Key, (float)grp.Count()))
@@ -180,7 +181,7 @@ namespace Carrotware.CMS.Core {
 						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 						&& ct.IsLatestVersion == true
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentByCategoryURL(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly, string sCatURL) {
@@ -195,7 +196,7 @@ namespace Carrotware.CMS.Core {
 						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 						&& ct.IsLatestVersion == true
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentByUserURL(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly, string sUserURL) {
@@ -211,7 +212,7 @@ namespace Carrotware.CMS.Core {
 						&& ct.IsLatestVersion == true
 						&& ((ed.UserId == ct.EditUserId && ct.CreditUserId == null)
 									|| (ed.UserId == ct.CreditUserId && ct.CreditUserId != null))
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentByCategoryIDs(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly, List<Guid> lstCategories) {
@@ -241,7 +242,7 @@ namespace Carrotware.CMS.Core {
 						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 						&& ct.IsLatestVersion == true
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentSiteSearch(CarrotCakeContext ctx, Guid siteID, bool bActiveOnly, string searchTerm) {
@@ -258,7 +259,7 @@ namespace Carrotware.CMS.Core {
 						&& (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						&& (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
 						&& ct.IsLatestVersion == true
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetContentByParent(CarrotCakeContext ctx, Guid siteID, Guid? parentContentID, bool bActiveOnly) {
@@ -271,7 +272,7 @@ namespace Carrotware.CMS.Core {
 						   && (ct.PageActive == true || bActiveOnly == false)
 						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetLatestContentByParent(CarrotCakeContext ctx, Guid siteID, Guid? parentContentID, bool bActiveOnly) {
@@ -285,7 +286,7 @@ namespace Carrotware.CMS.Core {
 						   && (ct.PageActive == true || bActiveOnly == false)
 						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotContent> GetLatestContentByParent(CarrotCakeContext ctx, Guid siteID, string parentPage, bool bActiveOnly) {
@@ -299,7 +300,7 @@ namespace Carrotware.CMS.Core {
 						   && (ct.PageActive == true || bActiveOnly == false)
 						   && (ct.GoLiveDate < DateTime.UtcNow || bActiveOnly == false)
 						   && (ct.RetireDate > DateTime.UtcNow || bActiveOnly == false)
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<CarrotCategoryContentMapping> GetContentCategoryMapByContentID(CarrotCakeContext ctx, Guid rootContentID) {
@@ -391,13 +392,13 @@ namespace Carrotware.CMS.Core {
 		internal static IQueryable<vwCarrotCategoryUrl> GetCategoryURLs(CarrotCakeContext ctx, Guid siteID) {
 			return (from ct in ctx.vwCarrotCategoryUrls
 					where ct.SiteId == siteID
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotTagUrl> GetTagURLs(CarrotCakeContext ctx, Guid siteID) {
 			return (from ct in ctx.vwCarrotTagUrls
 					where ct.SiteId == siteID
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotCategoryUrl> GetPostCategoryURL(CarrotCakeContext ctx, Guid siteID, string urlFileName) {
@@ -406,7 +407,7 @@ namespace Carrotware.CMS.Core {
 					join c in ctx.CarrotRootContents on m.RootContentId equals c.RootContentId
 					where c.FileName == urlFileName
 						&& ct.SiteId == siteID
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotTagUrl> GetPostTagURLs(CarrotCakeContext ctx, Guid siteID, string urlFileName) {
@@ -415,7 +416,7 @@ namespace Carrotware.CMS.Core {
 					join c in ctx.CarrotRootContents on m.RootContentId equals c.RootContentId
 					where c.FileName == urlFileName
 						&& ct.SiteId == siteID
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotCategoryUrl> GetPostCategoryURL(CarrotCakeContext ctx, Guid siteID, Guid rootContentID) {
@@ -423,7 +424,7 @@ namespace Carrotware.CMS.Core {
 					join m in ctx.CarrotCategoryContentMappings on ct.ContentCategoryId equals m.ContentCategoryId
 					where m.RootContentId == rootContentID
 						&& ct.SiteId == siteID
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotTagUrl> GetPostTagURLs(CarrotCakeContext ctx, Guid siteID, Guid rootContentID) {
@@ -431,14 +432,14 @@ namespace Carrotware.CMS.Core {
 					join m in ctx.CarrotTagContentMappings on ct.ContentTagId equals m.ContentTagId
 					where m.RootContentId == rootContentID
 						&& ct.SiteId == siteID
-					select ct);
+					select ct).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> GetSiteContentComments(CarrotCakeContext ctx, Guid siteID) {
 			return (from r in ctx.vwCarrotComments
 					orderby r.CreateDate descending
 					where r.SiteId == siteID
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> GetContentPageComments(CarrotCakeContext ctx, Guid rootContentID, bool bActiveOnly) {
@@ -446,7 +447,7 @@ namespace Carrotware.CMS.Core {
 					orderby r.CreateDate descending
 					where r.RootContentId == rootContentID
 						&& (r.IsApproved == true || bActiveOnly == false)
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> GetContentPageComments(CarrotCakeContext ctx, Guid rootContentID, bool? approved, bool? spam) {
@@ -455,7 +456,7 @@ namespace Carrotware.CMS.Core {
 					where r.RootContentId == rootContentID
 						   && (spam == null || r.IsSpam == spam)
 						   && (approved == null || r.IsApproved == approved)
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> FindCommentsByDate(CarrotCakeContext ctx, Guid siteID, Guid rootContentID, DateTime postDate, string postIP, string sCommentText) {
@@ -466,7 +467,7 @@ namespace Carrotware.CMS.Core {
 						&& r.CreateDate.Date == postDate.Date
 						&& r.CommenterIp == postIP
 						&& r.PostComment.Trim() == sCommentText.Trim()
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> FindCommentsByDate(CarrotCakeContext ctx, Guid siteID, Guid rootContentID, DateTime postDate, string postIP) {
@@ -478,7 +479,7 @@ namespace Carrotware.CMS.Core {
 						&& r.CreateDate.Hour == postDate.Hour
 						&& r.CreateDate.Minute == postDate.Minute
 						&& r.CommenterIp == postIP
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> GetSiteContentCommentsByPostType(CarrotCakeContext ctx, Guid siteID, ContentPageType.PageType contentEntry) {
@@ -486,17 +487,17 @@ namespace Carrotware.CMS.Core {
 					orderby r.CreateDate descending
 					where r.SiteId == siteID
 						&& r.ContentTypeId == ContentPageType.GetIDByType(contentEntry)
-					select r);
+					select r).AsNoTracking();
 		}
 
 		internal static IQueryable<vwCarrotComment> GetSiteContentCommentsByPostType(CarrotCakeContext ctx, Guid siteID, ContentPageType.PageType contentEntry, bool? approved, bool? spam) {
 			return (from r in ctx.vwCarrotComments
 					orderby r.CreateDate descending
 					where r.SiteId == siteID
-						   && (spam == null || r.IsSpam == spam)
-						   && (approved == null || r.IsApproved == approved)
-						&& r.ContentTypeId == ContentPageType.GetIDByType(contentEntry)
-					select r);
+							&& (spam == null || r.IsSpam == spam)
+							&& (approved == null || r.IsApproved == approved)
+							&& r.ContentTypeId == ContentPageType.GetIDByType(contentEntry)
+					select r).AsNoTracking();
 		}
 	}
 }

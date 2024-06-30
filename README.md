@@ -9,11 +9,12 @@ Source code for CarrotCakeCMS (MVC - Core), .Net Core 8
 [DOC]: http://www.carrotware.com/carrotcake-download?from=github-core "CarrotCakeCMS User Documentation"
 [TMPLT]: http://www.carrotware.com/carrotcake-templates?from=github-core
 [IDE]: https://visualstudio.microsoft.com/
+[BUILD22]: https://learn.microsoft.com/en-us/visualstudio/msbuild/walkthrough-using-msbuild?view=vs-2022
 [VS2022C]: https://visualstudio.microsoft.com/vs/community/
 [SQL]: https://www.microsoft.com/en-us/sql-server/sql-server-downloads
 [SSMS]: https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms
 
-Welcome to the GitHub project for CarrotCake CMS MVC Core, an open source c# project. CarrotCake is a [template-based][TMPLT] MVC .Net Core CMS (content management system) built with C#, SQL server, jQueryUI, and TinyMCE. This content management system supports multi-tenant webroots with shared databases. 
+Welcome to the GitHub project for CarrotCake CMS MVC Core, an open source c# project. CarrotCake is a [template-based][TMPLT] MVC .Net Core CMS (content management system) built with C#, SQL server, jQueryUI, and TinyMCE, providing an intuitive WYSIWYG/drag and drop edit experience. This content management system supports multi-tenant webroots with shared databases. 
 
 ## If you have found this tool useful please [contact us][SITE_CT].
 
@@ -34,15 +35,15 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 ### Install Development Tools
 
-1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise.  Requires patch version 17.8 or later, for .Net 8 support.
-1. **[SQL Server Express 2016 (or higher/later)][SQL]** - currently vetted on 2016 Express.  Entity Framework Core 8 does not work with older versions of  SQL Server, such as 2014/2012/2008R2 and earlier.
+1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise. Use of [MSBuild for 2022][BUILD22] is also acceptable. Both require patch version 17.8 or later, for .Net 8 support. 
+1. **[SQL Server Express 2016 (or higher/later)][SQL]** - currently vetted on 2016 and 2019 (Express Editions).  Entity Framework Core 8 does not work with older versions of SQL Server, such as 2014/2012/2008R2 and earlier.
 1. **[SQL Server Management Studio (SSMS)][SSMS]** - required for managing the database
 
 ### Get the Source Code
 
 1. Go to the repository ([GitHub][REPO_GH] or [SourceForge][REPO_SF]) in a browser
 
-1. Download either a GIT or ZIP archive or connect using either a GIT or SVN client
+1. Download either a ZIP archive or connect using either a GIT or SVN client to check out
 
 ### Open the Project
 
@@ -69,8 +70,8 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 1. SQL Server should be running with an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  
 	- Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  
-	- If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  
-	- Password hashes will not be valid when upgrading MVC 5 (or MVC Core 6) to MVC Core 8, so perform a password recovery to set valid ones.
+	- If you manually add the first EF migration to an existing MVC5 version of this CMS, it will automatically migrate the data.  This is not done automatically to prevent accidental or unintentional upgrades
+	- Password hashes will not be valid when upgrading MVC 5 (or possibly earlier MVC Core versions) to MVC Core 8, so perform a password recovery to set valid ones.
 
 ### Make a backup FIRST when upgrading!
 
@@ -80,6 +81,7 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 -- COMPATIBILITY_LEVEL { 160 | 150 | 140 | 130 | 120 | 110 | 100 | 90 | 80 }
 -- *REQUIRED* if seeing "SqlException: Incorrect syntax near the keyword 'WITH'. Incorrect syntax near the keyword 'with'. "
 
+-- change the database from CarrotCoreMVC to whatever DB name you are actually using
 ALTER DATABASE [CarrotCoreMVC]
 	SET COMPATIBILITY_LEVEL =  130        -- SQL 2016
 
@@ -88,6 +90,7 @@ ALTER DATABASE [CarrotCoreMVC]
 
 -- to create the migrations table:
 
+--========================
 CREATE TABLE [dbo].[__EFMigrationsHistory](
 	[MigrationId] [nvarchar](150) NOT NULL,
 	[ProductVersion] [nvarchar](32) NOT NULL,
@@ -97,6 +100,7 @@ CREATE TABLE [dbo].[__EFMigrationsHistory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+--========================
 
 -- main CMS MVC 5-> MVC Core 8 - create the ef table (if needed) and execute the insert for 00000000000000_Initial
 -- the password hashes will be incorrect, so perform a password reset once the DB has been upgraded
@@ -105,6 +109,9 @@ IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='000000
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
 		values ('00000000000000_Initial','8.0.0')
 END
+
+--========================
+-- below are manual entry migrations in case you are upgrading from MVC5 to .Net Core, only run if the table already exists
 
 -- photo gallery widget - create the ef table (if needed) and execute the insert for 20230625212349_InitialGallery
 IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='20230625212349_InitialGallery')
@@ -133,6 +140,8 @@ IF (NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] where [MigrationId]='202404
 	insert into [__EFMigrationsHistory]([MigrationId],[ProductVersion])
 		values ('20240421191144_InitialFaq2','8.0.0')
 END
+
+--========================
 
 -- to validate
 select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'

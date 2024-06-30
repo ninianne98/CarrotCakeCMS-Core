@@ -313,6 +313,15 @@ namespace Carrotware.CMS.Core {
 
 				db.CarrotContentSnippets.Add(c);
 
+				var priorVersions = db.CarrotContentSnippets.Where(x => x.IsLatestVersion == true && x.ContentSnippetId != c.ContentSnippetId
+										&& x.RootContentSnippetId == c.RootContentSnippetId).Select(x => x.ContentSnippetId).ToList();
+
+				// make sure if there are any stray active rows besides the new one, mark them inactive
+				if (priorVersions.Any()) {
+					db.CarrotContentSnippets.Where(x => priorVersions.Contains(x.ContentSnippetId) && x.RootContentSnippetId == c.RootContentSnippetId)
+										.ExecuteUpdate(y => y.SetProperty(z => z.IsLatestVersion, false));
+				}
+
 				db.SaveChanges();
 
 				this.ContentSnippetID = c.ContentSnippetId;

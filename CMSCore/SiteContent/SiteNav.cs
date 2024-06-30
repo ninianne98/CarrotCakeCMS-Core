@@ -109,30 +109,30 @@ namespace Carrotware.CMS.Core {
 		public Guid? EditUserId { get; set; }
 		public Guid? CreditUserId { get; set; }
 		public Guid CreateUserId { get; set; }
-		public string TemplateFile { get; set; }
+		public string TemplateFile { get; set; } = string.Empty;
 		public DateTime CreateDate { get; set; }
 		public DateTime GoLiveDate { get; set; }
 		public DateTime RetireDate { get; set; }
 		public int NavOrder { get; set; }
 
 		[Display(Name = "File Name")]
-		public string FileName { get; set; }
+		public string FileName { get; set; } = string.Empty;
 
 		[Display(Name = "Heading")]
-		public string PageHead { get; set; }
+		public string? PageHead { get; set; }
 
 		[Display(Name = "Title")]
-		public string TitleBar { get; set; }
+		public string TitleBar { get; set; } = string.Empty;
 
 		[Display(Name = "Nav Text")]
-		public string NavMenuText { get; set; }
+		public string NavMenuText { get; set; } = string.Empty;
 
 		[Display(Name = "Body")]
-		public string PageText { get; set; }
+		public string? PageText { get; set; }
 
 		public Guid? Parent_ContentID { get; set; }
 		public Guid Root_ContentID { get; set; }
-		public string Thumbnail { get; set; }
+		public string? Thumbnail { get; set; }
 
 		[Display(Name = "In Site Map")]
 		public bool ShowInSiteMap { get; set; }
