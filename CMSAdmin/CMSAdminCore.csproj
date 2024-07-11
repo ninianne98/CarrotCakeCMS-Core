@@ -64,7 +64,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
-		<PackageReference Include="MimeKit" Version="4.7.0" />
+		<PackageReference Include="MimeKit" Version="4.7.1" />
 		<PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" GeneratePathProperty="true" />
