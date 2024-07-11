@@ -1245,12 +1245,12 @@ namespace Carrotware.Web.UI.Components {
 			return new WrappedItem(_helper, tag, htmlAttributes);
 		}
 
-		public IHtmlContent ImageSizer(string ImageUrl, string Title, int ThumbSize, bool ScaleImage, object? imageAttributes = null) {
+		public IHtmlContent ImageSizer(string imageUrl, string title, int thumbSize, bool scaleImage, object? imageAttributes = null) {
 			ImageSizer img = new ImageSizer();
-			img.ImageUrl = ImageUrl;
-			img.Title = Title;
-			img.ThumbSize = ThumbSize;
-			img.ScaleImage = ScaleImage;
+			img.ImageUrl = imageUrl;
+			img.Title = title;
+			img.ThumbSize = thumbSize;
+			img.ScaleImage = scaleImage;
 			img.ImageAttributes = imageAttributes;
 
 			return new HtmlString(img.ToHtmlString());

@@ -129,25 +129,25 @@ namespace Carrotware.CMS.UI.Components {
 
 		public string ImgSrc { get; protected set; }
 
-		public string Title { get; set; }
+		public string? Title { get; set; } = string.Empty;
 
-		public int ThumbSize { get; set; }
+		public int ThumbSize { get; set; } = 100;
 
-		public bool ScaleImage { get; set; }
+		public bool ScaleImage { get; set; } = true;
 
 		public bool PerformURLResize { get; set; }
 
-		public object imageAttributes { get; set; }
+		public object? imageAttributes { get; set; }
 
-		public ContentPage ContentPage { get; set; }
+		public ContentPage? ContentPage { get; set; }
 
 		public override string GetHtml() {
 			if (this.ContentPage == null) {
 				this.ContentPage = SiteData.GetCurrentPage();
 			}
 
-			this.ImgSrc = this.ContentPage.Thumbnail;
-			this.Title = this.ContentPage.NavMenuText;
+			this.ImgSrc = this.ContentPage?.Thumbnail;
+			this.Title = this.ContentPage?.NavMenuText;
 
 			if (string.IsNullOrEmpty(this.ImgSrc)) {
 				// if page itself has no image, see if the image had been specified directly
@@ -170,7 +170,9 @@ namespace Carrotware.CMS.UI.Components {
 			if (!string.IsNullOrEmpty(this.ImgSrc)) {
 				var imgBuilder = new HtmlTag("img");
 				imgBuilder.Uri = this.ImgSrc;
-				imgBuilder.MergeAttributes(imageAttributes);
+				if (this.imageAttributes != null) {
+					imgBuilder.MergeAttributes(this.imageAttributes);
+				}
 
 				if (!string.IsNullOrEmpty(this.Title)) {
 					imgBuilder.MergeAttribute("alt", this.Title);
@@ -199,7 +201,7 @@ namespace Carrotware.CMS.UI.Components {
 
 		public bool Enable301Redirect { get; set; } = false;
 
-		public ContentPage ContentPage { get; set; }
+		public ContentPage? ContentPage { get; set; }
 
 		public override string GetHtml() {
 			var site = SiteData.CurrentSite;
@@ -208,7 +210,7 @@ namespace Carrotware.CMS.UI.Components {
 			var pageisIndex = false;
 
 			if (site != null) {
-				pageisIndex = this.ContentPage.Root_ContentID == blogIndexId;
+				pageisIndex = this.ContentPage?.Root_ContentID == blogIndexId;
 				pageUri = site.DefaultCanonicalURL;
 
 				if (this.ContentPage == null) {
@@ -220,7 +222,7 @@ namespace Carrotware.CMS.UI.Components {
 						pageUri = site.MainCanonicalURL;
 					} else {
 						if (pageisIndex && SiteData.CurrentScriptName.Length > 1
-								&& this.ContentPage.FileName.ToLowerInvariant() != SiteData.CurrentScriptName.ToLowerInvariant()) {
+								&& this.ContentPage?.FileName.ToLowerInvariant() != SiteData.CurrentScriptName.ToLowerInvariant()) {
 							// if blog index, use whatever the url is as the valid url
 							pageUri = site.MainCanonicalURL + SiteData.CurrentScriptName.Substring(1);
 						} else {

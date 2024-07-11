@@ -27,7 +27,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
 		[Description("Scale gallery images")]
 		[Widget]
-		public bool ScaleImage { get; set; }
+		public bool ScaleImage { get; set; } = true;
 
 		[Description("Gallery to display")]
 		[Widget(WidgetAttribute.FieldMode.DropDownList, "lstGalleryId")]
@@ -49,7 +49,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
 		[Description("Gallery image pixel height/width")]
 		[Widget(WidgetAttribute.FieldMode.DropDownList, "lstSizes")]
-		public int ThumbSize { get; set; }
+		public int ThumbSize { get; set; } = 100;
 
 		[Widget(WidgetAttribute.FieldMode.DictionaryList)]
 		public Dictionary<string, string> lstSizes {
@@ -73,7 +73,7 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 
 		[Description("Gallery appearance (pretty photo skin)")]
 		[Widget(WidgetAttribute.FieldMode.DropDownList, "lstPrettySkins")]
-		public string PrettyPhotoSkin { get; set; }
+		public string PrettyPhotoSkin { get; set; } = "light_rounded";
 
 		[Widget(WidgetAttribute.FieldMode.DictionaryList)]
 		public Dictionary<string, string> lstPrettySkins {
@@ -93,43 +93,31 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery {
 			base.LoadData();
 
 			try {
-				string sFoundVal = this.GetParmValue("GalleryId", Guid.Empty.ToString());
+				var foundVal = this.GetValue(x => x.GalleryId, Guid.Empty);
 
-				if (!string.IsNullOrEmpty(sFoundVal) && sFoundVal != Guid.Empty.ToString() && this.GalleryId == Guid.Empty) {
-					this.GalleryId = new Guid(sFoundVal);
+				if (foundVal != Guid.Empty && this.GalleryId == Guid.Empty) {
+					this.SetGuidValue(x => x.GalleryId, foundVal);
 				}
 			} catch (Exception ex) { }
 
 			try {
-				string sFoundVal = this.GetParmValue("ShowHeading", "false");
-
-				if (!string.IsNullOrEmpty(sFoundVal)) {
-					this.ShowHeading = Convert.ToBoolean(sFoundVal);
-				}
+				var foundVal = this.GetValue(x => x.ShowHeading, this.ShowHeading);
+				this.SetBoolValue(x => x.ShowHeading, foundVal);
 			} catch (Exception ex) { }
 
 			try {
-				string sFoundVal = this.GetParmValue("ScaleImage", "false");
-
-				if (!string.IsNullOrEmpty(sFoundVal)) {
-					this.ScaleImage = Convert.ToBoolean(sFoundVal);
-				}
+				var foundVal = this.GetValue(x => x.ScaleImage, this.ScaleImage);
+				this.SetBoolValue(x => x.ScaleImage, foundVal);
 			} catch (Exception ex) { }
 
 			try {
-				string sFoundVal = this.GetParmValueDefaultEmpty("ThumbSize", "150");
-
-				if (!string.IsNullOrEmpty(sFoundVal)) {
-					this.ThumbSize = Convert.ToInt32(sFoundVal);
-				}
+				var foundVal = this.GetValue(x => x.ThumbSize, this.ThumbSize);
+				this.SetIntValue(x => x.ThumbSize, foundVal);
 			} catch (Exception ex) { }
 
 			try {
-				string sFoundVal = this.GetParmValue("PrettyPhotoSkin", "light_rounded");
-
-				if (!string.IsNullOrEmpty(sFoundVal)) {
-					this.PrettyPhotoSkin = sFoundVal;
-				}
+				var foundVal = this.GetValue(x => x.PrettyPhotoSkin, this.PrettyPhotoSkin);
+				this.SetStringValue(x => x.PrettyPhotoSkin, foundVal);
 			} catch (Exception ex) { }
 		}
 	}

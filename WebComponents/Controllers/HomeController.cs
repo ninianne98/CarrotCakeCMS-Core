@@ -44,14 +44,17 @@ namespace Carrotware.Web.UI.Components.Controllers {
 				throw new Exception("Cannot use relative paths.");
 			}
 			if (sImageUri.Contains(":")) {
-				throw new Exception("Cannot specify drive letters.");
+				throw new Exception("Cannot specify drive letters or other protocols.");
 			}
 			if (sImageUri.Contains("//") || sImageUri.Contains(@"\\")) {
 				throw new Exception("Cannot use UNC paths.");
 			}
 
-			if (iThumb < 5 || iThumb > 500) {
-				iThumb = 100;
+			if (iThumb < 5) {
+				iThumb = 5;
+			}
+			if (iThumb > 1024) {
+				iThumb = 1024;
 			}
 
 			Bitmap bmpThumb = new Bitmap(iThumb, iThumb);
