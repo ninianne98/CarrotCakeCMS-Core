@@ -124,6 +124,7 @@ namespace Carrotware.CMS.Security.Models {
 		public string ConfirmPassword { get; set; }
 
 		public string? Token { get; set; }
+		public bool ValidToken { get; set; }
 	}
 
 	public class ForgotPasswordViewModel {

@@ -1,8 +1,6 @@
 ﻿using Carrotware.CMS.Interface;
-using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -42,10 +40,10 @@ namespace Carrotware.CMS.Security {
 	//================
 
 	public class ManageSecurity {
-		private CarrotSecurityConfig _config;
-		private readonly UserManager<IdentityUser> _userManager;
-		private readonly SignInManager<IdentityUser> _signInManager;
-		private readonly Controller _controller;
+		private CarrotSecurityConfig? _config;
+		private readonly UserManager<IdentityUser>? _userManager;
+		private readonly SignInManager<IdentityUser>? _signInManager;
+		private readonly Controller? _controller;
 
 		public ManageSecurity() {
 			_userManager = CarrotHttpHelper.ServiceProvider.GetService<UserManager<IdentityUser>>();
@@ -82,82 +80,76 @@ namespace Carrotware.CMS.Security {
 		public async Task<LogonStatus> LoginAsync(string username, string password) {
 			var status = LogonStatus.InvalidCredentials;
 
-			var user = await _userManager.FindByNameAsync(username);
+			if (_userManager != null) {
+				var user = await _userManager.FindByNameAsync(username);
 
-			if (user != null && !user.EmailConfirmed) {
-				status = LogonStatus.PendingEmail;
-				return status;
-			}
+				if (user != null && !user.EmailConfirmed) {
+					status = LogonStatus.PendingEmail;
+					return status;
+				}
 
-			if (user == null || await _userManager.CheckPasswordAsync(user, password) == false) {
-				status = LogonStatus.InvalidCredentials;
-				return status;
-			}
+				if (user == null || await _userManager.CheckPasswordAsync(user, password) == false) {
+					status = LogonStatus.InvalidCredentials;
+					return status;
+				}
 
-			var result = await _signInManager.PasswordSignInAsync(username, password, true, true);
+				if (_signInManager != null) {
+					var result = await _signInManager.PasswordSignInAsync(username, password, true, true);
 
-			if (result.Succeeded) {
-				status = LogonStatus.Authenticated;
-			} else if (result.IsLockedOut) {
-				status = LogonStatus.LockedOut;
-			} else {
-				status = LogonStatus.InvalidCredentials;
+					if (result.Succeeded) {
+						status = LogonStatus.Authenticated;
+					} else if (result.IsLockedOut) {
+						status = LogonStatus.LockedOut;
+					} else {
+						status = LogonStatus.InvalidCredentials;
+					}
+				}
 			}
 
 			return status;
 		}
 
-		public async Task<RequestReset> ForgotPassword(string email) {
-			var user = await _userManager.FindByEmailAsync(email);
-			if (user == null) {
-				return RequestReset.InvalidCredentials;
-			}
-
-			//TODO: message body etc.
-
-			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-			var host = CarrotWebHelper.BuildHttpHost();
-			var baseRoute = _config.AdditionalSettings.ResetPath;
-
-			var uri = $"{host}{baseRoute}?token={HttpUtility.UrlEncode(token)}&email={HttpUtility.UrlEncode(user.Email)}";
-
-			string body = $"<p>Hello {user.UserName}, your password reset link is <a href=\"{uri}\">here</a> ";
-
-			var message = MailRequest.Create();
-			message.ConfigureMessage(user.Email, "Reset password token", body);
-
-			await message.SendEmailAsync();
-
-			return RequestReset.OK;
-		}
-
-		public async Task<IdentityUser> FindByUsernameAsync(string userName) {
+		public async Task<IdentityUser>? FindByUsernameAsync(string userName) {
 			return await this.UserManager.FindByNameAsync(userName);
 		}
 
 		public async Task<Guid> GetIdByUsernameAsync(string userName) {
-			var u = await this.FindByUsernameAsync(userName);
-			return new Guid(u.Id);
+			var user = await this.FindByUsernameAsync(userName);
+			if (user == null) {
+				return Guid.Empty;
+			}
+			return new Guid(user.Id);
 		}
 
-		public async Task<IdentityUser> FindByEmailAsync(string email) {
+		public async Task<IdentityUser>? FindByEmailAsync(string email) {
 			return await this.UserManager.FindByEmailAsync(email);
 		}
 
+		public async Task<IdentityUser>? FindByIdAsync(string id) {
+			return await this.UserManager.FindByIdAsync(id);
+		}
+
 		public async Task<Guid> GetIdByEmailAsync(string email) {
-			var u = await this.FindByEmailAsync(email);
-			return new Guid(u.Id);
+			var user = await this.FindByEmailAsync(email);
+			if (user == null) {
+				return Guid.Empty;
+			}
+			return new Guid(user.Id);
 		}
 
 		public async Task<bool> IsInRoleAsync(string userName, string roleName) {
 			var user = await this.UserManager.FindByNameAsync(userName);
+			if (user == null) {
+				return false;
+			}
 			return await this.UserManager.IsInRoleAsync(user, roleName);
 		}
 
 		public async Task<IList<string>> GetRolesAsync(string userName) {
 			var user = await this.UserManager.FindByNameAsync(userName);
-
+			if (user == null) {
+				return new List<string>();
+			}
 			return await this.UserManager.GetRolesAsync(user);
 		}
 

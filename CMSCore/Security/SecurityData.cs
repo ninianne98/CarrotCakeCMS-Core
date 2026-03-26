@@ -2,10 +2,13 @@
 using Carrotware.CMS.Data.Models;
 using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
+using Carrotware.CMS.Security.Models;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
+using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
@@ -23,10 +26,16 @@ using System.Web;
 namespace Carrotware.CMS.Core {
 
 	public class SecurityData {
-		private CarrotSecurityConfig _config;
+		private CarrotSecurityConfig? _config;
 
 		public SecurityData() {
 			LoadSettings();
+		}
+
+		public IdentityOptions TokenOptions {
+			get {
+				return new IdentityOptions();
+			}
 		}
 
 		protected void LoadSettings() {
@@ -55,7 +64,7 @@ namespace Carrotware.CMS.Core {
 			return lst;
 		}
 
-		public static IdentityRole FindRole(string roleName) {
+		public static IdentityRole? FindRole(string roleName) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from r in db.AspNetRoles
 						where r.Name == roleName
@@ -63,7 +72,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static IdentityRole FindRoleByID(string roleID) {
+		public static IdentityRole? FindRoleByID(string roleID) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from r in db.AspNetRoles
 						where r.Id == roleID
@@ -71,7 +80,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static UserRole GetUserRole(string roleID) {
+		public static UserRole? GetUserRole(string roleID) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from r in db.AspNetRoles
 						where r.Id == roleID
@@ -112,7 +121,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static UserProfile GetProfileByUserID(Guid userId) {
+		public static UserProfile? GetProfileByUserID(Guid userId) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from u in db.AspNetUsers
 						join ud1 in db.CarrotUserData on u.Id equals ud1.UserKey into ud2
@@ -122,7 +131,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static UserProfile GetProfileByUserName(string userName) {
+		public static UserProfile? GetProfileByUserName(string userName) {
 			using (var db = CarrotCakeContext.Create()) {
 				return (from u in db.AspNetUsers
 						join ud1 in db.CarrotUserData on u.Id equals ud1.UserKey into ud2
@@ -427,9 +436,9 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static UserProfile CurrentUser {
+		public static UserProfile? CurrentUser {
 			get {
-				UserProfile currentUser = null;
+				UserProfile? currentUser = null;
 				if (IsAuthenticated) {
 					string userName = SecurityData.CurrentUserIdentityName;
 					string key = string.Format("cms_CurrentUserProfile_{0}", userName);
@@ -460,9 +469,9 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static ExtendedUserData CurrentExUser {
+		public static ExtendedUserData? CurrentExUser {
 			get {
-				ExtendedUserData currentUser = null;
+				ExtendedUserData? currentUser = null;
 
 				if (IsAuthenticated) {
 					string userName = SecurityData.CurrentUserIdentityName;
@@ -501,10 +510,19 @@ namespace Carrotware.CMS.Core {
 		}
 
 		private static IdentityUser NewIdentityUser(AspNetUser u) {
-			return new IdentityUser(u.UserName) { Id = u.Id, Email = u.Email, UserName = u.UserName };
+			return new IdentityUser(u.UserName) {
+				Id = u.Id,
+				Email = u.Email,
+				NormalizedEmail = u.NormalizedEmail,
+				NormalizedUserName = u.NormalizedUserName,
+				SecurityStamp = u.SecurityStamp,
+				ConcurrencyStamp = u.ConcurrencyStamp,
+				PasswordHash = u.PasswordHash,
+				UserName = u.UserName
+			};
 		}
 
-		public static IdentityUser CurrentIdentityUser {
+		public static IdentityUser? CurrentIdentityUser {
 			get {
 				if (string.IsNullOrEmpty(CurrentUserIdentityName)) {
 					return null;
@@ -517,28 +535,22 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static IdentityUser GetUserByID(string key) {
-			using (var db = CarrotCakeContext.Create()) {
-				return (from u in db.AspNetUsers
-						where u.UserName == key
-						select NewIdentityUser(u)).FirstOrDefault();
-			}
+		public static IdentityUser? GetUserByID(string key) {
+			var mgr = new ManageSecurity();
+			var usrResult = Task.Run(async () => await mgr.FindByIdAsync(key));
+			return usrResult.Result;
 		}
 
-		public static IdentityUser GetUserByName(string username) {
-			using (var db = CarrotCakeContext.Create()) {
-				return (from u in db.AspNetUsers
-						where u.UserName == username
-						select NewIdentityUser(u)).FirstOrDefault();
-			}
+		public static IdentityUser? GetUserByName(string username) {
+			var mgr = new ManageSecurity();
+			var usrResult = Task.Run(async () => await mgr.FindByNameAsync(username));
+			return usrResult.Result;
 		}
 
-		public static IdentityUser GetUserByEmail(string email) {
-			using (var db = CarrotCakeContext.Create()) {
-				return (from u in db.AspNetUsers
-						where u.Email == email
-						select NewIdentityUser(u)).FirstOrDefault();
-			}
+		public static IdentityUser? GetUserByEmail(string email) {
+			var mgr = new ManageSecurity();
+			var usrResult = Task.Run(async () => await mgr.FindByEmailAsync(email));
+			return usrResult.Result;
 		}
 
 		public static bool AdvancedEditMode {
@@ -617,6 +629,27 @@ namespace Carrotware.CMS.Core {
 			return result;
 		}
 
+		public bool ValidatePasswordToken(IdentityUser user, string? token) {
+			if (user == null || token == null) { return false; }
+
+			var result = false;
+			try {
+				var mgr = new ManageSecurity();
+				if (string.IsNullOrEmpty(user.NormalizedUserName) || string.IsNullOrEmpty(user.NormalizedEmail)
+						|| string.IsNullOrEmpty(user.PasswordHash) || string.IsNullOrEmpty(user.SecurityStamp)) {
+					var userId = user.Id;
+					var usrResult = Task.Run(async () => await mgr.FindByIdAsync(userId));
+					user = usrResult.Result;
+				}
+				var task = Task.Run(async () => await mgr.UserManager.VerifyUserTokenAsync(user, this.TokenOptions.Tokens.PasswordResetTokenProvider, UserManager<IdentityUser>.ResetPasswordTokenPurpose, token));
+				result = task.Result;
+			} catch (Exception ex) {
+				result = false;
+			}
+
+			return result;
+		}
+
 		public async Task<bool> ResetPassword(string email) {
 			string adminFolder = SiteData.AdminFolderPath.TrimPathSlashes();
 
@@ -627,7 +660,7 @@ namespace Carrotware.CMS.Core {
 
 		public async Task<bool> ResetPassword(string resetUri, string email) {
 			HttpRequest request = CarrotHttpHelper.HttpContext.Request;
-			IdentityUser user = null;
+			IdentityUser? user = null;
 			string token = string.Empty;
 
 			resetUri = resetUri.TrimPathSlashes();
@@ -647,9 +680,15 @@ namespace Carrotware.CMS.Core {
 					string hostName = httpHost.ToLowerInvariant();
 
 					httpHost = CarrotWebHelper.BuildHttpHost().ToLowerInvariant();
-					var baseRoute = _config.AdditionalSettings.ResetPath;
 
-					var resetTokenUrl = $"{httpHost}{baseRoute}?token={HttpUtility.UrlEncode(token)}&email={HttpUtility.UrlEncode(user.Email)}";
+					var resetTokenUrl = string.Empty;
+					var authKey = EncodeAuthKey(user, token);
+
+					if (string.IsNullOrEmpty(authKey)) {
+						resetTokenUrl = string.Format("{0}/{1}?userId={2}&token={3}", httpHost, resetUri, HttpUtility.UrlEncode(user.Id), HttpUtility.UrlEncode(token));
+					} else {
+						resetTokenUrl = string.Format("{0}/{1}?key={2}", httpHost, resetUri, HttpUtility.UrlEncode(authKey));
+					}
 
 					sb.Replace("{%%UserName%%}", user.UserName);
 					sb.Replace("{%%SiteURL%%}", httpHost);
@@ -680,6 +719,145 @@ namespace Carrotware.CMS.Core {
 			return false;
 		}
 
+		private string GetAesKey() {
+			var key1 = SiteData.CurrentSiteExists ? SiteData.CurrentSiteID.ToString().Replace("-", "").ToLowerInvariant().Substring(0, 18) : "Key1_PlaceholderValue";
+			var key2 = SiteData.CurrentSiteExists ? CMSConfigHelper.DomainName : "Key2_PlaceholderValue";
+
+			return (key1 + key2).PadRight(12, '0').ToLowerInvariant().Substring(0, 24);
+		}
+
+		private byte[] Compress(string text) {
+			byte[] buffer = Encoding.UTF8.GetBytes(text);
+
+			using (var ms = new MemoryStream()) {
+				using (var zip = new GZipStream(ms, CompressionMode.Compress)) {
+					zip.Write(buffer, 0, buffer.Length);
+				}
+				return ms.ToArray();
+			}
+		}
+
+		private string Decompress(byte[] data) {
+			using (var ms = new MemoryStream(data)) {
+				using (var zip = new GZipStream(ms, CompressionMode.Decompress)) {
+					using (var sr = new StreamReader(zip, Encoding.UTF8)) {
+						return sr.ReadToEnd();
+					}
+				}
+			}
+		}
+
+		public string EncryptString(string aesKey, string rawValue) {
+			byte[] key = Encoding.UTF8.GetBytes(aesKey.PadRight(32, 'Z').Substring(0, 24));
+			byte[] compressedValue = Compress(rawValue);
+
+			using (var aes = Aes.Create()) {
+				aes.Key = key;
+				aes.GenerateIV();
+				byte[] iv = aes.IV;
+
+				using (var ms = new MemoryStream()) {
+					ms.Write(iv, 0, iv.Length);
+
+					using (var encryptor = aes.CreateEncryptor())
+					using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write)) {
+						cs.Write(compressedValue, 0, compressedValue.Length);
+						cs.FlushFinalBlock();
+					}
+
+					return Convert.ToBase64String(ms.ToArray());
+				}
+			}
+		}
+
+		public string DecryptString(string aesKey, string encodedValue) {
+			byte[] key = Encoding.UTF8.GetBytes(aesKey.PadRight(32, 'Z').Substring(0, 24));
+			var model = new ResetPasswordViewModel();
+			byte[] decodedB64 = Convert.FromBase64String(encodedValue);
+			byte[] decryptedData = new byte[0];
+
+			using (var aes = Aes.Create()) {
+				aes.Key = key;
+				int ivLength = aes.BlockSize / 8;
+
+				byte[] iv = new byte[ivLength];
+				byte[] cipherData = new byte[decodedB64.Length - ivLength];
+
+				Array.Copy(decodedB64, 0, iv, 0, ivLength);
+				Array.Copy(decodedB64, ivLength, cipherData, 0, cipherData.Length);
+
+				using (var decryptor = aes.CreateDecryptor(aes.Key, iv))
+				using (var msIn = new MemoryStream(cipherData))
+				using (var cs = new CryptoStream(msIn, decryptor, CryptoStreamMode.Read))
+				using (var msOut = new MemoryStream()) {
+					cs.CopyTo(msOut);
+					decryptedData = msOut.ToArray();
+				}
+			}
+
+			var decodedValue = Decompress(decryptedData);
+
+			return decodedValue;
+		}
+
+		public string EncodeAuthKey(IdentityUser user, string token) {
+			string key = GetAesKey();
+			string utcTimestamp = DateTime.UtcNow.ToString("s");
+
+			if (user != null) {
+				var stamp = user.SecurityStamp;
+				utcTimestamp = EncryptString(stamp, utcTimestamp);
+			}
+
+			string authString = string.Format("{0}|{1}|{2}|{3}", user.Id, user.Email, utcTimestamp, token);
+
+			return EncryptString(key, authString);
+		}
+
+		public ResetPasswordViewModel DecodeAuthKey(string encodedValue) {
+			var model = new ResetPasswordViewModel();
+			string key = GetAesKey();
+			var decodedValue = DecryptString(key, encodedValue);
+
+			model.ValidToken = false;
+
+			// string authString = string.Format("{0}|{1}|{2}|{3}", user.Id, user.Email, utcTimestamp, token);
+			if (decodedValue.Contains('|')) {
+				var parms = decodedValue.Split('|');
+				if (parms.Length == 4) {
+					var userId = parms[0];
+					var email = parms[1];
+					var utcTimestamp = parms[2];
+					model.Token = parms[3];
+
+					double hrDelta = 24;
+					DateTime utcDate = DateTime.MinValue;
+					var user = GetUserByID(userId);
+
+					try {
+						if (user != null) {
+							var stamp = user.SecurityStamp;
+							utcTimestamp = DecryptString(stamp, utcTimestamp);
+							utcDate = DateTime.Parse(utcTimestamp, null, System.Globalization.DateTimeStyles.RoundtripKind);
+							hrDelta = Math.Abs((DateTime.UtcNow - utcDate).TotalHours);
+						}
+					} catch (Exception ex) {
+						hrDelta = 48;
+					}
+
+					model.ValidToken = hrDelta <= 12 && user != null && !string.IsNullOrEmpty(user.Email) && email.Contains("@")
+								&& user.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase)
+								&& ValidatePasswordToken(user, model.Token);
+
+					if (user != null && model.ValidToken) {
+						model.Email = user.Email ?? string.Empty;
+					}
+				}
+			}
+
+			return model;
+		}
+
 		public static bool RemoveUserFromRole(string userName, string roleName) {
 			using (var db = CarrotCakeContext.Create()) {
 				var usrRole = (from r in db.AspNetRoles
@@ -701,9 +879,9 @@ namespace Carrotware.CMS.Core {
 
 		public static bool AddUserToRole(string userName, string roleName) {
 			using (var db = CarrotCakeContext.Create()) {
-				AspNetRole role = (from r in db.AspNetRoles
-								   where r.Name == roleName
-								   select r).FirstOrDefault();
+				AspNetRole? role = (from r in db.AspNetRoles
+									where r.Name == roleName
+									select r).FirstOrDefault();
 
 				var user = (from u in db.AspNetUsers
 							where u.UserName == userName
@@ -731,9 +909,9 @@ namespace Carrotware.CMS.Core {
 
 		public static bool AddUserToRole(Guid UserId, string roleName) {
 			using (var db = CarrotCakeContext.Create()) {
-				AspNetRole role = (from r in db.AspNetRoles
-								   where r.Name == roleName
-								   select r).FirstOrDefault();
+				AspNetRole? role = (from r in db.AspNetRoles
+									where r.Name == roleName
+									select r).FirstOrDefault();
 
 				var user = (from u in db.AspNetUsers
 							join ud in db.CarrotUserData on u.Id equals ud.UserKey
@@ -773,7 +951,7 @@ namespace Carrotware.CMS.Core {
 		private static int GeneratedPasswordLength {
 			get {
 				if (_length <= 3) {
-					CarrotSecurityConfig config = CarrotSecurityConfig.GetConfig();
+					var config = CarrotSecurityConfig.GetConfig();
 					_length = config.PasswordValidator.RequiredLength;
 					if (_length <= 8) {
 						_length = 12;
