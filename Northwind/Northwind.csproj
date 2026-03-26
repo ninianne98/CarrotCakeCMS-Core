@@ -42,15 +42,15 @@
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="3.7.1" />
 		<PackageReference Include="jQuery.UI.Combined" Version="1.13.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.24" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.25" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.24" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.24">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.25">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.24" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.24">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.25" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.25">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
