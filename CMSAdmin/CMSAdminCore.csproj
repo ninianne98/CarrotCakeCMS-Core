@@ -43,7 +43,7 @@
 		<PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
 		<PackageReference Include="Castle.Core" Version="5.2.1" />
 		<PackageReference Include="Humanizer.Core" Version="3.0.8" />
-		<PackageReference Include="MailKit" Version="4.15.1" />
+		<PackageReference Include="MailKit" Version="4.16.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.25" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.25" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.25" />
@@ -64,10 +64,11 @@
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.83.1" />
-		<PackageReference Include="MimeKit" Version="4.15.1" />
+		<PackageReference Include="MimeKit" Version="4.16.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" GeneratePathProperty="true" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
 		<PackageReference Include="System.Security.Permissions" Version="8.0.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.6" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />

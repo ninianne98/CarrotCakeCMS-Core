@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34902.127
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginEventCalendarModule", "PluginEventCalendarModule\PluginEventCalendarModule.csproj", "{789F3E62-79D2-43C3-AE30-D45E1A2D65BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSInterfaces", "CMSInterfaces\CMSInterfaces.csproj", "{33D1EA6C-65EA-4234-9861-C1C88317B78A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebComponents", "WebComponents\WebComponents.csproj", "{5AD0FFF2-6700-41AC-85BD-4F7452FDB7B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSCore", "CMSCore\CMSCore.csproj", "{3C1DCC4F-E596-4AF5-9636-CAA4026FCB94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSData", "CarrotCMSData\CMSData.csproj", "{7C876625-DF43-4A67-8610-DD4E014AFAF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSSecurity", "CMSSecurity\CMSSecurity.csproj", "{B73C1A7B-DA07-4170-9B3E-BE8E29A6403F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{789F3E62-79D2-43C3-AE30-D45E1A2D65BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{789F3E62-79D2-43C3-AE30-D45E1A2D65BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{789F3E62-79D2-43C3-AE30-D45E1A2D65BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{789F3E62-79D2-43C3-AE30-D45E1A2D65BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33D1EA6C-65EA-4234-9861-C1C88317B78A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33D1EA6C-65EA-4234-9861-C1C88317B78A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33D1EA6C-65EA-4234-9861-C1C88317B78A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33D1EA6C-65EA-4234-9861-C1C88317B78A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AD0FFF2-6700-41AC-85BD-4F7452FDB7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AD0FFF2-6700-41AC-85BD-4F7452FDB7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AD0FFF2-6700-41AC-85BD-4F7452FDB7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AD0FFF2-6700-41AC-85BD-4F7452FDB7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C1DCC4F-E596-4AF5-9636-CAA4026FCB94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C1DCC4F-E596-4AF5-9636-CAA4026FCB94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C1DCC4F-E596-4AF5-9636-CAA4026FCB94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C1DCC4F-E596-4AF5-9636-CAA4026FCB94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C876625-DF43-4A67-8610-DD4E014AFAF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C876625-DF43-4A67-8610-DD4E014AFAF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C876625-DF43-4A67-8610-DD4E014AFAF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C876625-DF43-4A67-8610-DD4E014AFAF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B73C1A7B-DA07-4170-9B3E-BE8E29A6403F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B73C1A7B-DA07-4170-9B3E-BE8E29A6403F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B73C1A7B-DA07-4170-9B3E-BE8E29A6403F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B73C1A7B-DA07-4170-9B3E-BE8E29A6403F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78CAB2EE-C67A-4DF9-A98D-1E2E617245E4}
+	EndGlobalSection
+EndGlobal

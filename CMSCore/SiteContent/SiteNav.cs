@@ -41,12 +41,12 @@ namespace Carrotware.CMS.Core {
 				this.ContentType = ContentPageType.GetTypeByID(c.ContentTypeId);
 				this.ContentID = c.ContentId;
 				this.Parent_ContentID = c.ParentContentId;
-				this.TitleBar = c.TitleBar;
-				this.NavMenuText = c.NavMenuText;
-				this.PageHead = c.PageHead;
+				this.TitleBar = c.TitleBar ?? string.Empty;
+				this.NavMenuText = c.NavMenuText ?? string.Empty;
+				this.PageHead = c.PageHead ?? string.Empty;
 				this.PageText = c.PageText;
 				this.NavOrder = c.NavOrder;
-				this.TemplateFile = c.TemplateFile;
+				this.TemplateFile = c.TemplateFile ?? SiteData.DefaultTemplateBWFilename;
 			}
 		}
 

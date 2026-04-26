@@ -118,20 +118,20 @@ namespace Carrotware.Web.UI.Components {
 					break;
 
 				case GridFormFieldType.RadioButton:
-					formFld = _htmlHelper.RadioButton(fldName, val.ToString(), htmlAttribs).RenderToHtmlString();
+					formFld = _htmlHelper.RadioButton(fldName, (val ?? string.Empty).ToString(), htmlAttribs).RenderToHtmlString();
 					break;
 
 				case GridFormFieldType.TextArea:
-					formFld = _htmlHelper.TextArea(fldName, val.ToString(), htmlAttribs).RenderToHtmlString();
+					formFld = _htmlHelper.TextArea(fldName, (val ?? string.Empty).ToString(), htmlAttribs).RenderToHtmlString();
 					break;
 
 				case GridFormFieldType.Hidden:
-					formFld = _htmlHelper.Hidden(fldName, val.ToString(), htmlAttribs).RenderToHtmlString();
+					formFld = _htmlHelper.Hidden(fldName, (val ?? string.Empty).ToString(), htmlAttribs).RenderToHtmlString();
 					break;
 
 				case GridFormFieldType.TextBox:
 				default:
-					formFld = _htmlHelper.TextBox(fldName, val.ToString(), htmlAttribs).RenderToHtmlString();
+					formFld = _htmlHelper.TextBox(fldName, (val ?? string.Empty).ToString(), htmlAttribs).RenderToHtmlString();
 					break;
 			}
 
