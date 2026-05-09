@@ -1,6 +1,7 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.CoreMVC.UI.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Text.Json;
 using System.Xml.Serialization;
 
@@ -17,7 +18,7 @@ using System.Xml.Serialization;
 namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 	[CmsAuthorize]
-	public class CmsAdminApiController : ControllerBase, IDisposable {
+	public class CmsAdminApiController : Controller {
 
 		public static class ServiceResponse {
 			public static string OK { get { return "OK"; } }
@@ -42,6 +43,15 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		public CmsAdminApiController(ILogger<CmsAdminApiController> logger) {
 			_logger = logger;
+		}
+
+		public override void OnActionExecuting(ActionExecutingContext context) {
+			base.OnActionExecuting(context);
+
+			var path = context.HttpContext.Request.Path;
+			RouteValueDictionary vals = context.RouteData.Values;
+			string action = vals["action"].ToString().ToLowerInvariant();
+			string controller = vals["controller"].ToString().ToLowerInvariant();
 		}
 
 		protected ContentPageHelper pageHelper = new ContentPageHelper();
@@ -553,7 +563,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
+		[HttpGet]
 		public string GetSnippetVersionText(string DBKey) {
 			try {
 				Guid guidSnippet = new Guid(DBKey);
@@ -706,10 +716,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
-		public string GenerateSnippetSlug([FromBody] ApiModel model) {
+		[HttpGet]
+		public string GenerateSnippetSlug(string TheSlug) {
 			try {
-				var theSlug = model.TheSlug;
+				var theSlug = TheSlug;
 				theSlug = CMSConfigHelper.DecodeBase64(theSlug).ToLowerInvariant().Trim();
 
 				return JsonSerializer.Serialize(ContentPageHelper.ScrubSlug(theSlug));
@@ -866,11 +876,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
-		public string GetWidgetText([FromBody] ApiModel model) {
+		[HttpGet]
+		public string GetWidgetText(string DBKey, string ThisPage) {
 			try {
-				string dbKey = model.DBKey;
-				string thisPage = model.ThisPage;
+				string dbKey = DBKey;
+				string thisPage = ThisPage;
 
 				currentPageGuid = new Guid(thisPage);
 				LoadGuids();
@@ -901,11 +911,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		[HttpPost]
-		public string GetWidgetVersionText([FromBody] ApiModel model) {
+		[HttpGet]
+		public string GetWidgetVersionText(string DBKey, string ThisPage) {
 			try {
-				string dbKey = model.DBKey;
-				string thisPage = model.ThisPage;
+				string dbKey = DBKey;
+				string thisPage = ThisPage;
 
 				currentPageGuid = new Guid(thisPage);
 				LoadGuids();
@@ -1207,7 +1217,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				Guid guidUser = pageHelper.GetCurrentEditUser(currentPageGuid, SiteData.CurrentSite.SiteID);
 
 				if (isLocked || guidUser != SecurityData.CurrentUserGuid) {
-					return "Cannot publish changes, not current editing user.";
+					return JsonSerializer.Serialize("Cannot publish changes, not current editing user.");
 				}
 
 				List<Widget> pageWidgets = widgetHelper.GetWidgets(currentPageGuid, true);
@@ -1260,7 +1270,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			}
 		}
 
-		public void Dispose() {
+		protected override void Dispose(bool disposing) {
+			base.Dispose(disposing);
+
 			if (pageHelper != null) {
 				pageHelper.Dispose();
 			}

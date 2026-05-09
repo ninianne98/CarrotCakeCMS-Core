@@ -15,9 +15,9 @@
 		var webMthd = webSvc + "/GetWidgetText";
 
 		$.ajax({
-			type: "POST",
-			url: webMthd,
-			data: JSON.stringify({ DBKey: val, ThisPage: thisPageID }),
+			type: "GET",
+			url: webMthd + "?DBKey=" + encodeURIComponent(val) + "&ThisPage=" + encodeURIComponent(thisPageID),
+			// data: JSON.stringify({ DBKey: val, ThisPage: thisPageID }),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json"
 		}).done(cmsReqContentCallback)

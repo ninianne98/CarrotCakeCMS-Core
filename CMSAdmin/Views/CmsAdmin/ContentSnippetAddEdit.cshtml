@@ -49,9 +49,9 @@
 				var mySlug = MakeStringSafe(theText);
 
 				$.ajax({
-					type: "POST",
-					url: webMthd,
-					data: JSON.stringify({ TheSlug: mySlug }),
+					type: "GET",
+					url: webMthd + "?TheSlug=" + encodeURIComponent(mySlug),
+					// JSON.stringify({ TheSlug: mySlug }),
 					contentType: "application/json; charset=utf-8",
 					dataType: "json"
 				}).done(editSlug)

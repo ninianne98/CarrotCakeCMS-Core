@@ -1,6 +1,7 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -17,8 +18,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace Carrotware.CMS.Core {
 
 	public class CmsAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter {
-		public CmsAuthorizeAttribute() : base() {
 
+		public CmsAuthorizeAttribute() : base() {
 		}
 
 		public void OnAuthorization(AuthorizationFilterContext context) {
@@ -26,7 +27,7 @@ namespace Carrotware.CMS.Core {
 			string action = vals["action"].ToString().ToLowerInvariant();
 			string controller = vals["controller"].ToString().ToLowerInvariant();
 
-			List<string> anonMethods = (new string[] { "login", "logoff", "about" }).ToList();
+			List<string> anonMethods = (new string[] { "login", "logoff", "about", "forgotpassword" }).ToList();
 
 			var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
 			if (descriptor != null) {
@@ -45,6 +46,7 @@ namespace Carrotware.CMS.Core {
 
 			if (!(SecurityData.GetIsAdminFromCache() || SecurityData.GetIsSiteEditorFromCache())) {
 				var _config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
+				context.Result = new UnauthorizedResult();
 				context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 				context.HttpContext.Response.Redirect(_config.AdditionalSettings.LoginPath);
 			}

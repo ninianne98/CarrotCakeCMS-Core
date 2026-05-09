@@ -332,8 +332,8 @@ namespace Carrotware.CMS.Core {
 							var p2 = (from d in ds.Tables[0].AsEnumerable()
 									  select new CMSPlugin {
 										  SortOrder = 100,
-										  FilePath = d.Field<string>("filepath").NormalizeFilename(),
-										  Caption = d.Field<string>("crtldesc")
+										  FilePath = d.GetStringValue("filepath").NormalizeFilename(),
+										  Caption = d.GetStringValue("crtldesc")
 									  }).Where(x => x.FilePath.Contains(":")).ToList();
 
 							foreach (var p in p2.Where(x => x.FilePath.ToLowerInvariant().EndsWith("html")).Select(x => x)) {
@@ -348,8 +348,8 @@ namespace Carrotware.CMS.Core {
 							var p3 = (from d in ds.Tables[0].AsEnumerable()
 									  select new CMSPlugin {
 										  SortOrder = 100,
-										  FilePath = Path.Join(sPathPrefix, d.Field<string>("filepath")).NormalizeFilename(),
-										  Caption = d.Field<string>("crtldesc")
+										  FilePath = Path.Join(sPathPrefix, d.GetStringValue("filepath")).NormalizeFilename(),
+										  Caption = d.GetStringValue("crtldesc")
 									  }).Where(x => !x.FilePath.Contains(":")).ToList();
 
 							plugins = plugins.Union(p2).Union(p3).ToList();
@@ -376,8 +376,8 @@ namespace Carrotware.CMS.Core {
 				plugins = (from d in ds.Tables[0].AsEnumerable()
 						   select new CMSPlugin {
 							   SortOrder = 100,
-							   FilePath = Path.Join(sPathPrefix, d.Field<string>("filepath")).NormalizeFilename(),
-							   Caption = d.Field<string>("crtldesc")
+							   FilePath = Path.Join(sPathPrefix, d.GetStringValue("filepath")).NormalizeFilename(),
+							   Caption = d.GetStringValue("crtldesc")
 						   }).ToList();
 			}
 
@@ -492,19 +492,19 @@ namespace Carrotware.CMS.Core {
 
 							var modules = (from d in ds.Tables[0].AsEnumerable()
 										   select new CMSAdminModule {
-											   PluginName = d.Field<string>("caption"),
-											   AreaKey = d.Field<string>("area")
+											   PluginName = d.GetStringValue("caption"),
+											   AreaKey = d.GetStringValue("area")
 										   }).OrderBy(x => x.PluginName).ToList();
 
 							var ctrls = (from d in ds.Tables[1].AsEnumerable()
 										 select new CMSAdminModuleMenu {
-											 Caption = d.Field<string>("pluginlabel"),
-											 SortOrder = string.IsNullOrEmpty(d.Field<string>("menuorder")) ? -1 : int.Parse(d.Field<string>("menuorder")),
-											 Action = d.Field<string>("action"),
-											 Controller = d.Field<string>("controller"),
-											 UsePopup = string.IsNullOrEmpty(d.Field<string>("usepopup")) ? false : Convert.ToBoolean(d.Field<string>("usepopup")),
-											 IsVisible = string.IsNullOrEmpty(d.Field<string>("visible")) ? false : Convert.ToBoolean(d.Field<string>("visible")),
-											 AreaKey = d.Field<string>("area")
+											 Caption = d.GetStringValue("pluginlabel"),
+											 SortOrder = d.GetIntValue("menuorder", -1),
+											 Action = d.GetStringValue("action"),
+											 Controller = d.GetStringValue("controller"),
+											 UsePopup = d.GetBoolValue("usepopup"),
+											 IsVisible = d.GetBoolValue("visible"),
+											 AreaKey = d.GetStringValue("area")
 										 }).OrderBy(x => x.Caption).OrderBy(x => x.SortOrder).ToList();
 
 							foreach (var p in modules) {
@@ -648,9 +648,9 @@ namespace Carrotware.CMS.Core {
 
 							var p2 = (from d in ds.Tables[0].AsEnumerable()
 									  select new CMSTemplate {
-										  TemplatePath = sPathPrefix + d.Field<string>("templatefile").ToLowerInvariant().FixPathSlashes().ToLowerInvariant(),
+										  TemplatePath = sPathPrefix + d.GetStringValue("templatefile").ToLowerInvariant().FixPathSlashes().ToLowerInvariant(),
 										  EncodedPath = string.Empty,
-										  Caption = d.Field<string>("filedesc")
+										  Caption = d.GetStringValue("filedesc")
 									  }).ToList();
 
 							plugins = plugins.Union(p2).ToList();
@@ -737,8 +737,8 @@ namespace Carrotware.CMS.Core {
 
 					plugins = (from d in ds.Tables[0].AsEnumerable()
 							   select new CMSTextWidget {
-								   AssemblyString = d.Field<string>("pluginassembly"),
-								   DisplayName = d.Field<string>("pluginname")
+								   AssemblyString = d.GetStringValue("pluginassembly"),
+								   DisplayName = d.GetStringValue("pluginname")
 							   }).ToList();
 
 					CarrotHttpHelper.CacheInsert(keyTxtWidgets, plugins, 5);
@@ -829,7 +829,7 @@ namespace Carrotware.CMS.Core {
 		public static bool CheckRequestedFileExistence(string templateFileName, Guid siteID) {
 			var templates = GetTmplateStatus();
 
-			CMSFilePath tmp = templates.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == siteID).FirstOrDefault();
+			var tmp = templates.Where(x => x.TemplateFile.ToLowerInvariant() == templateFileName.ToLowerInvariant() && x.SiteID == siteID).FirstOrDefault();
 
 			if (tmp == null) {
 				tmp = new CMSFilePath(templateFileName, siteID);

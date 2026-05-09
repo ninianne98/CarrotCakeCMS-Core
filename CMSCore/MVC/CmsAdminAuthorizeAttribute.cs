@@ -19,13 +19,16 @@ namespace Carrotware.CMS.Core {
 	public class CmsAdminAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter {
 
 		public CmsAdminAuthorizeAttribute() : base() {
-
 		}
 
 		public void OnAuthorization(AuthorizationFilterContext context) {
+			RouteValueDictionary vals = context.RouteData.Values;
+			string action = vals["action"].ToString().ToLowerInvariant();
+			string controller = vals["controller"].ToString().ToLowerInvariant();
+
 			if (!SecurityData.GetIsAdminFromCache()) {
 				var _config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
-				//context.Result = new UnauthorizedObjectResult(string.Empty);
+				context.Result = new UnauthorizedResult();
 				context.HttpContext.Response.Redirect(_config.AdditionalSettings.LoginPath);
 			}
 

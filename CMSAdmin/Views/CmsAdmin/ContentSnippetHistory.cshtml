@@ -14,9 +14,9 @@
 		var webMthd = webSvc + "/GetSnippetVersionText";
 
 		$.ajax({
-			type: "POST",
-			url: webMthd,
-			data: JSON.stringify({ DBKey: val }),
+			type: "GET",
+			url: webMthd + "?DBKey=" + encodeURIComponent(val),
+			// data: JSON.stringify({ DBKey: val }),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json"
 		}).done(cmsReqContentCallback)
