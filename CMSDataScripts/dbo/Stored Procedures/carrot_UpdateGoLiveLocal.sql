@@ -1,4 +1,5 @@
-﻿CREATE PROCEDURE [dbo].[carrot_UpdateGoLiveLocal]
+﻿
+CREATE PROCEDURE [dbo].[carrot_UpdateGoLiveLocal]
     @SiteID uniqueidentifier,
     @xmlDocument xml = '<rows />'
 AS BEGIN
@@ -86,5 +87,3 @@ Cleanup:
     RETURN @ErrorCode
 
 END
-
---================================================================================

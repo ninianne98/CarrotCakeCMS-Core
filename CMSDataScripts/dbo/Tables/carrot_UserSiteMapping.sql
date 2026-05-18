@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_UserSiteMapping] (
-    [UserSiteMappingID] UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [UserSiteMappingID] UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_UserSiteMapping_UserSiteMappingID] DEFAULT (newid()) NOT NULL,
     [UserId]            UNIQUEIDENTIFIER NOT NULL,
     [SiteID]            UNIQUEIDENTIFIER NOT NULL,
     CONSTRAINT [carrot_UserSiteMapping_PK] PRIMARY KEY CLUSTERED ([UserSiteMappingID] ASC),
@@ -8,12 +8,10 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_UserSiteMapping_UserId]
-    ON [dbo].[carrot_UserSiteMapping]([UserId] ASC);
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_carrot_UserSiteMapping_SiteID]
-    ON [dbo].[carrot_UserSiteMapping]([SiteID] ASC);
 
+
+
+GO

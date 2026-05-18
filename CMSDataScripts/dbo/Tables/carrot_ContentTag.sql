@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_ContentTag] (
-    [ContentTagID] UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [ContentTagID] UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_ContentTag_ContentTagID] DEFAULT (newid()) NOT NULL,
     [SiteID]       UNIQUEIDENTIFIER NOT NULL,
     [TagText]      NVARCHAR (256)   NOT NULL,
     [TagSlug]      NVARCHAR (256)   NOT NULL,
@@ -9,7 +9,6 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_ContentTag_SiteID]
-    ON [dbo].[carrot_ContentTag]([SiteID] ASC);
 
+
+GO

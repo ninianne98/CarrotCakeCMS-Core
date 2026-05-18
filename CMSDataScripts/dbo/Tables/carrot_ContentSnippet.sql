@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_ContentSnippet] (
-    [ContentSnippetID]      UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [ContentSnippetID]      UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_ContentSnippet_ContentSnippetID] DEFAULT (newid()) NOT NULL,
     [Root_ContentSnippetID] UNIQUEIDENTIFIER NOT NULL,
     [IsLatestVersion]       BIT              NOT NULL,
     [EditUserId]            UNIQUEIDENTIFIER NOT NULL,
@@ -10,7 +10,6 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_ContentSnippet_Root_ContentSnippetID]
-    ON [dbo].[carrot_ContentSnippet]([Root_ContentSnippetID] ASC);
 
+
+GO

@@ -201,11 +201,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 						var result = create.IdentityResult;
 
 						if (result.Succeeded) {
-							usr = ExtendedUserData.FindByUsername(wpu.Login);
+							var exUser = create.ExtendedUserData;
+							wpu.ImportUserID = exUser.UserId;
 						} else {
 							throw new Exception(string.Format("Could not create user: {0} ({1}) \r\n{2}", wpu.Login, wpu.Email, string.Join("\r\n", result.Errors)));
 						}
-						wpu.ImportUserID = usr.UserId;
 					}
 
 					if (wpu.ImportUserID != Guid.Empty) {

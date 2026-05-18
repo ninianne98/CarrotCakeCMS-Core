@@ -1,17 +1,17 @@
 ﻿CREATE TABLE [dbo].[carrot_RootContent] (
-    [Root_ContentID]   UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [Root_ContentID]   UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_RootContent_Root_ContentID] DEFAULT (newid()) NOT NULL,
     [SiteID]           UNIQUEIDENTIFIER NOT NULL,
     [Heartbeat_UserId] UNIQUEIDENTIFIER NULL,
     [EditHeartbeat]    DATETIME         NULL,
     [FileName]         NVARCHAR (256)   NOT NULL,
     [PageActive]       BIT              NOT NULL,
-    [CreateDate]       DATETIME         DEFAULT (getdate()) NOT NULL,
+    [CreateDate]       DATETIME         CONSTRAINT [DF_carrot_RootContent_CreateDate] DEFAULT (getdate()) NOT NULL,
     [ContentTypeID]    UNIQUEIDENTIFIER NOT NULL,
     [PageSlug]         NVARCHAR (256)   NULL,
     [PageThumbnail]    NVARCHAR (128)   NULL,
-    [GoLiveDate]       DATETIME         DEFAULT (getutcdate()) NOT NULL,
-    [RetireDate]       DATETIME         DEFAULT (getutcdate()) NOT NULL,
-    [GoLiveDateLocal]  DATETIME         DEFAULT (getutcdate()) NOT NULL,
+    [GoLiveDate]       DATETIME         CONSTRAINT [DF_carrot_RootContent_GoLiveDate] DEFAULT (getutcdate()) NOT NULL,
+    [RetireDate]       DATETIME         CONSTRAINT [DF_carrot_RootContent_RetireDate] DEFAULT (getutcdate()) NOT NULL,
+    [GoLiveDateLocal]  DATETIME         CONSTRAINT [DF_carrot_RootContent_GoLiveDateLocal] DEFAULT (getutcdate()) NOT NULL,
     [ShowInSiteNav]    BIT              NOT NULL,
     [CreateUserId]     UNIQUEIDENTIFIER NOT NULL,
     [ShowInSiteMap]    BIT              NOT NULL,
@@ -21,6 +21,8 @@
     CONSTRAINT [carrot_RootContent_CreateUserId_FK] FOREIGN KEY ([CreateUserId]) REFERENCES [dbo].[carrot_UserData] ([UserId]),
     CONSTRAINT [carrot_Sites_carrot_RootContent_FK] FOREIGN KEY ([SiteID]) REFERENCES [dbo].[carrot_Sites] ([SiteID])
 );
+
+
 
 
 GO

@@ -61,6 +61,7 @@
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Views\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\carrot_WidgetData.sql" />
@@ -147,6 +148,7 @@
     <Build Include="dbo\Stored Procedures\carrot_UpdateGoLiveLocal.sql" />
     <Build Include="dbo\Stored Procedures\carrot_BlogMonthlyTallies.sql" />
     <Build Include="dbo\Stored Procedures\carrot_BlogDateFilenameUpdate.sql" />
+    <Build Include="Security\RoleMemberships.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CarrotSqlSchemaCompare.scmp" />

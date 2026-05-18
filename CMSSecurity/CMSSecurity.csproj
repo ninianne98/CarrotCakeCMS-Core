@@ -46,13 +46,13 @@
 		<PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
 		<PackageReference Include="Castle.Core" Version="5.2.1" />
 		<PackageReference Include="Humanizer.Core" Version="3.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.26" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.26" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.26" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.26" />
-		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.26" />
-		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.26" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.27" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.27" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.27" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.27" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.27" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.27" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.0" />
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />

@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_Sites] (
-    [SiteID]              UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [SiteID]              UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_Sites_SiteID] DEFAULT (newid()) NOT NULL,
     [MetaKeyword]         NVARCHAR (1024)  NULL,
     [MetaDescription]     NVARCHAR (1024)  NULL,
     [SiteName]            NVARCHAR (256)   NULL,

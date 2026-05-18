@@ -600,16 +600,19 @@ namespace Carrotware.CMS.Core {
 
 					result = await mgr.UserManager.CreateAsync(user, password);
 					data.IdentityResult = result;
+					data.User = user;
 
 					if (result.Succeeded) {
 						var newusr = new ExtendedUserData();
 						newusr.UserKey = user.Id;
+						newusr.Id = user.Id;
 						newusr.UserName = user.UserName;
+						newusr.Email = user.Email;
 						newusr.Save();
 
 						newusr = ExtendedUserData.FindByUserID(newusr.UserId);
 
-						data = new NewUser(newusr, result);
+						data = new NewUser(newusr, user, result);
 					}
 				}
 			}

@@ -1,5 +1,6 @@
 ﻿using Carrotware.CMS.Core;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -19,15 +20,20 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public UserModel(Guid UserId) {
 			this.User = new ExtendedUserData(UserId);
+			this.LockOut = this.User.IsLocked;
 		}
 
 		public UserModel(ExtendedUserData user) {
 			this.User = user;
+			this.LockOut = this.User.IsLocked;
 		}
 
 		public ExtendedUserData User { get; set; }
 
 		public bool Selected { get; set; }
+
+		[Display(Name = "Lock Out?")]
+		public bool LockOut { get; set; }
 
 		private List<SelectListItem> _sites = null;
 

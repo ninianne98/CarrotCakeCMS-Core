@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_TagContentMapping] (
-    [TagContentMappingID] UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [TagContentMappingID] UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_TagContentMapping_TagContentMappingID] DEFAULT (newid()) NOT NULL,
     [ContentTagID]        UNIQUEIDENTIFIER NOT NULL,
     [Root_ContentID]      UNIQUEIDENTIFIER NOT NULL,
     CONSTRAINT [PK_carrot_TagContentMapping] PRIMARY KEY NONCLUSTERED ([TagContentMappingID] ASC),
@@ -8,12 +8,10 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_TagContentMapping_Root_ContentID]
-    ON [dbo].[carrot_TagContentMapping]([Root_ContentID] ASC);
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_carrot_TagContentMapping_ContentTagID]
-    ON [dbo].[carrot_TagContentMapping]([ContentTagID] ASC);
 
+
+
+GO

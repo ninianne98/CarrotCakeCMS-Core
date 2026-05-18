@@ -10,7 +10,6 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_UserData_UserKey]
-    ON [dbo].[carrot_UserData]([UserKey] ASC);
 
+
+GO

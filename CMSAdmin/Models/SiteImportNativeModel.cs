@@ -196,11 +196,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 						var result = create.IdentityResult;
 
 						if (result.Succeeded) {
-							usr = ExtendedUserData.FindByUsername(seu.Login);
+							var exUser = create.ExtendedUserData;
+							seu.ImportUserID = exUser.UserId;
 						} else {
 							throw new Exception(string.Format("Could not create user: {0} ({1}) \r\n{2}", seu.Login, seu.Email, string.Join("\r\n", result.Errors)));
 						}
-						seu.ImportUserID = usr.UserId;
 					}
 
 					if (seu.ImportUserID != Guid.Empty) {

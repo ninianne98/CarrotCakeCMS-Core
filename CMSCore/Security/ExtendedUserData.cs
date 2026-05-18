@@ -109,47 +109,47 @@ namespace Carrotware.CMS.Core {
 
 		public ExtendedUserData() { }
 
-		public ExtendedUserData(string UserName) {
+		public ExtendedUserData(string userName) {
 			using (var db = CarrotCakeContext.Create()) {
-				vwCarrotUserData rc = CompiledQueries.cqFindUserByName(db, UserName);
+				vwCarrotUserData rc = CompiledQueries.cqFindUserByName(db, userName);
 				LoadUserData(rc);
 			}
 		}
 
-		public ExtendedUserData(Guid UserID) {
+		public ExtendedUserData(Guid userID) {
 			using (var db = CarrotCakeContext.Create()) {
-				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(db, UserID);
+				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(db, userID);
 				LoadUserData(rc);
 			}
 		}
 
-		public static ExtendedUserData FindByUsername(string UserName) {
-			ExtendedUserData usr = new ExtendedUserData();
+		public static ExtendedUserData FindByUsername(string userName) {
+			var usr = new ExtendedUserData();
 
 			using (var db = CarrotCakeContext.Create()) {
-				vwCarrotUserData rc = CompiledQueries.cqFindUserByName(db, UserName);
+				vwCarrotUserData rc = CompiledQueries.cqFindUserByName(db, userName);
 				usr.LoadUserData(rc);
 			}
 
 			return usr;
 		}
 
-		public static ExtendedUserData FindByEmail(string Email) {
-			ExtendedUserData usr = new ExtendedUserData();
+		public static ExtendedUserData FindByEmail(string email) {
+			var usr = new ExtendedUserData();
 
 			using (var db = CarrotCakeContext.Create()) {
-				vwCarrotUserData rc = CompiledQueries.cqFindUserByEmail(db, Email);
+				vwCarrotUserData rc = CompiledQueries.cqFindUserByEmail(db, email);
 				usr.LoadUserData(rc);
 			}
 
 			return usr;
 		}
 
-		public static ExtendedUserData FindByUserID(Guid UserID) {
-			ExtendedUserData usr = new ExtendedUserData();
+		public static ExtendedUserData FindByUserID(Guid userID) {
+			var usr = new ExtendedUserData();
 
 			using (var db = CarrotCakeContext.Create()) {
-				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(db, UserID);
+				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(db, userID);
 				usr.LoadUserData(rc);
 			}
 
@@ -304,6 +304,14 @@ namespace Carrotware.CMS.Core {
 				vwCarrotUserData rc = CompiledQueries.cqFindUserByID(db, userData.UserId);
 				LoadUserData(rc);
 			}
+		}
+
+		public bool IsExpiredLockout {
+			get { return this.LockoutEndDateUtc.HasValue && this.LockoutEndDateUtc.Value <= DateTime.UtcNow; }
+		}
+
+		public bool IsLocked {
+			get { return this.LockoutEndDateUtc.HasValue && this.LockoutEndDateUtc.Value > DateTime.UtcNow; }
 		}
 
 		internal ExtendedUserData(vwCarrotUserData c) {

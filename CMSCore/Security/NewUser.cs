@@ -23,12 +23,16 @@ namespace Carrotware.CMS.Core.Security {
 			this.IdentityResult = IdentityResult.Failed(err.ToArray());
 		}
 
-		public NewUser(ExtendedUserData user, IdentityResult result) {
-			this.ExtendedUserData = user;
+		public NewUser(ExtendedUserData exUser, IdentityUser user, IdentityResult result) {
+			this.ExtendedUserData = exUser;
+			this.User = user;
 			this.IdentityResult = result;
 		}
 
-		public ExtendedUserData ExtendedUserData { get; set; }
+		public IdentityUser User { get; set; } = new IdentityUser();
+
+		public ExtendedUserData ExtendedUserData { get; set; } = new ExtendedUserData();
+
 		public IdentityResult IdentityResult { get; set; }
 	}
 }

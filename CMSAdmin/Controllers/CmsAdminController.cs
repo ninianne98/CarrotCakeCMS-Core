@@ -158,42 +158,39 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[ValidateAntiForgeryToken]
 		[CmsAdminAuthorize]
 		public async Task<ActionResult> UserEdit(UserModel model) {
-			ExtendedUserData userExt = model.User;
+			ExtendedUserData modeluser = model.User;
 
 			if (ModelState.IsValid) {
-				var user = await securityHelper.UserManager.FindByNameAsync(model.User.UserName);
+				var user = await securityHelper.UserManager.FindByIdAsync(model.User.UserKey);
 
-				IdentityResult result = await securityHelper.UserManager.SetEmailAsync(user, userExt.Email);
-				result = await securityHelper.UserManager.SetPhoneNumberAsync(user, userExt.PhoneNumber);
+				if (user != null) {
+					IdentityResult result = await securityHelper.UserManager.SetEmailAsync(user, modeluser.Email);
 
-				if (userExt.LockoutEndDateUtc.HasValue) {
-					if (!user.LockoutEnd.HasValue) {
-						// set lockout
-						user.LockoutEnd = userExt.LockoutEndDateUtc.Value;
-						user.AccessFailedCount = 20;
-						await securityHelper.UserManager.UpdateAsync(user);
-					}
-				} else {
-					if (user.LockoutEnd.HasValue) {
-						// unset lockout
+					if (model.LockOut == false) {
 						user.LockoutEnd = null;
 						user.AccessFailedCount = 0;
 						await securityHelper.UserManager.UpdateAsync(user);
+					} else {
+						if (user.LockoutEnd.HasValue == false || user.LockoutEnd.Value < DateTime.UtcNow) {
+							user.LockoutEnd = DateTime.UtcNow.Date.AddYears(2);
+							user.AccessFailedCount = 25;
+							await securityHelper.UserManager.UpdateAsync(user);
+						}
 					}
 				}
 
-				ExtendedUserData exUsr = new ExtendedUserData(userExt.UserId);
+				var exUsr = new ExtendedUserData(modeluser.UserId);
 
-				exUsr.UserNickName = userExt.UserNickName;
-				exUsr.FirstName = userExt.FirstName;
-				exUsr.LastName = userExt.LastName;
-				exUsr.UserBio = userExt.UserBio;
+				exUsr.UserNickName = modeluser.UserNickName;
+				exUsr.FirstName = modeluser.FirstName;
+				exUsr.LastName = modeluser.LastName;
+				exUsr.UserBio = modeluser.UserBio;
 
 				exUsr.Save();
 
 				model.SaveOptions();
 
-				return RedirectToAction(SiteActions.UserEdit, new { @id = userExt.UserId });
+				return RedirectToAction(SiteActions.UserEdit, new { @id = modeluser.UserId });
 			}
 
 			Helper.HandleErrorDict(ModelState);
@@ -213,17 +210,20 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public async Task<ActionResult> UserAdd(RegisterViewModel model) {
 			if (ModelState.IsValid) {
 				var sd = new SecurityData();
-				IdentityUser user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+				var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
 
 				var newUser = await sd.CreateIdentityUser(user, model.Password);
 				var result = newUser.IdentityResult;
-				var exUser = newUser.ExtendedUserData;
-				user = SecurityData.NewIdentityUser(exUser);
 
-				if (result == IdentityResult.Success && exUser != null) {
-					result = await securityHelper.UserManager.SetLockoutEnabledAsync(user, true);
+				if (result == IdentityResult.Success) {
+					var exUser = newUser.ExtendedUserData;
+					user = newUser.User;
 
-					return RedirectToAction(SiteActions.UserEdit, new { @id = exUser.UserId });
+					if (exUser != null) {
+						result = await securityHelper.UserManager.SetLockoutEnabledAsync(user, true);
+
+						return RedirectToAction(SiteActions.UserEdit, new { @id = exUser.UserId });
+					}
 				}
 
 				AddErrors(result);
@@ -672,24 +672,42 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			// This doesn't count login failures towards account lockout
 			var user = await securityHelper.UserManager.FindByNameAsync(model.UserName);
-			var result = await securityHelper.SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+			var result = (user == null) ? false : await securityHelper.SimpleLogInAsync(model.UserName, model.Password, false);
+			var exUser = ExtendedUserData.FindByUsername(model.UserName);
 
-			if (result.Succeeded) {
+			if (result && user != null && exUser != null & exUser.IsLocked == false) {
 				await securityHelper.UserManager.ResetAccessFailedCountAsync(user);
+
 				return RedirectToLocal(returnUrl);
 			} else {
-				if (result.IsLockedOut) {
-					return View("Lockout");
-				} else {
-					ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
-					if (user != null && user.LockoutEnd.HasValue && user.LockoutEnd.Value < DateTime.UtcNow) {
-						user.LockoutEnd = null;
-						user.AccessFailedCount = 1;
+				if (user != null && exUser != null) {
+					if (exUser.IsLocked == false) {
+						user.AccessFailedCount++;
 						await securityHelper.UserManager.UpdateAsync(user);
 					}
 				}
+
+				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 			}
+
+			//var result2 = await securityHelper.SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+
+			//if (result2.Succeeded) {
+			//	await securityHelper.UserManager.ResetAccessFailedCountAsync(user);
+			//	return RedirectToLocal(returnUrl);
+			//} else {
+			//	if (result2.IsLockedOut) {
+			//		return View("Lockout");
+			//	} else {
+			//		ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+			//		if (user != null && user.LockoutEnd.HasValue && user.LockoutEnd.Value < DateTime.UtcNow) {
+			//			user.LockoutEnd = null;
+			//			user.AccessFailedCount = 1;
+			//			await securityHelper.UserManager.UpdateAsync(user);
+			//		}
+			//	}
+			//}
 
 			return View(model);
 		}

@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_TextWidget] (
-    [TextWidgetID]       UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [TextWidgetID]       UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_TextWidget_TextWidgetID] DEFAULT (newid()) NOT NULL,
     [SiteID]             UNIQUEIDENTIFIER NOT NULL,
     [TextWidgetAssembly] NVARCHAR (256)   NOT NULL,
     [ProcessBody]        BIT              NOT NULL,
@@ -12,7 +12,6 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_TextWidget_SiteID]
-    ON [dbo].[carrot_TextWidget]([SiteID] ASC);
 
+
+GO

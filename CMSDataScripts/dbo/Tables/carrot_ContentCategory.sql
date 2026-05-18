@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[carrot_ContentCategory] (
-    [ContentCategoryID] UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
+    [ContentCategoryID] UNIQUEIDENTIFIER CONSTRAINT [DF_carrot_ContentCategory_ContentCategoryID] DEFAULT (newid()) NOT NULL,
     [SiteID]            UNIQUEIDENTIFIER NOT NULL,
     [CategoryText]      NVARCHAR (256)   NOT NULL,
     [CategorySlug]      NVARCHAR (256)   NOT NULL,
@@ -9,7 +9,6 @@
 );
 
 
-GO
-CREATE NONCLUSTERED INDEX [IX_carrot_ContentCategory_SiteID]
-    ON [dbo].[carrot_ContentCategory]([SiteID] ASC);
 
+
+GO
