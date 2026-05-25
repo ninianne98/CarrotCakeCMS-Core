@@ -229,9 +229,9 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		public static string MakeFileFolderPath(string sDirPath) {
-			string _path = sDirPath.FixPathSlashes();
-			string _map = CarrotWebHelper.MapWebPath(_path);
-			return _map;
+			string path = sDirPath.FixPathSlashes();
+			string map = CarrotWebHelper.MapWebPath(path);
+			return map;
 		}
 
 		public static string MakeWebFolderPath(string sDirPath) {

@@ -50,9 +50,9 @@ namespace Carrotware.CMS.Core {
 			return this.PostTitle + " : " + this.PostType.ToString() + " , #" + this.PostID;
 		}
 
-		public override bool Equals(object? obj) {
+		public override bool Equals(Object obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || this.GetType() != obj.GetType()) return false;
+			if (obj == null || GetType() != obj.GetType()) return false;
 			if (obj is WordPressPost) {
 				WordPressPost p = (WordPressPost)obj;
 				return (this.PostID == p.PostID)
@@ -68,7 +68,7 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void CleanBody() {
-			if (string.IsNullOrEmpty(this.PostContent)) {
+			if (String.IsNullOrEmpty(this.PostContent)) {
 				this.PostContent = "";
 			}
 
@@ -93,15 +93,14 @@ namespace Carrotware.CMS.Core {
 										&& a.ParentPostID == iPost
 										select a).Distinct().ToList();
 
-			lstA.ToList().ForEach(q => q.ImportFileSlug = Path.Join(folderName, q.ImportFileSlug).NormalizeFilename());
+			lstA.ToList().ForEach(q => q.ImportFileSlug = q.ImportFileSlug.NormalizeFilename());
 
 			using (CMSConfigHelper cmsHelper = new CMSConfigHelper()) {
 				foreach (var img in lstA) {
-					img.ImportFileSlug = img.ImportFileSlug.CleanDuplicateSlashes();
+					img.ImportFileSlug = ("~" + folderName + "/" + img.ImportFileSlug).CleanDuplicateSlashes();
 
 					cmsHelper.GetFile(img.AttachmentURL, img.ImportFileSlug);
-
-					var imgPath = img.ImportFileSlug.FixPathSlashes();
+					var imgPath = img.ImportFileSlug.Replace("~", "");
 
 					this.PostContent = this.PostContent.Replace(img.AttachmentURL, imgPath);
 				}

@@ -14,12 +14,12 @@ namespace Carrotware.CMS.Core {
 
 	public static class CoreHelper {
 
-		internal static string ReadEmbededScript(string sResouceName) {
-			return CarrotWebHelper.GetManifestResourceText(typeof(CoreHelper), sResouceName);
+		internal static string ReadEmbededScript(string resource) {
+			return CarrotWebHelper.GetManifestResourceText(typeof(CoreHelper), resource);
 		}
 
-		internal static byte[] ReadEmbededBinary(string sResouceName) {
-			return CarrotWebHelper.GetManifestResourceBytes(typeof(CoreHelper), sResouceName);
+		internal static byte[] ReadEmbededBinary(string resource) {
+			return CarrotWebHelper.GetManifestResourceBytes(typeof(CoreHelper), resource);
 		}
 
 		internal static string GetWebResourceUrl(string resource) {
@@ -30,6 +30,12 @@ namespace Carrotware.CMS.Core {
 			} catch { }
 
 			return sPath;
+		}
+
+		public static RouteValueDictionary MarkSpecial(this RouteValueDictionary routeData, string pageId) {
+			routeData.Add(CmsRouting.Keys.PageId, pageId);
+			routeData[CmsRouting.Keys.Special] = true;
+			return routeData;
 		}
 	}
 }

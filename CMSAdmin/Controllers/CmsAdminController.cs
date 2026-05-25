@@ -36,17 +36,17 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			BaseWidgetController.WidgetStandaloneMode = false;
 
 			var path = context.HttpContext.Request.Path;
-			RouteValueDictionary vals = context.RouteData.Values;
-			string action = vals["action"].ToString().ToLowerInvariant();
-			string controller = vals["controller"].ToString().ToLowerInvariant();
-			context.RouteData.Values.Remove("area");
+			var routeInfo = context.RouteData.GetRouteInfo();
+			string action = routeInfo.Action.ToLowerInvariant();
+			string controller = routeInfo.Controller.ToLowerInvariant();
+			routeInfo.RemoveArea();
 
 			if (this.HttpContext.User.Identity.IsAuthenticated) {
 				//carveouts for setup
 				List<string> lstOKNoSiteActions = (new string[] { "login", "logoff", "about", "siteinfo", "siteindex", "filebrowser", "userindex", "roleindex", "userprofile", "changepassword" }).ToList();
 
 				//carvouts for anon pages
-				List<string> anonMethods = (new string[] { "login", "logoff", "about" }).ToList();
+				List<string> anonMethods = (new string[] { "login", "logoff", "about", "forgotpassword", "notauthorized" }).ToList();
 
 				// use reflection to see if the method/action has an anon permission and honor it
 				anonMethods = (this).GetType().GetMethods()
@@ -412,10 +412,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 						ContentImportExportUtils.SaveSerializedDataExport<ContentPageExport>(cph.NewRootContentID, cph);
 
 						if (cph.ThePage.ContentType == ContentPageType.PageType.ContentEntry) {
-							//Response.Redirect(SiteFilename.PageAddEditURL + "?importid=" + cph.NewRootContentID.ToString());
 							return RedirectToAction(this.GetActionName(x => x.PageAddEdit(null)), new { importid = cph.NewRootContentID });
 						} else {
-							//Response.Redirect(SiteFilename.BlogPostAddEditURL + "?importid=" + cph.NewRootContentID.ToString());
 							return RedirectToAction(this.GetActionName(x => x.BlogPostAddEdit(null)), new { importid = cph.NewRootContentID });
 						}
 					}
@@ -426,7 +424,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 						ContentImportExportUtils.AssignSiteExportNewIDs(site);
 						ContentImportExportUtils.SaveSerializedDataExport<SiteExport>(site.NewSiteID, site);
 
-						//Response.Redirect(SiteFilename.SiteImportURL + "?importid=" + site.NewSiteID.ToString());
 						return RedirectToAction(SiteActions.SiteImport, new { importid = site.NewSiteID });
 					}
 
@@ -588,10 +585,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public ActionResult DatabaseSetup(string signout) {
 			if (!string.IsNullOrEmpty(signout)) {
 				ClearUserSession();
+				SessionContext.CleanExpiredSession();
+
 				Response.Redirect(SiteFilename.DatabaseSetupURL);
 			}
-
-			SessionContext.CleanExpiredSession();
 
 			var model = new DatabaseSetupModel();
 
@@ -678,6 +675,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			if (result && user != null && exUser != null & exUser.IsLocked == false) {
 				await securityHelper.UserManager.ResetAccessFailedCountAsync(user);
 
+				if (!SecurityData.IsAuthEditor) {
+					return RedirectToAction(this.GetActionName(x => x.NotAuthorized()));
+				}
+
 				return RedirectToLocal(returnUrl);
 			} else {
 				if (user != null && exUser != null) {
@@ -689,25 +690,6 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 			}
-
-			//var result2 = await securityHelper.SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
-
-			//if (result2.Succeeded) {
-			//	await securityHelper.UserManager.ResetAccessFailedCountAsync(user);
-			//	return RedirectToLocal(returnUrl);
-			//} else {
-			//	if (result2.IsLockedOut) {
-			//		return View("Lockout");
-			//	} else {
-			//		ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
-			//		if (user != null && user.LockoutEnd.HasValue && user.LockoutEnd.Value < DateTime.UtcNow) {
-			//			user.LockoutEnd = null;
-			//			user.AccessFailedCount = 1;
-			//			await securityHelper.UserManager.UpdateAsync(user);
-			//		}
-			//	}
-			//}
 
 			return View(model);
 		}
@@ -1140,9 +1122,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				site.Save();
 
 				if (datePatternOld != model.Site.Blog_DatePattern || timezoneOld != model.Site.TimeZoneIdentifier) {
-					using (ContentPageHelper cph = new ContentPageHelper()) {
-						cph.BulkBlogFileNameUpdateFromDate(this.CurrentSiteID);
-					}
+					pageHelper.BulkBlogFileNameUpdateFromDate(this.CurrentSiteID);
 				}
 
 				if (model.CreateHomePage) {
@@ -1469,9 +1449,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult DeleteContentPage(ContentPageModel model) {
-			using (ContentPageHelper cph = new ContentPageHelper()) {
-				cph.RemoveContent(this.CurrentSiteID, model.ContentPage.Root_ContentID);
-			}
+			pageHelper.RemoveContent(this.CurrentSiteID, model.ContentPage.Root_ContentID);
 
 			if (model.ContentPage.ContentType == ContentPageType.PageType.BlogEntry) {
 				return RedirectToAction(this.GetActionName(x => x.BlogPostIndex(null)));

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -209,7 +210,7 @@ namespace Carrotware.CMS.Interface {
 
 			data = new RenderWidgetData(controller);
 
-			string controlerName = controller.GetType().Name.ToLowerInvariant().Replace("controller", string.Empty);
+			string controlerName = controller.GetControllerName();
 
 			var routeData = data.RouteData.Values;
 
@@ -217,16 +218,15 @@ namespace Carrotware.CMS.Interface {
 				areaName = ((IWidgetController)controller).AreaName;
 			}
 
-			routeData["area"] = string.Empty;
+			routeData[RouteInfo.Keys.Area] = string.Empty;
 			if (!string.IsNullOrWhiteSpace(areaName)) {
-				routeData["area"] = areaName;
+				routeData[RouteInfo.Keys.Area] = areaName;
 			}
 
-			routeData["action"] = actionName;
-			routeData["controller"] = controlerName;
+			routeData[RouteInfo.Keys.Action] = actionName;
+			routeData[RouteInfo.Keys.Controller] = controlerName;
 
-			foreach (var r in source.RouteData.Values.Where(x => x.Key.ToLowerInvariant() != "controller"
-					&& x.Key.ToLowerInvariant() != "action" && x.Key.ToLowerInvariant() != "area")) {
+			foreach (var r in source.RouteData.Values.Where(x => RouteInfo.Keys.GetStandardKeys().Contains(x.Key.ToLowerInvariant()) == false)) {
 				routeData[r.Key] = r.Value;
 			}
 
@@ -243,10 +243,11 @@ namespace Carrotware.CMS.Interface {
 			Controller controller = data.Controller;
 			var type = controller.GetType();
 			var routeData = data.RouteData;
-			var actionName = routeData.Values["action"].ToString();
+			var routeInfo = routeData.GetRouteInfo();
+			var actionName = routeInfo.Action;
 
 			MethodInfo? methodInfo = null;
-			List<MethodInfo> mthds = type.GetMethods().Where(x => x.Name == actionName).ToList();
+			List<MethodInfo> mthds = type.GetMethods().Where(x => x.Name.ToLowerInvariant() == actionName.ToLowerInvariant()).ToList();
 
 			// because there might be an overload, get the GET version if there is more than one
 			if (mthds.Count <= 1) {
@@ -310,7 +311,8 @@ namespace Carrotware.CMS.Interface {
 			var engine = data.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
 			if (string.IsNullOrEmpty(viewName)) {
-				viewName = data.RouteData.Values["action"].ToString();
+				var routeInfo = data.RouteData.GetRouteInfo();
+				viewName = routeInfo.Action;
 			}
 
 			if (partialResult != null) {

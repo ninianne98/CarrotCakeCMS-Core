@@ -35,11 +35,11 @@ namespace Carrotware.CMS.Core {
 				var principal = controllerContext.HttpContext.User;
 
 				if (isAdmin && !principal.Identity.IsAuthenticated) {
-					var _config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
+					var config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
 
 					// enforce logging in for admin modules
 					// not auth, get us out of here
-					controllerContext.HttpContext.Response.Redirect(_config.AdditionalSettings.LoginPath);
+					controllerContext.HttpContext.Response.Redirect(config.AdditionalSettings.LoginPath);
 					return _act.Create(controllerContext);
 				}
 

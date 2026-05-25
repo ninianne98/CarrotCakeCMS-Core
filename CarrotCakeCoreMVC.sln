@@ -19,6 +19,12 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CMSDataScripts", "CMSDataSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSData", "CarrotCMSData\CMSData.csproj", "{88CC5073-9F28-42EB-A502-133DB06865A7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

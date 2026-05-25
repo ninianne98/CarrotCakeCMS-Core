@@ -1,4 +1,5 @@
 ﻿using Carrotware.CMS.Core;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 /*
@@ -44,16 +45,19 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public void LoadContext(ViewContext viewContext) {
 			this.RouteValues = viewContext.RouteData.Values;
-			var request = viewContext.HttpContext.Request;
 
-			if (this.RouteValues["action"] != null) {
-				this.CurrentAction = this.RouteValues["action"].ToString();
+			var routeInfo = this.RouteValues.GetRouteInfo();
+
+			if (string.IsNullOrWhiteSpace(routeInfo.Action) == false) {
+				this.CurrentAction = routeInfo.Action;
 			}
-			if (this.RouteValues["controller"] != null) {
-				this.CurrentController = this.RouteValues["controller"].ToString();
+			if (string.IsNullOrWhiteSpace(routeInfo.Controller) == false) {
+				this.CurrentController = routeInfo.Controller;
 			}
 
 			this.CurrentActionFull = string.Format("{0}", this.CurrentAction);
+
+			var request = viewContext.HttpContext.Request;
 
 			if (request.QueryString.HasValue) {
 				var currentQueryString = request.QueryString.ToString();

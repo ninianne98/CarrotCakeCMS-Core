@@ -604,17 +604,47 @@ namespace Carrotware.CMS.Core {
 			context.Response.StatusCode = (int)System.Net.HttpStatusCode.MovedPermanently;
 		}
 
-		public static void WriteDebugException(string sSrc, Exception objErr) {
-			bool bWriteError = false;
+		private static object logLocker = new object();
 
-			CarrotCakeConfig config = CarrotCakeConfig.GetConfig();
+		public static void WriteDebugException(string debugSource, Exception objErr) {
+			bool bWriteError = false;
+			var config = CarrotCakeConfig.GetConfig();
 
 			if (config.ExtraOptions != null && config.ExtraOptions.WriteErrorLog) {
 				bWriteError = config.ExtraOptions.WriteErrorLog;
 			}
+
 #if DEBUG
 			bWriteError = true; // always write errors when debug build
 #endif
+
+			if (bWriteError && objErr != null) {
+				var sb = new StringBuilder();
+
+				sb.AppendLine("----------------  " + debugSource.ToUpperInvariant() + " - " + DateTime.Now.ToString() + "  ----------------");
+
+				sb.AppendLine("[" + objErr.GetType().ToString() + "] " + objErr.Message);
+
+				if (objErr.StackTrace != null) {
+					sb.AppendLine(objErr.StackTrace);
+				}
+
+				if (objErr.InnerException != null) {
+					sb.AppendLine(objErr.InnerException.Message);
+				}
+
+				Encoding encode = Encoding.Default;
+
+				string filePath = CarrotWebHelper.MapPath("/carrot_errors.txt");
+
+				lock (logLocker) {
+					using (var fs = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {
+						using (var sw = new StreamWriter(fs, encode)) {
+							sw.Write(sb.ToString());
+						}
+					}
+				}
+			}
 		}
 
 		public static void Perform404Redirect(string sReqURL) {
@@ -868,19 +898,21 @@ namespace Carrotware.CMS.Core {
 
 		public static Guid? CurrentRoutePageID {
 			get {
-				Guid? id = null;
+				Guid? guidValue = null;
 				try {
 					var data = CarrotHttpHelper.HttpContext.GetRouteData();
+
 					if (data != null && data.Values != null
-								&& data.Values[CmsRouting.PageIdKey] != null) {
-						var val = data.Values[CmsRouting.PageIdKey].ToString() ?? "";
-						if (val.Length > 27) {
-							id = new Guid(val);
+							&& data.Values.ContainsKey(CmsRouting.Keys.PageId)) {
+						var val = data.Values[CmsRouting.Keys.PageId].ToString() ?? string.Empty;
+
+						if (Guid.TryParse(val, out Guid result)) {
+							guidValue = result;
 						}
 					}
 				} catch { }
 
-				return id;
+				return guidValue;
 			}
 		}
 

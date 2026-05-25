@@ -29,12 +29,12 @@ namespace Carrotware.CMS.Core.MVC {
 			switch (type) {
 				case AdminArea.AdminGui:
 					this.Template = adminFolder;
-					this.RouteKey = "controller";
+					this.RouteKey = RouteInfo.Keys.Controller;
 					this.RouteValue = CmsRouteConstants.CmsController.Admin;
 					break;
 				case AdminArea.AdminApi:
 					this.Template = "api/" + adminFolder;
-					this.RouteKey = "controller";
+					this.RouteKey = RouteInfo.Keys.Controller;
 					this.RouteValue = CmsRouteConstants.CmsController.AdminApi;
 					break;
 				default:

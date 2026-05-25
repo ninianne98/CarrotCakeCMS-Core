@@ -1,4 +1,5 @@
 ﻿using Carrotware.CMS.Interface;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -19,8 +20,8 @@ namespace Carrotware.CMS.Core {
 		public static string ToggleLayout(IHtmlHelper helper, ViewDataDictionary viewData, string viewName) {
 			var routeData = helper.ViewContext.RouteData.Values;
 
-			if (routeData[CmsRouting.PageIdKey] != null && routeData[CmsRouting.PageIdKey].ToString().Length > 30
-						&& routeData["controller"] == CmsRouteConstants.CmsController.Content) {
+			if (routeData[CmsRouting.Keys.PageId] != null && routeData[CmsRouting.Keys.PageId].ToString().Length > 30
+						&& routeData[RouteInfo.Keys.Controller] == CmsRouteConstants.CmsController.Content) {
 				return viewName;
 			}
 

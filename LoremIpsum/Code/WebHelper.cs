@@ -6,8 +6,8 @@ namespace CarrotCake.CMS.Plugins.LoremIpsum.Code {
 		public static string ReadEmbededScript(string sResouceName) {
 			string sReturn = null;
 
-			Assembly _assembly = Assembly.GetExecutingAssembly();
-			using (var stream = new StreamReader(_assembly.GetManifestResourceStream(sResouceName))) {
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			using (var stream = new StreamReader(assembly.GetManifestResourceStream(sResouceName))) {
 				sReturn = stream.ReadToEnd();
 			}
 

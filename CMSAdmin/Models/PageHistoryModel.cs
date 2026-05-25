@@ -1,8 +1,5 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.Web.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -32,7 +29,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public void SetCurrent(Guid id) {
 			this.Root_ContentID = id;
 
-			using (ContentPageHelper pageHelper = new ContentPageHelper()) {
+			using (var pageHelper = new ContentPageHelper()) {
 				this.ContentPage = pageHelper.FindContentByID(this.SiteID, id);
 
 				this.History.DataSource = pageHelper.GetVersionHistory(this.SiteID, id);
@@ -44,7 +41,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 		public void SetVersion(Guid id) {
 			this.VersionID = id;
 
-			using (ContentPageHelper pageHelper = new ContentPageHelper()) {
+			using (var pageHelper = new ContentPageHelper()) {
 				this.ContentPage = pageHelper.GetVersion(this.SiteID, id);
 				this.Root_ContentID = this.ContentPage.Root_ContentID;
 			}

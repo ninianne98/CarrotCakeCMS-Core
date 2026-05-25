@@ -1,7 +1,7 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.CMS.Security;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -23,11 +23,11 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public void OnAuthorization(AuthorizationFilterContext context) {
-			RouteValueDictionary vals = context.RouteData.Values;
-			string action = vals["action"].ToString().ToLowerInvariant();
-			string controller = vals["controller"].ToString().ToLowerInvariant();
+			var routeInfo = context.RouteData.GetRouteInfo();
+			string action = routeInfo.Action.ToLowerInvariant();
+			string controller = routeInfo.Controller.ToLowerInvariant();
 
-			List<string> anonMethods = (new string[] { "login", "logoff", "about", "forgotpassword" }).ToList();
+			List<string> anonMethods = (new string[] { "login", "logoff", "about", "forgotpassword", "notauthorized" }).ToList();
 
 			var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
 			if (descriptor != null) {
@@ -45,10 +45,10 @@ namespace Carrotware.CMS.Core {
 			}
 
 			if (!(SecurityData.GetIsAdminFromCache() || SecurityData.GetIsSiteEditorFromCache())) {
-				var _config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
-				context.Result = new UnauthorizedResult();
+				var config = CarrotSecurityConfig.GetConfig(CarrotHttpHelper.Configuration);
+				//context.Result = new UnauthorizedResult();
 				context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-				context.HttpContext.Response.Redirect(_config.AdditionalSettings.LoginPath);
+				context.HttpContext.Response.Redirect(config.AdditionalSettings.LoginPath);
 			}
 
 			return;

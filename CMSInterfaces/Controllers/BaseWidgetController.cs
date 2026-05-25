@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Carrotware.Web.UI.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
 
@@ -79,8 +80,8 @@ namespace Carrotware.CMS.Interface.Controllers {
 				if (routeData != null) {
 					RouteValueDictionary vals = routeData.Values;
 
-					if (vals["area"] == null && !vals.ContainsKey("area")) {
-						vals.Add("area", this.AssemblyName);
+					if (vals[RouteInfo.Keys.Area] == null && !vals.ContainsKey(RouteInfo.Keys.Area)) {
+						vals.Add(RouteInfo.Keys.Area, this.AssemblyName);
 					}
 				}
 			}

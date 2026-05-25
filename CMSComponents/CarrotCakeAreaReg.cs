@@ -1,6 +1,6 @@
 ﻿using Carrotware.CMS.Interface;
 using Carrotware.CMS.UI.Components.Controllers;
-using System.Xml.Linq;
+using Carrotware.Web.UI.Components;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -27,7 +27,7 @@ namespace Carrotware.CMS.UI.Components {
 		public override void RegisterWidgets(WebApplication app) {
 			base.RegisterWidgets(app);
 
-			string home = nameof(HomeController).Replace("Controller", "");
+			string home = typeof(HomeController).GetControllerName();
 
 			app.MapControllerRoute(
 					name: this.AreaName + "_GetNavigationCss",

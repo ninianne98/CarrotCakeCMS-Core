@@ -267,8 +267,8 @@ namespace Carrotware.CMS.Core {
 
 				props = (from d in ds.Tables[0].AsEnumerable()
 						 select new WidgetProps {
-							 KeyName = d.Field<string>("KeyName"),
-							 KeyValue = d.Field<string>("KeyValue")
+							 KeyName = d.GetStringValue("KeyName"),
+							 KeyValue = d.GetStringValue("KeyValue")
 						 }).ToList();
 			}
 

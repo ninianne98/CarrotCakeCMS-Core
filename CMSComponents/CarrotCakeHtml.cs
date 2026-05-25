@@ -57,43 +57,6 @@ namespace Carrotware.CMS.UI.Components {
 
 			string stringResult = partialResult != null ? partialResult.ResultToString(data, viewName) : string.Empty;
 
-			/*
-			var engine = data.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
-
-			data.CapturePartialResult(partialResult);
-
-			if (string.IsNullOrEmpty(viewName)) {
-				actualViewName = partialResult.ViewName;
-				if (string.IsNullOrEmpty(actualViewName)) {
-					actualViewName = routeData.Values["action"].ToString();
-				}
-			}
-
-			var context = data.GetActionContext();
-
-			if (engine != null) {
-				var viewEngineResult = engine.FindView(context, actualViewName, false);
-				var view = viewEngineResult.View;
-
-				var model = partialResult.Model;
-				if (model != null) {
-					controller.ViewData.Model = model;
-				}
-
-				if (view != null) {
-					using (var sw = new StringWriter()) {
-						var ctx = data.GetViewContext(sw, view, model);
-						var task = view.RenderAsync(ctx);
-						stringResult = sw.ToString();
-					}
-				} else {
-					throw new Exception($"View '{actualViewName}' is null");
-				}
-			} else {
-				throw new Exception("IRazorViewEngine is null");
-			}
-			*/
-
 			return stringResult;
 		}
 	}
@@ -450,17 +413,6 @@ namespace Carrotware.CMS.UI.Components {
 			}
 		}
 
-		internal RouteData AddUpdateRouting(RouteData routeData, string key, string value) {
-			string keyLower = key.ToLowerInvariant();
-			if (routeData.Values.ContainsKey(keyLower)) {
-				routeData.Values[keyLower] = value;
-			} else {
-				routeData.Values.Add(keyLower, value);
-			}
-
-			return routeData;
-		}
-
 		internal string GetResultViewStringFromController(string actionName, Type type, object obj, object payload) {
 			bool isFormPost = HttpMethods.IsPost(_helper.ViewContext.HttpContext.Request.Method);
 
@@ -477,14 +429,13 @@ namespace Carrotware.CMS.UI.Components {
 				}
 
 				RouteData routeData = _helper.ViewContext.RouteData;
-				AddUpdateRouting(routeData, "controller", type.Name.ToLowerInvariant().Replace("controller", string.Empty));
-				AddUpdateRouting(routeData, "action", actionName);
-				AddUpdateRouting(routeData, "area", areaName);
+
+				routeData.SetRouteValues(areaName, type.GetControllerName(), actionName, null);
 
 				var data = new RenderWidgetData(controller, _helper);
 				data.RouteValues = routeData.Values;
 
-				List<MethodInfo> mthds = type.GetMethods().Where(x => x.Name == actionName).ToList();
+				List<MethodInfo> mthds = type.GetMethods().Where(x => x.Name.ToLowerInvariant() == actionName.ToLowerInvariant()).ToList();
 				if (mthds.Count <= 1) {
 					methodInfo = mthds.FirstOrDefault();
 				} else {
@@ -635,11 +586,11 @@ namespace Carrotware.CMS.UI.Components {
 			}
 
 			// since this is from CmsContent, block area to not accidentally pick up a widget scope
-			_helper.ViewContext.RouteData.Values["area"] = null;
-			_helper.ViewContext.RouteData.Values["widgetid"] = null;
+			_helper.ViewContext.RouteData.Values[RouteInfo.Keys.Area] = null;
+			_helper.ViewContext.RouteData.Values[CmsRouting.Keys.WidgetId] = null;
 
-			_helper.ViewContext.RouteData.Values.Remove("area");
-			_helper.ViewContext.RouteData.Values.Remove("widgetid");
+			_helper.ViewContext.RouteData.Values.Remove(RouteInfo.Keys.Area);
+			_helper.ViewContext.RouteData.Values.Remove(CmsRouting.Keys.WidgetId);
 		}
 
 		internal string RenderPartialToString(string partialViewName) {
@@ -694,7 +645,7 @@ namespace Carrotware.CMS.UI.Components {
 
 			foreach (Widget widget in widgetList) {
 				RestoreOriginalRoutes();
-				_helper.ViewContext.RouteData.Values["widgetid"] = widget.Root_WidgetID;
+				_helper.ViewContext.RouteData.Values[CmsRouting.Keys.WidgetId] = widget.Root_WidgetID;
 
 				bool isWidgetClass = false;
 				string widgetKey = string.Format("WidgetId_{0}_{1}", placeHolderName, this.WidgetCount);

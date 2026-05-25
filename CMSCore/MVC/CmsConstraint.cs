@@ -13,17 +13,13 @@ namespace Carrotware.CMS.Core {
 	public class CmsConstraint : IRouteConstraint {
 		private readonly IConfiguration _configuration;
 
-		public static string RouteKey { get { return "requesteduri"; } }
-		public static string PageIdKey { get { return "cmspageid"; } }
-		public static string SpecialKey { get { return "specialpage"; } }
-
 		public CmsConstraint(IConfiguration configuration) {
 			_configuration = configuration; ;
 		}
 
 		public bool Match(HttpContext httpContext, IRouter route, string routeKey,
 								RouteValueDictionary routeData, RouteDirection routeDirection) {
-			var cmspageid = routeData[PageIdKey];
+			var cmspageid = routeData[CmsRouting.Keys.PageId];
 
 			if (cmspageid == null) {
 				var nav = routeData.ManipulateRoutes();
@@ -32,7 +28,7 @@ namespace Carrotware.CMS.Core {
 					return true;
 				}
 
-				cmspageid = routeData[PageIdKey];
+				cmspageid = routeData[CmsRouting.Keys.PageId];
 			}
 
 			if (cmspageid != null) {

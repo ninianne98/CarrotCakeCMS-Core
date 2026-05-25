@@ -167,7 +167,7 @@ namespace Carrotware.Web.UI.Components {
 				await Next();
 			});
 
-			string home = nameof(HomeController).Replace("Controller", "");
+			string home = typeof(HomeController).GetControllerName();
 
 			app.MapControllerRoute(
 					name: _areaName + "_GetImageThumb",
@@ -344,7 +344,7 @@ namespace Carrotware.Web.UI.Components {
 									};
 		}
 
-		public static string QueryString(string name) {
+		public static string? QueryString(string name) {
 			var query = Request.QueryString;
 
 			if (query.HasValue) {
@@ -352,7 +352,7 @@ namespace Carrotware.Web.UI.Components {
 
 				if (dict != null) {
 					if (dict.ContainsKey(name)) {
-						return dict[name];
+						return dict[name].ToString() ?? string.Empty;
 					}
 				}
 			}
@@ -447,7 +447,6 @@ namespace Carrotware.Web.UI.Components {
 
 		public static string HttpReferer {
 			get {
-				//string referer = Request.Headers["Referer"].ToString();
 				var header = Request.GetTypedHeaders();
 				return header.Referer != null ? header.Referer.ToString() : string.Empty;
 			}

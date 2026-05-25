@@ -79,9 +79,9 @@ namespace Carrotware.CMS.Core {
 			return sn;
 		}
 
-		public override bool Equals(object? obj) {
+		public override bool Equals(Object obj) {
 			//Check for null and compare run-time types.
-			if (obj == null || this.GetType() != obj.GetType()) return false;
+			if (obj == null || GetType() != obj.GetType()) return false;
 			if (obj is BasicContentData) {
 				BasicContentData p = (BasicContentData)obj;
 				return (this.Root_ContentID == p.Root_ContentID);

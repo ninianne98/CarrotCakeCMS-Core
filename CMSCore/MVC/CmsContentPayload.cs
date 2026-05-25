@@ -25,7 +25,7 @@ namespace Carrotware.CMS.Core {
 			this.Widgets = new List<vwCarrotWidget>();
 			this.Categories = new List<vwCarrotCategoryUrl>();
 
-			var key = _viewContext.HttpContext?.GetRouteValue(CmsRouting.PageIdKey);
+			var key = _viewContext.HttpContext?.GetRouteValue(CmsRouting.Keys.PageId);
 
 			if (key != null) {
 				Guid id = new Guid(key.ToString() ?? "");

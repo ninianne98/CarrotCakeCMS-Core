@@ -1,5 +1,6 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.CoreMVC.UI.Admin.Models;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Text.Json;
@@ -49,9 +50,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			base.OnActionExecuting(context);
 
 			var path = context.HttpContext.Request.Path;
-			RouteValueDictionary vals = context.RouteData.Values;
-			string action = vals["action"].ToString().ToLowerInvariant();
-			string controller = vals["controller"].ToString().ToLowerInvariant();
+
+			var routeInfo = context.RouteData.GetRouteInfo();
+			string action = routeInfo.Action.ToLowerInvariant();
+			string controller = routeInfo.Controller.ToLowerInvariant();
 		}
 
 		protected ContentPageHelper pageHelper = new ContentPageHelper();
@@ -144,21 +146,19 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		}
 
 		private void LoadGuids() {
-			using (var pageHelper = new ContentPageHelper()) {
-				if (!string.IsNullOrEmpty(_currentEditPage)) {
-					filePage = pageHelper.FindByFilename(SiteData.CurrentSite.SiteID, _currentEditPage);
+			if (!string.IsNullOrEmpty(_currentEditPage)) {
+				filePage = pageHelper.FindByFilename(SiteData.CurrentSite.SiteID, _currentEditPage);
+				if (filePage != null) {
+					currentPageGuid = filePage.Root_ContentID;
+				}
+			} else {
+				if (currentPageGuid != Guid.Empty) {
+					filePage = pageHelper.FindContentByID(SiteData.CurrentSite.SiteID, currentPageGuid);
 					if (filePage != null) {
-						currentPageGuid = filePage.Root_ContentID;
+						_currentEditPage = filePage.FileName;
 					}
 				} else {
-					if (currentPageGuid != Guid.Empty) {
-						filePage = pageHelper.FindContentByID(SiteData.CurrentSite.SiteID, currentPageGuid);
-						if (filePage != null) {
-							_currentEditPage = filePage.FileName;
-						}
-					} else {
-						filePage = new ContentPage();
-					}
+					filePage = new ContentPage();
 				}
 			}
 		}

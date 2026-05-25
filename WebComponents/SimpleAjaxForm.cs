@@ -77,32 +77,23 @@ namespace Carrotware.Web.UI.Components {
 			var action = string.Empty;
 
 			if (_helper.ViewContext != null) {
-				var routes = _helper.ViewContext.RouteData.Values;
-
-				if (routes != null) {
-					if (routes.ContainsKey("area")) {
-						area = routes["area"].ToString();
-					}
-					if (routes.ContainsKey("action")) {
-						action = routes["action"].ToString();
-					}
-					if (routes.ContainsKey("controller")) {
-						ctrl = routes["controller"].ToString();
-					}
-				}
+				var routeInfo = _helper.ViewContext.RouteData.GetRouteInfo();
+				area = routeInfo.Area;
+				action = routeInfo.Action;
+				ctrl = routeInfo.Controller;
 			}
 
 			// perform overrides if present
-			var routesAttr = routeValues.ToAttributeDictionary();
-			if (routesAttr != null) {
-				if (routesAttr.ContainsKey("area")) {
-					area = routesAttr["area"].ToString();
+			var attrRouteInfo = routeValues.ToAttributeDictionary().GetRouteInfo();
+			if (attrRouteInfo != null) {
+				if (!string.IsNullOrWhiteSpace(attrRouteInfo.Area)) {
+					area = attrRouteInfo.Area;
 				}
-				if (routesAttr.ContainsKey("action")) {
-					action = routesAttr["action"].ToString();
+				if (!string.IsNullOrWhiteSpace(attrRouteInfo.Action)) {
+					action = attrRouteInfo.Action;
 				}
-				if (routesAttr.ContainsKey("controller")) {
-					ctrl = routesAttr["controller"].ToString();
+				if (!string.IsNullOrWhiteSpace(attrRouteInfo.Controller)) {
+					ctrl = attrRouteInfo.Controller;
 				}
 			}
 

@@ -167,11 +167,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			}
 
 			if (File.Exists(realPath)) {
-				Encoding encode = System.Text.Encoding.Default;
+				Encoding encode = Encoding.Default;
 
-				using (var oWriter = new StreamWriter(realPath, false, encode)) {
-					oWriter.Write(this.FileContents);
-					oWriter.Close();
+				using (var sw = new StreamWriter(realPath, false, encode)) {
+					sw.Write(this.FileContents);
+					sw.Close();
 				}
 			}
 		}

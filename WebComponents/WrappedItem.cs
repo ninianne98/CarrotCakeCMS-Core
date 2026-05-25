@@ -97,23 +97,18 @@ namespace Carrotware.Web.UI.Components {
 			if (actionNames == null || !actionNames.Any()) {
 				actionNames = new string[] { _defaultActionName };
 			}
-			string currentAction = string.Empty;
-			string currentController = string.Empty;
 
-			if (htmlHelper.ViewContext.HttpContext.GetRouteValue("action") != null) {
-				currentAction = htmlHelper.ViewContext.HttpContext.GetRouteValue("action").ToString();
-			}
-			if (htmlHelper.ViewContext.HttpContext.GetRouteValue("controller") != null) {
-				currentController = htmlHelper.ViewContext.HttpContext.GetRouteValue("controller").ToString();
-			}
+			var routeInfo = htmlHelper.ViewContext.RouteData.GetRouteInfo();
+			var currentAction = routeInfo.Action;
+			var currentController = routeInfo.Controller;
 
-			string theAction = actionNames.Where(x => x.Trim().Equals(currentAction, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+			string theAction = actionNames.Where(x => x.Trim().Equals(currentAction, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault() ?? string.Empty;
 
 			if (actionName == "*") {
 				theAction = currentAction;
 			}
 
-			if (!string.IsNullOrEmpty(theAction)) {
+			if (!string.IsNullOrWhiteSpace(theAction)) {
 				actionName = theAction.Trim();
 			}
 

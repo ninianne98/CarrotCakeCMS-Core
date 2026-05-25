@@ -99,14 +99,7 @@ app.CarrotWebRouteSetup();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.MapControllerRoute(
-//	name: "CmsRoutes",
-//	pattern: "{*" + CmsConstraint.RouteKey + "}",
-//	defaults: new { controller = CmsRouteConstants.CmsController.Content, action = CmsRouteConstants.DefaultAction },
-//	constraints: new { key = new CmsConstraint(config) }
-//);
-
-app.MapDynamicControllerRoute<CmsRouting>("{*" + CmsRouting.RouteKey + "}");
+app.MapDynamicControllerRoute<CmsRouting>("{*" + CmsRouting.Keys.Route + "}");
 
 var adminFolder = ccConfig.MainConfig.AdminFolderPath.TrimPathSlashes();
 
@@ -121,10 +114,6 @@ app.MapControllerRoute(name: "C3AdminApi_Route",
 	defaults: new {
 		controller = CmsRouteConstants.CmsController.AdminApi
 	});
-
-//app.MapControllerRoute(name: "C3StdAreas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-//app.MapControllerRoute(name: "C3StdAreas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
-//app.MapControllerRoute(name: "C3StdRoutes", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.RegisterWidgets();
 

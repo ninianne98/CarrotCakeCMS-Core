@@ -14,59 +14,70 @@ Source code for CarrotCakeCMS (MVC - Core), .Net Core 8
 [SQL]: https://www.microsoft.com/en-us/sql-server/sql-server-downloads
 [SSMS]: https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms
 
-Welcome to the GitHub project for CarrotCake CMS MVC Core, an open source c# project. CarrotCake is a [template-based][TMPLT] MVC .Net Core CMS (content management system) built with C#, SQL server, jQueryUI, and TinyMCE, providing an intuitive WYSIWYG/drag and drop edit experience. This content management system supports multi-tenant webroots with shared databases. 
+## Welcome
 
-## If you have found this tool useful please [contact us][SITE_CT].
+Welcome to the GitHub project for CarrotCake CMS MVC Core, an open source C# project. CarrotCake is a [template-based][TMPLT] MVC ASP.NET Core CMS (content management system) built with C#, SQL Server, jQueryUI, and TinyMCE, providing an intuitive WYSIWYG/drag-and-drop edit experience. This content management system supports multi-tenant webroots with shared databases. 
+
+### If you have found this tool useful please [contact us][SITE_CT].
 
 Source code and [documentation][DOC_PDF] is available on [GitHub][REPO_GH] and [SourceForge][REPO_SF]. Documentation and assemblies can be found [here][DOC].
 
-Some features include: blogging engine, configurable date based blog post URLs, blog post content association with categories and tags, assignment/customization of category and tag URL patterns, simple content feedback collection and review, blog post pagination/indexes (with templating support), designation of default listing blog page (required to make search, category links, or tag links function), URL date formatting patterns, RSS feed support for posts and pages, import and export of site content, and import of content from WordPress XML export files.
+> [!IMPORTANT]
+> **Database Usage Notice**
+>
+> *   **Automatic Schema Updates:** Running the application against an existing database will automatically attempt to update schema artifacts.
+> *   **Backup First:** Always ensure you have a full database backup before running a new version of the code.
+> *   **No Database Sharing:** Do not share a single database between the Core, MVC 5, and WebForms editions of CarrotCakeCMS.
 
-Other features also include date based release and retirement of content - allowing you to queue up content to appear or disappear from your site on a pre-arranged schedule, site time-zone designation, site search, and ability to rename the administration folder. Supports the use of layout views to provide re-use when designing content view templates.
+## Features
+
+Some features include: blogging engine, configurable date-based blog post URLs, content association with categories and tags, assignment/customization of category and tag URL patterns, simple content feedback collection and review, blog post pagination/indexes (with templating support), designation of default listing blog page (required for search and category/tag links), URL date formatting patterns, RSS feed support for posts and pages, import/export of site content, and import from WordPress XML files.
+
+Other features also include date-based release and retirement of content, site time-zone designation, site search, and the ability to rename the administration folder. It also supports the use of layout views to provide re-use when designing content view templates.
 
 ---
 
 ## CarrotCakeCMS (MVC Core) Developer Quick Start Guide
 
-Copyright (c) 2011, 2015, 2023, 2024 Samantha Copeland
+Copyright (c) 2011, 2015, 2023, 2024, 2026 Samantha Copeland
 Licensed under the MIT or GPL v3 License
 
 CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 ### Install Development Tools
 
-1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C])  Typically being developed on VS 2022 Enterprise. Use of [MSBuild for 2022][BUILD22] is also acceptable. Both require patch version 17.8 or later, for .Net 8 support. 
-1. **[SQL Server Express 2016 (or higher/later)][SQL]** - currently vetted on 2016 and 2019 (Express Editions).  Entity Framework Core 8 does not work with older versions of SQL Server, such as 2014/2012/2008R2 and earlier.
-1. **[SQL Server Management Studio (SSMS)][SSMS]** - required for managing the database
+1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C]) - Typically being developed on VS 2022 Enterprise. Use of [MSBuild for 2022][BUILD22] is also acceptable. Both require patch version 17.8 or later for .NET 8 support.
+1. **[SQL Server Express 2016 (or higher/later)][SQL]** - Currently vetted on 2016 and 2019 (Express Editions). Entity Framework Core 8 does not work with older versions of SQL Server, such as 2014/2012/2008R2 and earlier.
+1. **[SQL Server Management Studio (SSMS)][SSMS]** - Required for managing the database.
 
 ### Get the Source Code
 
 1. Go to the repository ([GitHub][REPO_GH] or [SourceForge][REPO_SF]) in a browser
 
-1. Download either a ZIP archive or connect using either a GIT or SVN client to check out
+1. Download either a GIT or ZIP archive or connect using either a GIT or SVN client
 
 ### Open the Project
 
 1. Start **Visual Studio**
 
-1. Open **CarrotCakeCoreMVC.sln** solution in the root of the repository
+1. Open the **CarrotCakeCoreMVC.sln** solution in the root of the repository
 
 	Note: If your file extensions are hidden, you will not see the ".sln"
 	Other SLN files are demo widgets for how to wire in custom code/extensions
 
 1. Edit **appsettings.json** under **CMSAdmin** root directory (this corresponds to the **CMSAdminCore** project)
 
-	- In the ConnectionStrings section, configure the CarrotwareCMS value to point to your server and the name of your database.
-		Note: the credentials require database owner/dbo level as it will create the database artifacts for you.
-	- In the SmtpSettings, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
+	- In the `ConnectionStrings` section, configure `CarrotwareCMS` to point to your SQL Server and database name.
+		*Note: The user account requires `db_owner`/dbo permissions as the application will automatically create necessary database artifacts.*
+	- In `SmtpSettings`, configure `pickupDirectoryLocation` to a valid directory on your development machine for local email testing.
 
 1. Right-click on **CMSAdminCore** and select **Set as StartUp Project**
 
 1. Right-click on **CMSAdminCore** and select **Rebuild**. The project should download all required NuGet packages and compile successfully
 
-	There may be some warnings, you can ignore them
+	*Note: You may see some compilation warnings; these can generally be ignored.*
 
-1. To deploy a sample widget, select the individual project and select **Rebuild**.  The post build task will copy the widget views and assemblies into the main website project. 
+1. To deploy a sample widget, select the individual project and select **Rebuild**. The post-build task will copy the widget views and assemblies into the main website project. 
 
 1. SQL Server should be running with an empty database matching the one specified in the connection string. If you are running the code a second or later time, it will auto update if there are schema changes (see dbo note above).  
 	- Do not share a database between the Core, MVC 5, and WebForms editions.  You can update the schema if you want to upgrade and take your existing data to the newer version.  
@@ -76,17 +87,18 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 ### Make a backup FIRST when upgrading!
 
 ```sql
--- if you are coming from a database older than SQL 2016 as an upgrade from an earlier CMS version and are upgrading to SQL 2016 or later, run a compatibility update
--- https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-database-transact-sql-compatibility-level?view=sql-server-ver16
--- COMPATIBILITY_LEVEL { 160 | 150 | 140 | 130 | 120 | 110 | 100 | 90 | 80 }
--- *REQUIRED* if seeing "SqlException: Incorrect syntax near the keyword 'WITH'. Incorrect syntax near the keyword 'with'. "
+-- If restoring a database from an older SQL version (pre-2016) to a newer database platform (SQL 2016+), 
+-- the compatibility level must be updated to 130 or higher for EF Core 8 support.
+-- Symptom of an improper compatibility level: "SqlException: Incorrect syntax near the keyword 'WITH'."
+-- Ref: https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-database-transact-sql-compatibility-level
 
--- change the database from CarrotCoreMVC to whatever DB name you are actually using
+-- Replace [CarrotCoreMVC] with your actual database name, CarrotCoreMVC is the database name found in appsettings.json
 ALTER DATABASE [CarrotCoreMVC]
-	SET COMPATIBILITY_LEVEL =  130        -- SQL 2016
+	SET COMPATIBILITY_LEVEL = 130; -- SQL Server 2016 or higher
 
 -- if you plan to use an existing database from the MVC 5 version, you will need to have some entries in the migrations table
 -- password hashes from MVC 5 will be invalid, perform a password recovery to set valid ones
+-- Do not share the database between the Core, MVC 5, and WebForms editions.
 
 -- to create the migrations table:
 
@@ -147,11 +159,13 @@ END
 select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'
 ```
 
+1. SQL Server should be running with an empty database matching the one specified in the connection string. Do not share a database between the Core, MVC 5, and WebForms editions.
+
 1. If the database is empty or has pending database changes, the EF migrations will be automatically applied.
 
 1. The first time you start up the website, it will create the required artifacts in the database (tables/views/sprocs etc.)
 
-1. Select run mode as IIS Express and click the **Play** button (or hit F5) in the main toolbar to launch CarrotCakeCMS
+1. Select the run mode (e.g., IIS Express) and click the **Play** button (or hit F5) to launch CarrotCakeCMS
 
 1. When you run the website with an empty user database, you will be prompted to create the first user
 
@@ -159,6 +173,8 @@ select * from [__EFMigrationsHistory] where [MigrationId] like '%Initial%'
 
 1. After successfully logging in, you can create and manage your new website
 
-### Using CarrotCakeCMS Core
+### Using CarrotCakeCMS (MVC Core)
 
-For additional information on how to use CarrotCakeCMS, please see the **[CarrotCakeCMS Documentation][DOC]**.
+- **Static Assets:** All public-facing assets (images, CSS, JS) must reside within the `wwwroot` directory.
+- **Configuration:** Application settings are managed via `appsettings.json`.
+- **Documentation:** See the **[CarrotCakeCMS Documentation][DOC]** for detailed user guides.

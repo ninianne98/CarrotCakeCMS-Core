@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using Carrotware.Web.UI.Components;
+using System.Xml;
 using System.Xml.Serialization;
 
 /*
@@ -57,6 +58,38 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
+		public static ContentPageExport MapTemplate(ContentPageExport cpe) {
+			var filePath = cpe.ThePage.TemplateFile ?? string.Empty;
+
+			if (filePath.Length > 0) {
+				cpe.ThePage.TemplateFile = MapTemplate(cpe.ThePage.TemplateFile);
+			}
+
+			return cpe;
+		}
+
+		public static string MapTemplate(string templateName) {
+			var filePath = templateName ?? string.Empty;
+
+			if (filePath.Length > 0) {
+				filePath = filePath.ToLowerInvariant().FixPathSlashes();
+				var fileName = Path.GetFileNameWithoutExtension(filePath);
+				var rootFolder = new DirectoryInfo(Path.GetDirectoryName(filePath)).Name;
+				var tplFilePath = (Path.Combine(rootFolder, fileName) + ".cshtml").FixPathSlashes().ToLowerInvariant();
+
+				using (var cmsHelper = new CMSConfigHelper()) {
+					var tp = cmsHelper.Templates.Where(x => x.TemplatePath.ToLowerInvariant() == filePath
+										|| x.TemplatePath.ToLowerInvariant().EndsWith(tplFilePath)).FirstOrDefault();
+
+					if (tp != null) {
+						return tp.TemplatePath;
+					}
+				}
+			}
+
+			return SiteData.DefaultTemplateFilename;
+		}
+
 		public static void AssignSiteExportNewIDs(SiteExport se) {
 			se.NewSiteID = Guid.NewGuid();
 
@@ -110,17 +143,8 @@ namespace Carrotware.CMS.Core {
 				cont.CreateUserId = SecurityData.CurrentUserGuid;
 				cont.EditUserId = SecurityData.CurrentUserGuid;
 
-				if (!string.IsNullOrEmpty(c.PostAuthor)) {
-					WordPressUser wpu = wps.Authors.Where(x => x.Login.ToLowerInvariant() == c.PostAuthor.ToLowerInvariant()).FirstOrDefault();
-
-					if (wpu != null && wpu.ImportUserID != Guid.Empty) {
-						var usr = SecurityData.GetUserByID(wpu.ImportUserID.ToString());
-						if (usr != null) {
-							cont.CreateUserId = wpu.ImportUserID;
-							cont.EditUserId = wpu.ImportUserID;
-						}
-					}
-				}
+				cont.EditUserId = wps.FindImportUser(c.PostAuthor);
+				cont.CreateUserId = wps.FindImportUser(c.PostAuthor);
 
 				cont.Root_ContentID = c.ImportRootID;
 				cont.FileName = ContentPageHelper.ScrubFilename(c.ImportRootID, c.ImportFileName);
@@ -243,13 +267,13 @@ namespace Carrotware.CMS.Core {
 		public static string GetContentPageExportXML(Guid siteID, Guid rootContentID) {
 			ContentPageExport exp = GetExportPage(siteID, rootContentID);
 
-			return GetExportXML<ContentPageExport>(exp);
+			return GetExportXML(exp);
 		}
 
 		public static string GetContentPageExportXML(Guid siteID) {
 			SiteExport exp = GetExportSite(siteID);
 
-			return GetExportXML<SiteExport>(exp);
+			return GetExportXML(exp);
 		}
 
 		public static void RemoveSerializedExportData(Guid rootContentID) {
@@ -331,7 +355,7 @@ namespace Carrotware.CMS.Core {
 			try {
 				var xmlSerializer = new XmlSerializer(typeof(T));
 
-				using (var stringReader = new StringReader(xml)) {
+				using (StringReader stringReader = new StringReader(xml)) {
 					obj = xmlSerializer.Deserialize(stringReader);
 				}
 			} catch (Exception ex) { }
