@@ -1,6 +1,7 @@
 ﻿using CarrotCake.CMS.Plugins.FAQ2.Data;
 using CarrotCake.CMS.Plugins.FAQ2.Models;
 using Carrotware.CMS.Interface;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -31,11 +32,12 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 		public override void OnActionExecuting(ActionExecutingContext context) {
 			base.OnActionExecuting(context);
 
-			RouteValueDictionary vals = context.RouteData.Values;
-
+			var vals = context.RouteData.Values;
+			var routeInfo = vals.GetRouteInfo();
 			// use the test id to build a fake payload so the widget can be loaded for dev
-			string action = vals["action"].ToString().ToLowerInvariant();
-			string controller = vals["controller"].ToString().ToLowerInvariant();
+			string action = routeInfo.Action;
+			string controller = routeInfo.Controller;
+			string id = routeInfo.Id;
 
 			if (this.TestSiteID != Guid.Empty.ToString()) {
 				_siteId = new Guid(this.TestSiteID);
@@ -46,10 +48,9 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 				var settings = new FaqPublic();
 				settings.SiteID = _siteId;
 
-				if (vals.ContainsKey("id")) {
-					string id = vals["id"].ToString().ToLowerInvariant();
+				if (id.Length > 30) {
 					settings.FaqCategoryID = new Guid(id);
-					settings.WidgetClientID = "Widget_" + settings.FaqCategoryID.ToString().ToLowerInvariant().Substring(0, 5);
+					settings.WidgetClientID = "Widget_" + settings.FaqCategoryID.ToString("N").ToLowerInvariant().Substring(0, 8);
 				}
 
 				this.WidgetPayload = settings;
@@ -59,10 +60,9 @@ namespace CarrotCake.CMS.Plugins.FAQ2.Controllers {
 				var settings = new FaqPublicTop();
 				settings.SiteID = _siteId;
 
-				if (vals.ContainsKey("id")) {
-					string id = vals["id"].ToString().ToLowerInvariant();
+				if (id.Length > 30) {
 					settings.FaqCategoryID = new Guid(id);
-					settings.WidgetClientID = "Widget_" + settings.FaqCategoryID.ToString().ToLowerInvariant().Substring(0, 5);
+					settings.WidgetClientID = "Widget_" + settings.FaqCategoryID.ToString("N").ToLowerInvariant().Substring(0, 8);
 				}
 
 				int top = 3;

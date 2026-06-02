@@ -7,9 +7,12 @@
 
 	var cats = CmsPage.GetSiteCategories(10, true);
 	var tags = CmsPage.GetSiteTags(10, true);
-	var dates = CmsPage.GetSiteDates(12);
+
+	var pagecat = CmsPage.GetPageCategories(10);
+	var pagetag = CmsPage.GetPageTags(10);
 
 	var usr = CmsPage.BylineUser;
+
 }
 
 @section Banner {
@@ -26,7 +29,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="3u">
-				@Html.Partial("_blogNav")
+				@await Html.PartialAsync("_blogNav")
 			</div>
 
 			<div class="9u skel-cell-important">
@@ -44,15 +47,29 @@
 							@Html.CarrotCakeHtml().RenderWidget("phCenterTop")
 						</div>
 
-						@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
+						@Html.CarrotCakeHtml().RenderBody()
 
 						<div>
 							@Html.CarrotCakeHtml().RenderWidget("phCenterBottom")
 						</div>
+						@if (cats.Any()) {
+							<div class="meta">
+								@foreach (var itm in pagecat) {
+									<span class="meta-item"><a href="@itm.Uri">@itm.Text</a></span>
+								}
+							</div>
+						}
+						@if (tags.Any()) {
+							<div class="meta">
+								@foreach (var itm in pagetag) {
+									<span class="meta-item"><a href="@itm.Uri">@itm.Text</a></span>
+								}
+							</div>
+						}
 					</article>
 				</section>
 				<section>
-					@Html.Partial("_contactus")
+					@await Html.PartialAsync("_contactus")
 				</section>
 			</div>
 		</div>

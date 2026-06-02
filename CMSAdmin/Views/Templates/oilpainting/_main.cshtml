@@ -1,5 +1,4 @@
 ﻿@inject PagePayload CmsPage
-
 @*
 	Design by TEMPLATED
 	https://templated.live
@@ -11,9 +10,8 @@
 	Released   : 20120825
 	https://templated.live/oilpainting
 
-	Conversion to CarrotCake CMS MVC Template: Carrotware
+	Conversion to CarrotCake CMS MVC Core Template: Carrotware
 *@
-
 @{
 	Layout = null;
 
@@ -21,24 +19,23 @@
 	ViewBag.SiteName = CmsPage.TheSite.SiteName;
 
 	var nav = new TwoLevelNavigation() {
-				FontSize = new SizeUnit("16px"),
-				ForeColor = CarrotWebHelper.DecodeColor("#ffffff"),
-				BackColor = CarrotWebHelper.DecodeColor("#453E37"),
-				SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
-				SelBGColor = CarrotWebHelper.DecodeColor("#2E2925"),
-				SubBGColor = CarrotWebHelper.DecodeColor("#DA802A"),
-				SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
-				CssSelected = "current_page_item",
-				ElementId = "navigation"
-			};
+		FontSize = new SizeUnit("16px"),
+		ForeColor = CarrotWebHelper.DecodeColor("#ffffff"),
+		BackColor = CarrotWebHelper.DecodeColor("#453E37"),
+		SelFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+		SelBGColor = CarrotWebHelper.DecodeColor("#2E2925"),
+		SubBGColor = CarrotWebHelper.DecodeColor("#DA802A"),
+		SubFGColor = CarrotWebHelper.DecodeColor("#ffffff"),
+		CssSelected = "current_page_item",
+		ElementId = "navigation"
+	};
 }
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML>
+<html>
 <head>
 	@Html.CarrotCakeHtml().MetaTags()
 	@Html.CarrotCakeHtml().Rss()
+	@Html.CarrotCakeHtml().SocialMetaTags()
 
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>@CmsPage.Titlebar</title>
@@ -91,25 +88,23 @@
 							<h2 class="title">@CmsPage.Heading</h2>
 							@RenderSection("BlogAuthor", required: false)
 							<div>
-								@Html.CarrotCakeHtml().RenderWidget("phCenterTop")
+								@await Html.CarrotCakeHtml().RenderWidgetAsync(CommonWidgetZone.phCenterTop)
 							</div>
 							<div>
-								@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextCenter)
-								@RenderBody()
+								@await Html.CarrotCakeHtml().RenderBodyAsync(TextFieldZone.TextCenter)
 							</div>
+							@RenderSection("MetaTags", required: false)
 							<div>
-								@RenderSection("MetaTags", required: false)
+								@await Html.CarrotCakeHtml().RenderWidgetAsync(CommonWidgetZone.phCenterBottom)
 							</div>
-							<div>
-								@Html.CarrotCakeHtml().RenderWidget("phCenterBottom")
-							</div>
+							@RenderBody()
 						</div>
 						<div>
 							@RenderSection("PagedDataSection", required: false)
 						</div>
 
 						<div>
-							@Html.Partial("_contactform")
+							@await Html.PartialAsync("_contactform")
 						</div>
 
 						<div style="clear: both;">&nbsp;</div>
@@ -136,13 +131,13 @@
 							</li>
 							<li>
 								<div>
-									@Html.CarrotCakeHtml().RenderWidget("phLeftTop")
+									@await Html.CarrotCakeHtml().RenderWidgetAsync("phLeftTop")
 								</div>
 								<div>
-									@Html.CarrotCakeHtml().RenderBody(TextFieldZone.TextLeft)
+									@await Html.CarrotCakeHtml().RenderBodyAsync(TextFieldZone.TextLeft)
 								</div>
 								<div>
-									@Html.CarrotCakeHtml().RenderWidget("phLeftBottom")
+									@await Html.CarrotCakeHtml().RenderWidgetAsync("phLeftBottom")
 								</div>
 							</li>
 						</ul>

@@ -18,6 +18,8 @@
 		HeaderText = "Gallery",
 		FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("GalleryView", "Test", new { @id = @item.GalleryId }, "~/assets/admin/images/chart_organisation.png", @item.GalleryId.ToString(), null, null) </text>
 	})
+	.AddColumn(x => x.Gallery.GalleryTitle, new CarrotGridColumn { HeaderText = "Gallery", Sortable = true })
+	
 	.AddColumn(x => x.GalleryImageId, new CarrotGridTemplateColumn<GalleryImage> {
 		HeaderText = "Pic",
 		FormatTemplate = @<text> @Html.CarrotWeb().ActionImage("View", "Test", new { @id = @item.GalleryImageId }, "~/assets/admin/images/image.png", @item.GalleryImageId.ToString(), null, null) </text>

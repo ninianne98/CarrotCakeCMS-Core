@@ -11,21 +11,21 @@ namespace CarrotCake.CMS.Plugins.PhotoGallery.Models {
 		}
 
 		[Display(Name = "Gallery")]
-		public GalleryGroup Gallery { get; set; }
+		public GalleryGroup Gallery { get; set; } = new GalleryGroup();
 
-		public List<GalleryImageEntry> Images { get; set; }
+		public List<GalleryImageEntry> Images { get; set; } = new List<GalleryImageEntry>();
 
-		public string InstanceId { get; set; }
+		public string InstanceId { get; set; } = "gallery";
 
 		[Display(Name = "Pretty Photo Skin")]
-		public string PrettyPhotoSkin { get; set; }
+		public string PrettyPhotoSkin { get; set; } = "light_rounded";
 
-		public int ThumbSize { get; set; }
+		public int ThumbSize { get; set; } = 100;
 
-		public Guid GalleryId { get; set; }
+		public Guid GalleryId { get; set; } = Guid.Empty;
 
 		public bool ShowHeading { get; set; }
 
-		public bool ScaleImage { get; set; }
+		public bool ScaleImage { get; set; } = true;
 	}
 }

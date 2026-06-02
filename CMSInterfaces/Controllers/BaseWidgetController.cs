@@ -34,8 +34,8 @@ namespace Carrotware.CMS.Interface.Controllers {
 		}
 
 		public virtual void LoadAreaInfo() {
-			Assembly asmbly = this.GetType().Assembly;
-			string assemblyName = asmbly.GetAssemblyName();
+			Assembly assembly = this.GetType().Assembly;
+			string assemblyName = assembly.GetAssemblyName();
 
 			this.AssemblyName = assemblyName;
 			ViewData["WidgetAssemblyName"] = assemblyName;

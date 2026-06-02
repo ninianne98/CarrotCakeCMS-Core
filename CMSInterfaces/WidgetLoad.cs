@@ -25,7 +25,7 @@ namespace Carrotware.CMS.Interface {
 		private static IServiceCollection _servicesn;
 
 		private static string[] GetFiles() {
-			string fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath ?? string.Empty;
+			var fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath ?? string.Empty;
 
 			var files = Directory.GetFiles(fldr, "*.dll", SearchOption.AllDirectories).ToList().Select(x => new FileInfo(x)).ToList();
 

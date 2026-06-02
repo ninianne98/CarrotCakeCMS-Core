@@ -39,6 +39,10 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			var routeInfo = context.RouteData.GetRouteInfo();
 			string action = routeInfo.Action.ToLowerInvariant();
 			string controller = routeInfo.Controller.ToLowerInvariant();
+
+			//string controllerName = ControllerContext.ActionDescriptor.ControllerName;
+			//string actionName = ControllerContext.ActionDescriptor.ActionName;
+
 			routeInfo.RemoveArea();
 
 			if (this.HttpContext.User.Identity.IsAuthenticated) {

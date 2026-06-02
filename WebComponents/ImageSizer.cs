@@ -29,7 +29,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public string ImageUrl { get; set; }
+		public string ImageUrl { get; set; } = string.Empty;
 
 		public string ImageThumbUrl {
 			get {
@@ -51,7 +51,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public string Title { get; set; }
+		public string Title { get; set; } = string.Empty;
 
 		// allow alt to be different from Title, but set alt to title if not directly set
 		private string _alt = null;
@@ -70,11 +70,13 @@ namespace Carrotware.Web.UI.Components {
 
 		public int ThumbSize { get; set; } = 150;
 		public bool ScaleImage { get; set; } = true;
-		public object ImageAttributes { get; set; }
+		public object? ImageAttributes { get; set; }
 
 		public string ToHtmlString() {
 			var imgBuilder = new HtmlTag("img", this.ImageThumbUrl);
-			imgBuilder.MergeAttributes(this.ImageAttributes);
+			if (this.ImageAttributes != null) {
+				imgBuilder.MergeAttributes(this.ImageAttributes);
+			}
 			imgBuilder.MergeAttribute("alt", this.Alt);
 			imgBuilder.MergeAttribute("title", this.Title);
 

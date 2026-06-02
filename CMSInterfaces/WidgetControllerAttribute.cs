@@ -1,4 +1,5 @@
 ﻿using Carrotware.CMS.Interface.Controllers;
+using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 /*
@@ -16,7 +17,7 @@ namespace Carrotware.CMS.Interface {
 	public class WidgetControllerAttribute : Attribute, IRouteValueProvider {
 
 		public WidgetControllerAttribute(Type type) {
-			this.RouteKey = "area";
+			this.RouteKey = RouteInfo.Keys.Area;
 
 			if (!BaseWidgetController.WidgetStandaloneMode) {
 				var areaName = type.Assembly.GetAssemblyName();
@@ -28,7 +29,7 @@ namespace Carrotware.CMS.Interface {
 		}
 
 		public WidgetControllerAttribute(string areaName) {
-			this.RouteKey = "area";
+			this.RouteKey = RouteInfo.Keys.Area;
 			if (!BaseWidgetController.WidgetStandaloneMode) {
 				this.RouteValue = areaName;
 			} else {
@@ -36,8 +37,8 @@ namespace Carrotware.CMS.Interface {
 			}
 		}
 
-		public string RouteKey { get; }
+		public string RouteKey { get; } = RouteInfo.Keys.Area;
 
-		public string RouteValue { get; }
+		public string RouteValue { get; } = string.Empty;
 	}
 }

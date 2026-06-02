@@ -15,6 +15,7 @@ using System.Text;
 namespace Carrotware.CMS.UI.Components {
 
 	public class OpenGraph : BaseWebComponent {
+
 		internal OpenGraph() {
 			this.OpenGraphType = OpenGraphTypeDef.Default;
 			this.ShowExpirationDate = false;
@@ -49,11 +50,11 @@ namespace Carrotware.CMS.UI.Components {
 
 		public override string ToHtmlString() {
 			var sb = new StringBuilder();
-			sb.AppendLine(String.Empty);
+			sb.AppendLine(string.Empty);
 
 			try {
 				if (this.CmsPage != null) {
-					if (!String.IsNullOrEmpty(this.CmsPage.ThePage.MetaDescription)) {
+					if (!string.IsNullOrEmpty(this.CmsPage.ThePage.MetaDescription)) {
 						sb.AppendLine(CarrotWebHelper.MetaTag("og:description", this.CmsPage.ThePage.MetaDescription).ToString());
 					}
 					sb.AppendLine(CarrotWebHelper.MetaTag("og:url", this.CmsPage.TheSite.DefaultCanonicalURL).ToString());
@@ -75,15 +76,15 @@ namespace Carrotware.CMS.UI.Components {
 
 					sb.AppendLine(CarrotWebHelper.MetaTag("og:type", contType).ToString());
 
-					if (!String.IsNullOrEmpty(this.CmsPage.ThePage.TitleBar)) {
+					if (!string.IsNullOrEmpty(this.CmsPage.ThePage.TitleBar)) {
 						sb.AppendLine(CarrotWebHelper.MetaTag("og:title", this.CmsPage.ThePage.TitleBar).ToString());
 					}
 
-					if (!String.IsNullOrEmpty(this.CmsPage.ThePage.Thumbnail)) {
-						sb.AppendLine(CarrotWebHelper.MetaTag("og:image", String.Format("{0}/{1}", this.CmsPage.TheSite.MainCanonicalURL, this.CmsPage.ThePage.Thumbnail).Replace(@"//", @"/").Replace(@"//", @"/").Replace(@":/", @"://")).ToString());
+					if (!string.IsNullOrEmpty(this.CmsPage.ThePage.Thumbnail)) {
+						sb.AppendLine(CarrotWebHelper.MetaTag("og:image", string.Format("{0}/{1}", this.CmsPage.TheSite.MainCanonicalURL, this.CmsPage.ThePage.Thumbnail).Replace(@"//", @"/").Replace(@"//", @"/").Replace(@":/", @"://")).ToString());
 					}
 
-					if (!String.IsNullOrEmpty(this.CmsPage.TheSite.SiteName)) {
+					if (!string.IsNullOrEmpty(this.CmsPage.TheSite.SiteName)) {
 						sb.AppendLine(CarrotWebHelper.MetaTag("og:site_name", this.CmsPage.TheSite.SiteName).ToString());
 					}
 
@@ -96,6 +97,7 @@ namespace Carrotware.CMS.UI.Components {
 				}
 			} catch (Exception ex) { }
 
+			sb.Replace(Environment.NewLine, Environment.NewLine + "\t").Replace("\t\t", "\t");
 			return sb.ToString();
 		}
 	}

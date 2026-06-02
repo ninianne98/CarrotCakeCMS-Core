@@ -25,7 +25,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 		}
 
-		public string JQVersion { get; set; }
+		public string JQVersion { get; set; } = DefaultJQVersion;
 
 		public bool UseJqueryMigrate { get; set; }
 
@@ -45,7 +45,7 @@ namespace Carrotware.Web.UI.Components {
 			var sb = new StringBuilder();
 
 			string sJQFile = string.Empty;
-			string jqVer = JQVersion;
+			string jqVer = this.JQVersion;
 
 			if (!string.IsNullOrEmpty(jqVer) && jqVer.Length > 2) {
 				if (jqVer.LastIndexOf(".") != jqVer.IndexOf(".")) {
@@ -131,6 +131,7 @@ namespace Carrotware.Web.UI.Components {
 
 			sb.AppendLine(UrlPaths.CreateJavascriptTag("Carrot Helpers", string.Format("{0}?ts={1}&v={2}", UrlPaths.HelperPath, CarrotWebHelper.DateKey(), CarrotWebHelper.FileVersion.Replace(".", string.Empty))));
 
+			sb.Replace(Environment.NewLine, Environment.NewLine + "\t").Replace("\t\t", "\t");
 			return sb.ToString().Trim();
 		}
 	}

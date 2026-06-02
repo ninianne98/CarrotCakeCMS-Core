@@ -22,9 +22,9 @@ namespace CarrotCake.CMS.Plugins.CalendarModule {
 		public static string AssemblyName {
 			get {
 				if (_areaName == null) {
-					Assembly asmbly = Assembly.GetExecutingAssembly();
+					Assembly assembly = Assembly.GetExecutingAssembly();
 
-					_areaName = asmbly.GetAssemblyName();
+					_areaName = assembly.GetAssemblyName();
 				}
 
 				return _areaName;

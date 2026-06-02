@@ -756,7 +756,7 @@ namespace Carrotware.Web.UI.Components {
 		public static IHtmlContent MetaTag(string name, string content) {
 			var metaTag = new HtmlTag("meta");
 			metaTag.MergeAttribute("name", name);
-			metaTag.MergeAttribute("content", content);
+			metaTag.MergeAttribute("content", HttpUtility.HtmlAttributeEncode(content));
 
 			return new HtmlString(metaTag.RenderSelfClosingTag());
 		}
@@ -824,8 +824,8 @@ namespace Carrotware.Web.UI.Components {
 		public static string GetWebResourceUrl(Assembly assembly, string resource) {
 			string sUri = string.Empty;
 
-			var asmb = assembly.ManifestModule.Name;
-			var resName = HttpUtility.HtmlEncode(string.Format("{0}:{1}", resource, asmb).EncodeBase64());
+			var mod_name = assembly.ManifestModule.Name;
+			var resName = HttpUtility.HtmlEncode(string.Format("{0}:{1}", resource, mod_name).EncodeBase64());
 
 			try {
 				var ver = FileVersion.Replace(".", string.Empty);
@@ -841,18 +841,22 @@ namespace Carrotware.Web.UI.Components {
 			return GetAssembly(type, resource.Split(':'));
 		}
 
-		internal static Assembly GetAssembly(Type type, string[] res) {
-			if (res.Length > 1) {
-				var dir = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath;
+		internal static Assembly GetAssembly(Type type, string[] resources) {
+			if (resources.Length > 1 && resources[1] != null) {
+				string dir = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath ?? string.Empty;
+				string fileName = resources[1] ?? string.Empty;
+				if (fileName != null && !fileName.ToLowerInvariant().EndsWith(".dll")) {
+					fileName = fileName + ".dll";
+				}
 
-				return Assembly.LoadFrom(Path.Combine(dir, res[1]));
+				return Assembly.LoadFrom(Path.Combine(dir, fileName));
 			}
 
 			return Assembly.GetAssembly(type);
 		}
 
-		internal static Assembly GetAssembly(string[] res) {
-			return GetAssembly(typeof(CarrotWebHelp), res);
+		internal static Assembly GetAssembly(string[] resources) {
+			return GetAssembly(typeof(CarrotWebHelp), resources);
 		}
 
 		internal static Assembly GetAssembly(string resource) {
@@ -867,16 +871,16 @@ namespace Carrotware.Web.UI.Components {
 			return GetManifestResourceBytes(typeof(CarrotWebHelp), GetInternalResourceName(resource));
 		}
 
-		internal static string[] FixResourceName(Assembly assembly, string[] res) {
-			if (res.Length > 1) {
-				var asmbName = assembly.GetAssemblyName();
+		internal static string[] FixResourceName(Assembly assembly, string[] resources) {
+			if (resources.Length > 1) {
+				var a_name = assembly.GetAssemblyName();
 
-				if (!res[0].StartsWith(asmbName)) {
-					res[0] = string.Format("{0}.{1}", asmbName, res[0]);
+				if (!resources[0].StartsWith(a_name)) {
+					resources[0] = string.Format("{0}.{1}", a_name, resources[0]);
 				}
 			}
 
-			return res;
+			return resources;
 		}
 
 		public static string GetManifestResourceText(Type type, string resource) {

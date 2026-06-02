@@ -162,9 +162,9 @@ namespace Carrotware.CMS.Interface {
 			if (type == null) {
 				var parts = typeName.Split(',');
 				if (parts.Length == 2) {
-					Assembly asmb = GetAssembly(typeName);
-					type = GetType(typeName, asmb);
-					string assemblyName = asmb.GetAssemblyName();
+					Assembly assembly = GetAssembly(typeName);
+					type = GetType(typeName, assembly);
+					string assemblyName = assembly.GetAssemblyName();
 
 					if (type.GetInterfaces().Contains(typeof(IWidgetController)) && string.IsNullOrEmpty(areaName)) {
 						areaName = assemblyName;
@@ -351,7 +351,7 @@ namespace Carrotware.CMS.Interface {
 		internal static Assembly GetAssembly(string typeName) {
 			var parts = typeName.Split(',');
 			var currentAssembly = Assembly.GetExecutingAssembly();
-			var fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath;
+			var fldr = AppDomain.CurrentDomain.BaseDirectory ?? AppDomain.CurrentDomain.RelativeSearchPath ?? string.Empty;
 
 			if (parts.Length == 2) {
 				var files = Directory.GetFiles(fldr, $"{parts[1].Trim()}.dll", SearchOption.AllDirectories);
@@ -384,9 +384,9 @@ namespace Carrotware.CMS.Interface {
 			if (type == null) {
 				var parts = typeName.Split(',');
 				if (parts.Length == 2) {
-					Assembly asmb = GetAssembly(typeName);
-					type = GetType(typeName, asmb);
-					string assemblyName = asmb.GetAssemblyName();
+					Assembly assembly = GetAssembly(typeName);
+					type = GetType(typeName, assembly);
+					string assemblyName = assembly.GetAssemblyName();
 
 					if (type.GetInterfaces().Contains(typeof(IWidgetController)) && string.IsNullOrEmpty(areaName)) {
 						areaName = assemblyName;
