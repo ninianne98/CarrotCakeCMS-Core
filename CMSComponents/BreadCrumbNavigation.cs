@@ -25,21 +25,21 @@ namespace Carrotware.CMS.UI.Components {
 			this.ElementId = "breadcrumb";
 		}
 
-		public string ElementId { get; set; }
-		public string CssClass { get; set; }
-		public string CssSelected { get; set; }
-		public string CssWrapper { get; set; }
+		public string ElementId { get; set; } = string.Empty;
+		public string CssClass { get; set; } = string.Empty;
+		public string CssSelected { get; set; } = string.Empty;
+		public string CssWrapper { get; set; } = string.Empty;
 		public bool DisplayAsList { get; set; }
-		public string TextDivider { get; set; }
+		public string TextDivider { get; set; } = string.Empty;
 
-		public ContentPage ContentPage { get; set; }
+		public ContentPage? ContentPage { get; set; }
 
 		public override string GetHtml() {
 			var output = new StringBuilder();
 			var lstNav = new List<SiteNav>();
 
-			var pageNav = this.ContentPage.GetSiteNav();
-			string currentPageFile = pageNav.FileName.ToLowerInvariant();
+			var pageNav = this.ContentPage?.GetSiteNav();
+			string currentPageFile = (pageNav?.FileName ?? string.Empty).ToLowerInvariant();
 
 			using (var navHelper = SiteNavFactory.GetSiteNavHelper()) {
 				if (SiteData.CurrentSiteExists && SiteData.CurrentSite.Blog_Root_ContentID.HasValue &&

@@ -13,8 +13,8 @@ namespace Carrotware.CMS.UI.Components {
 	public class AdvContentModel {
 		public TextFieldZone AreaName { get; set; }
 
-		public string Zone { get; set; }
+		public string Zone { get; set; } = string.Empty;
 
-		public string Content { get; set; }
+		public string Content { get; set; } = string.Empty;
 	}
 }

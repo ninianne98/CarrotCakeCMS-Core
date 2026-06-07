@@ -53,8 +53,8 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.27" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.27" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.27" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.0" />
-		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.1" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.19.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.6" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />

@@ -1,6 +1,4 @@
 ﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Interface;
-using System.Collections.Generic;
 
 /*
 * CarrotCake CMS (MVC Core)

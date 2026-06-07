@@ -1,6 +1,4 @@
-﻿using System;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -16,6 +14,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 
 		public SplitDateTime() {
 			SetTimeStrings();
+		}
+
+		public SplitDateTime(DateTime? date, string fldName) {
+			this.CombinedDateTime = date;
+			this.FieldName = fldName;
 		}
 
 		protected void SetTimeStrings() {
@@ -34,7 +37,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			}
 		}
 
-		public string FieldName { get; set; }
+		public string FieldName { get; set; } = string.Empty;
 		public string TimeID { get { return string.Format("{0}_Time", this.FieldName); } }
 		public string DateID { get { return string.Format("{0}_Date", this.FieldName); } }
 		public string FieldID { get { return this.FieldName.Replace(".", "_").Replace("[", "_").Replace("]", "_"); } }

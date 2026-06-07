@@ -14,6 +14,7 @@ using Carrotware.CMS.Interface;
 namespace Carrotware.CMS.Core {
 
 	public class SiteBasicInfo : ICarrotSite {
+
 		public SiteBasicInfo() {
 			//var dbg = CarrotHttpHelper.Configuration.GetDebugView;
 
@@ -53,7 +54,6 @@ namespace Carrotware.CMS.Core {
 
 					CarrotHttpHelper.CacheInsert(key, site, 3);
 				}
-
 			} else {
 				this.SiteName = site.SiteName;
 				this.SiteTagline = site.SiteTagline;

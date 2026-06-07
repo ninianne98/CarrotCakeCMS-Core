@@ -1,4 +1,5 @@
 ﻿using Carrotware.Web.UI.Components;
+using System.Xml;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -23,13 +24,30 @@ namespace Carrotware.CMS.Core {
 		}
 
 		internal static string GetWebResourceUrl(string resource) {
-			string sPath = string.Empty;
+			string path = string.Empty;
 
 			try {
-				sPath = CarrotWebHelper.GetWebResourceUrl(typeof(CoreHelper), resource);
+				path = CarrotWebHelper.GetWebResourceUrl(typeof(CoreHelper), resource);
 			} catch { }
 
-			return sPath;
+			return path;
+		}
+
+		public static XmlReaderSettings GetXmlReaderSettings() {
+			var settings = new XmlReaderSettings {
+				ConformanceLevel = ConformanceLevel.Fragment
+			};
+
+			return settings;
+		}
+
+		public static XmlWriterSettings GetXmlWriterSettings() {
+			var settings = new XmlWriterSettings {
+				OmitXmlDeclaration = true,
+				Indent = true
+			};
+
+			return settings;
 		}
 
 		public static RouteValueDictionary MarkSpecial(this RouteValueDictionary routeData, string pageId) {

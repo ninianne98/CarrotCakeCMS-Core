@@ -43,18 +43,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="adminHelp.js" />
-		<EmbeddedResource Include="feed.png" />
-		<EmbeddedResource Include="_WidgetWrapper.cshtml" />
-		<EmbeddedResource Include="TopMenu.txt" />
-	</ItemGroup>
-	<ItemGroup>
 		<ProjectReference Include="..\CMSCore\CMSCore.csproj" />
 		<ProjectReference Include="..\CMSInterfaces\CMSInterfaces.csproj" />
 		<ProjectReference Include="..\CMSSecurity\CMSSecurity.csproj" />
 		<ProjectReference Include="..\WebComponents\WebComponents.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+		<AdditionalFiles Include="*.cshtml" />
+		<AdditionalFiles Include="**\*.cshtml" />
+
+		<EmbeddedResource Include="adminHelp.js" />
+		<EmbeddedResource Include="feed.png" />
+		<EmbeddedResource Include="TopMenu.txt" />
+		<EmbeddedResource Include="_WidgetWrapper.cshtml" />
 		<EmbeddedResource Include="_TextZone.cshtml" />
 		<EmbeddedResource Include="_WidgetZone.cshtml" />
 	</ItemGroup>

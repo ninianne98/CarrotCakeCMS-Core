@@ -1,10 +1,5 @@
-﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.CoreMVC.UI.Admin.Models;
-using Carrotware.CMS.Interface;
-using Carrotware.CMS.Interface.Controllers;
+﻿using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
-using Carrotware.CMS.Security.Models;
-using Carrotware.Web.UI.Components;
 using Carrotware.Web.UI.Components.SessionData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -587,14 +581,17 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		[AllowAnonymous]
 		public ActionResult DatabaseSetup(string signout) {
+			var model = new DatabaseSetupModel();
+
 			if (!string.IsNullOrEmpty(signout)) {
 				ClearUserSession();
 				SessionContext.CleanExpiredSession();
 
 				Response.Redirect(SiteFilename.DatabaseSetupURL);
+				return View(model);
 			}
 
-			var model = new DatabaseSetupModel();
+			model.Load();
 
 			return View(model);
 		}
@@ -2925,14 +2922,18 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 		private void RedirectIfNoUsersExist() {
 			var dbstat = new DatabaseSetupModel();
+			dbstat.Load();
+
 			if (dbstat.CreateUser) {
-				Response.Redirect(SiteActions.CreateFirstAdmin + "?signout=true");
+				Response.Redirect(SiteActions.CreateFirstAdmin + "?signout=true&carrot_tick=" + DateTime.UtcNow.Ticks.ToString());
 			}
 			return;
 		}
 
 		private void RedirectIfUsersExist() {
 			var dbstat = new DatabaseSetupModel();
+			dbstat.Load();
+
 			if (!dbstat.CreateUser) {
 				Response.Redirect(SiteActions.Dashboard);
 			}

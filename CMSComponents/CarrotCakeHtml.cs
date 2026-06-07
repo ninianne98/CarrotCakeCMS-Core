@@ -1070,7 +1070,7 @@ namespace Carrotware.CMS.UI.Components {
 			if (obj == null) {
 				if (objType == typeof(Controller) || typeof(IWidgetController).IsAssignableFrom(objType)) {
 					obj = _helper.ViewContext.HttpContext.RequestServices.GetService(objType)
-						  ?? CarrotHttpHelper.HttpContext.RequestServices.GetService(objType);
+								?? CarrotHttpHelper.HttpContext.RequestServices.GetService(objType);
 				} else { obj = Activator.CreateInstance(objType); }
 			}
 			return obj;

@@ -53,7 +53,7 @@
 			<label>
 				Site Information
 				@Html.CheckBoxFor(m => m.ImportSite)
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<table style="width: 99%;">
@@ -125,7 +125,7 @@
 			<label>
 				Comments
 				@Html.CheckBoxFor(m => m.ImportComments)
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<p>
@@ -137,7 +137,7 @@
 			<label>
 				Pages
 				@Html.CheckBoxFor(m => m.ImportPages)
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<table>
@@ -178,7 +178,7 @@
 			<label>
 				Blog Posts
 				@Html.CheckBoxFor(m => m.ImportPosts)
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<table>
@@ -217,7 +217,7 @@
 			<label>
 				Content Snippets
 				@Html.CheckBoxFor(m => m.ImportSnippets)
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<p>

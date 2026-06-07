@@ -30,10 +30,9 @@
 	<PropertyGroup>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 		<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
-		<!--<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
-		<PreserveCompilationReferences>true</PreserveCompilationReferences>
-		<PreserveCompilationContext>true</PreserveCompilationContext>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+		<ResolveStaticWebAssetsInputsDependsOn>RemoveIdentityAssets</ResolveStaticWebAssetsInputsDependsOn>
+		<CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
+		<RazorCompileOnBuild>true</RazorCompileOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,7 +41,7 @@
 		<PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
 		<PackageReference Include="Castle.Core" Version="5.2.1" />
 		<PackageReference Include="Humanizer.Core" Version="3.0.10" />
-		<PackageReference Include="MailKit" Version="4.16.0" />
+		<PackageReference Include="MailKit" Version="4.17.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.27" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.27" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.27" />
@@ -62,9 +61,9 @@
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.27" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.0" />
-		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
-		<PackageReference Include="MimeKit" Version="4.16.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.84.1" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.19.0" />
+		<PackageReference Include="MimeKit" Version="4.17.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" GeneratePathProperty="true" />
@@ -76,21 +75,26 @@
 		<PackageReference Include="System.Windows.Extensions" Version="8.0.0" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<ResolveStaticWebAssetsInputsDependsOn>RemoveIdentityAssets</ResolveStaticWebAssetsInputsDependsOn>
-	</PropertyGroup>
-
 	<Target Name="RemoveIdentityAssets">
 		<ItemGroup>
 			<StaticWebAsset Remove="@(StaticWebAsset)" Condition="%(SourceId) == 'Microsoft.AspNetCore.Identity.UI'" />
 		</ItemGroup>
 	</Target>
 
-	<Target Name="CopySystemSecurityCryptographyPkcs" AfterTargets="Build">
+	<!--<Target Name="CopySystemSecurityCryptographyPkcs" AfterTargets="Build">
 		<Copy SourceFiles="$(PkgSystem_Security_Cryptography_Pkcs)\lib\net8.0\System.Security.Cryptography.Pkcs.dll" DestinationFolder="$(OutDir)" />
-	</Target>
+	</Target>-->
 
 	<ItemGroup>
+		<!--VS 2026 doesn't support the legacy Razor designers, this tricks it into being picked up so the objects etc are usable-->
+		<AdditionalFiles Include="Views\CmsAdmin\**\*.cshtml" />
+		<AdditionalFiles Include="Views\CmsContent\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Shared\**\*.cshtml" />
+		<AdditionalFiles Include="Views\_ViewImports.cshtml" />
+		<AdditionalFiles Include="Views\_ViewStart.cshtml" />
+		<AdditionalFiles Include="Views\Templates\_ViewImports.cshtml" />
+		<!--<AdditionalFiles Include="Views\Templates\**\*.cshtml" />-->
+
 		<None Include="Views\CmsAdmin\*.cshtml" />
 		<None Include="Views\CmsContent\*.cshtml" />
 		<None Include="Views\Shared\*.cshtml" />
@@ -135,6 +139,15 @@
 		<Content Include="TextContentProcessors.config">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+
+		<!--VS 2026 doesn't support the legacy Razor designers, this tricks it into being picked up so the objects etc are usable-->
+		<AdditionalFiles Include="Views\Templates\Aqueous\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Templates\citrus-island\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Templates\Dragonfruit\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Templates\Imagination\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Templates\oilpainting\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Templates\telephasic\**\*.cshtml" />
+		<AdditionalFiles Include="Views\Templates\Waterdrops\**\*.cshtml" />
 
 		<None Include="Views\Templates\Aqueous\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -195,6 +208,22 @@
 		<None Include="wwwroot\Assets\Waterdrops\**\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--VS 2026 doesn't support the legacy Razor designers, this tricks it into being picked up so the objects etc are usable-->
+		<Using Include="Carrotware.CMS.Core" />
+		<Using Include="Carrotware.CMS.CoreMVC.UI.Admin" />
+		<Using Include="Carrotware.CMS.CoreMVC.UI.Admin.Controllers" />
+		<Using Include="Carrotware.CMS.CoreMVC.UI.Admin.Models" />
+		<Using Include="Carrotware.CMS.Interface" />
+		<Using Include="Carrotware.CMS.Security.Models" />
+		<Using Include="Carrotware.CMS.UI.Components" />
+		<Using Include="Carrotware.Web.UI.Components" />
+
+		<Using Include="Microsoft.AspNetCore.Html" />
+		<Using Include="Microsoft.AspNetCore.Http" />
+		<Using Include="System.Web" />
 	</ItemGroup>
 
 	<ItemGroup>

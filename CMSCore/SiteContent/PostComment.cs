@@ -1,11 +1,7 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Html;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -32,26 +28,25 @@ namespace Carrotware.CMS.Core {
 		[Display(Name = "IP Addy")]
 		[Required]
 		[StringLength(32)]
-		public string CommenterIP { get; set; }
+		public string CommenterIP { get; set; } = string.Empty;
 
 		[Display(Name = "Commenter Name")]
 		[Required]
 		[StringLength(256)]
-		public string CommenterName { get; set; }
+		public string CommenterName { get; set; } = string.Empty;
 
 		[Display(Name = "Commenter Email")]
 		[Required]
 		[StringLength(256)]
-		public string CommenterEmail { get; set; }
+		public string CommenterEmail { get; set; } = string.Empty;
 
 		[Display(Name = "Commenter URL")]
 		[StringLength(256)]
-		public string CommenterURL { get; set; }
+		public string CommenterURL { get; set; } = string.Empty;
 
 		[Display(Name = "Comment Text")]
 		[Required]
-		//[StringLength(4096)]
-		public string PostCommentText { get; set; }
+		public string PostCommentText { get; set; } = string.Empty;
 
 		private string _commentPlain = null;
 
@@ -87,10 +82,10 @@ namespace Carrotware.CMS.Core {
 		public bool IsSpam { get; set; }
 
 		[Display(Name = "Page Title")]
-		public string NavMenuText { get; set; }
+		public string NavMenuText { get; set; } = string.Empty;
 
 		[Display(Name = "Filename")]
-		public string FileName { get; set; }
+		public string FileName { get; set; } = string.Empty;
 
 		public ContentPageType.PageType ContentType { get; set; }
 
@@ -103,10 +98,10 @@ namespace Carrotware.CMS.Core {
 				this.CommenterName = c.CommenterName;
 				this.CommenterEmail = c.CommenterEmail;
 				this.CommenterURL = c.CommenterUrl;
-				this.PostCommentText = c.PostComment;
+				this.PostCommentText = c.PostComment ?? string.Empty;
 				this.IsApproved = c.IsApproved;
 				this.IsSpam = c.IsSpam;
-				this.NavMenuText = c.NavMenuText;
+				this.NavMenuText = c.NavMenuText ?? string.Empty;
 				this.FileName = c.FileName;
 				this.ContentType = ContentPageType.GetTypeByID(c.ContentTypeId);
 			}

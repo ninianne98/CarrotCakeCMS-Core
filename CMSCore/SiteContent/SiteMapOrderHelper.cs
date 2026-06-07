@@ -1,9 +1,5 @@
 ﻿using Carrotware.CMS.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -19,7 +15,6 @@ namespace Carrotware.CMS.Core {
 
 	public class SiteMapOrderHelper : IDisposable {
 		private CarrotCakeContext _db = CarrotCakeContext.Create();
-		//private CarrotCakeContext _db = CompiledQueries.dbConn;
 
 		public SiteMapOrderHelper() { }
 
@@ -138,13 +133,12 @@ namespace Carrotware.CMS.Core {
 			oMap.Where(m => m.Parent_ContentID == Guid.Empty).ToList().ForEach(m => m.Parent_ContentID = null);
 
 			foreach (SiteMapOrder m in oMap.OrderBy(m => m.NavOrder)) {
-
-				CarrotContent c = (from ct in _db.CarrotContents
-								   join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
-								   where r.SiteId == siteID
-									   && r.RootContentId == m.Root_ContentID
-									   && ct.IsLatestVersion == true
-								   select ct).FirstOrDefault();
+				var c = (from ct in _db.CarrotContents
+						 join r in _db.CarrotRootContents on ct.RootContentId equals r.RootContentId
+						 where r.SiteId == siteID
+							 && r.RootContentId == m.Root_ContentID
+							 && ct.IsLatestVersion == true
+						 select ct).FirstOrDefault();
 
 				c.ParentContentId = m.Parent_ContentID;
 				c.NavOrder = (m.NavOrder * 10);
@@ -180,18 +174,18 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public SiteMapOrder GetPageWithLevel(Guid siteID, Guid? contentID, int iLevel) {
-			SiteMapOrder cont = (from ct in CompiledQueries.cqGetLatestContentPages(_db, siteID, contentID).ToList()
-								 select new SiteMapOrder {
-									 NavLevel = iLevel,
-									 NavMenuText = (ct.PageActive ? "" : "{*U*} ") + ct.NavMenuText,
-									 NavOrder = ct.NavOrder,
-									 SiteID = ct.SiteId,
-									 FileName = ct.FileName,
-									 PageActive = ct.PageActive,
-									 ShowInSiteNav = ct.ShowInSiteNav,
-									 Parent_ContentID = ct.ParentContentId,
-									 Root_ContentID = ct.RootContentId
-								 }).FirstOrDefault();
+			var cont = (from ct in CompiledQueries.cqGetLatestContentPages(_db, siteID, contentID).ToList()
+						select new SiteMapOrder {
+							NavLevel = iLevel,
+							NavMenuText = (ct.PageActive ? "" : "{*U*} ") + ct.NavMenuText,
+							NavOrder = ct.NavOrder,
+							SiteID = ct.SiteId,
+							FileName = ct.FileName,
+							PageActive = ct.PageActive,
+							ShowInSiteNav = ct.ShowInSiteNav,
+							Parent_ContentID = ct.ParentContentId,
+							Root_ContentID = ct.RootContentId
+						}).FirstOrDefault();
 
 			return cont;
 		}

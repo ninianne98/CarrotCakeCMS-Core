@@ -1,5 +1,7 @@
 ﻿using Carrotware.CMS.Data.Models;
 using System.Data;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 /*
@@ -31,9 +33,9 @@ namespace Carrotware.CMS.Core {
 
 	//===============================
 	public class TimeZoneContent {
-		public List<ContentLocalTime> ContentLocalDates { get; set; }
+		public List<ContentLocalTime> ContentLocalDates { get; set; } = new List<ContentLocalTime>();
 
-		public List<BlogPostPageUrl> BlogPostUrls { get; set; }
+		public List<BlogPostPageUrl> BlogPostUrls { get; set; } = new List<BlogPostPageUrl>();
 
 		public Guid SiteID { get; set; }
 
@@ -78,18 +80,21 @@ namespace Carrotware.CMS.Core {
 			using (var db = CarrotCakeContext.Create()) {
 				string xml = this.GetXml();
 
+				xml = xml.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?>", string.Empty);
+
 				db.SprocCarrotUpdateGoLiveLocal(this.SiteID, xml);
 			}
 		}
 
 		public string GetXml() {
+			var sb = new StringBuilder();
 			var xmlSerializer = new XmlSerializer(typeof(TimeZoneContent));
-			string xml = string.Empty;
-			using (var sw = new StringWriter()) {
-				xmlSerializer.Serialize(sw, this);
-				xml = sw.ToString();
+			using (var sw = new StringWriter(sb)) {
+				using (var xw = XmlWriter.Create(sw, CoreHelper.GetXmlWriterSettings())) {
+					xmlSerializer.Serialize(xw, this);
+				}
 			}
-			return xml;
+			return sb.ToString();
 		}
 	}
 }

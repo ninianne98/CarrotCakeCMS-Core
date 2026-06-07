@@ -52,10 +52,10 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public vwCarrotContent Page { get; set; }
+		public vwCarrotContent? Page { get; set; } = new vwCarrotContent();
 
-		public List<vwCarrotWidget> Widgets { get; set; }
+		public List<vwCarrotWidget>? Widgets { get; set; } = new List<vwCarrotWidget>();
 
-		public List<vwCarrotCategoryUrl> Categories { get; set; }
+		public List<vwCarrotCategoryUrl>? Categories { get; set; } = new List<vwCarrotCategoryUrl>();
 	}
 }

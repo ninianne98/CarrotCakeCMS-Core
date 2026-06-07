@@ -37,7 +37,7 @@
 	gld.FieldName = Html.NameFor(m => m.Widget.GoLiveDate).ToString();
 				}
 
-				@Html.Partial("_datetime", gld)
+				@await Html.PartialAsync("_datetime", gld)
 			</td>
 		</tr>
 		<tr>
@@ -51,7 +51,7 @@
 	rdt.FieldName = Html.NameFor(m => m.Widget.RetireDate).ToString();
 				}
 
-				@Html.Partial("_datetime", rdt)
+				@await Html.PartialAsync("_datetime", rdt)
 			</td>
 		</tr>
 		<tr>

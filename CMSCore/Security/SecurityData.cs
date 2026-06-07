@@ -6,6 +6,7 @@ using Carrotware.CMS.Security.Models;
 using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -50,18 +51,33 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static List<SelectListItem> CheckMigrationHistory() {
+			var mig = new List<string>();
+			var mig_app = new List<string>();
 			var lst = new List<SelectListItem>();
-			string queryText = "SELECT [MigrationId], [ProductVersion] FROM [dbo].[__EFMigrationsHistory] ORDER BY [MigrationId] DESC, [ProductVersion]";
+
+			string queryText = "SELECT * FROM [dbo].[__EFMigrationsHistory] ORDER BY [MigrationId] DESC, [ProductVersion]";
 
 			var ds = CarrotCakeContext.Exec(queryText);
 
-			if (ds.Tables.Count > 0) {
+			using (var db = CarrotCakeContext.Create()) {
+				mig = db.Database.GetMigrations().ToList();
+				mig_app = db.Database.GetAppliedMigrations().ToList();
+			}
+
+			if (ds.Tables.Count > 0
+						&& ds.Tables[0].Columns.Contains("MigrationId")
+						&& ds.Tables[0].Columns.Contains("ProductVersion")) {
+				var lcMig = mig.Select(x => x.ToLowerInvariant());
+
 				foreach (DataRow row in ds.Tables[0].Rows) {
-					lst.Add(new SelectListItem(row["MigrationId"].ToString(), row["ProductVersion"].ToString()));
+					var migrationId = row["MigrationId"].ToString() ?? string.Empty;
+					var productVersion = row["ProductVersion"].ToString() ?? string.Empty;
+
+					lst.Add(new SelectListItem(migrationId, productVersion, lcMig.Contains(migrationId.ToLowerInvariant())));
 				}
 			}
 
-			return lst;
+			return lst.OrderByDescending(x => x.Text).OrderByDescending(x => x.Selected).ToList();
 		}
 
 		public static IdentityRole? FindRole(string roleName) {

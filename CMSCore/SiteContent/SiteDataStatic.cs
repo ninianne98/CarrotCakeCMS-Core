@@ -604,7 +604,7 @@ namespace Carrotware.CMS.Core {
 			context.Response.StatusCode = (int)System.Net.HttpStatusCode.MovedPermanently;
 		}
 
-		private static object logLocker = new object();
+		private static object _logLocker = new object();
 
 		public static void WriteDebugException(string debugSource, Exception objErr) {
 			bool bWriteError = false;
@@ -622,7 +622,6 @@ namespace Carrotware.CMS.Core {
 				var sb = new StringBuilder();
 
 				sb.AppendLine("----------------  " + debugSource.ToUpperInvariant() + " - " + DateTime.Now.ToString() + "  ----------------");
-
 				sb.AppendLine("[" + objErr.GetType().ToString() + "] " + objErr.Message);
 
 				if (objErr.StackTrace != null) {
@@ -631,13 +630,17 @@ namespace Carrotware.CMS.Core {
 
 				if (objErr.InnerException != null) {
 					sb.AppendLine(objErr.InnerException.Message);
+
+					if (objErr.InnerException.Message != null) {
+						sb.AppendLine(objErr.InnerException.Message);
+					}
 				}
 
 				Encoding encode = Encoding.Default;
 
 				string filePath = CarrotWebHelper.MapPath("/carrot_errors.txt");
 
-				lock (logLocker) {
+				lock (_logLocker) {
 					using (var fs = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {
 						using (var sw = new StreamWriter(fs, encode)) {
 							sw.Write(sb.ToString());

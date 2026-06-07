@@ -1,6 +1,5 @@
 ﻿using Carrotware.CMS.Core;
 using Carrotware.CMS.Interface;
-using System.Collections.Generic;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -15,7 +14,7 @@ using System.Collections.Generic;
 namespace Carrotware.CMS.UI.Components {
 
 	public class ContentPlainText : BaseToolboxComponent, IWidgetRawData {
-		public string RawWidgetData { get; set; }
+		public string RawWidgetData { get; set; } = string.Empty;
 
 		public override string ToHtmlString() {
 			return SiteData.CurrentSite.UpdateContentPlainText(this.RawWidgetData);

@@ -14,7 +14,7 @@
 </script>
 
 <div>
-	@Html.Partial("_displayErrorPopupButton")
+	@await Html.PartialAsync("_displayErrorPopupButton")
 </div>
 @using (Html.BeginForm()) {
 	@Html.AntiForgeryToken()
@@ -42,7 +42,7 @@
 					gld.FieldName = Html.NameFor(model => model.ContentPage.GoLiveDate).ToString();
 				}
 
-				@Html.Partial("_datetime", gld)
+				@await Html.PartialAsync("_datetime", gld)
 			</td>
 		</tr>
 		<tr>
@@ -56,7 +56,7 @@
 					rdt.FieldName = Html.NameFor(model => model.ContentPage.RetireDate).ToString();
 				}
 
-				@Html.Partial("_datetime", rdt)
+				@await Html.PartialAsync("_datetime", rdt)
 			</td>
 		</tr>
 		<tr>

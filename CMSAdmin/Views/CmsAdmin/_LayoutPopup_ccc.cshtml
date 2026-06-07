@@ -11,12 +11,12 @@
 		@String.Format("{0} - {1}", ViewBag.Title, SiteData.CarrotCakeCMSVersionMM)
 	</title>
 
-	@Html.Partial("~/Views/CmsAdmin/_popupCommonHead.cshtml")
+	@await Html.PartialAsync("~/Views/CmsAdmin/_popupCommonHead.cshtml")
 
 	@RenderSection("scripts", required: false)
 </head>
 <body>
-	@Html.Partial("~/Views/CmsAdmin/_popupCommonFoot.cshtml")
+	@await Html.PartialAsync("~/Views/CmsAdmin/_popupCommonFoot.cshtml")
 	<div>
 		<h1 class="headingColor">
 			@ViewBag.Title

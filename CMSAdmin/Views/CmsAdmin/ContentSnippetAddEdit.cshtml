@@ -218,7 +218,7 @@
 }
 
 <div>
-	@Html.Partial("_displayErrorPopupButton")
+	@await Html.PartialAsync("_displayErrorPopupButton")
 	<br />
 	<br />
 </div>
@@ -256,7 +256,7 @@
 					gld.FieldName = Html.NameFor(model => model.GoLiveDate).ToString();
 				}
 
-				@Html.Partial("_datetime", gld)
+				@await Html.PartialAsync("_datetime", gld)
 			</td>
 		</tr>
 		<tr>
@@ -270,7 +270,7 @@
 					rdt.FieldName = Html.NameFor(model => model.RetireDate).ToString();
 				}
 
-				@Html.Partial("_datetime", rdt)
+				@await Html.PartialAsync("_datetime", rdt)
 			</td>
 		</tr>
 		<tr>

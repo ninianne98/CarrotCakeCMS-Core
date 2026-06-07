@@ -9,6 +9,11 @@
 <div class="status-scroll">
 	@foreach (var itm in Model.Messages) {
 		<p>
+			@if (itm.Selected) {
+				<img class="imgNoBorder" src="~/Assets/Admin/Images/lightbulb.png" alt="Native" title="Native" />
+			} else {
+				<img class="imgNoBorder" src="~/Assets/Admin/Images/lightbulb_off.png" alt="Supplemental" title="Supplemental" />
+			}
 			<b>@itm.Text</b> -
 			<span>@itm.Value</span>
 		</p>
@@ -23,6 +28,6 @@
 	}
 </div>
 <p>
-	<a href="@String.Format("{0}?", SiteFilename.DatabaseSetupURL)">Check</a> &nbsp;
-	| &nbsp; <a href="@String.Format("{0}?signout=true", SiteFilename.DatabaseSetupURL)">Check with signout</a>
+	<a href="@String.Format("{0}?", SiteFilename.DatabaseSetupURL)">Check</a>  
+	   &nbsp;|&nbsp;  <a href="@String.Format("{0}?signout=true&carrot_tick={1}", SiteFilename.DatabaseSetupURL, DateTime.UtcNow.Ticks)">Check with signout</a>
 </p>

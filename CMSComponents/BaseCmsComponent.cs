@@ -46,22 +46,22 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		[Widget(WidgetAttribute.FieldMode.TextBox)]
-		public string CssClass { get; set; }
+		public string CssClass { get; set; } = string.Empty;
 
-		public string CssItem { get; set; }
-		public string CssAnchor { get; set; }
-
-		[Widget(WidgetAttribute.FieldMode.TextBox)]
-		public string CssSelected { get; set; }
+		public string CssItem { get; set; } = string.Empty;
+		public string CssAnchor { get; set; } = string.Empty;
 
 		[Widget(WidgetAttribute.FieldMode.TextBox)]
-		public string CssULClassTop { get; set; }
+		public string CssSelected { get; set; } = string.Empty;
 
 		[Widget(WidgetAttribute.FieldMode.TextBox)]
-		public string CssULClassLower { get; set; }
+		public string CssULClassTop { get; set; } = string.Empty;
 
 		[Widget(WidgetAttribute.FieldMode.TextBox)]
-		public string CssHasChildren { get; set; }
+		public string CssULClassLower { get; set; } = string.Empty;
+
+		[Widget(WidgetAttribute.FieldMode.TextBox)]
+		public string CssHasChildren { get; set; } = string.Empty;
 
 		public object ItemAttributes { get; set; }
 		public object AnchorAttributes { get; set; }
@@ -94,9 +94,9 @@ namespace Carrotware.CMS.UI.Components {
 			this.HasChildrenAttributes = attribute;
 		}
 
-		public string ElementId { get; set; }
+		public string ElementId { get; set; } = string.Empty;
 
-		public List<SiteNav> NavigationData { get; set; }
+		public List<SiteNav> NavigationData { get; set; } = new List<SiteNav>();
 
 		//================
 
@@ -184,7 +184,7 @@ namespace Carrotware.CMS.UI.Components {
 			return this.NavigationData.Where(ct => ct.Parent_ContentID == rootContentID).OrderBy(ct => ct.NavMenuText).OrderBy(ct => ct.NavOrder).ToList();
 		}
 
-		protected SiteNav IsContained(List<SiteNav> navCrumbs, Guid rootContentID) {
+		protected SiteNav? IsContained(List<SiteNav> navCrumbs, Guid rootContentID) {
 			return navCrumbs.Where(ct => ct.Root_ContentID == rootContentID && ct.NavOrder > 0).FirstOrDefault();
 		}
 

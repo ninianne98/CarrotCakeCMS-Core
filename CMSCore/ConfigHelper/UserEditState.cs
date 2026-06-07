@@ -24,15 +24,15 @@ namespace Carrotware.CMS.Core {
 			this.EditorSelectedTabIdx = "0";
 		}
 
-		public string EditorMargin { get; set; }
+		public string EditorMargin { get; set; } = string.Empty;
 
-		public string EditorOpen { get; set; }
+		public string EditorOpen { get; set; } = string.Empty;
 
-		public string EditorScrollPosition { get; set; }
+		public string EditorScrollPosition { get; set; } = string.Empty;
 
-		public string EditorWidgetScrollPosition { get; set; }
+		public string EditorWidgetScrollPosition { get; set; } = string.Empty;
 
-		public string EditorSelectedTabIdx { get; set; }
+		public string EditorSelectedTabIdx { get; set; } = string.Empty;
 
 		public static string ContentKey {
 			get {

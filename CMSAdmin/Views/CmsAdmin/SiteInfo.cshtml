@@ -1,7 +1,5 @@
 ﻿@model SiteDataModel
 
-@using Carrotware.CMS.CoreMVC.UI.Admin.Models
-
 @{
 	ViewBag.Title = "Site Info";
 	string buttonCaption = "Apply Changes";
@@ -68,7 +66,7 @@
 			<label>
 				Site Information
 
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<table style="width: 99%;">
@@ -146,7 +144,7 @@
 							};
 						}
 
-						@Html.Partial("_SitePageDrillDown", drill)
+						@await Html.PartialAsync("_SitePageDrillDown", drill)
 
 						<div style="clear: both; height: 2px;">
 						</div>
@@ -171,7 +169,7 @@
 			<label>
 				Blog Settings
 
-				@Html.Partial("_displayErrorPopupButton")
+				@await Html.PartialAsync("_displayErrorPopupButton")
 			</label>
 		</legend>
 		<table style="width: 99%;">

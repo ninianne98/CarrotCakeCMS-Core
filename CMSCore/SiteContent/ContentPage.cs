@@ -455,20 +455,20 @@ namespace Carrotware.CMS.Core {
 		[Display(Name = "Slug")]
 		public string? PageSlug { get; set; }
 
-		public Guid ContentID { get; set; }
-		public Guid Root_ContentID { get; set; }
+		public Guid ContentID { get; set; } = Guid.Empty;
+		public Guid Root_ContentID { get; set; } = Guid.Empty;
 
 		[Display(Name = "Edit Date")]
-		public DateTime EditDate { get; set; }
+		public DateTime EditDate { get; set; } = DateTime.UtcNow;
 
 		[Display(Name = "Date Created")]
-		public DateTime CreateDate { get; set; }
+		public DateTime CreateDate { get; set; } = DateTime.UtcNow;
 
 		[Display(Name = "Go Live Date")]
-		public DateTime GoLiveDate { get; set; }
+		public DateTime GoLiveDate { get; set; } = DateTime.UtcNow;
 
 		[Display(Name = "Retire Date")]
-		public DateTime RetireDate { get; set; }
+		public DateTime RetireDate { get; set; } = DateTime.UtcNow;
 
 		public Guid? EditUserId { get; set; }
 		public Guid? CreditUserId { get; set; }

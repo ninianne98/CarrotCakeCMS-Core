@@ -61,7 +61,7 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						@Model.CreationTime
 					</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					@Html.Partial("_displayErrorPopupButton")
+					@await Html.PartialAsync("_displayErrorPopupButton")
 				</p>
 				<div>
 					@Html.TextAreaFor(m => m.FileContents, new { @style = "height: 450px; width: 790px;", @rows = "15", @cols = "100" })

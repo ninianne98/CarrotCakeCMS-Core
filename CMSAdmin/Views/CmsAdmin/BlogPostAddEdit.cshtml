@@ -185,7 +185,7 @@
 
 		@if (Model.ContentPage.IsPageLocked) {
 			<text>
-				function EditHB() { }
+			function EditHB() { }
 
 			function cancelEditing() { }
 
@@ -207,10 +207,10 @@
 		} else {
 
 			<text>
-				function openPage() {
-					var theURL = $('#OriginalFileName').val();
-					cmsOpenPage(theURL);
-				}
+			function openPage() {
+				var theURL = $('#OriginalFileName').val();
+				cmsOpenPage(theURL);
+			}
 
 			function EditHB() {
 				var dataObj = {};
@@ -272,13 +272,15 @@
 			function cmsRecordCancellation() {
 
 				if (thePageID != '@Guid.Empty') {
+					var dataObj = {};
+					dataObj["ThisPage"] = thePageID;
 
 					var webMthd = webSvc + "/CancelEditing";
 
 					$.ajax({
 						type: "POST",
 						url: webMthd,
-						data: JSON.stringify({ ThisPage: thePageID }),
+						data: JSON.stringify(dataObj),
 						contentType: "application/json; charset=utf-8",
 						dataType: "json"
 					}).done(cmsAjaxGeneralCallback)
@@ -288,7 +290,7 @@
 			</text>
 		}
 
-						var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
+		var cmsIsPageLocked = @Model.ContentPage.IsPageLocked.ToString().ToLowerInvariant();
 
 		$(window).bind('beforeunload', function () {
 			//cmsConfirmLeavingPage = false;
@@ -375,7 +377,7 @@
 }
 
 <div>
-	@Html.Partial("_displayErrorPopupButton")
+	@await Html.PartialAsync("_displayErrorPopupButton")
 	<br />
 	<br />
 </div>
@@ -410,13 +412,7 @@
 					release date:
 				</td>
 				<td>
-					@{
-						SplitDateTime gld = new SplitDateTime();
-						gld.CombinedDateTime = Model.ContentPage.GoLiveDate;
-						gld.FieldName = Html.NameFor(model => model.ContentPage.GoLiveDate).ToString();
-					}
-
-					@Html.Partial("_datetime", gld)
+					@Helper.SplitDateTimeFor(Html, m => m.ContentPage.GoLiveDate)
 				</td>
 			</tr>
 			<tr>
@@ -424,13 +420,7 @@
 					retire date:
 				</td>
 				<td>
-					@{
-						SplitDateTime rdt = new SplitDateTime();
-						rdt.CombinedDateTime = Model.ContentPage.RetireDate;
-						rdt.FieldName = Html.NameFor(model => model.ContentPage.RetireDate).ToString();
-					}
-
-					@Html.Partial("_datetime", rdt)
+					@Helper.SplitDateTimeFor(Html, m => m.ContentPage.RetireDate)
 				</td>
 			</tr>
 			<tr>

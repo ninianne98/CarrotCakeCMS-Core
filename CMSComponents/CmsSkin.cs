@@ -68,8 +68,8 @@ namespace Carrotware.CMS.UI.Components {
 			_useEditor = editModes.Contains(this.WindowMode);
 		}
 
-		public SkinOption SelectedColor { get; set; }
-		public SkinMode WindowMode { get; set; }
+		public SkinOption SelectedColor { get; set; } = SkinOption.Classic;
+		public SkinMode WindowMode { get; set; } = SkinMode.Main;
 
 		public bool EmitBootstrap { get; set; } = false;
 
@@ -148,19 +148,19 @@ namespace Carrotware.CMS.UI.Components {
 					double r = deg * System.Math.PI / 180; // degrees to radians
 
 					float[][] colorMatrixElements = {
-						new float[] {(float)System.Math.Cos(r),  (float)System.Math.Sin(r),  0,  0, 0},
-						new float[] {(float)-System.Math.Sin(r),  (float)-System.Math.Cos(r),  0,  0, 0},
-						new float[] {0,  0,  2,  0, 0},
-						new float[] {0,  0,  0,  1, 0},
-						new float[] {0, 0, 0, 0, 1}};
+							new float[] {(float)System.Math.Cos(r),  (float)System.Math.Sin(r),  0,  0, 0},
+							new float[] {(float)-System.Math.Sin(r),  (float)-System.Math.Cos(r),  0,  0, 0},
+							new float[] {0,  0,  2,  0, 0},
+							new float[] {0,  0,  0,  1, 0},
+							new float[] {0, 0, 0, 0, 1}};
 
 					using (var attrib = new ImageAttributes()) {
 						var colorMatrix = new ColorMatrix(colorMatrixElements);
 
 						attrib.SetColorMatrix(
-						   colorMatrix,
-						   ColorMatrixFlag.Default,
-						   ColorAdjustType.Bitmap);
+								colorMatrix,
+								ColorMatrixFlag.Default,
+								ColorAdjustType.Bitmap);
 
 						gfx.DrawImage(
 								image,
@@ -283,33 +283,43 @@ namespace Carrotware.CMS.UI.Components {
 				case SkinOption.AmethystOrchid:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.AmethystOrchid;
 					break;
+
 				case SkinOption.BlueIzis:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.BlueIzis;
 					break;
+
 				case SkinOption.FrenchBlue:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.FrenchBlue;
 					break;
+
 				case SkinOption.Mauve:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.Mauve;
 					break;
+
 				case SkinOption.MosaicBlue:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.MosaicBlue;
 					break;
+
 				case SkinOption.Plum:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.Plum;
 					break;
+
 				case SkinOption.QuetzalGreen:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.QuetzalGreen;
 					break;
+
 				case SkinOption.Rust:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.Rust;
 					break;
+
 				case SkinOption.Sandstone:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.Sandstone;
 					break;
+
 				case SkinOption.SugarAlmond:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.SugarAlmond;
 					break;
+
 				default:
 					_bs5.SelectedSkin = Bootstrap5.Bootstrap5ColorScheme.Seafoam;
 					break;

@@ -13,7 +13,7 @@
 		@String.Format("{0} - {1}", SiteData.CarrotCakeCMSVersionMM, ViewBag.Title)
 	</title>
 
-	@Html.Partial("~/Views/CmsAdmin/_mainCommonHead.cshtml")
+	@await Html.PartialAsync("~/Views/CmsAdmin/_mainCommonHead.cshtml")
 
 	@RenderSection("scripts", required: false)
 </head>
@@ -137,7 +137,7 @@
 			</div>
 		</div>
 
-		@Html.Partial("~/Views/CmsAdmin/_mainCommonFoot.cshtml")
+		@await Html.PartialAsync("~/Views/CmsAdmin/_mainCommonFoot.cshtml")
 
 		<div class="container body-content">
 			<hr />

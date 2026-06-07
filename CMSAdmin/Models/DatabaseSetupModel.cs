@@ -1,5 +1,4 @@
-﻿using Carrotware.CMS.Core;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -16,6 +15,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 	public class DatabaseSetupModel {
 
 		public DatabaseSetupModel() {
+		}
+
+		public void Load() {
 			this.CreateUser = false;
 			this.Messages = new List<SelectListItem>();
 
@@ -25,8 +27,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			} catch { }
 		}
 
-		public bool CreateUser { get; set; }
+		public bool CreateUser { get; set; } = false;
 
-		public List<SelectListItem> Messages { get; set; }
+		public List<SelectListItem> Messages { get; set; } = new List<SelectListItem>();
 	}
 }

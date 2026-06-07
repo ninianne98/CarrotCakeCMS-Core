@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Html;
-using System;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -16,10 +14,18 @@ namespace Carrotware.CMS.Core {
 	//======================================
 
 	public class ContentDateTally : IMetaDataLinks {
-		public SiteData TheSite { get; set; }
+
+		public ContentDateTally() { }
+
+		public ContentDateTally(SiteData site, DateTime tallyDate) {
+			this.TheSite = site;
+			this.TallyDate = tallyDate;
+		}
+
+		public SiteData TheSite { get; set; } = new SiteData();
 		public DateTime TallyDate { get; set; }
-		public string DateCaption { get; set; }
-		public string DateSlug { get; set; }
+		public string DateCaption { get; set; } = string.Empty;
+		public string DateSlug { get; set; } = string.Empty;
 
 		public string DateURL {
 			get { return (this.TheSite.BuildMonthSearchLink(this.TallyDate)); }
@@ -40,7 +46,7 @@ namespace Carrotware.CMS.Core {
 			this.PostDate = DateTime.MinValue;
 		}
 
-		public SiteData TheSite { get; set; }
+		public SiteData TheSite { get; set; } = new SiteData();
 
 		public DateTime PostDate { get; set; }
 

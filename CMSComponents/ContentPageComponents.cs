@@ -42,13 +42,13 @@ namespace Carrotware.CMS.UI.Components {
 
 		public bool UseDefaultText { get; set; }
 
-		public string NavigateUrl { get; set; }
+		public string NavigateUrl { get; set; } = string.Empty;
 
-		public string NavigateText { get; set; }
+		public string NavigateText { get; set; } = string.Empty;
 
 		public object linkAttributes { get; set; }
 
-		public ContentPage ContentPage { get; set; }
+		public ContentPage? ContentPage { get; set; }
 
 		public override string GetHtml() {
 			string sFieldValue = string.Empty;
@@ -125,9 +125,9 @@ namespace Carrotware.CMS.UI.Components {
 			this.ImgSrc = imageUrl;
 		}
 
-		public string ImageUrl { get; set; }
+		public string ImageUrl { get; set; } = string.Empty;
 
-		public string ImgSrc { get; protected set; }
+		public string ImgSrc { get; protected set; } = string.Empty;
 
 		public string? Title { get; set; } = string.Empty;
 
@@ -146,7 +146,7 @@ namespace Carrotware.CMS.UI.Components {
 				this.ContentPage = SiteData.GetCurrentPage();
 			}
 
-			this.ImgSrc = this.ContentPage?.Thumbnail;
+			this.ImgSrc = this.ContentPage?.Thumbnail ?? string.Empty;
 			this.Title = this.ContentPage?.NavMenuText;
 
 			if (string.IsNullOrEmpty(this.ImgSrc)) {
@@ -225,7 +225,7 @@ namespace Carrotware.CMS.UI.Components {
 			if (this.Enable301Redirect && pageisIndex == false) {
 				HttpContext ctx = CarrotHttpHelper.HttpContext;
 
-				if (!site.MainCanonicalURL.ToLowerInvariant().Contains(@"://" + CMSConfigHelper.DomainName.ToLowerInvariant())) {
+				if (site != null && !site.MainCanonicalURL.ToLowerInvariant().Contains(@"://" + CMSConfigHelper.DomainName.ToLowerInvariant())) {
 					ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.MovedPermanently;
 					ctx.Response.Headers.Add("Location", pageUri);
 				}

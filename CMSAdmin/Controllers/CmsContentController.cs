@@ -1,13 +1,9 @@
-﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Interface;
-using Carrotware.CMS.Interface.Controllers;
+﻿using Carrotware.CMS.Interface.Controllers;
 using Carrotware.CMS.Security;
-using Carrotware.CMS.UI.Components;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Web;
 
 /*
 * CarrotCake CMS (MVC Core)

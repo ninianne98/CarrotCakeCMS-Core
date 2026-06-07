@@ -1,10 +1,10 @@
-﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Interface;
-using Carrotware.CMS.UI.Components;
-using Carrotware.Web.UI.Components;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -177,6 +177,37 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 
 		public static string GetWebResourceUrl(string sResouceName) {
 			return CarrotWebHelper.GetWebResourceUrl(typeof(Controllers.CmsContentController), sResouceName);
+		}
+
+		public static IHtmlContent SplitDateTimeFor<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper,
+					Expression<Func<TModel, TValue>> expression) {
+			var provider = htmlHelper.ViewContext.HttpContext.RequestServices.GetRequiredService<ModelExpressionProvider>();
+			var modelExpression = provider.CreateModelExpression(htmlHelper.ViewData, expression);
+
+			var sdt = new SplitDateTime();
+
+			if (modelExpression.Model is DateTime) {
+				string fieldName = modelExpression.Name;
+				DateTime? value = modelExpression.Model as DateTime?;
+				sdt = new SplitDateTime(value, fieldName);
+			}
+
+			var viewContext = htmlHelper.ViewContext;
+			var viewEngine = viewContext.HttpContext.RequestServices.GetRequiredService<ICompositeViewEngine>();
+
+			var viewResult = viewEngine.FindView(viewContext, "_datetime", false);
+
+			if (viewResult.Success) {
+				using (var sw = new StringWriter()) {
+					var newViewData = new ViewDataDictionary<SplitDateTime>(htmlHelper.ViewData, sdt);
+					var newViewContext = new ViewContext(viewContext, viewResult.View, newViewData, viewContext.TempData, sw, new HtmlHelperOptions());
+
+					viewResult.View.RenderAsync(newViewContext).GetAwaiter().GetResult();
+					return new HtmlString(sw.ToString());
+				}
+			} else {
+				return new HtmlString($"<!-- '_datetime' not found for {sdt.FieldName} -->");
+			}
 		}
 
 		public static void AddErrors(this ModelStateDictionary stateDictionary, IdentityResult result) {

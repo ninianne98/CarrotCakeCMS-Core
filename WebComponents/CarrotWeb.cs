@@ -307,6 +307,33 @@ namespace Carrotware.Web.UI.Components {
 			return helper;
 		}
 
+		public static bool ViewExpectsModel(this Controller controller, string viewPath) {
+			var razorengine = controller.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
+			var viewEngineResult = razorengine.GetView(executingFilePath: null, viewPath: viewPath, isMainPage: false);
+
+			if (!viewEngineResult.Success) {
+				throw new FileNotFoundException($"Could not find Razor view at {viewPath}");
+			}
+
+			if (viewEngineResult.View is RazorView razorView) {
+				var razorPage = razorView.RazorPage;
+				Type compiledType = razorPage.GetType();
+				Type? baseType = compiledType.BaseType;
+
+				while (baseType != null) {
+					if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(RazorPage<>)) {
+						Type modelType = baseType.GetGenericArguments()[0];
+
+						// If TModel is 'object' or 'dynamic', it does not explicitly expect a specific model
+						return modelType != typeof(object);
+					}
+					baseType = baseType.BaseType;
+				}
+			}
+
+			return false;
+		}
+
 		public static IWebHostEnvironment WebHostEnvironment { get { return _webHostEnvironment; } }
 
 		public static IConfigurationRoot Configuration { get { return _configuration; } }
@@ -703,16 +730,16 @@ namespace Carrotware.Web.UI.Components {
 
 		public static string RenderToString(this IHtmlContent content) {
 			if (content == null) {
-				return null;
+				return string.Empty;
 			}
-			string ret = null;
 
-			using (var writer = new StringWriter()) {
+			var sb = new StringBuilder();
+
+			using (var writer = new StringWriter(sb)) {
 				content.WriteTo(writer, HtmlEncoder.Default);
-				ret = writer.ToString();
 			}
 
-			return ret;
+			return sb.ToString();
 		}
 
 		public static HtmlString RenderToHtmlString(this IHtmlContent content) {

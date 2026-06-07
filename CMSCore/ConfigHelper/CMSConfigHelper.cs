@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Xml.Serialization;
 
@@ -947,7 +948,7 @@ namespace Carrotware.CMS.Core {
 				navs.ForEach(q => FixNavLinkText(q));
 			}
 
-			return navs;
+			return navs ?? new List<SiteNav>();
 		}
 
 		public static string EncodeNavText(string text) {
@@ -1030,107 +1031,108 @@ namespace Carrotware.CMS.Core {
 			return text.EncodeBase64();
 		}
 
-		public void OverrideKey(Guid guidContentID) {
-			filePage = null;
+		public void OverridePage(ContentPage page) {
+			_filePage = page;
+		}
+
+		public void OverrideKey(Guid rootId) {
+			_filePage = null;
 			using (var pageHelper = new ContentPageHelper()) {
-				filePage = pageHelper.FindContentByID(SiteData.CurrentSiteID, guidContentID);
+				_filePage = pageHelper.FindContentByID(SiteData.CurrentSiteID, rootId);
 			}
 		}
 
-		public void OverrideKey(string sPageName) {
-			filePage = null;
+		public void OverrideKey(string pageName) {
+			_filePage = null;
 			using (var pageHelper = new ContentPageHelper()) {
-				filePage = pageHelper.FindByFilename(SiteData.CurrentSiteID, sPageName);
+				_filePage = pageHelper.FindByFilename(SiteData.CurrentSiteID, pageName);
 			}
 		}
 
-		protected ContentPage? filePage = null;
+		protected ContentPage? _filePage = null;
 
 		protected void LoadGuids() {
-			if (filePage == null) {
+			if (_filePage == null) {
 				using (var pageHelper = new ContentPageHelper()) {
-					if (SiteData.IsPageSampler && filePage == null) {
-						filePage = ContentPageHelper.GetSamplerView();
+					if (SiteData.IsPageSampler && _filePage == null) {
+						_filePage = ContentPageHelper.GetSamplerView();
 					} else {
 						if (SiteData.CurrentScriptName.ToLowerInvariant().StartsWith(SiteData.AdminFolderPath)) {
 							Guid guidPage = Guid.Empty;
 							if (!string.IsNullOrEmpty(CarrotHttpHelper.QueryString("pageid"))) {
 								guidPage = new Guid(CarrotHttpHelper.QueryString("pageid").ToString());
 							}
-							filePage = pageHelper.FindContentByID(SiteData.CurrentSiteID, guidPage);
+							_filePage = pageHelper.FindContentByID(SiteData.CurrentSiteID, guidPage);
 						} else {
-							filePage = pageHelper.FindByFilename(SiteData.CurrentSiteID, SiteData.CurrentScriptName);
+							_filePage = pageHelper.FindByFilename(SiteData.CurrentSiteID, SiteData.CurrentScriptName);
 						}
 					}
 				}
 			}
 		}
 
-		public ContentPage cmsAdminContent {
+		public ContentPage? cmsAdminContent {
 			get {
 				ContentPage c = null;
 				try {
 					string xml = GetSerialized(keyAdminContent);
-					if (!string.IsNullOrEmpty(xml)) {
-						var xmlSerializer = new XmlSerializer(typeof(ContentPage));
-						object genpref = null;
-						using (var stringReader = new StringReader(xml)) {
-							genpref = xmlSerializer.Deserialize(stringReader);
-						}
-						c = genpref as ContentPage;
+					var xmlSerializer = new XmlSerializer(typeof(ContentPage));
+					object adminContent = null;
+					using (var sr = new StringReader(xml)) {
+						adminContent = xmlSerializer.Deserialize(sr);
 					}
-				} catch (Exception ex) { }
+					c = adminContent as ContentPage;
+				} catch { }
 				return c;
 			}
 			set {
 				if (value == null) {
 					ClearSerialized(keyAdminContent);
 				} else {
+					var sb = new StringBuilder();
 					var xmlSerializer = new XmlSerializer(typeof(ContentPage));
-					string xml = string.Empty;
-					using (var stringWriter = new StringWriter()) {
-						xmlSerializer.Serialize(stringWriter, value);
-						xml = stringWriter.ToString();
+					using (var sw = new StringWriter(sb)) {
+						xmlSerializer.Serialize(sw, value);
 					}
-					SaveSerialized(keyAdminContent, xml);
+					SaveSerialized(keyAdminContent, sb.ToString());
 				}
 			}
 		}
 
-		public List<Widget> cmsAdminWidget {
+		public List<Widget>? cmsAdminWidget {
 			get {
-				List<Widget> c = null;
+				List<Widget> w = null;
 				string xml = GetSerialized(keyAdminWidget);
+				//since a page may not have any widgets, initialize it and skip deserializing
 				if (!string.IsNullOrEmpty(xml)) {
 					var xmlSerializer = new XmlSerializer(typeof(List<Widget>));
-					object genpref = null;
-					using (StringReader stringReader = new StringReader(xml)) {
-						genpref = xmlSerializer.Deserialize(stringReader);
+					object adminContent = null;
+					using (var sr = new StringReader(xml)) {
+						adminContent = xmlSerializer.Deserialize(sr);
 					}
-					c = genpref as List<Widget>;
+					w = adminContent as List<Widget>;
 				}
-				return c;
+				return w;
 			}
 			set {
 				if (value == null) {
 					ClearSerialized(keyAdminWidget);
 				} else {
+					var sb = new StringBuilder();
 					var xmlSerializer = new XmlSerializer(typeof(List<Widget>));
-					string xml = string.Empty;
-					using (var stringWriter = new StringWriter()) {
-						xmlSerializer.Serialize(stringWriter, value);
-						xml = stringWriter.ToString();
+					using (var sw = new StringWriter(sb)) {
+						xmlSerializer.Serialize(sw, value);
 					}
-					SaveSerialized(keyAdminWidget, xml);
+					SaveSerialized(keyAdminWidget, sb.ToString());
 				}
 			}
 		}
 
-		public static void SaveSerialized(Guid itemID, string sKey, string sData) {
+		public static void SaveSerialized(Guid itemID, string key, string data) {
 			using (var db = CarrotCakeContext.Create()) {
 				bool bAdd = false;
 
-				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, sKey);
+				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, key);
 
 				if (itm == null) {
 					bAdd = true;
@@ -1139,10 +1141,10 @@ namespace Carrotware.CMS.Core {
 					itm.SiteId = SiteData.CurrentSiteID;
 					itm.ItemId = itemID;
 					itm.EditUserId = SecurityData.CurrentUserGuid;
-					itm.KeyType = sKey;
+					itm.KeyType = key;
 				}
 
-				itm.SerializedData = sData;
+				itm.SerializedData = data;
 				itm.EditDate = DateTime.UtcNow;
 
 				if (bAdd) {
@@ -1152,23 +1154,23 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static string GetSerialized(Guid itemID, string sKey) {
-			string sData = string.Empty;
+		public static string GetSerialized(Guid itemID, string key) {
+			string data = string.Empty;
 			using (var db = CarrotCakeContext.Create()) {
-				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, sKey);
+				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, key);
 
 				if (itm != null) {
-					sData = itm.SerializedData;
+					data = itm.SerializedData ?? string.Empty;
 				}
 			}
 
-			return sData;
+			return data;
 		}
 
-		public static bool ClearSerialized(Guid itemID, string sKey) {
+		public static bool ClearSerialized(Guid itemID, string key) {
 			bool bRet = false;
 			using (var db = CarrotCakeContext.Create()) {
-				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, sKey);
+				CarrotSerialCache itm = CompiledQueries.SearchSeriaCache(db, itemID, key);
 
 				if (itm != null) {
 					db.CarrotSerialCache.Remove(itm);
@@ -1179,27 +1181,27 @@ namespace Carrotware.CMS.Core {
 			return bRet;
 		}
 
-		private void SaveSerialized(string sKey, string sData) {
+		private void SaveSerialized(string key, string data) {
 			LoadGuids();
-			if (filePage != null) {
-				CMSConfigHelper.SaveSerialized(filePage.Root_ContentID, sKey, sData);
+			if (_filePage != null) {
+				CMSConfigHelper.SaveSerialized(_filePage.Root_ContentID, key, data);
 			}
 		}
 
-		private string GetSerialized(string sKey) {
-			string sData = string.Empty;
+		private string GetSerialized(string key) {
+			string data = string.Empty;
 			LoadGuids();
 
-			if (filePage != null) {
-				sData = CMSConfigHelper.GetSerialized(filePage.Root_ContentID, sKey);
+			if (_filePage != null) {
+				data = CMSConfigHelper.GetSerialized(_filePage.Root_ContentID, key);
 			}
-			return sData;
+			return data;
 		}
 
-		private bool ClearSerialized(string sKey) {
+		private bool ClearSerialized(string key) {
 			LoadGuids();
-			if (filePage != null) {
-				return CMSConfigHelper.ClearSerialized(filePage.Root_ContentID, sKey);
+			if (_filePage != null) {
+				return CMSConfigHelper.ClearSerialized(_filePage.Root_ContentID, key);
 			} else {
 				return false;
 			}

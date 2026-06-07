@@ -1,6 +1,4 @@
-﻿using System;
-
-/*
+﻿/*
 * CarrotCake CMS (MVC Core)
 * http://www.carrotware.com/
 *
@@ -16,7 +14,19 @@ namespace Carrotware.CMS.Core {
 
 		public PageViewType() { }
 
-		public PageViewType(ViewType type, string extraTitle, Object value) {
+		public PageViewType(ViewType type) {
+			this.CurrentViewType = type;
+			this.ExtraTitle = string.Empty;
+			this.RawValue = null;
+		}
+
+		public PageViewType(ViewType type, string extraTitle) {
+			this.CurrentViewType = type;
+			this.ExtraTitle = extraTitle;
+			this.RawValue = null;
+		}
+
+		public PageViewType(ViewType type, string extraTitle, object value) {
 			this.CurrentViewType = type;
 			this.ExtraTitle = extraTitle;
 			this.RawValue = value;
@@ -34,11 +44,11 @@ namespace Carrotware.CMS.Core {
 			CategoryIndex,
 		}
 
-		public ViewType CurrentViewType { get; set; }
+		public ViewType CurrentViewType { get; set; } = PageViewType.ViewType.SinglePage;
 
-		public string ExtraTitle { get; set; }
+		public string ExtraTitle { get; set; } = string.Empty;
 
-		public Object RawValue { get; set; }
+		public object? RawValue { get; set; } = null;
 	}
 
 	//=======================
@@ -61,8 +71,8 @@ namespace Carrotware.CMS.Core {
 			this.FormatText = formatText;
 		}
 
-		public PageViewType.ViewType KeyValue { get; set; }
-		public string LabelText { get; set; }
-		public string FormatText { get; set; }
+		public PageViewType.ViewType KeyValue { get; set; } = PageViewType.ViewType.SinglePage;
+		public string LabelText { get; set; } = string.Empty;
+		public string FormatText { get; set; } = string.Empty;
 	}
 }

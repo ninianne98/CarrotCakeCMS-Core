@@ -145,7 +145,7 @@ namespace Carrotware.CMS.Core {
 
 			if (widget is IWidgetRawData) {
 				var w1 = (IWidgetRawData)widget;
-				w1.RawWidgetData = w.ControlProperties;
+				w1.RawWidgetData = w.ControlProperties ?? string.Empty;
 			}
 
 			List<ObjectProperty> lstDefProps = ObjectProperty.GetObjectProperties(widget);
@@ -156,6 +156,7 @@ namespace Carrotware.CMS.Core {
 											 select ww.Name.ToLowerInvariant()).ToList();
 
 			List<string> limitedProperties = widgetProperties;
+
 			try {
 				if (widget is IWidgetLimitedProperties) {
 					limitedProperties = ((IWidgetLimitedProperties)widget).LimitedPropertyList;
@@ -173,12 +174,12 @@ namespace Carrotware.CMS.Core {
 				string sName = dp.Name.ToLowerInvariant();
 				List<WidgetProps> lstItmVals = lstProps.Where(x => x.KeyName.ToLowerInvariant().StartsWith(sName + "|") || x.KeyName.ToLowerInvariant() == sName).ToList();
 
-				ObjectProperty sourceProperty = new ObjectProperty();
+				var sourceProperty = new ObjectProperty();
 
-				string sListSourcePropertyName = (from p in lstDefProps
-												  where p.Name.ToLowerInvariant() == sName.ToLowerInvariant()
-														&& !string.IsNullOrEmpty(p.CompanionSourceFieldName)
-												  select p.CompanionSourceFieldName).FirstOrDefault();
+				var sListSourcePropertyName = (from p in lstDefProps
+											   where p.Name.ToLowerInvariant() == sName.ToLowerInvariant()
+													 && !string.IsNullOrEmpty(p.CompanionSourceFieldName)
+											   select p.CompanionSourceFieldName).FirstOrDefault();
 
 				if (string.IsNullOrEmpty(sListSourcePropertyName)) {
 					sListSourcePropertyName = string.Empty;
@@ -299,9 +300,9 @@ namespace Carrotware.CMS.Core {
 		// may change to using SelectListItem
 		public OptionSelections() { }
 
-		public string Key { get; set; }
+		public string Key { get; set; } = string.Empty;
 
-		public string Value { get; set; }
+		public string Value { get; set; } = string.Empty;
 
 		public bool Selected { get; set; }
 

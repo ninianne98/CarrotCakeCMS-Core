@@ -219,7 +219,7 @@
 	<p>This creates a basic page with the specified filename and title etc. You will have the opportunity to update the appearance when you visit the new page. </p>
 
 	<div>
-		@Html.Partial("_displayErrorPopupButton")
+		@await Html.PartialAsync("_displayErrorPopupButton")
 		<br />
 		<br />
 	</div>
@@ -327,13 +327,13 @@
 					<!-- parent page plugin-->
 					@{
 						var drill = new SitePageDrillDownModel {
-						FieldName = Html.NameFor(m => m.ContentPage.Parent_ContentID).ToString(),
-						CurrentPageID = Model.ContentPage.Root_ContentID,
-						SelectedPageID = Model.ContentPage.Parent_ContentID
-					};
+							FieldName = Html.NameFor(m => m.ContentPage.Parent_ContentID).ToString(),
+							CurrentPageID = Model.ContentPage.Root_ContentID,
+							SelectedPageID = Model.ContentPage.Parent_ContentID
+						};
 					}
 
-					@Html.Partial("_SitePageDrillDown", drill)
+					@await Html.PartialAsync("_SitePageDrillDown", drill)
 
 					<div style="clear: both; height: 2px;">
 					</div>

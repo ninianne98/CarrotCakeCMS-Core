@@ -1,5 +1,4 @@
-﻿using Carrotware.CMS.Interface;
-using Carrotware.Web.UI.Components;
+﻿using Carrotware.Web.UI.Components;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 /*
@@ -12,8 +11,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 * Date: June 2023
 */
 
-
 namespace Carrotware.CMS.Core.MVC {
+
 	public enum AdminArea {
 		AdminGui,
 		AdminApi,
@@ -21,8 +20,8 @@ namespace Carrotware.CMS.Core.MVC {
 
 	//===============
 	public class CmsAdminRouteAttribute : Attribute, IRouteTemplateProvider {
-		public CmsAdminRouteAttribute(AdminArea type) {
 
+		public CmsAdminRouteAttribute(AdminArea type) {
 			var config = CarrotCakeConfig.GetConfig();
 			var adminFolder = config.MainConfig.AdminFolderPath.TrimPathSlashes();
 
@@ -32,24 +31,26 @@ namespace Carrotware.CMS.Core.MVC {
 					this.RouteKey = RouteInfo.Keys.Controller;
 					this.RouteValue = CmsRouteConstants.CmsController.Admin;
 					break;
+
 				case AdminArea.AdminApi:
 					this.Template = "api/" + adminFolder;
 					this.RouteKey = RouteInfo.Keys.Controller;
 					this.RouteValue = CmsRouteConstants.CmsController.AdminApi;
 					break;
+
 				default:
 					break;
 			}
 		}
 
-		public string Template { get; }
+		public string? Template { get; }
 
 		private int? _order;
-		public string RouteKey { get; }
+		public string RouteKey { get; } = string.Empty;
 
-		public string RouteValue { get; }
+		public string RouteValue { get; } = string.Empty;
 
-		public int Order {
+		public int? Order {
 			get { return _order ?? 0; }
 			set { _order = value; }
 		}

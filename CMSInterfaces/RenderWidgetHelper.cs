@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -306,7 +307,7 @@ namespace Carrotware.CMS.Interface {
 
 		public static string ResultToString(RenderWidgetData data, PartialViewResult partialResult, string viewName = null) {
 			Controller controller = data.Controller;
-			string stringResult = null;
+			var sb = new StringBuilder();
 
 			var engine = data.HttpContext.RequestServices.GetRequiredService(typeof(IRazorViewEngine)) as IRazorViewEngine;
 
@@ -332,10 +333,9 @@ namespace Carrotware.CMS.Interface {
 					var view = viewEngineResult.View;
 
 					if (view != null) {
-						using (var sw = new StringWriter()) {
+						using (var sw = new StringWriter(sb)) {
 							var ctx = data.GetViewContext(sw, view, model);
 							var task = view.RenderAsync(ctx);
-							stringResult = sw.ToString();
 						}
 					} else {
 						throw new Exception($"View '{actualViewName}' is null");
@@ -345,7 +345,7 @@ namespace Carrotware.CMS.Interface {
 				}
 			}
 
-			return stringResult;
+			return sb.ToString();
 		}
 
 		internal static Assembly GetAssembly(string typeName) {

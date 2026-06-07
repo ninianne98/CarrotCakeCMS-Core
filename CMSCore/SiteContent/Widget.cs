@@ -232,8 +232,8 @@ namespace Carrotware.CMS.Core {
 				if (sProps.Contains("<ArrayOfWidgetProps")) {
 					var xmlSerializer = new XmlSerializer(typeof(List<WidgetProps>));
 					object genpref = null;
-					using (var stringReader = new StringReader(sProps)) {
-						genpref = xmlSerializer.Deserialize(stringReader);
+					using (var sr = new StringReader(sProps)) {
+						genpref = xmlSerializer.Deserialize(sr);
 					}
 					props = genpref as List<WidgetProps>;
 				}
@@ -248,9 +248,9 @@ namespace Carrotware.CMS.Core {
 		public void SaveDefaultControlProperties(List<WidgetProps> props) {
 			var xmlSerializer = new XmlSerializer(typeof(List<WidgetProps>));
 			string xml = string.Empty;
-			using (var stringWriter = new StringWriter()) {
-				xmlSerializer.Serialize(stringWriter, props);
-				xml = stringWriter.ToString();
+			using (var writer = new StringWriter()) {
+				xmlSerializer.Serialize(writer, props);
+				xml = writer.ToString();
 			}
 
 			this.ControlProperties = xml;
