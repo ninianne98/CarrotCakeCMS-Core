@@ -292,7 +292,22 @@ namespace Carrotware.Web.UI.Components {
 
 			if (razorengine != null && razoract != null) {
 				var viewEngineResult = razorengine.FindView(htmlHelper.ViewContext, partialViewName, false);
-				var view = viewEngineResult.View;
+
+				if (viewEngineResult != null && viewEngineResult.View == null & string.IsNullOrEmpty(partialViewName) == false
+							&& (partialViewName.ToLowerInvariant().StartsWith("~/views/")
+									|| partialViewName.ToLowerInvariant().StartsWith("~/virtual/"))) {
+					if (viewEngineResult.View == null) {
+						viewEngineResult = razorengine.GetView(string.Empty, partialViewName, false);
+					}
+					if (viewEngineResult.View == null) {
+						var tmpView = partialViewName;
+						tmpView = tmpView.TrimStart('~').TrimStart('/');
+						tmpView = tmpView.Replace("/", ".");
+						viewEngineResult = razorengine.GetView(string.Empty, tmpView, false);
+					}
+				}
+
+				var view = viewEngineResult?.View;
 
 				if (view != null) {
 					var newViewData = new ViewDataDictionary<T>(htmlHelper.ViewData, model);
@@ -1084,7 +1099,7 @@ namespace Carrotware.Web.UI.Components {
 		}
 
 		[RazorInject]
-		public IHtmlHelper<TModel> Html { get; private set; }
+		public IHtmlHelper<TModel> Html { get; private set; } = default!;
 
 		public override Task ExecuteAsync() {
 			throw new NotImplementedException();

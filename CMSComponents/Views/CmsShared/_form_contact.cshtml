@@ -1,0 +1,65 @@
+﻿@inject PagePayload CmsPage
+
+@{
+	string partialName = VirtualViewFileProvider.PartialViews.Contact;
+	string formTargetId = Html.CarrotCakeHtml().BuildTarget("contactForm");
+}
+
+<div id="@formTargetId">
+	<br />
+	<!-- virtual view -->
+	@{
+		var cap = new Captcha2();
+		// var cap = new Captcha();
+		// cap.SetForeColor("#1C1916");
+		// cap.SetBackColor("#DDDDDD");
+		// cap.SetNoiseColor("#B9547E");
+		// cap.AltValidationFailText = null; // trigger default text
+
+		using (var cmtFrm = Html.CarrotCakeHtml().BeginContactForm(new SimpleAjaxFormOptions { UpdateTargetId = formTargetId })) {
+			var cmt = cmtFrm.GetModelHelper(partialName, cap);
+
+			if (!cmt.ViewData.Model.IsSaved) {
+				@cmt.ValidationSummary(true, "", new { @class = "text-danger" })
+
+				<div>
+					@cmt.LabelFor(m => m.CommenterName)
+					@cmt.ValidationMessageFor(m => m.CommenterName, "", new { @class = "text-danger" })
+					<br />
+					@cmt.TextBoxFor(m => m.CommenterName)
+				</div>
+
+				<div>
+					@cmt.LabelFor(m => m.CommenterEmail)
+					@cmt.ValidationMessageFor(m => m.CommenterEmail, "", new { @class = "text-danger" })
+					<br />
+					@cmt.TextBoxFor(m => m.CommenterEmail)
+				</div>
+
+				<div>
+					@cmt.LabelFor(m => m.PostCommentText, "Your Comments")
+					@cmt.ValidationMessageFor(m => m.PostCommentText, "", new { @class = "text-danger" })
+					<br />
+					@cmt.TextAreaFor(m => m.PostCommentText, new { rows = "5", cols = "50" })
+				</div>
+
+				<div>
+					@cap<br />
+					@cap.Instructions <br />
+					@* @cmt.TextBoxFor(m => m.ValidationValue, "", new { autocomplete = "off" }) *@
+					@cmt.DropDownListFor(m => m.ValidationValue, new SelectList(cap.ImageOptions, "Value", "Value"), "[Select Image Title]")
+					@cmt.ValidationMessageFor(m => m.ValidationValue, "", new { @class = "text-danger" })
+				</div>
+
+				<br />
+				<input class="button" type="submit" value="Submit" />
+				<input class="button" type="reset" value="Clear form" />
+			} else {
+				<p>Thank you for your comment.</p>
+			}
+		}
+	}
+</div>
+<div style="clear:both">
+	&nbsp;
+</div>

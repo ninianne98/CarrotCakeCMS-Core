@@ -694,25 +694,25 @@ namespace Carrotware.CMS.Core {
 					var sb = new StringBuilder();
 					sb.Append(CoreHelper.ReadEmbededScript("Carrotware.CMS.Core.Security.EmailForgotPassMsg.txt"));
 
-					string httpHost;
-					try { httpHost = request.Host.Value.Trim(); } catch { httpHost = string.Empty; }
-					string hostName = httpHost.ToLowerInvariant();
+					string host;
+					try { host = request.Host.Value.Trim(); } catch { host = string.Empty; }
+					string hostName = host.ToLowerInvariant();
 
-					httpHost = CarrotWebHelper.BuildHttpHost().ToLowerInvariant();
+					host = CarrotWebHelper.BuildHttpHost().ToLowerInvariant();
 
 					var resetTokenUrl = string.Empty;
 					var authKey = EncodeAuthKey(user, token);
 
 					if (string.IsNullOrEmpty(authKey)) {
-						resetTokenUrl = string.Format("{0}/{1}?userId={2}&token={3}", httpHost, resetUri, HttpUtility.UrlEncode(user.Id), HttpUtility.UrlEncode(token));
+						resetTokenUrl = string.Format("{0}/{1}?userId={2}&token={3}", host, resetUri, HttpUtility.UrlEncode(user.Id), HttpUtility.UrlEncode(token));
 					} else {
-						resetTokenUrl = string.Format("{0}/{1}?key={2}", httpHost, resetUri, HttpUtility.UrlEncode(authKey));
+						resetTokenUrl = string.Format("{0}/{1}?key={2}", host, resetUri, HttpUtility.UrlEncode(authKey));
 					}
 
 					sb.Replace("{%%UserName%%}", user.UserName);
-					sb.Replace("{%%SiteURL%%}", httpHost);
+					sb.Replace("{%%SiteURL%%}", host);
 					sb.Replace("{%%Version%%}", CurrentDLLVersion);
-					sb.Replace("{%%AdminFolderPath%%}", string.Format("{0}{1}", httpHost, SiteData.AdminFolderPath));
+					sb.Replace("{%%AdminFolderPath%%}", string.Format("{0}{1}", host, SiteData.AdminFolderPath));
 
 					sb.Replace("{%%ResetURL%%}", resetTokenUrl);
 

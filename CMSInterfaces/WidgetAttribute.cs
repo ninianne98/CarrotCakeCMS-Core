@@ -11,7 +11,7 @@
 namespace Carrotware.CMS.Interface {
 
 	public class WidgetAttribute : Attribute {
-		private string _field;
+		private string _field = string.Empty;
 		private FieldMode _mode = FieldMode.Unknown;
 
 		public enum FieldMode {

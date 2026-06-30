@@ -114,22 +114,6 @@ namespace Carrotware.CMS.UI.Components {
 			get { return SiteFilename.RssFeedUri; }
 		}
 
-		public Controller? GetFauxController() {
-			Controller? controller = null;
-
-			if (controller == null) {
-				var svc = CarrotHttpHelper.HttpContext.RequestServices.GetService<IContentController>();
-
-				if (svc != null && svc is Controller) {
-					controller = (Controller)svc;
-					var data = new RenderWidgetData(controller, _helper);
-					data.InitController();
-				}
-			}
-
-			return controller;
-		}
-
 		public PagePayload CmsPage {
 			get {
 				var page = new PagePayload();
@@ -463,6 +447,27 @@ namespace Carrotware.CMS.UI.Components {
 			};
 		}
 
+		public string BuildTarget(string defaultTarget) {
+			string widgetId = _helper.ViewBag.CmsWidgetClientID ?? string.Empty;
+			string targetId = _helper.ViewBag.CmsUpdateTargetId ?? string.Empty;
+
+			_helper.ViewContext.RouteData.Values.Remove(RouteInfo.Keys.Area);
+
+			string formTargetId = defaultTarget;
+
+			if (string.IsNullOrEmpty(widgetId) == false) {
+				formTargetId = defaultTarget + "_" + widgetId;
+			} else {
+				formTargetId = targetId;
+			}
+
+			if (string.IsNullOrEmpty(formTargetId)) {
+				formTargetId = defaultTarget;
+			}
+
+			return formTargetId;
+		}
+
 		public SearchForm BeginSearchForm(object formAttributes = null) {
 			return new SearchForm(_helper, this.CmsPage, formAttributes);
 		}
@@ -734,6 +739,27 @@ namespace Carrotware.CMS.UI.Components {
 			return string.Empty;
 		}
 
+
+		internal static List<string> GetRazorNamespaces() {
+			string physicalPath = CarrotHttpHelper.MapPath("/Views/_ViewImports.cshtml");
+			var content = File.ReadAllText(physicalPath);
+
+			if (content != null) {
+				var namespaces = content.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+										.Where(x => x.StartsWith("@using")).ToList();
+
+				if (namespaces.Any()) {
+					return namespaces;
+				}
+			}
+
+			return new List<string>();
+		}
+
+		internal static string GetEmbededView(string viewName) {
+			return ControlUtilities.ReadEmbededScript("Carrotware.CMS.UI.Components.Views.CmsShared." + viewName);
+		}
+
 		public HtmlString RenderBody() {
 			return RenderBody(TextFieldZone.TextCenter);
 		}
@@ -785,7 +811,7 @@ namespace Carrotware.CMS.UI.Components {
 				}
 
 				var sb = new StringBuilder();
-				sb.Append(ControlUtilities.ReadEmbededScript("Carrotware.CMS.UI.Components._TextZone.cshtml"));
+				sb.Append(GetEmbededView("_TextZone.cshtml"));
 
 				sb.Replace("[[cms_zone]]", m.Zone);
 				sb.Replace("[[htmltext]]", SiteData.HtmlMode);
@@ -990,8 +1016,8 @@ namespace Carrotware.CMS.UI.Components {
 			if (!SecurityData.AdvancedEditMode) return (string.Empty, string.Empty, string.Empty);
 
 			string menuTemplate = "<li id=\"liMenu\"><a href=\"javascript:[[JS_CALL]]\" id=\"cmsMenuEditLink\" class=\"cmsWidgetBarLink cmsWidgetBarIconPencil\" alt=\"[[CAP]]\" title=\"[[CAP]]\"> [[CAP]]</a></li>";
-			var zone = new StringBuilder(ControlUtilities.ReadEmbededScript("Carrotware.CMS.UI.Components._WidgetZone.cshtml"));
-			var wrapper = new StringBuilder(ControlUtilities.ReadEmbededScript("Carrotware.CMS.UI.Components._WidgetWrapper.cshtml"));
+			var zone = new StringBuilder(GetEmbededView("_WidgetZone.cshtml"));
+			var wrapper = new StringBuilder(GetEmbededView("_WidgetWrapper.cshtml"));
 
 			zone.Replace("[[CMS_WIDGET_PLACEHOLDER]]", placeHolderName);
 			wrapper.Replace("[[CMS_WIDGET_PLACEHOLDER]]", placeHolderName);

@@ -330,7 +330,22 @@ namespace Carrotware.CMS.Interface {
 				if (engine != null) {
 					var actualViewName = (string.IsNullOrWhiteSpace(partialResult.ViewName) ? viewName : partialResult.ViewName) ?? string.Empty;
 					var viewEngineResult = engine.FindView(context, actualViewName, false);
-					var view = viewEngineResult.View;
+
+					if (viewEngineResult != null && viewEngineResult.View == null & string.IsNullOrEmpty(actualViewName) == false
+								&& (actualViewName.ToLowerInvariant().StartsWith("~/views/")
+										|| actualViewName.ToLowerInvariant().StartsWith("~/virtual/"))) {
+						if (viewEngineResult.View == null) {
+							viewEngineResult = engine.GetView(string.Empty, actualViewName, false);
+						}
+						if (viewEngineResult.View == null) {
+							var tmpView = actualViewName;
+							tmpView = tmpView.TrimStart('~').TrimStart('/');
+							tmpView = tmpView.Replace("/", ".");
+							viewEngineResult = engine.GetView(string.Empty, tmpView, false);
+						}
+					}
+
+					var view = viewEngineResult?.View;
 
 					if (view != null) {
 						using (var sw = new StringWriter(sb)) {

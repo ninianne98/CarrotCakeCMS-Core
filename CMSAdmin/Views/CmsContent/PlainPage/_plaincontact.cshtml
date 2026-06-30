@@ -35,7 +35,7 @@
 				<div>
 					<div> @cap </div>
 					<label for="@cmt.IdFor(m => m.ValidationValue)">@cap.Instructions</label><br />
-					@cmt.TextBoxFor(m => m.ValidationValue)
+					@cmt.TextBoxFor(m => m.ValidationValue, "", new { autocomplete = "off" })
 					@cmt.ValidationMessageFor(m => m.ValidationValue, "", new { @class = "text-danger" })
 					<br />
 				</div>

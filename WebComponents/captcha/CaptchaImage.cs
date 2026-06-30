@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Security.Cryptography;
+using System.Text;
 
 /*
 * CarrotCake CMS (MVC Core)
@@ -59,7 +61,7 @@ namespace Carrotware.Web.UI.Components {
 			}
 
 			if (CarrotWebHelper.HttpContext != null) {
-				guid = Guid.NewGuid().ToString().Substring(0, 6);
+				guid = GetNewChallengeText();
 				CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 			}
 			return bValid;
@@ -71,6 +73,26 @@ namespace Carrotware.Web.UI.Components {
 			return GetCaptchaImage(medGreen, Color.White, medOrange);
 		}
 
+		internal static string GetNewChallengeText() {
+			int length = 6;
+			var tmp = Guid.NewGuid().ToString("N")
+					+ Guid.NewGuid().ToString("N")
+					+ Guid.NewGuid().ToString("N");
+			byte[] inputBytes = Encoding.UTF8.GetBytes(tmp);
+			byte[] hashBytes;
+
+			using (var sha256 = SHA256.Create()) {
+				hashBytes = sha256.ComputeHash(inputBytes);
+			}
+
+			int number = BitConverter.ToInt32(hashBytes, 0) & 0x7FFFFFFF;
+
+			int modulus = (int)Math.Pow(10, length);
+			int pinValue = number % modulus;
+
+			return pinValue.ToString(new string('0', length));
+		}
+
 		public static string SessionKeyValue {
 			get {
 				string guid = "ABCXYZ";
@@ -79,11 +101,11 @@ namespace Carrotware.Web.UI.Components {
 						if (CarrotWebHelper.HttpContext.Session.GetString(SessionKey) != null) {
 							guid = CarrotWebHelper.HttpContext.Session.GetString(SessionKey);
 						} else {
-							guid = Guid.NewGuid().ToString().Substring(0, 6);
+							guid = GetNewChallengeText();
 							CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 						}
 					} catch (Exception ex) {
-						guid = Guid.NewGuid().ToString().Substring(0, 6);
+						guid = GetNewChallengeText();
 						CarrotWebHelper.HttpContext.Session.SetString(SessionKey, guid);
 					}
 				}

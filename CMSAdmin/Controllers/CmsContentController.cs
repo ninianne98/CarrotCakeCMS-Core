@@ -93,7 +93,11 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 				if (formMode == "contactform") {
 					frm = new ContactInfo();
 					frm = FormHelper.ParseRequest(frm, Request);
+
 					var cmt = (ContactInfo)frm;
+					var settings = cmt.Settings;
+					this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
+
 					cmt.Root_ContentID = _page.ThePage.Root_ContentID;
 					cmt.CreateDate = SiteData.CurrentSite.Now;
 					cmt.CommenterIP = this.HttpContext.Connection.RemoteIpAddress.ToString();
@@ -244,6 +248,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			var settings = model.Settings;
 
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
+
 			if (settings.UseValidateHuman) {
 				bool IsValidated = model.ValidateHuman.ValidateValue(model.ValidationValue);
 				if (!IsValidated) {
@@ -314,6 +320,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			var settings = model.Settings;
 
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
+
 			if (settings.UseValidateHuman) {
 				bool IsValidated = model.ValidateHuman.ValidateValue(model.ValidationValue);
 				if (!IsValidated) {
@@ -358,6 +366,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			LoadPage(model.Settings.Uri);
 
 			var settings = model.Settings;
+
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
 
 			if (settings.UseValidateHuman) {
 				bool IsValidated = model.ValidateHuman.ValidateValue(model.ValidationValue);
@@ -409,6 +419,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			LoadPage(model.Settings.Uri);
 
 			var settings = model.Settings;
+
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
+
 			if (!SecurityData.IsAuthenticated) {
 				ModelState.AddModelError("", "User is not authenticated");
 			}
@@ -460,6 +473,8 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			var settings = model.Settings;
 
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
+
 			if (settings.UseValidateHuman) {
 				bool IsValidated = model.ValidateHuman.ValidateValue(model.ValidationValue);
 				if (!IsValidated) {
@@ -501,6 +516,12 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 		public async Task<ActionResult> Logout(LogoutInfo model) {
 			model.ClearOptionalItems(ModelState);
 			model.ReconstructSettings();
+
+			var settings = model.Settings;
+
+			string partialName = settings.PostPartialName;
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
+
 			this.ViewData[LogoutInfo.Key] = model;
 			LoadPage(model.Settings.Uri);
 
@@ -510,7 +531,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 
 			await securityHelper.SignInManager.SignOutAsync();
 
-			return PartialView(model.Settings.PostPartialName);
+			return PartialView(partialName);
 		}
 
 		[HttpPost]
@@ -528,6 +549,7 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Controllers {
 			var settings = model.Settings;
 
 			string partialName = settings.PostPartialName;
+			this.ViewBag.CmsUpdateTargetId = settings.UpdateTargetId;
 
 			if (settings.UseValidateHuman) {
 				bool IsValidated = model.ValidateHuman.ValidateValue(model.ValidationValue);

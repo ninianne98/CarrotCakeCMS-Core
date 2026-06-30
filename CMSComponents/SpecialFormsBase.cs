@@ -23,6 +23,7 @@ namespace Carrotware.CMS.UI.Components {
 		}
 
 		public string PostPartialName { get; set; } = string.Empty;
+		public string UpdateTargetId { get; set; } = string.Empty;
 		public string Uri { get; set; } = string.Empty;
 	}
 
@@ -31,6 +32,7 @@ namespace Carrotware.CMS.UI.Components {
 	public interface IFormSettingRootBase {
 		string PostPartialName { get; set; }
 		string Uri { get; set; }
+		string UpdateTargetId { get; set; }
 	}
 
 	//==============================
@@ -48,6 +50,7 @@ namespace Carrotware.CMS.UI.Components {
 		public bool UseValidateHuman { get; set; }
 		public string ValidateHumanClass { get; set; } = string.Empty;
 		public string ValidationFailText { get; set; } = string.Empty;
+		public string UpdateTargetId { get; set; } = string.Empty;
 
 		public void GetSettingFromConfig(FormConfigBase config) {
 			if (config != null && config.ValidateHuman != null) {

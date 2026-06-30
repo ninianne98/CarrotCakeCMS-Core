@@ -20,7 +20,6 @@ namespace Carrotware.CMS.UI.Components {
 
 	//==================================================
 	public class SiteSearch {
-
 		private IHtmlHelper? _helper;
 		private HttpContext? _http;
 
@@ -143,15 +142,15 @@ namespace Carrotware.CMS.UI.Components {
 				string mailSubject = string.Format("Comment Form From {0}", hostName);
 
 				string sBody = "Name:   " + pc.CommenterName
-					+ "\r\nEmail:   " + pc.CommenterEmail
-					+ "\r\nURL:   " + pc.CommenterURL
-					+ "\r\n-----------------"
-					+ "\r\nComment:\r\n" + HttpUtility.HtmlEncode(pc.PostCommentText)
-					+ "\r\n=================\r\n"
-					+ "\r\nIP:   " + pc.CommenterIP
-					+ "\r\nSite URL:   " + string.Format("{0}{1}", host, page.FileName)
-					+ "\r\nSite Time:   " + SiteData.CurrentSite.Now.ToString()
-					+ "\r\nUTC Time:   " + DateTime.UtcNow.ToString();
+					+ Environment.NewLine + "Email:   " + pc.CommenterEmail
+					+ Environment.NewLine + "URL:   " + pc.CommenterURL
+					+ Environment.NewLine + " -----------------"
+					+ Environment.NewLine + "Comment:" + Environment.NewLine + HttpUtility.HtmlEncode(pc.PostCommentText)
+					+ Environment.NewLine + " ================= "
+					+ Environment.NewLine + Environment.NewLine + "IP:   " + pc.CommenterIP
+					+ Environment.NewLine + "Site URL:   " + string.Format("{0}{1}", host, page.FileName)
+					+ Environment.NewLine + "Site Time:   " + SiteData.CurrentSite.Now.ToString()
+					+ Environment.NewLine + "UTC Time:   " + DateTime.UtcNow.ToString();
 
 				string sEmail = string.Join(";", emails);
 

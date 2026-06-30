@@ -1,7 +1,4 @@
-﻿using Carrotware.CMS.Core;
-using Carrotware.CMS.Interface;
-using Carrotware.Web.UI.Components;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 /*
@@ -183,9 +180,9 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin.Models {
 			return CMSConfigHelper.EncodeBase64(sIn.ToLowerInvariant());
 		}
 
-		public CMSTemplate Template { get; set; }
+		public CMSTemplate Template { get; set; } = new CMSTemplate();
 
-		public List<FileData> RelatedFiles { get; set; }
+		public List<FileData> RelatedFiles { get; set; } = new List<FileData>();
 
 		public string SitePath { get; set; }
 

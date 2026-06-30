@@ -167,16 +167,16 @@ namespace Carrotware.CMS.CoreMVC.UI.Admin {
 			}
 		}
 
-		public static string ReadEmbededScript(string sResouceName) {
-			return CarrotWebHelper.GetManifestResourceText(typeof(Controllers.CmsContentController), sResouceName);
+		public static string ReadEmbededScript(string resouceName) {
+			return CarrotWebHelper.GetManifestResourceText(typeof(Controllers.CmsContentController), resouceName);
 		}
 
-		public static byte[] ReadEmbededBinary(string sResouceName) {
-			return CarrotWebHelper.GetManifestResourceBytes(typeof(Controllers.CmsContentController), sResouceName);
+		public static byte[] ReadEmbededBinary(string resouceName) {
+			return CarrotWebHelper.GetManifestResourceBytes(typeof(Controllers.CmsContentController), resouceName);
 		}
 
-		public static string GetWebResourceUrl(string sResouceName) {
-			return CarrotWebHelper.GetWebResourceUrl(typeof(Controllers.CmsContentController), sResouceName);
+		public static string GetWebResourceUrl(string resouceName) {
+			return CarrotWebHelper.GetWebResourceUrl(typeof(Controllers.CmsContentController), resouceName);
 		}
 
 		public static IHtmlContent SplitDateTimeFor<TModel, TValue>(this IHtmlHelper<TModel> htmlHelper,

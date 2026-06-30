@@ -49,6 +49,7 @@ namespace Carrotware.CMS.UI.Components.Controllers {
 					sb.Replace("[[API_PATH]]", ("/api/" + adminFolder).FixPathSlashes());
 					sb.Replace("[[TEMPLATE_PATH]]", SiteData.PreviewTemplateFilePage);
 					sb.Replace("[[TEMPLATE_QS]]", SiteData.TemplatePreviewParameter);
+					sb.Replace("[[CMS_PLATFORM]]", "core");
 				}
 			}
 

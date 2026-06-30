@@ -383,15 +383,20 @@
 
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="Grid\accept.png" />
-		<EmbeddedResource Include="Grid\attach.png" />
-		<EmbeddedResource Include="Grid\cancel.png" />
+		<EmbeddedResource Include="captcha2\bell.png" />
+		<EmbeddedResource Include="captcha2\book.png" />
 		<EmbeddedResource Include="captcha2\bouquet.png" />
+		<EmbeddedResource Include="captcha2\candle.png" />
+		<EmbeddedResource Include="captcha2\flag.png" />
+		<EmbeddedResource Include="captcha2\flower.png" />
 		<EmbeddedResource Include="captcha2\pen.png" />
 		<EmbeddedResource Include="captcha2\pepper.png" />
 		<EmbeddedResource Include="captcha2\scissors.png" />
 		<EmbeddedResource Include="captcha2\snowflake.png" />
 		<EmbeddedResource Include="captcha2\web.png" />
+		<EmbeddedResource Include="Grid\accept.png" />
+		<EmbeddedResource Include="Grid\attach.png" />
+		<EmbeddedResource Include="Grid\cancel.png" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="bootstrap\amethystorchid.min.css">

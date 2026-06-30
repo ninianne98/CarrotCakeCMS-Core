@@ -711,7 +711,7 @@ namespace Carrotware.CMS.Core {
 			}
 		}
 
-		public static SiteNav SiteBlogPage {
+		public static SiteNav? SiteBlogPage {
 			get {
 				if (CurrentSite == null) {
 					return null;
@@ -720,11 +720,9 @@ namespace Carrotware.CMS.Core {
 					using (ISiteNavHelper navHelper = SiteNavFactory.GetSiteNavHelper()) {
 						return navHelper.GetLatestVersion(CurrentSite.SiteID, CurrentSite.Blog_Root_ContentID.Value);
 					}
-				} else {
-					// fake / mockup of a search page
-					return SiteNavHelper.GetEmptySearch();
 				}
-				return null;
+				// fake / mockup of a search page
+				return SiteNavHelper.GetEmptySearch();
 			}
 		}
 
@@ -975,30 +973,36 @@ namespace Carrotware.CMS.Core {
 		}
 
 		public static string CheckForSpecialURL(SiteData site) {
-			string sRequestedURL = "/";
+			string requestedURL = CurrentScriptName;
 
-			sRequestedURL = CurrentScriptName;
-			string sFileRequested = sRequestedURL;
+			string key = "CARROT_RW_REQUESTEDURL";
 
-			if (!sRequestedURL.ToLowerInvariant().StartsWith(AdminFolderPath) && site != null) {
-				if (sFileRequested.ToLowerInvariant().StartsWith(site.BlogFolderPath.ToLowerInvariant())) {
-					if (site.GetSpecialFilePathPrefixes().Where(x => sFileRequested.ToLowerInvariant().StartsWith(x)).Count() > 0) {
-						if (site.Blog_Root_ContentID.HasValue) {
-							using (ISiteNavHelper navHelper = SiteNavFactory.GetSiteNavHelper()) {
-								SiteNav blogNavPage = navHelper.GetLatestVersion(site.SiteID, site.Blog_Root_ContentID.Value);
-								if (blogNavPage == null) {
-									blogNavPage = SiteNavHelper.GetEmptySearch();
-								}
-								if (blogNavPage != null) {
-									sRequestedURL = blogNavPage.FileName;
-								}
+			string fileRequested = (requestedURL ?? string.Empty).ToLowerInvariant();
+			string adminPath = (AdminFolderPath ?? string.Empty).ToLowerInvariant();
+
+			if (site != null && fileRequested.StartsWith(adminPath) == false
+								&& fileRequested.StartsWith(site.BlogFolderPath.ToLowerInvariant())) {
+				if (CarrotHttpHelper.Request.HttpContext.Items[key] == null) {
+					if (site.GetSpecialFilePathPrefixes().Where(x => fileRequested.StartsWith(x.ToLowerInvariant())).Any()
+									&& site.Blog_Root_ContentID.HasValue) {
+						using (ISiteNavHelper navHelper = SiteNavFactory.GetSiteNavHelper()) {
+							SiteNav blogNavPage = navHelper.GetLatestVersion(site.SiteID, site.Blog_Root_ContentID.Value);
+							if (blogNavPage == null) {
+								blogNavPage = SiteNavHelper.GetEmptySearch();
+							}
+							if (blogNavPage != null) {
+								requestedURL = blogNavPage.FileName;
 							}
 						}
 					}
+
+					CarrotHttpHelper.Request.HttpContext.Items[key] = requestedURL;
+				} else {
+					requestedURL = CarrotHttpHelper.Request.HttpContext.Items[key].ToString() ?? string.Empty;
 				}
 			}
 
-			return sRequestedURL;
+			return requestedURL ?? string.Empty;
 		}
 
 		public static string RssDocType { get { return "text/xml"; } }

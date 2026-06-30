@@ -610,6 +610,12 @@ namespace Carrotware.CMS.Core {
 
 					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Multi Level Nav List", FilePath = "CLASS:Carrotware.CMS.UI.Components.MultiLevelNavigation, Carrotware.CMS.UI.Components" });
 
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Comment Form", FilePath = "ContentCommentForm:Carrotware.CMS.UI.Components.Controllers.FormsController, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Login / Out Form", FilePath = "LoginOutForm:Carrotware.CMS.UI.Components.Controllers.FormsController, Carrotware.CMS.UI.Components" });
+
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Show Paged Comments", FilePath = "ShowPagedComments:Carrotware.CMS.UI.Components.Controllers.FormsController, Carrotware.CMS.UI.Components" });
+					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "Show Paged Data", FilePath = "ShowPagedData:Carrotware.CMS.UI.Components.Controllers.FormsController, Carrotware.CMS.UI.Components" });
+
 					p1.Add(new CMSPlugin { SystemPlugin = true, SortOrder = iSortOrder++, Caption = "IFRAME content wrapper", FilePath = "CLASS:Carrotware.CMS.UI.Components.IFrameWidgetWrapper, Carrotware.CMS.UI.Components" });
 
 					plugins = p1.Union(GetPluginsByDirectory()).ToList();
