@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<OutputPath>bin\</OutputPath>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -13,7 +13,7 @@
 		<Copyright>$([System.DateTime]::Now.Year)</Copyright>
 		<Product>Carrot Cake CMS Widget</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<VersionPrefix>8.1</VersionPrefix>
+		<VersionPrefix>10.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyMMdd")).$([System.DateTime]::UtcNow.ToString("HHmmss"))</VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0.0</AssemblyVersion>
 		<Version>$(VersionPrefix).0.0</Version>
@@ -37,20 +37,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Core" Version="1.50.0" />
-		<PackageReference Include="Azure.Identity" Version="1.17.2" />
+		<PackageReference Include="Azure.Core" Version="1.63.0" />
+		<PackageReference Include="Azure.Identity" Version="1.21.0" />
 		<PackageReference Include="bootstrap" Version="3.4.1" />
 		<PackageReference Include="jQuery" Version="3.7.1" />
 		<PackageReference Include="jQuery.UI.Combined" Version="1.13.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.30" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.30" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.30">
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.30" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.30">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

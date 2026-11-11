@@ -1,5 +1,5 @@
 # CarrotCakeCMS (MVC Core)
-Source code for CarrotCakeCMS (MVC - Core), .Net Core 8
+Source code for CarrotCakeCMS (MVC - Core), .Net Core 10
 
 [SITE_CT]: http://www.carrotware.com/contact?from=github-core
 [REPO_SF]: http://sourceforge.net/projects/carrotcakecmscore/
@@ -9,8 +9,8 @@ Source code for CarrotCakeCMS (MVC - Core), .Net Core 8
 [DOC]: http://www.carrotware.com/carrotcake-download?from=github-core "CarrotCakeCMS User Documentation"
 [TMPLT]: http://www.carrotware.com/carrotcake-templates?from=github-core
 [IDE]: https://visualstudio.microsoft.com/
-[BUILD22]: https://learn.microsoft.com/en-us/visualstudio/msbuild/walkthrough-using-msbuild?view=vs-2022
-[VS2022C]: https://visualstudio.microsoft.com/vs/community/
+[BUILD26]: https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild?view=visualstudio
+[VS2026C]: https://visualstudio.microsoft.com/vs/community/
 [SQL]: https://www.microsoft.com/en-us/sql-server/sql-server-downloads
 [SSMS]: https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms
 
@@ -46,8 +46,8 @@ CarrotCakeCMS (MVC Core) is maintained by Samantha Copeland
 
 ### Install Development Tools
 
-1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2022 Community][VS2022C]) - Typically being developed on VS 2022 Enterprise. Use of [MSBuild for 2022][BUILD22] is also acceptable. Both require patch version 17.8 or later for .NET 8 support.
-1. **[SQL Server Express 2016 (or higher/later)][SQL]** - Currently vetted on 2016 and 2019 (Express Editions). Entity Framework Core 8 does not work with older versions of SQL Server, such as 2014/2012/2008R2 and earlier.
+1. **[Visual Studio Community/Pro/Enterprise][IDE]** ([VS 2026 Community][VS2026C]) - Typically being developed on VS 2026 Enterprise. Use of [MSBuild for 2026][BUILD26] is also acceptable.
+1. **[SQL Server Express 2016 (or higher/later)][SQL]** - Currently vetted on 2016 and 2019 (Express Editions). Entity Framework Core 10 does not work with older versions of SQL Server, such as 2014/2012/2008R2 and earlier.
 1. **[SQL Server Management Studio (SSMS)][SSMS]** - Required for managing the database.
 
 ### Get the Source Code

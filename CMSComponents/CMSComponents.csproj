@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<OutputType>Library</OutputType>
@@ -22,7 +22,7 @@
 		<Product Condition="'$(Configuration)' == 'Release'">$(AppName), built @ $(BuildDateTime)</Product>
 		<Product Condition="'$(Configuration)' == 'Debug'">$(AppName), debug built @ $(BuildDateTime)</Product>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<VersionPrefix>8.1</VersionPrefix>
+		<VersionPrefix>10.1</VersionPrefix>
 		<Build>$([System.DateTime]::op_Subtraction($([System.DateTime]::get_Now().get_Date()),$([System.DateTime]::new(2000,1,1))).get_TotalDays())</Build>
 		<Revision>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 2).ToString('F0'))</Revision>
 		<VersionSuffix>$(Build).$(Revision)</VersionSuffix>
@@ -61,12 +61,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.30" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.30" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.30" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.30" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.30" />
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.12" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.12" />
 	</ItemGroup>
 
 	<ItemGroup>
